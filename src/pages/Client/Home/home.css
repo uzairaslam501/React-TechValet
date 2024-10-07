@@ -1,0 +1,24 @@
+.hero {
+  width: 100%;
+  min-height: 80vh;
+  position: relative;
+  padding: 120px 0 60px 0;
+  display: flex;
+  align-items: center;
+}
+
+.section {
+  color: var(--default-color);
+  background-color: var(--background-color);
+  padding: 60px 0;
+  scroll-margin-top: 88px;
+  overflow: clip;
+}
+
+.dark-background {
+  --background-color: #37517e;
+  --default-color: #ffffff;
+  --heading-color: #ffffff;
+  --surface-color: #4668a2;
+  --contrast-color: #ffffff;
+}
