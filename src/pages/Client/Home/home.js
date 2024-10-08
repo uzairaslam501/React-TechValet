@@ -1,8 +1,41 @@
 import React from "react";
-import { Button, Col, Container, Row, Card } from "react-bootstrap";
+import { Button, Col, Container, Row, Card, Image } from "react-bootstrap";
 import logo from "../../../assets/images/welcome-logo.png";
+import TestimonialSlider from "../../../components/Custom/Testimonial";
 
 const Home = () => {
+  const testimonials = [
+    {
+      quote:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries",
+      author: "John Doe",
+      image:
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png", // Replace with the actual image path
+    },
+    {
+      quote:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries",
+      author: "John Doe",
+      image:
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png", // Replace with the actual image path
+    },
+    {
+      quote:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries",
+      author: "John Doe",
+      image:
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png", // Replace with the actual image path
+    },
+    {
+      quote:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries",
+      author: "John Doe",
+      image:
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png", // Replace with the actual image path
+    },
+    // ... other testimonials
+  ];
+
   return (
     <>
       <section
@@ -95,6 +128,41 @@ const Home = () => {
             </Col>
           </Row>
         </Container>
+      </section>
+
+      <section>
+        <Container>
+          <Row className="justify-content-center">
+            <Image
+              className="m-2"
+              src={logo}
+              thumbnail
+              style={{ width: "200px" }}
+            />
+            <Image
+              className="m-2"
+              src={logo}
+              thumbnail
+              style={{ width: "200px" }}
+            />
+            <Image
+              className="m-2"
+              src={logo}
+              thumbnail
+              style={{ width: "200px" }}
+            />
+            <Image
+              className="m-2"
+              src={logo}
+              thumbnail
+              style={{ width: "200px" }}
+            />
+          </Row>
+        </Container>
+      </section>
+
+      <section style={{ background: "#000", color: "#fff" }}>
+        <TestimonialSlider testimonials={testimonials} />
       </section>
     </>
   );
