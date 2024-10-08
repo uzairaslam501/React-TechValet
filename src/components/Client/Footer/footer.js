@@ -5,41 +5,6 @@ const Footer = () => {
   return (
     <>
       <footer id="footer" className="footer">
-        <div className="footer-newsletter">
-          <Container>
-            <Row className="justify-content-center text-center">
-              <Col lg={6}>
-                <h4>Join Our Newsletter</h4>
-                <p>
-                  Subscribe to our newsletter and receive the latest news about
-                  our products and services!
-                </p>
-                <Form
-                  action="forms/newsletter.php"
-                  method="post"
-                  className="php-email-form"
-                >
-                  <InputGroup className="mb-3">
-                    <Form.Control
-                      type="email"
-                      placeholder="Enter email"
-                      name="email"
-                    />
-                    <Button type="submit" variant="primary">
-                      Subscribe
-                    </Button>
-                  </InputGroup>
-                  <div className="loading">Loading</div>
-                  <div className="error-message"></div>
-                  <div className="sent-message">
-                    Your subscription request has been sent. Thank you!
-                  </div>
-                </Form>
-              </Col>
-            </Row>
-          </Container>
-        </div>
-
         <Container className="footer-top">
           <Row>
             <Col lg={4} md={6}>

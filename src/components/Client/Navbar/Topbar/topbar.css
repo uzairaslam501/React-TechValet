@@ -1,0 +1,9 @@
+.navbar-expand .navbar-nav .dropdown-menu {
+  z-index: 9999;
+  left: -125px;
+}
+
+/* Customized */
+.custom-dropdown .dropdown-toggle::after {
+  display: none; /* Hide the caret icon */
+}

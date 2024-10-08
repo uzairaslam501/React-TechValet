@@ -16,12 +16,13 @@ import ClientRoot from "../components/Client/Layouts/clientRoot";
 import Home from "../pages/Client/Home/home";
 import Welcome from "../pages/Client/Welcome/welcome";
 import About from "../pages/Client/About/about";
+import Contact from "../pages/Client/Contact/contact";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route element={<AuthLayout />}>
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Register />} />
         {/* <Route path="reset-password/:token?" element={<ResetPassword />} />
         <Route path="forgot-password" element={<ForgotPassword />} /> */}
@@ -34,8 +35,9 @@ const createRoute = createBrowserRouter(
       {/* <Route element={<ProtectedClient />}>
       </Route> */}
       <Route element={<ClientRoot />}>
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
       </Route>
       <Route path="/welcome" element={<Welcome />} />
     </>

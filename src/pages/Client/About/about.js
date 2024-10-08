@@ -25,7 +25,7 @@ const About = () => {
               </p>
               <ul>
                 <li>
-                  <i class="bi bi-check2-circle"></i>{" "}
+                  <i className="bi bi-check2-circle"></i>{" "}
                   <span>
                     Ullamco laboris nisi ut aliquip ex ea commodo consequat.
                   </span>
