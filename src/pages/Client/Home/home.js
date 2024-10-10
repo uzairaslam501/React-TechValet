@@ -2,30 +2,10 @@ import React from "react";
 import { Button, Col, Container, Row, Card, Image } from "react-bootstrap";
 import logo from "../../../assets/images/welcome-logo.png";
 import TestimonialSlider from "../../../components/Custom/Testimonial";
+import CustomCarousel from "../../../components/Custom/CardCarousal/cardCarousal";
 
 const Home = () => {
   const testimonials = [
-    {
-      quote:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries",
-      author: "John Doe",
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png", // Replace with the actual image path
-    },
-    {
-      quote:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries",
-      author: "John Doe",
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png", // Replace with the actual image path
-    },
-    {
-      quote:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries",
-      author: "John Doe",
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png", // Replace with the actual image path
-    },
     {
       quote:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries",
@@ -161,8 +141,45 @@ const Home = () => {
         </Container>
       </section>
 
+      <section>
+        <Container>
+          <Row>
+            <Col md={{ span: 10, offset: 1 }}>
+              <CustomCarousel />
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
       <section style={{ background: "#000", color: "#fff" }}>
         <TestimonialSlider testimonials={testimonials} />
+      </section>
+
+      <section
+        id="call-to-action"
+        className="call-to-action section"
+        style={{ background: "#9b9b9b" }}
+      >
+        <Container>
+          <Row
+            data-aos="zoom-in"
+            data-aos-delay="100"
+            className="aos-init aos-animate d-flex align-items-center justify-content-center"
+          ></Row>
+          <Col md={12} className="text-center">
+            <h2>Find Freelance Services For Your Business Today</h2>
+            <p>We've got you covered for all your business needs</p>
+            <Button
+              size="md"
+              style={{
+                padding: "6px 18px",
+              }}
+              variant="secondary"
+            >
+              Get Started
+            </Button>
+          </Col>
+        </Container>
       </section>
     </>
   );
