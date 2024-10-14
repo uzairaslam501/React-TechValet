@@ -1,0 +1,36 @@
+.testimonial-slide {
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  color: #fff;
+}
+
+.author-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.author-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #fff;
+}
+
+.testimonial-quote {
+  font-size: 16px;
+  color: #fff;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.testimonial-slider > div > div > .swiper-slide {
+  box-shadow: none;
+}

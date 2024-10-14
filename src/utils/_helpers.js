@@ -52,6 +52,10 @@ export const truncateText = (text, limit) => {
   return words.length > limit ? words.slice(0, limit).join(" ") + "..." : text;
 };
 
+export const truncateCharacters = (text, limit) => {
+  return text.length > limit ? text.slice(0, limit) + "..." : text;
+};
+
 export const formatDateTime = (timestamp) => {
   const dateObj = new Date(timestamp);
 
@@ -66,4 +70,8 @@ export const formatDateTime = (timestamp) => {
 
   // Return in "YYYY-MM-DD HH:mm" format
   return `${year}-${month}-${day} ${hours}:${minutes}`;
+};
+
+export const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 };

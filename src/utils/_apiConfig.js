@@ -29,3 +29,9 @@ export const getAuthUserId = (getState) => {
 
   return `${user.id}`;
 };
+
+export const getToken = (getState) => {
+  const user = getState()?.authentication?.userAuth;
+
+  return `${user.token}`;
+};

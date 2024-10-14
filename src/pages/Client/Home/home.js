@@ -1,180 +1,71 @@
 import React from "react";
 import { Button, Col, Container, Row, Card, Image } from "react-bootstrap";
-import logo from "../../../assets/images/welcome-logo.png";
-import TestimonialSlider from "../../../components/Custom/Testimonial";
+import TestimonialSlider from "../../../components/Custom/Testimonials/Testimonial";
 import CustomCarousel from "../../../components/Custom/CardCarousal/cardCarousal";
+import { testimonials } from "../../../utils/client/data/carousalData";
+import HeaderSection from "../../../components/HomeSections/Section2/headerSection";
+import ValetSliders from "../../../components/HomeSections/Section1/valetSliders";
+import { useSelector } from "react-redux";
 
 const Home = () => {
-  const testimonials = [
-    {
-      quote:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries",
-      author: "John Doe",
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/1200px-User_icon_2.svg.png", // Replace with the actual image path
-    },
-    // ... other testimonials
-  ];
-
+  const { userAuth } = useSelector((state) => state?.authentication);
   return (
     <>
-      <section
-        id="call-to-action"
-        className="call-to-action section"
-        style={{ background: "#9b9b9b" }}
-      >
-        <Container>
-          <Row
-            data-aos="zoom-in"
-            data-aos-delay="100"
-            className="aos-init aos-animate d-flex align-items-center justify-content-center"
-          >
-            {/* Text Section */}
-            <Col xl={6} className="text-center text-xl-start">
-              <h1>Find The Perfect Freelance Services For Your Business</h1>
-              <p>
-                Millions of individuals utilize IT Valet to help them with all
-                they need to make their ideas a reality.
-              </p>
-            </Col>
+      <HeaderSection />
 
-            {/* Button Section */}
-            <Col xl={3} className="text-center">
-              <Card className="">
-                <Card.Body>
-                  <img src="" />
-
-                  {/* Card Title */}
-                  <Card.Title>Need Service?</Card.Title>
-
-                  {/* Card Text */}
-                  <Card.Text>
-                    An IT Valet Service Provider who’s already in your area will
-                    complete your job at transparent rates you can feel good
-                    about.
-                  </Card.Text>
-
-                  {/* Get Started Button */}
-                  <Button
-                    href="/Auth/Register?value=Customer"
-                    variant="success"
-                  >
-                    Get Started
-                  </Button>
-
-                  {/* Login Link */}
-                  <p className="mb-0 mt-3">
-                    Already a member?{" "}
-                    <a href="/Auth/UserLogin">
-                      <u className="text-white">
-                        <b>Login</b>
-                      </u>
-                    </a>
-                  </p>
-                </Card.Body>
-              </Card>
-            </Col>
-
-            <Col xl={3} className="text-center">
-              <Card className="">
-                <Card.Body>
-                  <img src="" />
-                  <Card.Title>Need Service?</Card.Title>
-                  <Card.Text>
-                    An IT Valet Service Provider who’s already in your area will
-                    complete your job at transparent rates you can feel good
-                    about.
-                  </Card.Text>
-
-                  {/* Get Started Button */}
-                  <Button
-                    href="/Auth/Register?value=Customer"
-                    variant="success"
-                  >
-                    Get Started
-                  </Button>
-
-                  {/* Login Link */}
-                  <p className="mb-0 mt-3">
-                    Already a member?{" "}
-                    <a href="/Auth/UserLogin">
-                      <u className="text-white">
-                        <b>Login</b>
-                      </u>
-                    </a>
-                  </p>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </section>
-
-      <section>
-        <Container>
-          <Row className="justify-content-center">
-            <Image
-              className="m-2"
-              src={logo}
-              thumbnail
-              style={{ width: "200px" }}
-            />
-            <Image
-              className="m-2"
-              src={logo}
-              thumbnail
-              style={{ width: "200px" }}
-            />
-            <Image
-              className="m-2"
-              src={logo}
-              thumbnail
-              style={{ width: "200px" }}
-            />
-            <Image
-              className="m-2"
-              src={logo}
-              thumbnail
-              style={{ width: "200px" }}
-            />
-          </Row>
-        </Container>
-      </section>
-
-      <section>
+      <section className="custom-section">
         <Container>
           <Row>
-            <Col md={{ span: 10, offset: 1 }}>
+            <Col>
+              <h2>Services</h2>
               <CustomCarousel />
             </Col>
           </Row>
         </Container>
       </section>
 
-      <section style={{ background: "#000", color: "#fff" }}>
-        <TestimonialSlider testimonials={testimonials} />
-      </section>
+      {userAuth && userAuth?.role === "Customer" && (
+        <section className="py-5">
+          <ValetSliders />
+        </section>
+      )}
 
       <section
-        id="call-to-action"
-        className="call-to-action section"
-        style={{ background: "#9b9b9b" }}
+        className=""
+        style={{
+          backgroundColor: "#9b9b9b",
+        }}
       >
+        <Container>
+          <Row>
+            <Col md={{ span: 8, offset: 2 }} sm={12}>
+              <TestimonialSlider testimonials={testimonials} />
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
+      <section className="section">
         <Container>
           <Row
             data-aos="zoom-in"
             data-aos-delay="100"
             className="aos-init aos-animate d-flex align-items-center justify-content-center"
           ></Row>
-          <Col md={12} className="text-center">
-            <h2>Find Freelance Services For Your Business Today</h2>
-            <p>We've got you covered for all your business needs</p>
+          <Col md={12} className="text-center text-white">
+            <h2 className="text-black">
+              Find Freelance Services For Your Business Today
+            </h2>
+            <p className="text-black">
+              We've got you covered for all your business needs
+            </p>
             <Button
               size="md"
               style={{
                 padding: "6px 18px",
               }}
               variant="secondary"
+              className="custom-button"
             >
               Get Started
             </Button>

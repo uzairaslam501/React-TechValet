@@ -46,11 +46,11 @@ const logAndToastError = (statusCode, errorMessage) => {
 
 // Response Handler
 export const processApiResponse = (response, dispatch, tokenExpiryTime) => {
-  if (!response?.data?.isSuccess) {
+  if (!response?.data?.status) {
     handleApiError(response?.data, dispatch, tokenExpiryTime);
   } else {
     return {
-      data: response?.data,
+      data: response?.data?.data,
     };
   }
 };

@@ -4,7 +4,13 @@ import "../css/main.css";
 const Footer = () => {
   return (
     <>
-      <footer id="footer" className="footer">
+      <footer
+        id="footer"
+        className="footer"
+        style={{
+          borderTop: "1px solid #000",
+        }}
+      >
         <Container className="footer-top">
           <Row>
             <Col lg={4} md={6}>

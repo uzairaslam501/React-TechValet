@@ -5,16 +5,16 @@
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --heading-font: "Jost", sans-serif;
   --nav-font: "Poppins", sans-serif; */
-  --default-font: "Myriad Pro";
-  --heading-font: "Myriad Pro", sans-serif;
-  --nav-font: "Myriad Pro", sans-serif;
+  --default-font: "Myriad Pro", Arial, sans-serif;
+  --heading-font: "Myriad Pro", Arial, sans-serif;
+  --nav-font: "Myriad Pro", Arial, sans-serif;
 }
 
 /* Global Colors - The following color variables are used throughout the website. Updating them here will change the color scheme of the entire website */
 :root {
   --background-color: #ffffff; /* Background color for the entire website, including individual sections */
   --default-color: #444444; /* Default color used for the majority of the text content across the entire website */
-  --heading-color: #37517e; /* Color for headings, subheadings and title throughout the website */
+  --heading-color: #000000; /* Color for headings, subheadings and title throughout the website */
   --accent-color: #9b9b9b; /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
   --surface-color: #ffffff; /* The surface color is used as a background of boxed elements within sections, such as cards, icon boxes, or other elements that require a visual separation from the global background. */
   --contrast-color: #ffffff; /* Contrast color for text, ensuring readability against backgrounds of accent, heading, or default colors. */
@@ -2077,4 +2077,30 @@ section,
 --------------------------------------------------------------*/
 .starter-section {
   padding: 0px;
+}
+
+.custom-section {
+  background-color: #000;
+}
+
+.card-shadow {
+  box-shadow: 2px 2px 5px #999999;
+}
+
+.custom-button {
+  background-color: #fcd609;
+  border: 1px solid #fcd609;
+  color: #000000;
+}
+
+.custom-button:hover,
+.custom-button:active,
+.custom-button:focus {
+  background-color: #e6c924;
+  border: 1px solid #e6c924;
+  color: #000000;
+}
+
+.badge-custom {
+  background-color: #9b9b9b;
 }

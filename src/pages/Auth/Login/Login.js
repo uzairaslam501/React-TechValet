@@ -7,14 +7,14 @@ import { NavLink, Navigate } from "react-router-dom";
 import { Button, Form, Row, Col, Spinner } from "react-bootstrap";
 
 const initialValues = {
-  username: "",
+  email: "",
   password: "",
 };
 
 const validateLogin = Yup.object().shape({
-  username: Yup.string()
+  email: Yup.string()
     .min(3, "User Name must be at least 3 characters")
-    .required("Please enter User Name or username"),
+    .required("Please enter User Name or email"),
   password: Yup.string().required("Please enter password"),
 });
 
@@ -68,18 +68,18 @@ function Login() {
             <h5 className="text-center">Welcome Back!</h5>
             {error && <div className="alert alert-danger">{error}</div>}
             <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="formBasicusername">
-                <Form.Label>UserName</Form.Label>
+              <Form.Group className="mb-3" controlId="formBasicemail">
+                <Form.Label>Username / Email</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter username"
-                  value={values.username}
-                  onBlur={handleBlur("username")}
-                  onChange={handleChange("username")}
-                  isInvalid={touched.username && !!errors.username}
+                  placeholder="Enter username/email"
+                  value={values.email}
+                  onBlur={handleBlur("email")}
+                  onChange={handleChange("email")}
+                  isInvalid={touched.email && !!errors.email}
                 />
                 <Form.Control.Feedback type="invalid">
-                  {touched.username && errors.username}
+                  {touched.email && errors.email}
                 </Form.Control.Feedback>
               </Form.Group>
               <Form.Group controlId="formBasicPassword">

@@ -1,6 +1,9 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { handleApiError } from "../../utils/_handler/_exceptions";
+import {
+  handleApiError,
+  processApiResponse,
+} from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { toast } from "react-toastify";
 import { getAuthConfig } from "../../utils/_apiConfig";
@@ -21,8 +24,8 @@ export const postLogin = createAsyncThunk(
   async (userData, { rejectWithValue, getState, dispatch }) => {
     try {
       const response = await api.post("/auth/login", userData);
-      //const responseBack = processApiResponse(response, dispatch);
-      const responseBack = response;
+      const responseBack = processApiResponse(response, dispatch);
+      //const responseBack = response;
       localStorage.setItem("userInfo", JSON.stringify(responseBack?.data));
       return responseBack?.data;
     } catch (error) {
