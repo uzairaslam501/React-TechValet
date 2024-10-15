@@ -17,6 +17,7 @@ import Home from "../pages/Client/Home/home";
 import Welcome from "../pages/Client/Welcome/welcome";
 import About from "../pages/Client/About/about";
 import Contact from "../pages/Client/Contact/contact";
+import Search from "../pages/Client/Search/filteredData";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -38,6 +39,7 @@ const createRoute = createBrowserRouter(
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/search/:value?" element={<Search />} />
       </Route>
       <Route path="/welcome" element={<Welcome />} />
     </>

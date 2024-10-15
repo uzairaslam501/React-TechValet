@@ -11,10 +11,12 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authSlice from "./Reducers/authSlice";
+import customerSlice from "./Reducers/customerSlice";
 
 // Combine your reducers here
 const rootReducer = combineReducers({
   authentication: authSlice,
+  customer: customerSlice,
 });
 
 const persistConfig = {

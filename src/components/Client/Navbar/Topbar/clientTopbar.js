@@ -1,12 +1,21 @@
 import React from "react";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import logo from "../../../../assets/images/black-logo.svg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import "./topbar.css";
+import { logout } from "../../../../redux/Reducers/authSlice";
 
 const ClientTopbar = () => {
+  const dispatch = useDispatch();
   const { userAuth } = useSelector((state) => state.authentication);
+
+  const handleLogout = () => {
+    dispatch(logout()); // Dispatch the logout action
+    localStorage.removeItem("userInfo"); // Optionally, clear user info from local storage
+    // Optionally, redirect to login page or home page here
+  };
+
   return (
     <>
       <Navbar>
@@ -80,7 +89,9 @@ const ClientTopbar = () => {
                     Update Password
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item onClick="">Logout</NavDropdown.Item>
+                  <NavDropdown.Item onClick={handleLogout}>
+                    Logout
+                  </NavDropdown.Item>
                 </NavDropdown>
               </Nav>
             </Navbar.Collapse>

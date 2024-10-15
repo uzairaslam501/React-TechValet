@@ -54,3 +54,22 @@ export const getValetsList = createAsyncThunk(
     }
   }
 );
+
+export const getValetsBySearch = createAsyncThunk(
+  "user/getValetsBySearch",
+  async (keyword, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const jwtToken = getToken(getState);
+      const response = await api.get(`/User/SearchValet?keyword=${keyword}`, {
+        headers: {
+          Authorization: `${jwtToken}`, // Token included in the request headers
+        },
+      });
+      const responseBack = processApiResponse(response, dispatch);
+      console.log(responseBack.data);
+      return responseBack?.data;
+    } catch (error) {
+      handleApiError(error, dispatch);
+    }
+  }
+);

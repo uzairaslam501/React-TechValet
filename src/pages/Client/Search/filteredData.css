@@ -1,0 +1,154 @@
+.customswipper .swiper-slide {
+  height: fit-content;
+}
+
+.user-card {
+  width: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #9b9b9b;
+}
+
+.user-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.user-card__link {
+  display: block;
+  text-decoration: none;
+  border-bottom: 1px solid #9b9b9b;
+}
+
+.user-card__image-wrapper {
+  width: 100%;
+  overflow: hidden;
+  height: 200px;
+}
+
+.user-card__image {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.user-card__details {
+  padding: 15px;
+}
+
+.user-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.user-card__name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.user-card__name-link {
+  color: #333;
+  text-decoration: none;
+  transition: color 0.3s;
+  word-break: break-all;
+}
+
+.user-card__name-link:hover {
+  color: #000;
+}
+
+.user-card__location {
+  font-size: 0.9rem;
+  color: #999;
+}
+
+.user-card__description {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 15px;
+  word-break: break-all;
+}
+
+.user-card__no-description {
+  color: #bbb;
+}
+
+.user-card__rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.user-card__rating-star {
+  margin-right: 5px;
+  color: #ffb400;
+}
+
+.user-card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-card__price {
+  font-size: 1.1rem;
+  color: #000;
+}
+
+.user-online-indicator {
+  padding: 2px 8px;
+  border: 1px solid #9b9b9b;
+  border-radius: 10%;
+  font-size: 12px;
+}
+
+.is-online {
+  background-color: #9b9b9b;
+  color: #fff;
+}
+
+.is-offline {
+  background-color: #000;
+  color: #fff;
+}
+
+.user-card__favorite-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #e74c3c;
+  cursor: pointer;
+}
+
+.user-card__favorite-btn:hover {
+  color: #ff6b6b;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Full height of the viewport */
+}
+
+.loading-spinner {
+  border: 8px solid #f3f3f3; /* Light grey */
+  border-top: 8px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

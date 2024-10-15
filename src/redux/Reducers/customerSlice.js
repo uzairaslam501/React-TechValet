@@ -1,8 +1,12 @@
-import { getValetsList, getKeywords } from "../Actions/customerActions";
+import {
+  getValetsList,
+  getKeywords,
+  getValetsBySearch,
+} from "../Actions/customerActions";
 import { createSlice } from "@reduxjs/toolkit";
 
 // Create auth slice
-const authSlice = createSlice({
+const customerSlice = createSlice({
   name: "customer",
   initialState: {
     loading: false,
@@ -40,6 +44,4 @@ const authSlice = createSlice({
   },
 });
 
-// Export the reducer and actions
-export const { logout } = authSlice.actions;
-export default authSlice.reducer;
+export default customerSlice.reducer;

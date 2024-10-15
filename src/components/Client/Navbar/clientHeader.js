@@ -49,7 +49,7 @@ const ClientNavbar = () => {
             </>
           ) : (
             <>
-              <Nav.Link href="" className="ms-3 text-white">
+              <Nav.Link href="/login" className="ms-3 text-white">
                 <i className="bi bi-person-fill-lock"></i> Sign In
               </Nav.Link>
 
