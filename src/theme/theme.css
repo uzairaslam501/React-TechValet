@@ -26,3 +26,71 @@
 .light-mode small {
   color: var(--text-secondary-light);
 }
+
+.btn-primary {
+  --bs-btn-color: #000;
+  --bs-btn-bg: #fcd609;
+  --bs-btn-border-color: #fcd609;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #000000;
+  --bs-btn-hover-border-color: #000000;
+  --bs-btn-focus-shadow-rgb: 252, 214, 9; /* Updated to match primary color */
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #000000; /* Active color same as hover */
+  --bs-btn-active-border-color: #000000;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #fcd609;
+  --bs-btn-disabled-border-color: #fcd609;
+}
+
+.btn-primary-secondary {
+  --bs-btn-color: #000;
+  --bs-btn-bg: #fcd609;
+  --bs-btn-border-color: #fcd609;
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #e6bc08; /* Slightly darker shade for hover */
+  --bs-btn-hover-border-color: #d8b007; /* Darker shade for border on hover */
+  --bs-btn-focus-shadow-rgb: 252, 214, 9;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #d8b007; /* Even darker for active state */
+  --bs-btn-active-border-color: #c7a506;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #000;
+  --bs-btn-disabled-bg: #fcd609;
+  --bs-btn-disabled-border-color: #fcd609;
+}
+
+.btn-secondary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #000000;
+  --bs-btn-border-color: #000000;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #fcd609;
+  --bs-btn-hover-border-color: #fcd609;
+  --bs-btn-focus-shadow-rgb: 0, 0, 0; /* Focus shadow adjusted for black */
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #fcd609; /* Active color same as hover */
+  --bs-btn-active-border-color: #fcd609;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #000000;
+  --bs-btn-disabled-border-color: #000000;
+}
+
+.btn-secondary-secondary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #000;
+  --bs-btn-border-color: #000;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #333; /* Slightly lighter shade for hover */
+  --bs-btn-hover-border-color: #333; /* Same lighter shade for border on hover */
+  --bs-btn-focus-shadow-rgb: 0, 0, 0;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #1a1a1a; /* Slightly darker for active state */
+  --bs-btn-active-border-color: #1a1a1a;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #000;
+  --bs-btn-disabled-border-color: #000;
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
-import logo from "../../../../assets/images/black-logo.svg";
+import logo from "../../../../assets/images/logo.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import "./topbar.css";
@@ -18,13 +18,10 @@ const ClientTopbar = () => {
 
   return (
     <>
-      <Navbar>
+      <Navbar style={{ background: "#000", borderBottom: "1px solid #fcd609" }}>
         <Container>
-          <a
-            href="index.html"
-            className="logo d-flex align-items-center me-auto"
-          >
-            <img src={logo} alt="Logo" style={{ width: "75px" }} />
+          <a href="/" className="logo d-flex align-items-center me-auto">
+            <img src={logo} alt="Logo" style={{ width: "120px" }} />
           </a>
           <Navbar.Toggle />
           {userAuth && (

@@ -27,7 +27,7 @@ const TestimonialSlider = ({ testimonials }) => {
                 alt={testimonial.author}
                 className="author-image"
                 style={{
-                  border: "3px solid #fff",
+                  border: "3px solid #000",
                   padding: "10px",
                 }}
               />

@@ -6,7 +6,7 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { toast } from "react-toastify";
-import { getToken } from "../../utils/_apiConfig";
+import { getAuthConfig, getToken } from "../../utils/_apiConfig";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -70,6 +70,29 @@ export const getValetsBySearch = createAsyncThunk(
       return responseBack?.data;
     } catch (error) {
       handleApiError(error, dispatch);
+    }
+  }
+);
+
+export const getRecords = createAsyncThunk(
+  "category/getRecords",
+  async (
+    { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    try {
+      const config = getAuthConfig(getState);
+      const response = await axios.post(
+        `${baseUrl}/Datatable/GetRequestServicesDatatableByUserIdAsync?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        &sortDirection=${sortDirection}&searchValue=${searchParam}`,
+        null,
+        config
+      );
+      const responseBack = response;
+      return responseBack;
+    } catch (error) {
+      handleApiError(error, dispatch, getState().authentication?.userAuth);
+      rejectWithValue(error);
     }
   }
 );

@@ -1,6 +1,6 @@
 export const navLinks = [
   {
-    href: "/manage-appointments",
+    href: "/appointment",
     iconClass: "bi bi-envelope",
     className: "",
     label: "Manage Appointments",

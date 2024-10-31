@@ -81,3 +81,46 @@ export const testimonials = [
   },
   // ... other testimonials
 ];
+
+export const CategoriesList = [
+  {
+    name: "Graphics & Design",
+    src: "/frontAssets/images/graphics.svg",
+    alt: "Graphics & Design",
+  },
+  {
+    name: "Digital Marketing",
+    src: "/frontAssets/images/online-marketing.svg",
+    alt: "Digital Marketing",
+  },
+  {
+    name: "Writing & Translation",
+    src: "/frontAssets/images/writing-translation.svg",
+    alt: "Writing & Translation",
+  },
+  {
+    name: "Video & Animation",
+    src: "/frontAssets/images/video-animation.svg",
+    alt: "Video & Animation",
+  },
+  {
+    name: "Music & Audio",
+    src: "/frontAssets/images/music-audio.svg",
+    alt: "Music & Audio",
+  },
+  {
+    name: "Programming & Tech",
+    src: "/frontAssets/images/programming.svg",
+    alt: "Programming & Tech",
+  },
+  {
+    name: "Business",
+    src: "/frontAssets/images/business.svg",
+    alt: "Business",
+  },
+  {
+    name: "Lifestyle",
+    src: "/frontAssets/images/lifestyle.svg",
+    alt: "Lifestyle",
+  },
+];

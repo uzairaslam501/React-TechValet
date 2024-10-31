@@ -18,12 +18,14 @@ import Welcome from "../pages/Client/Welcome/welcome";
 import About from "../pages/Client/About/about";
 import Contact from "../pages/Client/Contact/contact";
 import Search from "../pages/Client/Search/filteredData";
+import ClientLogin from "../pages/Client/ClientAuth/ClientLogin/ClientLogin";
+import Appointment from "../pages/Client/Manage/Appointments/appointment";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route element={<AuthLayout />}>
-        <Route path="/login" element={<Login />} />
+        <Route path="/admin" element={<Login />} />
         <Route path="/signup" element={<Register />} />
         {/* <Route path="reset-password/:token?" element={<ResetPassword />} />
         <Route path="forgot-password" element={<ForgotPassword />} /> */}
@@ -33,13 +35,15 @@ const createRoute = createBrowserRouter(
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Route>
-      {/* <Route element={<ProtectedClient />}>
-      </Route> */}
       <Route element={<ClientRoot />}>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/search/:value?" element={<Search />} />
+        <Route path="/login" element={<ClientLogin />} />
+        <Route element={<ProtectedClient />}>
+          <Route path="/search/:value?" element={<Search />} />
+          <Route path="/appointment" element={<Appointment />} />
+        </Route>
       </Route>
       <Route path="/welcome" element={<Welcome />} />
     </>

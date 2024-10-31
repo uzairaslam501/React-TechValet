@@ -7,7 +7,11 @@ const ClientNavbar = () => {
   const { userAuth } = useSelector((state) => state.authentication);
   return (
     <>
-      <header id="header" className="header">
+      <header
+        id="header"
+        className="header"
+        style={{ borderBottom: "2px solid #f3f3f3" }}
+      >
         <div className="container-fluid container-xl d-flex align-items-center justify-content-center text-uppercase">
           <a
             href="index.html"

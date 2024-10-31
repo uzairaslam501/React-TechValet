@@ -9,12 +9,14 @@ const Footer = () => {
         className="footer"
         style={{
           borderTop: "1px solid #000",
+          background: "#000",
+          color: "#fff",
         }}
       >
         <Container className="footer-top">
           <Row>
             <Col lg={4} md={6}>
-              <h4>Contact Us</h4>
+              <h4 className="text-white">Contact Us</h4>
               <p>A108 Adam Street, New York, NY 535022</p>
               <p>
                 <strong>Phone:</strong> +1 5589 55488 55
@@ -24,7 +26,7 @@ const Footer = () => {
               </p>
             </Col>
             <Col lg={2} md={3}>
-              <h4>Useful Links</h4>
+              <h4 className="text-white">Useful Links</h4>
               <ul className="list-unstyled">
                 <li>
                   <i className="bi bi-chevron-right"></i> <a href="#">Home</a>
@@ -40,7 +42,7 @@ const Footer = () => {
               </ul>
             </Col>
             <Col lg={2} md={3}>
-              <h4>Our Services</h4>
+              <h4 className="text-white">Our Services</h4>
               <ul className="list-unstyled">
                 <li>
                   <i className="bi bi-chevron-right"></i>{" "}
@@ -53,7 +55,7 @@ const Footer = () => {
               </ul>
             </Col>
             <Col lg={4} md={12}>
-              <h4>Follow Us</h4>
+              <h4 className="text-white">Follow Us</h4>
               <p>Cras fermentum odio eu feugiat...</p>
               <div className="social-links d-flex">
                 <a href="#">

@@ -19,7 +19,9 @@ const HeaderSection = () => {
           >
             {/* Text Section */}
             <Col xl={6} className="text-center text-xl-start">
-              <h1>Find The Perfect Freelance Services For Your Business</h1>
+              <h1 style={{ background: "#fcd609 " }} className="py-5 px-3">
+                Find The Perfect Freelance Services For Your Business
+              </h1>
               <p>
                 Millions of individuals utilize IT Valet to help them with all
                 they need to make their ideas a reality.
@@ -28,7 +30,15 @@ const HeaderSection = () => {
             </Col>
 
             <Col xl={3} className="text-center">
-              <Card className="card-shadow custom-card">
+              <Card
+                className="card-shadow"
+                style={{
+                  background: "#000",
+                  border: "1px solid #fcd609",
+                  borderBottom: "8px solid #fcd609",
+                  borderRadius: "20px",
+                }}
+              >
                 <Card.Body>
                   <div
                     style={{
@@ -56,7 +66,7 @@ const HeaderSection = () => {
 
                   <Button
                     href="/Auth/Register?value=Customer"
-                    className="custom-button"
+                    className="btn-primary-secondary"
                   >
                     Get Started
                   </Button>
@@ -74,7 +84,15 @@ const HeaderSection = () => {
             </Col>
 
             <Col xl={3} className="text-center">
-              <Card className="card-shadow custom-card">
+              <Card
+                className="card-shadow"
+                style={{
+                  background: "#fcd609",
+                  border: "1px solid #000",
+                  borderBottom: "8px solid #000",
+                  borderRadius: "20px",
+                }}
+              >
                 <Card.Body>
                   <div
                     style={{
@@ -83,7 +101,7 @@ const HeaderSection = () => {
                     }}
                   >
                     <img
-                      src="http://nodlayslahore-001-site50.atempurl.com/frontAssets/images/CustomImages/2.png"
+                      src="https://techvalet.ca/frontAssets/images/CustomImages/2 (1).png"
                       className="img-fluid"
                       style={{
                         width: "100px",
@@ -91,8 +109,8 @@ const HeaderSection = () => {
                       }}
                     />
                   </div>
-                  <Card.Title className="text-white">Need Service?</Card.Title>
-                  <Card.Text className="text-white">
+                  <Card.Title className="">Need Service?</Card.Title>
+                  <Card.Text className="">
                     An IT Valet Service Provider who’s already in your area will
                     complete your job at transparent rates you can feel good
                     about.
@@ -100,15 +118,15 @@ const HeaderSection = () => {
 
                   <Button
                     href="/Auth/Register?value=Customer"
-                    className="custom-button"
+                    className="btn-secondary-secondary"
                   >
                     Get Started
                   </Button>
 
-                  <p className="mb-0 mt-3 text-white">
+                  <p className="mb-0 mt-3">
                     Already a member?{" "}
                     <a href="/Auth/UserLogin">
-                      <u className="text-white">
+                      <u className="text-dark">
                         <b>Login</b>
                       </u>
                     </a>
