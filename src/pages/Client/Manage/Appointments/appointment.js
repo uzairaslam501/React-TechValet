@@ -3,6 +3,8 @@ import CustomTable from "../../../../components/Custom/Datatable/table";
 import { getRecords } from "../../../../redux/Actions/customerActions";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
+import { Card, CardBody, Col, Row } from "react-bootstrap";
+import Order from "../Orders/order";
 
 const Appointment = () => {
   const dispatch = useDispatch();
@@ -35,19 +37,19 @@ const Appointment = () => {
 
   const headers = [
     { id: "0", label: "Action", column: "Action" },
-    { id: "createdAt", label: "Appointment Created", column: "createdAt" },
+    { id: "0", label: "Appointment Created", column: "createdAt" },
     {
-      id: "categoriesOfProblems",
+      id: "0",
       label: "Categories Of Problems",
       column: "categoriesOfProblems",
     },
     {
-      id: "requestServiceSkills",
+      id: "0",
       label: "Requested Skills",
       column: "requestServiceSkills",
     },
     {
-      id: "appointmentTime",
+      id: "0",
       label: "Appointment Time",
       column: "appointmentTime",
     },
@@ -56,7 +58,6 @@ const Appointment = () => {
   const handleDelete = async () => {
     setDeleteLoader(true);
     const endpoint = `User/DeleteRecord?id=${isDelete}`;
-    // await dispatch(deleteRecord(endpoint));
     handleClose();
   };
 
@@ -92,7 +93,7 @@ const Appointment = () => {
 
   const fetchUsers = async (
     pageNumber = 0,
-    pageLength = 5, // Remove pageLength default from here
+    pageLength = 5,
     sortColumn = "",
     sortDirection = "",
     searchParam = ""
@@ -108,9 +109,6 @@ const Appointment = () => {
     try {
       setLoader(true);
       const response = await dispatch(getRecords(params));
-      console.log("payload", response?.payload);
-      console.log("payload data", response?.payload?.data);
-      console.log("payload data length", response?.payload?.data?.length);
       if (response.payload.data?.data?.length > 0) {
         setRecords(response.payload?.data?.data);
         setTotalRecords(response.payload?.data?.recordsTotal);
@@ -131,17 +129,31 @@ const Appointment = () => {
 
   return (
     <>
-      <CustomTable
-        headers={headers}
-        records={records}
-        totalRecords={totalRecord}
-        pageLength={false}
-        buttons={buttons}
-        onPageChange={fetchUsers}
-        onPageLengthChange={setPageLength}
-        loader={loader}
-        search={false}
-      />
+      <section id="AppointmentTable" className="mb-5">
+        <Row className="text-center">
+          <Col lg={{ span: 10, offset: 1 }}>
+            <Card>
+              <CardBody>
+                <h2 className="fw-bold">Manage Appointments</h2>
+                <CustomTable
+                  headers={headers}
+                  records={records}
+                  totalRecords={totalRecord}
+                  pageLength={pageLength}
+                  buttons={buttons}
+                  onPageChange={fetchUsers}
+                  onPageLengthChange={setPageLength}
+                  loader={loader}
+                  searchFunctionality={false}
+                  pageLengthFunctionality={true}
+                />
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+      </section>
+
+      <Order />
     </>
   );
 };

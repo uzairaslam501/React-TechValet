@@ -17,7 +17,8 @@ function CustomTable({
   onPageChange,
   onPageLengthChange,
   loader,
-  search,
+  searchFunctionality,
+  pageLengthFunctionality,
 }) {
   const [rowsPerPage, setRowsPerPage] = useState(pageLength);
   const [page, setPage] = useState(0);
@@ -131,8 +132,8 @@ function CustomTable({
 
   return (
     <Container>
-      <div className="d-flex justify-content-between p-3">
-        {pageLength !== false && (
+      <div className="d-flex justify-content-between py-3">
+        {pageLengthFunctionality && (
           <div>
             <span>Page Length: </span>
             <select
@@ -153,7 +154,7 @@ function CustomTable({
             </select>
           </div>
         )}
-        {search === true && (
+        {searchFunctionality && (
           <FormGroup className="d-flex">
             <InputGroup>
               <input
@@ -173,14 +174,24 @@ function CustomTable({
         )}
       </div>
 
-      <Table striped bordered hover responsive>
-        <thead>
+      <Table
+        striped
+        bordered
+        hover
+        responsive
+        style={{ verticalAlign: "middle" }}
+      >
+        <thead style={{ backgroundColor: "#000" }}>
           <tr>
             {headers.map((header) => (
               <th
-                key={header.id}
+                key={header.column}
                 onClick={() => header.id !== "0" && handleSort(header.id)}
-                style={{ cursor: "pointer" }}
+                style={{
+                  cursor: "pointer",
+                  minWidth: header.column !== "Action" ? "200px" : "100px",
+                }}
+                className="py-3"
               >
                 {header.label}
                 {header.id !== "0" && sortColumn === header.id && (
@@ -200,7 +211,7 @@ function CustomTable({
               currentRecords.map((row) => (
                 <tr key={row.id}>
                   {headers.map((header) => (
-                    <td key={header.id}>
+                    <td key={header.column}>
                       {header.column === "Action" ? (
                         <CustomButtons buttons={buttons} row={row} />
                       ) : header.column === "profilePath" ||
@@ -216,6 +227,44 @@ function CustomTable({
                             style={{ width: "50px", height: "50px" }}
                           />
                         </a>
+                      ) : header.column === "orderPrice" ? (
+                        <>
+                          <span className="fw-bold">$</span>{" "}
+                          {row[header.column]}
+                        </>
+                      ) : header.column === "orderReasonType" ? (
+                        <>
+                          {row.orderReasonType === "3" &&
+                          row.orderReasonIsActive === "1" ? (
+                            <Button
+                              href={`/order-details?id=${row.encId}`}
+                              variant="danger"
+                            >
+                              Cancelled
+                            </Button>
+                          ) : row.isDelivered === "0" ? (
+                            <Button
+                              href={`/order-details?id=${row.encId}`}
+                              className="btn-secondary-secondary"
+                            >
+                              In Progress
+                            </Button>
+                          ) : row.isDelivered === "1" ? (
+                            <Button
+                              href={`/order-details?id=${row.encId}`}
+                              variant="success"
+                            >
+                              Delivered
+                            </Button>
+                          ) : (
+                            <Button
+                              href={`/order-details?id=${row.encId}`}
+                              className="btn-primary-secondary"
+                            >
+                              Completed
+                            </Button>
+                          )}
+                        </>
                       ) : (
                         row[header.column]
                       )}

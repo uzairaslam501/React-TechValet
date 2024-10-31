@@ -96,3 +96,26 @@ export const getRecords = createAsyncThunk(
     }
   }
 );
+
+export const getOrderRecords = createAsyncThunk(
+  "category/getOrderRecords",
+  async (
+    { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    try {
+      const config = getAuthConfig(getState);
+      const response = await axios.post(
+        `${baseUrl}/Datatable/GetOrdersDatatableByUserId?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        &sortDirection=${sortDirection}&searchValue=${searchParam}`,
+        null,
+        config
+      );
+      const responseBack = response;
+      return responseBack;
+    } catch (error) {
+      handleApiError(error, dispatch, getState().authentication?.userAuth);
+      rejectWithValue(error);
+    }
+  }
+);
