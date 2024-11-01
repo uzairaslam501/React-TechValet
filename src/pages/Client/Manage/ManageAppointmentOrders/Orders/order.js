@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import CustomTable from "../../../../components/Custom/Datatable/table";
-import { getOrderRecords } from "../../../../redux/Actions/customerActions";
+import CustomTable from "../../../../../components/Custom/Datatable/table";
+import { getOrderRecords } from "../../../../../redux/Actions/customerActions";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { Card, CardBody, Col, Row } from "react-bootstrap";
+import { Card, CardBody, Col, Row, Spinner } from "react-bootstrap";
+import Dialogue from "../../../../../components/Custom/Modal/modal";
 
-const Order = () => {
+const Order = ({ isLoading }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -14,14 +15,14 @@ const Order = () => {
   const [orderLoader, setOrdersLoader] = useState(false);
   const [orderTotalRecord, setOrdersTotalRecords] = useState(0);
   const [orderDeleteLoader, setOrdersDeleteLoader] = useState(false);
-  const [oderOpen, setOrdersOpen] = useState(false);
+  const [showOderModal, setOrderShowModal] = useState(false);
   const [orderIsDelete, setOrdersIsDelete] = useState();
 
   const buttons = [
     {
       id: 1,
       title: "Delete",
-      onClick: (row) => handleOrderOpen(row.id),
+      onClick: (row) => handleOrderShowModal(row.id),
       variant: "outline-danger",
       icon: "bi bi-trash",
     },
@@ -69,15 +70,15 @@ const Order = () => {
     navigate("/add-user", { state: row });
   };
 
-  const handleOrderOpen = (id) => {
+  const handleOrderShowModal = (id) => {
     setOrdersIsDelete(id);
-    setOrdersOpen(true);
+    setOrderShowModal(true);
   };
 
   const handleOrderClose = () => {
     setOrdersDeleteLoader(false);
     setOrdersIsDelete("");
-    setOrdersOpen(false);
+    setOrderShowModal(false);
   };
 
   const actions = [
@@ -112,10 +113,10 @@ const Order = () => {
 
     try {
       setOrdersLoader(true);
-      const response = await dispatch(getOrderRecords(params));
-      if (response.payload.data?.data?.length > 0) {
-        setOrderRecords(response.payload?.data?.data);
-        setOrdersTotalRecords(response.payload?.data?.recordsTotal);
+      const ordersList = await dispatch(getOrderRecords(params));
+      if (ordersList.payload.data?.length > 0) {
+        setOrderRecords(ordersList.payload?.data);
+        setOrdersTotalRecords(ordersList.payload?.recordsTotal);
       } else {
         setOrderRecords([]);
         setOrdersTotalRecords(0);
@@ -139,23 +140,50 @@ const Order = () => {
             <Card>
               <CardBody>
                 <h2 className="fw-bold">Manage Orders</h2>
-                <CustomTable
-                  headers={headers}
-                  records={orderRecords}
-                  totalRecords={orderTotalRecord}
-                  pageLength={orderPageLength}
-                  buttons={buttons}
-                  onPageChange={fetchUsers}
-                  onPageLengthChange={setOrdersPageLength}
-                  loader={orderLoader}
-                  searchFunctionality={false}
-                  pageLengthFunctionality={true}
-                />
+                {!isLoading ? (
+                  <Spinner />
+                ) : (
+                  <CustomTable
+                    headers={headers}
+                    records={orderRecords}
+                    totalRecords={orderTotalRecord}
+                    pageLength={orderPageLength}
+                    buttons={buttons}
+                    onPageChange={fetchUsers}
+                    onPageLengthChange={setOrdersPageLength}
+                    loader={orderLoader}
+                    searchFunctionality={false}
+                    pageLengthFunctionality={true}
+                  />
+                )}
               </CardBody>
             </Card>
           </Col>
         </Row>
       </section>
+
+      <Dialogue
+        show={showOderModal}
+        onHide={handleOrderClose}
+        headerClass=""
+        title="Warning"
+        bodyContent={
+          <p>
+            <span className="fw-bold">Attention:</span> Deleting the record
+            erases all data associated with it. Double-check before confirming.
+            💾
+          </p>
+        }
+        backdrop="static"
+        customFooterButtons={[
+          { text: "Confirm", variant: "danger", onClick: handleOrderDelete },
+          {
+            text: "Cancel",
+            className: "btn-secondary-secondary",
+            onClick: handleOrderClose,
+          },
+        ]}
+      />
     </>
   );
 };

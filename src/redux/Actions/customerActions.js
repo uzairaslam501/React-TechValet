@@ -75,7 +75,7 @@ export const getValetsBySearch = createAsyncThunk(
 );
 
 export const getRecords = createAsyncThunk(
-  "category/getRecords",
+  "customer/getRecords",
   async (
     { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
     { rejectWithValue, getState, dispatch }
@@ -98,7 +98,7 @@ export const getRecords = createAsyncThunk(
 );
 
 export const getOrderRecords = createAsyncThunk(
-  "category/getOrderRecords",
+  "customer/getOrderRecords",
   async (
     { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
     { rejectWithValue, getState, dispatch }
@@ -111,7 +111,60 @@ export const getOrderRecords = createAsyncThunk(
         null,
         config
       );
-      const responseBack = response;
+      const responseBack = response?.data;
+      return responseBack;
+    } catch (error) {
+      handleApiError(error, dispatch, getState().authentication?.userAuth);
+      rejectWithValue(error);
+    }
+  }
+);
+
+export const getUserPackagesRecords = createAsyncThunk(
+  "customer/getUserPackagesRecords",
+  async (
+    { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    try {
+      const config = getAuthConfig(getState);
+      const response = await axios.post(
+        `${baseUrl}/Datatable/GetUserPackageDatatableAsync?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        &sortDirection=${sortDirection}&searchValue=${searchParam}`,
+        null,
+        config
+      );
+      const responseBack = response?.data;
+      return responseBack;
+    } catch (error) {
+      handleApiError(error, dispatch, getState().authentication?.userAuth);
+      rejectWithValue(error);
+    }
+  }
+);
+
+export const getUserPackagesConsumptionRecords = createAsyncThunk(
+  "customer/getUserPackagesConsumptionRecords",
+  async (
+    {
+      pageNumber,
+      pageLength,
+      sortColumn,
+      sortDirection,
+      searchParam,
+      packageId,
+    },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    try {
+      const config = getAuthConfig(getState);
+      const response = await axios.post(
+        `${baseUrl}/Datatable/GetOrdersDatatableByPackageId?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        &sortDirection=${sortDirection}&searchValue=${searchParam}&packageId=${packageId}`,
+        null,
+        config
+      );
+      const responseBack = response?.data;
       return responseBack;
     } catch (error) {
       handleApiError(error, dispatch, getState().authentication?.userAuth);

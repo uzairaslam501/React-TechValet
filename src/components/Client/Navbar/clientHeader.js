@@ -1,7 +1,7 @@
 import React from "react";
 import { Navbar, Nav, NavDropdown, Container, Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { navLinks } from "../../../utils/client/_menu";
+import { navLinksCustomer } from "../../../utils/client/_menu";
 
 const ClientNavbar = () => {
   const { userAuth } = useSelector((state) => state.authentication);
@@ -32,22 +32,56 @@ const ClientNavbar = () => {
                   <i className="bi bi-list"></i>
                 </Navbar.Toggle>
                 <Navbar.Collapse id="basic-navbar-nav">
-                  {navLinks.map((link, index) => (
-                    <Nav.Link
-                      href={link.href}
-                      key={index}
-                      className={`${link.className}`}
-                    >
-                      {link.iconClass !== "" && (
-                        <i
-                          className={`${link.iconClass} me-1`}
-                          style={{ fontSize: "1rem" }}
-                        ></i>
-                      )}
-
-                      {link.label}
-                    </Nav.Link>
-                  ))}
+                  {navLinksCustomer.map((link, index) =>
+                    link.submenu ? (
+                      <NavDropdown
+                        title={
+                          <>
+                            {link.iconClass && (
+                              <i
+                                className={`${link.iconClass} me-2`}
+                                style={{ fontSize: "1rem" }}
+                              ></i>
+                            )}
+                            {link.label}
+                          </>
+                        }
+                        key={index}
+                        id={`nav-dropdown-${index}`}
+                        className={`${link.className}`}
+                      >
+                        {link.submenu.map((subLink, subIndex) => (
+                          <NavDropdown.Item
+                            href={subLink.href}
+                            key={subIndex}
+                            className={`${subLink.className}`}
+                          >
+                            {subLink.iconClass && (
+                              <i
+                                className={`${subLink.iconClass} me-2`}
+                                style={{ fontSize: "1rem" }}
+                              ></i>
+                            )}
+                            {subLink.label}
+                          </NavDropdown.Item>
+                        ))}
+                      </NavDropdown>
+                    ) : (
+                      <Nav.Link
+                        href={link.href}
+                        key={index}
+                        className={`${link.className}`}
+                      >
+                        {link.iconClass && (
+                          <i
+                            className={`${link.iconClass} me-2`}
+                            style={{ fontSize: "1rem" }}
+                          ></i>
+                        )}
+                        {link.label}
+                      </Nav.Link>
+                    )
+                  )}
                 </Navbar.Collapse>
               </Navbar>
             </>

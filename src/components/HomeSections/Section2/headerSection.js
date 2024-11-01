@@ -47,7 +47,7 @@ const HeaderSection = () => {
                     }}
                   >
                     <img
-                      src="http://nodlayslahore-001-site50.atempurl.com/frontAssets/images/CustomImages/1.png"
+                      src="https://techvalet.ca/frontAssets/images/CustomImages/1.png"
                       className="img-fluid"
                       style={{
                         width: "100px",

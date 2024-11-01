@@ -19,7 +19,9 @@ import About from "../pages/Client/About/about";
 import Contact from "../pages/Client/Contact/contact";
 import Search from "../pages/Client/Search/filteredData";
 import ClientLogin from "../pages/Client/ClientAuth/ClientLogin/ClientLogin";
-import Appointment from "../pages/Client/Manage/Appointments/appointment";
+import ManageAppointment from "../pages/Client/Manage/ManageAppointmentOrders/index";
+import PackageSelection from "../pages/Client/Manage/Packages/packageSelection";
+import ViewPackages from "../pages/Client/Manage/Packages/viewPackages";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -42,7 +44,9 @@ const createRoute = createBrowserRouter(
         <Route path="/login" element={<ClientLogin />} />
         <Route element={<ProtectedClient />}>
           <Route path="/search/:value?" element={<Search />} />
-          <Route path="/appointment" element={<Appointment />} />
+          <Route path="/appointment" element={<ManageAppointment />} />
+          <Route path="/packages" element={<PackageSelection />} />
+          <Route path="/package-details" element={<ViewPackages />} />
         </Route>
       </Route>
       <Route path="/welcome" element={<Welcome />} />

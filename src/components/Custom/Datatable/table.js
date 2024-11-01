@@ -265,6 +265,14 @@ function CustomTable({
                             </Button>
                           )}
                         </>
+                      ) : header.column === "status" ? (
+                        <>
+                          {row.remainingSessions > 0 ? (
+                            <span>Activate</span>
+                          ) : (
+                            <span>Expired</span>
+                          )}
+                        </>
                       ) : (
                         row[header.column]
                       )}

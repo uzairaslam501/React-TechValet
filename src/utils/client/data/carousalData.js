@@ -3,50 +3,43 @@ export const homeCarousalData = [
     id: 1,
     title: "First Card",
     description: "Some description for the first card.",
-    image:
-      "http://nodlayslahore-001-site50.atempurl.com/frontAssets/images/service-04.jpg",
+    image: "https://techvalet.ca/frontAssets/images/service-04.jpg",
   },
   {
     id: 2,
     title: "Second Card",
     description: "Some description for the second card.",
-    image:
-      "http://nodlayslahore-001-site50.atempurl.com/frontAssets/images/service-03.jpg",
+    image: "https://techvalet.ca/frontAssets/images/service-03.jpg",
   },
   {
     id: 3,
     title: "Third Card",
     description: "Some description for the third card.",
-    image:
-      "http://nodlayslahore-001-site50.atempurl.com/frontAssets/images/service-02.jpg",
+    image: "https://techvalet.ca/frontAssets/images/service-02.jpg",
   },
   {
     id: 4,
     title: "Fourth Card",
     description: "Some description for the fourth card.",
-    image:
-      "http://nodlayslahore-001-site50.atempurl.com/frontAssets/images/service-01.jpg",
+    image: "https://techvalet.ca/frontAssets/images/service-01.jpg",
   },
   {
     id: 5,
     title: "Fifth Card",
     description: "Some description for the fifth card.",
-    image:
-      "http://nodlayslahore-001-site50.atempurl.com/frontAssets/images/service-04.jpg",
+    image: "https://techvalet.ca/frontAssets/images/service-04.jpg",
   },
   {
     id: 6,
     title: "Sixth Card",
     description: "Some description for the sixth card.",
-    image:
-      "http://nodlayslahore-001-site50.atempurl.com/frontAssets/images/service-03.jpg",
+    image: "https://techvalet.ca/frontAssets/images/service-03.jpg",
   },
   {
     id: 7,
     title: "Seventh Card",
     description: "Some description for the seventh card.",
-    image:
-      "http://nodlayslahore-001-site50.atempurl.com/frontAssets/images/service-02.jpg",
+    image: "https://techvalet.ca/frontAssets/images/service-02.jpg",
   },
 ];
 
