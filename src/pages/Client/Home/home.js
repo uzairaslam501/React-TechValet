@@ -9,6 +9,7 @@ import {
 import HeaderSection from "../../../components/HomeSections/Section2/headerSection";
 import ValetSliders from "../../../components/HomeSections/Section1/valetSliders";
 import { useSelector } from "react-redux";
+import MyCalendar from "../../../components/Custom/Calendar/calender";
 
 const Home = () => {
   const { userAuth } = useSelector((state) => state?.authentication);
@@ -106,6 +107,19 @@ const Home = () => {
             </Button>
           </Col>
         </Container>
+      </section>
+
+      <section>
+        <Row>
+          <Col md={{ span: 10, offset: 1 }}>
+            <Card>
+              <CardBody className="text-center">
+                <h1>User Calendar</h1>
+                <MyCalendar />
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
       </section>
     </>
   );
