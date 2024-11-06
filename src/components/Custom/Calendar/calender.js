@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import moment from "moment";
-import { useDispatch, useSelector } from "react-redux";
-import { getOrderEventsByUserId } from "../../../redux/Actions/calender";
+import { toast } from "react-toastify";
+import EventToast from "../EventToaster/EventToast";
 
 const MyCalendar = ({
+  events,
   permissions = {
     canViewDetails: true,
     canEditEvents: false,
@@ -15,56 +15,9 @@ const MyCalendar = ({
     canChangeView: true,
   },
 }) => {
-  const dispatch = useDispatch();
-  const { userAuth } = useSelector((state) => state?.authentication);
-  const [events, setEvents] = useState([]);
-  const eventColors = [
-    "#2cdd9b",
-    "#3498db",
-    "#9b59b6",
-    "#ffc107",
-    "#56ccf2",
-    "#f39c12",
-    "#1abc9c",
-    "#ff6b81",
-  ];
-
-  // Fetch events and update state
-  const fetchEventsAndGenerateCalendar = async () => {
-    try {
-      const response = await dispatch(getOrderEventsByUserId(userAuth?.id));
-      console.log("calendar", response);
-      if (response?.payload?.status && response?.payload?.data) {
-        let colorIndex = 0;
-        const fetchedEvents = response?.payload?.data.map((eventData) => {
-          const eventColor = eventColors[colorIndex % eventColors.length];
-          colorIndex++;
-          return {
-            id: eventData.orderEncId,
-            title: eventData.orderTitle,
-            start: moment(eventData.startDateTime).toISOString(),
-            end: eventData.endDateTime
-              ? moment(eventData.endDateTime).toISOString()
-              : null,
-            color: eventColor,
-            url: eventData.orderDetailUrl,
-            extendedProps: {
-              description: eventData.orderStatusDescription,
-            },
-          };
-        });
-        setEvents(fetchedEvents);
-      } else {
-        console.error("Error:", response?.payload?.message);
-      }
-    } catch (error) {
-      console.error("Error fetching events:", error);
-    }
+  const clickEventCalendar = (url) => {
+    console.log("Event URL:", url);
   };
-
-  useEffect(() => {
-    fetchEventsAndGenerateCalendar();
-  }, [userAuth?.id]);
 
   return (
     <div>
@@ -91,30 +44,25 @@ const MyCalendar = ({
         }}
         eventMouseEnter={(info) => {
           if (permissions.canViewDetails) {
-            const event = info.event;
+            let currentToastId = null;
             const el = info.el;
+            const event = info.event;
 
-            // Create a popover or tooltip to display event details
-            const tooltip = document.createElement("div");
-            tooltip.innerHTML = `
-            
-              <strong>${event.title}</strong><br/>
-              Start: ${event.start.toLocaleString()}<br/>
-              End: ${event.end ? event.end.toLocaleString() : "N/A"}<br/>
-              Status: ${event.extendedProps.description}
-            `;
-            tooltip.className = "popover";
-            el.appendChild(tooltip);
+            if (currentToastId !== null) {
+              toast.dismiss(currentToastId);
+            }
 
+            currentToastId = toast.success(<EventToast event={event} />);
             el.onmouseleave = () => {
-              el.removeChild(tooltip);
+              toast.dismiss(currentToastId);
+              currentToastId = null;
             };
           }
         }}
         eventClick={(info) => {
           if (permissions.canViewDetails && info.event.url) {
             info.jsEvent.preventDefault();
-            window.location.href = info.event.url;
+            clickEventCalendar(info.event.url);
           }
         }}
       />

@@ -108,19 +108,6 @@ const Home = () => {
           </Col>
         </Container>
       </section>
-
-      <section>
-        <Row>
-          <Col md={{ span: 10, offset: 1 }}>
-            <Card>
-              <CardBody className="text-center">
-                <h1>User Calendar</h1>
-                <MyCalendar />
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-      </section>
     </>
   );
 };
