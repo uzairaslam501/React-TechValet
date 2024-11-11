@@ -22,7 +22,8 @@ import ClientLogin from "../pages/Client/ClientAuth/ClientLogin/ClientLogin";
 import ManageAppointment from "../pages/Client/Manage/ManageAppointmentOrders/index";
 import PackageSelection from "../pages/Client/Manage/Packages/packageSelection";
 import ViewPackages from "../pages/Client/Manage/Packages/viewPackages";
-import ScheduledAppointment from "../pages/Client/Scheduled/scheduledAppointment";
+import ScheduledAppointment from "../pages/Client/Manage/Scheduled/scheduledAppointment";
+import RequestService from "../pages/Client/Manage/Request/requestService";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -52,6 +53,7 @@ const createRoute = createBrowserRouter(
             path="/scheduled-appointment"
             element={<ScheduledAppointment />}
           />
+          <Route path="/request-service" element={<RequestService />} />
         </Route>
       </Route>
       <Route path="/welcome" element={<Welcome />} />

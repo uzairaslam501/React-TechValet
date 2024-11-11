@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import { getOrderEventsByUserId } from "../../../redux/Actions/calender";
-import MyCalendar from "../../../components/Custom/Calendar/calender";
+import { getOrderEventsByUserId } from "../../../../redux/Actions/calender";
+import MyCalendar from "../../../../components/Custom/Calendar/calender";
 import { Card, CardBody, Col, Row } from "react-bootstrap";
 
 const ScheduledAppointment = () => {
