@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import logo from "../../../../assets/images/logo-for-white-bg.svg";
 import RadioCheck from "../../../../components/Custom/RadioChecks/radioChecks";
@@ -6,6 +6,8 @@ import RadioCheckMultiple from "../../../../components/Custom/RadioChecks/multip
 import Dropdown from "../../../../components/Custom/Dropdown/Dropdown";
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import { useDispatch } from "react-redux";
+import { requestService } from "../../../../redux/Actions/customerActions";
 
 const options = [
   { label: "Now", value: "LiveNow" },
@@ -17,8 +19,8 @@ const serviceTime = [
   { value: "Afternoon (12PM-5PM)", id: "12,13,14,15,16,17" },
   { value: "Evening (5PM-10PM)", id: "17,18,19,20,21,22" },
   {
-    label: "Night (10PM-7AM)",
-    value: "22,23,00,01,02,03,04,05,06,07",
+    value: "Night (10PM-7AM)",
+    id: "22,23,00,01,02,03,04,05,06,07",
   },
 ];
 
@@ -89,6 +91,23 @@ const subCategoryOptions = {
   Others: ["Others"],
 };
 
+const issuesInCategories = [
+  { id: "Slow/Delayed", value: "Slow / Delayed" },
+  { id: "Voicemail", value: "Voicemail" },
+  { id: "Update Software", value: "Update Software" },
+  { id: "Install Software", value: "Install Software" },
+  { id: "Password/Login", value: "Password/Login" },
+  { id: "Email", value: "Email" },
+  { id: "WiFi connection", value: "WiFi connection" },
+  { id: "Bluetooth Connection", value: "Bluetooth Connection" },
+  { id: "Specific App Problem", value: "Specific App Problem" },
+  { id: "Specific Software Problem", value: "Specific Software Problem" },
+  { id: "Virus/Malware", value: "Virus / Malware" },
+  { id: "Backup Issues", value: "Backup Issues" },
+  { id: "File Restore", value: "File Restore" },
+  { id: "Format", value: "Format" },
+];
+
 const initialValues = {
   requestServiceType: "Schedule",
   prefferedServiceTime: "",
@@ -103,26 +122,37 @@ const initialValues = {
 
 const validationSchema = Yup.object({
   requestServiceType: Yup.string().required("Please select a service type"),
-  prefferedServiceTime: Yup.string().when("requestServiceType", {
+  prefferedServiceTime: Yup.array().when("requestServiceType", {
     is: "Schedule",
-    then: Yup.string().required("Please select preferred service time"),
+    then: (schema) => schema.min(1, "At least one time slot must be selected"),
+    otherwise: (schema) => schema.nullable(),
   }),
   fromDateTime: Yup.date().when("requestServiceType", {
     is: "Schedule",
-    then: Yup.date()
-      .required("Please select a start date and time")
-      .typeError("Invalid date format"),
+    then: (schema) =>
+      schema
+        .required("Please select a start date and time")
+        .typeError("Invalid date format"),
+    otherwise: (schema) => schema.nullable(),
   }),
   toDateTime: Yup.date().when("requestServiceType", {
     is: "Schedule",
-    then: Yup.date()
-      .required("Please select an end date and time")
-      .min(Yup.ref("fromDateTime"), "End time must be after start time")
-      .typeError("Invalid date format"),
+    then: (schema) =>
+      schema
+        .required("Please select a end date and time")
+        .min(Yup.ref("fromDateTime"), "End time must be after start time")
+        .typeError("Invalid date format"),
+    otherwise: (schema) => schema.nullable(),
   }),
   categoriesOfProblems: Yup.array()
     .of(Yup.string())
     .min(1, "Please select at least one category"),
+  requestServiceSkills: Yup.array()
+    .of(Yup.string())
+    .min(1, "Please select at least one skill"),
+  issuesInCategoriesSelected: Yup.string().required(
+    "You must have to select the issue you are facing"
+  ),
   serviceLanguage: Yup.array().min(1, "Please select at least one language"),
   serviceDescription: Yup.string().required(
     "Please enter additional information"
@@ -148,14 +178,13 @@ const languageOptions = [
 ];
 
 const RequestService = () => {
+  const dispatch = useDispatch();
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [subOptions, setSubOptions] = useState([]);
-  const [preferredServiceTime, setPreferredServiceTime] = useState("");
-  const [fromDateTime, setFromDateTime] = useState("");
-  const [toDateTime, setToDateTime] = useState("");
-  const [requestServiceType, setRequestServiceType] = useState("Schedule");
   const [selectedSubcategories, setSelectedSubcategories] = useState([]);
   const [selectedLanguage, setSelectedLanguage] = useState([]);
+  const [selectedTime, setSelectedTime] = useState([]);
+  const [selectedIssue, setSelectedIssue] = useState([]);
 
   const handleCategoryChange = (category) => {
     // Compute the updated selected categories
@@ -164,7 +193,7 @@ const RequestService = () => {
       : [...selectedCategories, category];
     // Update selectedCategories with the updated list
     setSelectedCategories(updatedCategories);
-    formik.setFieldValue("requestServiceSkills", updatedCategories);
+    formik.setFieldValue("categoriesOfProblems", updatedCategories);
     console.log("updatedCategories", updatedCategories);
 
     const newSubOptions = [
@@ -173,15 +202,30 @@ const RequestService = () => {
       ),
     ];
     setSubOptions(newSubOptions.map((sub) => ({ id: sub, value: sub })));
-    console.log("newSubOptions", newSubOptions);
   };
 
   const handleSubcategoryChange = (selectedSubcategoryIds) => {
     setSelectedSubcategories(selectedSubcategoryIds);
+    console.log("selectedSubcategoryIds", selectedSubcategoryIds);
+    formik.setFieldValue("requestServiceSkills", selectedSubcategoryIds);
   };
 
-  const handleServiceLangaugeChange = (selectedLanguage) => {
-    setSelectedLanguage(selectedLanguage);
+  const handleServiceLangaugeChange = (language) => {
+    setSelectedLanguage(language);
+    console.log("serviceLanguage", language);
+    formik.setFieldValue("serviceLanguage", language);
+  };
+
+  const handleServiceTimeChange = (time) => {
+    setSelectedTime(time);
+    console.log("Preffered Service Time", time);
+    formik.setFieldValue("prefferedServiceTime", time);
+  };
+
+  const handleIssuesInCategoiesChange = (issue) => {
+    setSelectedIssue(issue);
+    console.log("Issues in Categories", issue);
+    formik.setFieldValue("issuesInCategoriesSelected", issue);
   };
 
   const formik = useFormik({
@@ -190,9 +234,28 @@ const RequestService = () => {
     validateOnChange: false,
     validateOnBlur: true,
     onSubmit: (values) => {
-      console.log(values);
+      try {
+        const convertedData = {
+          ...values,
+          categoriesOfProblems: values.categoriesOfProblems.join(", "),
+          prefferedServiceTime: values.prefferedServiceTime.join(", "),
+          requestServiceSkills: values.requestServiceSkills.join(", "),
+          serviceLanguage: values.serviceLanguage.join(", "),
+        };
+        dispatch(requestService(convertedData)).then((response) => {
+          console.log("dipatched", response);
+        });
+      } catch (ex) {}
     },
   });
+
+  useEffect(() => {
+    if (formik.values.requestServiceType !== "schedule") {
+      formik.setFieldValue("prefferedServiceTime", "");
+      formik.setFieldValue("fromDateTime", "");
+      formik.setFieldValue("toDateTime", "");
+    }
+  }, [formik.values.requestServiceType]);
 
   return (
     <div className="reqService">
@@ -218,8 +281,8 @@ const RequestService = () => {
               <Form onSubmit={formik.handleSubmit}>
                 <Form.Group controlId="requestServiceType" className="mb-3">
                   <Form.Label className="text-black">
-                    When do you want help from your Tech Valet{" "}
-                    <span className="text-danger">*</span>
+                    When do you want help from your Tech Valet
+                    <span className="text-danger"> *</span>
                   </Form.Label>
                   <RadioCheck
                     checkType="radio"
@@ -244,30 +307,21 @@ const RequestService = () => {
                   <>
                     <Row className="mb-3">
                       <Col>
-                        <Form.Group>
+                        <Form.Group controlId="Time">
                           <Form.Label>
-                            Preferred Service Time{" "}
+                            Preferred Service Time
                             <span className="text-danger">*</span>
                           </Form.Label>
-                          <Form.Control
-                            as="select"
-                            multiple
-                            name="prefferedServiceTime"
-                            onBlur={formik.handleBlur}
-                            onChange={(e) =>
-                              formik.setFieldValue(
-                                "prefferedServiceTime",
-                                Array.from(
-                                  e.target.selectedOptions,
-                                  (option) => option.value
-                                )
-                              )
-                            }
-                          >
-                            <option value="Morning">Morning</option>
-                            <option value="Afternoon">Afternoon</option>
-                            <option value="Evening">Evening</option>
-                          </Form.Control>
+                          <Dropdown
+                            optionsList={serviceTime}
+                            handleChange={handleServiceTimeChange}
+                            handleBlur={() => {}}
+                            values={{ preferredTime: selectedTime }}
+                            isMultiSelect={true}
+                            isSearchable={false}
+                            valueKey="preferredTime"
+                            fieldName="Time"
+                          />
                           {formik.touched.prefferedServiceTime &&
                           formik.errors.prefferedServiceTime ? (
                             <div className="text-danger">
@@ -282,13 +336,12 @@ const RequestService = () => {
                       <Col md={6}>
                         <Form.Group>
                           <Form.Label>
-                            From Date Time{" "}
+                            From Date Time
                             <span className="text-danger">*</span>
                           </Form.Label>
                           <Form.Control
                             type="datetime-local"
                             name="fromDateTime"
-                            min={new Date().toISOString().slice(0, 16)}
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                           />
@@ -308,7 +361,6 @@ const RequestService = () => {
                           <Form.Control
                             type="datetime-local"
                             name="toDateTime"
-                            min={new Date().toISOString().slice(0, 16)}
                             onBlur={formik.handleBlur}
                             onChange={formik.handleChange}
                           />
@@ -349,7 +401,10 @@ const RequestService = () => {
 
                 {selectedCategories.length > 0 && (
                   <Form.Group controlId="subCategory" className="mb-3">
-                    <Form.Label>What best describes your problem</Form.Label>
+                    <Form.Label>
+                      What best describes your problem
+                      <span className="text-danger">*</span>
+                    </Form.Label>
                     <Dropdown
                       optionsList={subOptions}
                       handleChange={handleSubcategoryChange}
@@ -360,10 +415,38 @@ const RequestService = () => {
                       valueKey="subcategories"
                       fieldName="Subcategory"
                     />
+                    {formik.touched.requestServiceSkills &&
+                    formik.errors.requestServiceSkills ? (
+                      <div className="text-danger">
+                        {formik.errors.requestServiceSkills}
+                      </div>
+                    ) : null}
                   </Form.Group>
                 )}
 
-                <Form.Group controlId="serviceLanguage" className="mb-3">
+                <Form.Group controlId="SelectIssuesFound" className="mb-3">
+                  <Form.Label>
+                    Issues <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Dropdown
+                    optionsList={issuesInCategories}
+                    handleChange={handleIssuesInCategoiesChange}
+                    handleBlur={() => {}}
+                    values={{ issueFound: selectedIssue }}
+                    isMultiSelect={false}
+                    isSearchable={true}
+                    valueKey="issueFound"
+                    fieldName="Issues"
+                  />
+                  {formik.touched.issuesInCategoriesSelected &&
+                  formik.errors.issuesInCategoriesSelected ? (
+                    <div className="text-danger">
+                      {formik.errors.issuesInCategoriesSelected}
+                    </div>
+                  ) : null}
+                </Form.Group>
+
+                <Form.Group controlId="SelectLanguage" className="mb-3">
                   <Form.Label>
                     Preferred Language <span className="text-danger">*</span>
                   </Form.Label>
@@ -371,11 +454,11 @@ const RequestService = () => {
                     optionsList={languageOptions}
                     handleChange={handleServiceLangaugeChange}
                     handleBlur={() => {}}
-                    values={{ serviceLanguage: selectedLanguage }}
+                    values={{ preferredLanguage: selectedLanguage }}
                     isMultiSelect={true}
                     isSearchable={true}
-                    valueKey="selectedLanguage"
-                    fieldName="SelectedLanguage"
+                    valueKey="preferredLanguage"
+                    fieldName="Language"
                   />
                   {formik.touched.serviceLanguage &&
                   formik.errors.serviceLanguage ? (

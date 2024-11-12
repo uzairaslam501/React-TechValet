@@ -74,6 +74,30 @@ export const getValetsBySearch = createAsyncThunk(
   }
 );
 
+//#region  RequestService
+export const requestService = createAsyncThunk(
+  "user/requestService",
+  async (data, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const jwtToken = getToken(getState);
+      const response = await api.post("/Customer/PostAddRequestService", data, {
+        headers: {
+          Authorization: `${jwtToken}`,
+        },
+      });
+      const responseBack = processApiResponse(response, dispatch);
+      //const responseBack = response;
+      localStorage.setItem("userInfo", JSON.stringify(responseBack?.data));
+      return responseBack?.data;
+    } catch (error) {
+      handleApiError(error, dispatch);
+    }
+  }
+);
+//#endregion
+
+//#region Tables
+
 export const getRecords = createAsyncThunk(
   "customer/getRecords",
   async (
@@ -172,3 +196,5 @@ export const getUserPackagesConsumptionRecords = createAsyncThunk(
     }
   }
 );
+
+//#endregion

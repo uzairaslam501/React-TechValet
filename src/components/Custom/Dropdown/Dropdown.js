@@ -12,7 +12,6 @@ const Dropdown = ({
   valueKey = "",
   fieldName = "",
 }) => {
-  console.log(optionsList);
   const dropdownOptions = optionsList.map((option) => ({
     value: option.id,
     label: option.value,
