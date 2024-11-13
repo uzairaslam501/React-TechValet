@@ -24,6 +24,7 @@ import PackageSelection from "../pages/Client/Manage/Packages/packageSelection";
 import ViewPackages from "../pages/Client/Manage/Packages/viewPackages";
 import ScheduledAppointment from "../pages/Client/Manage/Scheduled/scheduledAppointment";
 import RequestService from "../pages/Client/Manage/Request/requestService";
+import RequestedService from "../pages/Client/Manage/Request/requestedService";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -54,6 +55,7 @@ const createRoute = createBrowserRouter(
             element={<ScheduledAppointment />}
           />
           <Route path="/request-service" element={<RequestService />} />
+          <Route path="/requested-service" element={<RequestedService />} />
         </Route>
       </Route>
       <Route path="/welcome" element={<Welcome />} />

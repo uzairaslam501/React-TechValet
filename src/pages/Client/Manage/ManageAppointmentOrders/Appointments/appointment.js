@@ -62,7 +62,7 @@ const Appointment = ({ onComplete }) => {
   };
 
   const onUpdate = (row) => {
-    navigate("/add-user", { state: row });
+    navigate("/request-service", { state: row });
   };
 
   const handleOpen = (id) => {

@@ -13,7 +13,7 @@ const ManageAppointment = () => {
   return (
     <>
       {<Appointment onComplete={handleAppointmentComplete} />}
-      {<Order isLoading={isAppointmentComplete} />}
+      {isAppointmentComplete && <Order isLoading={isAppointmentComplete} />}
     </>
   );
 };

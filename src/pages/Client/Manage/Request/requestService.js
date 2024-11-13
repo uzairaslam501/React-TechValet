@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
 import { requestService } from "../../../../redux/Actions/customerActions";
+import { Navigate, useLocation, useNavigate } from "react-router";
 
 const options = [
   { label: "Now", value: "LiveNow" },
@@ -179,6 +180,8 @@ const languageOptions = [
 
 const RequestService = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [subOptions, setSubOptions] = useState([]);
   const [selectedSubcategories, setSelectedSubcategories] = useState([]);
@@ -237,13 +240,14 @@ const RequestService = () => {
       try {
         const convertedData = {
           ...values,
-          categoriesOfProblems: values.categoriesOfProblems.join(", "),
           prefferedServiceTime: values.prefferedServiceTime.join(", "),
+          categoriesOfProblems: values.categoriesOfProblems.join(", "),
           requestServiceSkills: values.requestServiceSkills.join(", "),
           serviceLanguage: values.serviceLanguage.join(", "),
         };
         dispatch(requestService(convertedData)).then((response) => {
-          console.log("dipatched", response);
+          console.log("response", response);
+          navigate("/requested-service", { state: convertedData });
         });
       } catch (ex) {}
     },
@@ -262,7 +266,11 @@ const RequestService = () => {
       <Container className="py-5 text-black">
         <Row>
           <Col lg={6} className="text-center my-auto">
-            <img src={logo} style={{ width: "100%", height: "500px" }} />
+            <img
+              src={logo}
+              style={{ width: "100%", height: "500px" }}
+              alt="Request Service"
+            />
           </Col>
           <Col lg={6} className="mx-auto shadow-sm">
             <div className="py-4">
