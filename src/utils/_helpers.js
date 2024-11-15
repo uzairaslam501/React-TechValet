@@ -72,6 +72,51 @@ export const formatDateTime = (timestamp) => {
   return `${year}-${month}-${day} ${hours}:${minutes}`;
 };
 
+export const convertToFormattedDateTimeWithAMPM = (datetime) => {
+  // Create a Date object from the input
+  const date = new Date(datetime);
+
+  // Extract month, day, and year
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+  const day = date.getDate().toString().padStart(2, "0");
+  const year = date.getFullYear();
+
+  // Extract hours and minutes
+  let hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+
+  // Determine AM or PM
+  const amOrPm = hours >= 12 ? "PM" : "AM";
+
+  // Convert hours to 12-hour format
+  hours = hours % 12 || 12; // Adjust 0 (midnight) to 12
+
+  // Format and return the result
+  return `${month}-${day}-${year} ${hours}:${minutes} ${amOrPm}`;
+};
+
 export const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+export const checkTimeConditions = (values, datetime) => {
+  alert(values);
+  // Step 1: Convert the comma-separated values into a list (array)
+  const valueList = values.split(",").map(Number);
+
+  // Step 2: Extract the hour and minute from the datetime input
+  const date = new Date(datetime);
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+
+  // Step 3: Check if the hour is included in the list of values
+  const isHourInList = valueList.includes(hour);
+
+  // Step 4: Check if the minute is greater than or equal to the hour
+  const isMinuteGreaterOrEqual = minute >= hour;
+
+  // Trigger alert if both conditions are met
+  if (isHourInList && isMinuteGreaterOrEqual) {
+    alert("Conditions met: Hour is in the list and minutes are >= hour");
+  }
 };

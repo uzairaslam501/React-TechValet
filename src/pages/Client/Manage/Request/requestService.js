@@ -4,132 +4,31 @@ import logo from "../../../../assets/images/logo-for-white-bg.svg";
 import RadioCheck from "../../../../components/Custom/RadioChecks/radioChecks";
 import RadioCheckMultiple from "../../../../components/Custom/RadioChecks/multipleChecks";
 import Dropdown from "../../../../components/Custom/Dropdown/Dropdown";
-import * as Yup from "yup";
 import { useFormik } from "formik";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import * as Yup from "yup";
 import { requestService } from "../../../../redux/Actions/customerActions";
-import { Navigate, useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
+import {
+  options,
+  serviceTime,
+  problemOptions,
+  subCategoryOptions,
+  issuesInCategories,
+  initialValues,
+  languageOptions,
+} from "../../../../utils/client/data/requestedData";
+import { checkTimeConditions } from "../../../../utils/_helpers";
 
-const options = [
-  { label: "Now", value: "LiveNow" },
-  { label: "Schedule Later", value: "Schedule" },
-];
-
-const serviceTime = [
-  { value: "Morning (8AM-12PM)", id: "8,9,10,11,12" },
-  { value: "Afternoon (12PM-5PM)", id: "12,13,14,15,16,17" },
-  { value: "Evening (5PM-10PM)", id: "17,18,19,20,21,22" },
-  {
-    value: "Night (10PM-7AM)",
-    id: "22,23,00,01,02,03,04,05,06,07",
-  },
-];
-
-const problemOptions = [
-  { label: "Software", value: "Software" },
-  { label: "Computer OS", value: "Computer Setup" },
-  { label: "Smartwear-watch", value: "Smartwear watch" },
-  {
-    label: "Smartphone And Tablet Setup",
-    value: "Smartphone And TabletSetup",
-  },
-  { label: "Printer / Scanner / Copiers", value: "Printer Scanner Copiers" },
-  { label: "Server", value: "Server" },
-  { label: "Email", value: "Email" },
-  { label: "Internet", value: "Internet" },
-  { label: "Website", value: "Website" },
-  { label: "Device troubleshooting", value: "Device troubleshooting" },
-];
-
-const subCategoryOptions = {
-  Software: [
-    "Microsoft Office Suite",
-    "G-Doc",
-    "Notepad",
-    "Google Sheets",
-    "Google Chrome",
-    "Safari",
-    "Firefox",
-    "Adobe Photoshop",
-    "CorelDraw",
-    "AutoCAD",
-    "Paintshop",
-    "Skype",
-    "Hangouts",
-    "Google Meet",
-    "Zoom",
-    "Whatsapp",
-    "Teams",
-    "Google Classroom",
-    "MX Player",
-    "VLC Media Player",
-    "Spotify",
-    "Pandora Technologies",
-    "Asana",
-    "Zoho",
-    "Slack",
-    "Forecast",
-    "Trello",
-    "Airtable",
-    "Oracle",
-    "Digital Cameras",
-    "IPad",
-    "Samsung",
-    "LG",
-    "TV",
-    "Bell",
-    "Rogers",
-  ],
-  "Computer Setup": ["Windows", "Mac", "Chromebook"],
-  "Smartphone And TabletSetup": ["Apple", "Android"],
-  "Printer Scanner Copiers": ["Printer", "Scanner", "Copiers"],
-  "Smartwear watch": ["Smartwear watch"],
-  Server: ["Server"],
-  Email: ["Email"],
-  Internet: ["Internet"],
-  Website: ["Website"],
-  "Device troubleshooting": ["Device troubleshooting"],
-  Others: ["Others"],
-};
-
-const issuesInCategories = [
-  { id: "Slow/Delayed", value: "Slow / Delayed" },
-  { id: "Voicemail", value: "Voicemail" },
-  { id: "Update Software", value: "Update Software" },
-  { id: "Install Software", value: "Install Software" },
-  { id: "Password/Login", value: "Password/Login" },
-  { id: "Email", value: "Email" },
-  { id: "WiFi connection", value: "WiFi connection" },
-  { id: "Bluetooth Connection", value: "Bluetooth Connection" },
-  { id: "Specific App Problem", value: "Specific App Problem" },
-  { id: "Specific Software Problem", value: "Specific Software Problem" },
-  { id: "Virus/Malware", value: "Virus / Malware" },
-  { id: "Backup Issues", value: "Backup Issues" },
-  { id: "File Restore", value: "File Restore" },
-  { id: "Format", value: "Format" },
-];
-
-const initialValues = {
-  requestServiceType: "Schedule",
-  prefferedServiceTime: "",
-  fromDateTime: "",
-  toDateTime: "",
-  categoriesOfProblems: "",
-  requestServiceSkills: "",
-  issuesInCategoriesSelected: "",
-  serviceLanguage: [],
-  serviceDescription: "",
-};
-
-const validationSchema = Yup.object({
+export const validationSchema = Yup.object({
   requestServiceType: Yup.string().required("Please select a service type"),
   prefferedServiceTime: Yup.array().when("requestServiceType", {
-    is: "Schedule",
+    is: "2",
     then: (schema) => schema.min(1, "At least one time slot must be selected"),
     otherwise: (schema) => schema.nullable(),
   }),
   fromDateTime: Yup.date().when("requestServiceType", {
-    is: "Schedule",
+    is: "2",
     then: (schema) =>
       schema
         .required("Please select a start date and time")
@@ -137,7 +36,7 @@ const validationSchema = Yup.object({
     otherwise: (schema) => schema.nullable(),
   }),
   toDateTime: Yup.date().when("requestServiceType", {
-    is: "Schedule",
+    is: "2",
     then: (schema) =>
       schema
         .required("Please select a end date and time")
@@ -160,27 +59,10 @@ const validationSchema = Yup.object({
   ),
 });
 
-const languageOptions = [
-  { id: "english", value: "English" },
-  { id: "french", value: "French" },
-  { id: "deutsch", value: "Deutsch" },
-  { id: "portugese", value: "Portuguêse" },
-  { id: "mandarin", value: "Mandarin" },
-  { id: "cantonese", value: "Yue (Cantonese)" },
-  { id: "spanish", value: "Spanish" },
-  { id: "tagalog", value: "Tagalog (Filipino)" },
-  { id: "russian", value: "Russian" },
-  { id: "chinese", value: "Chinese" },
-  { id: "korean", value: "Korean" },
-  { id: "persian", value: "Persian" },
-  { id: "italian", value: "Italian" },
-  { id: "vietnamese", value: "Vietnamese" },
-  { id: "dutch", value: "Dutch" },
-];
-
 const RequestService = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { userAuth } = useSelector((state) => state?.authentication);
 
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [subOptions, setSubOptions] = useState([]);
@@ -238,28 +120,53 @@ const RequestService = () => {
     validateOnBlur: true,
     onSubmit: (values) => {
       try {
+        let ssssssss = ""; // Use let instead of const and initialize as a string
+        const serccccc = values.prefferedServiceTime.join(", ");
+
+        if (serccccc.includes("8,9,10,11,12")) {
+          ssssssss = "1"; // Start with "1"
+        }
+        if (serccccc.includes("12,13,14,15,16,17")) {
+          ssssssss += ssssssss ? ", 2" : "2"; // Add ", 2" if not empty, else "2"
+        }
+        if (serccccc.includes("17,18,19,20,21,22")) {
+          ssssssss += ssssssss ? ", 3" : "3"; // Add ", 3" if not empty, else "3"
+        }
+        if (serccccc.includes("22,23,00,01,02,03,04,05,06,07")) {
+          ssssssss += ssssssss ? ", 4" : "4"; // Add ", 4" if not empty, else "4"
+        }
         const convertedData = {
           ...values,
-          prefferedServiceTime: values.prefferedServiceTime.join(", "),
+          prefferedServiceTime: ssssssss,
           categoriesOfProblems: values.categoriesOfProblems.join(", "),
           requestServiceSkills: values.requestServiceSkills.join(", "),
           serviceLanguage: values.serviceLanguage.join(", "),
+          requestedServiceUserId: `${userAuth.id}`,
         };
         dispatch(requestService(convertedData)).then((response) => {
           console.log("response", response);
-          navigate("/requested-service", { state: convertedData });
+          const convertedDatas = {
+            ...convertedData,
+            id: response.payload,
+          };
+          navigate("/requested-service", { state: convertedDatas });
         });
       } catch (ex) {}
     },
   });
 
   useEffect(() => {
-    if (formik.values.requestServiceType !== "schedule") {
+    if (formik.values.requestServiceType !== "2") {
       formik.setFieldValue("prefferedServiceTime", "");
       formik.setFieldValue("fromDateTime", "");
       formik.setFieldValue("toDateTime", "");
     }
   }, [formik.values.requestServiceType]);
+
+  const handleTimeCheck = (e) => {
+    const ssss = e.target.value;
+    checkTimeConditions(formik.values.prefferedServiceTime, ssss);
+  };
 
   return (
     <div className="reqService">
@@ -311,7 +218,7 @@ const RequestService = () => {
                   ) : null}
                 </Form.Group>
 
-                {formik.values.requestServiceType === "Schedule" && (
+                {formik.values.requestServiceType === "2" && (
                   <>
                     <Row className="mb-3">
                       <Col>
@@ -351,7 +258,10 @@ const RequestService = () => {
                             type="datetime-local"
                             name="fromDateTime"
                             onBlur={formik.handleBlur}
-                            onChange={formik.handleChange}
+                            onChange={(e) => {
+                              formik.handleChange(e);
+                              // handleTimeCheck(e);
+                            }}
                           />
                           {formik.touched.fromDateTime &&
                           formik.errors.fromDateTime ? (

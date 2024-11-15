@@ -77,18 +77,20 @@ export const getValetsBySearch = createAsyncThunk(
 //#region  RequestService
 export const requestService = createAsyncThunk(
   "user/requestService",
-  async (data, { rejectWithValue, getState, dispatch }) => {
+  async (record, { rejectWithValue, getState, dispatch }) => {
     try {
       const jwtToken = getToken(getState);
-      const response = await api.post("/Customer/PostAddRequestService", data, {
-        headers: {
-          Authorization: `${jwtToken}`,
-        },
-      });
-      const responseBack = processApiResponse(response, dispatch);
-      //const responseBack = response;
-      localStorage.setItem("userInfo", JSON.stringify(responseBack?.data));
-      return responseBack?.data;
+      const response = await api.post(
+        "/Customer/PostAddRequestService",
+        record,
+        {
+          headers: {
+            Authorization: `${jwtToken}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch);
+      return data;
     } catch (error) {
       handleApiError(error, dispatch);
     }
