@@ -18,7 +18,7 @@ const ValetSliders = () => {
 
   return (
     <>
-      <TopImageCarousal users={valetRecords} />
+      <TopImageCarousal label={"Recently Viewed & More"} users={valetRecords} />
     </>
   );
 };

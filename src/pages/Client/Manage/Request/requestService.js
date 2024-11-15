@@ -18,7 +18,6 @@ import {
   initialValues,
   languageOptions,
 } from "../../../../utils/client/data/requestedData";
-import { checkTimeConditions } from "../../../../utils/_helpers";
 
 export const validationSchema = Yup.object({
   requestServiceType: Yup.string().required("Please select a service type"),
@@ -162,11 +161,6 @@ const RequestService = () => {
       formik.setFieldValue("toDateTime", "");
     }
   }, [formik.values.requestServiceType]);
-
-  const handleTimeCheck = (e) => {
-    const ssss = e.target.value;
-    checkTimeConditions(formik.values.prefferedServiceTime, ssss);
-  };
 
   return (
     <div className="reqService">

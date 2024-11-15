@@ -96,6 +96,27 @@ export const requestService = createAsyncThunk(
     }
   }
 );
+
+export const getUserForSkills = createAsyncThunk(
+  "user/getUserForSkills",
+  async (skills, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const jwtToken = getToken(getState);
+      const response = await api.get(
+        `/User/GetItValetsByRequestSkills?RequestSkills=${skills}`,
+        {
+          headers: {
+            Authorization: `${jwtToken}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch);
+    }
+  }
+);
 //#endregion
 
 //#region Tables
@@ -108,10 +129,9 @@ export const getRecords = createAsyncThunk(
   ) => {
     try {
       const config = getAuthConfig(getState);
-      const response = await axios.post(
+      const response = await axios.get(
         `${baseUrl}/Datatable/GetRequestServicesDatatableByUserIdAsync?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}`,
-        null,
         config
       );
       const responseBack = response;
@@ -131,10 +151,9 @@ export const getOrderRecords = createAsyncThunk(
   ) => {
     try {
       const config = getAuthConfig(getState);
-      const response = await axios.post(
+      const response = await axios.get(
         `${baseUrl}/Datatable/GetOrdersDatatableByUserId?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}`,
-        null,
         config
       );
       const responseBack = response?.data;
@@ -154,10 +173,9 @@ export const getUserPackagesRecords = createAsyncThunk(
   ) => {
     try {
       const config = getAuthConfig(getState);
-      const response = await axios.post(
+      const response = await axios.get(
         `${baseUrl}/Datatable/GetUserPackageDatatableAsync?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}`,
-        null,
         config
       );
       const responseBack = response?.data;
@@ -184,10 +202,9 @@ export const getUserPackagesConsumptionRecords = createAsyncThunk(
   ) => {
     try {
       const config = getAuthConfig(getState);
-      const response = await axios.post(
+      const response = await axios.get(
         `${baseUrl}/Datatable/GetOrdersDatatableByPackageId?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}&packageId=${packageId}`,
-        null,
         config
       );
       const responseBack = response?.data;
