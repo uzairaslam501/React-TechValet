@@ -29,9 +29,9 @@ const Appointment = ({ onComplete }) => {
     {
       id: 2,
       title: "Update",
-      onClick: (row) => onUpdate(row),
+      onClick: (row) => onView(row),
       variant: "outline-success",
-      icon: "bi bi-pencil",
+      icon: "bi bi-view-stacked",
     },
   ];
 
@@ -61,7 +61,7 @@ const Appointment = ({ onComplete }) => {
     handleClose();
   };
 
-  const onUpdate = (row) => {
+  const onView = (row) => {
     navigate("/requested-service", { state: row });
   };
 

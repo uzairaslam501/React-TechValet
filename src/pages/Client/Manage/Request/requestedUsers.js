@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getUserForSkills } from "../../../../redux/Actions/customerActions";
 import TopImageCarousal from "../../../../components/Custom/CarousalWithTopImage/topImageCarousal";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Spinner } from "react-bootstrap";
 
 const RequestedUsers = ({ skills }) => {
   const [users, setUsers] = useState([]);
+  const [userLoading, setUserLoading] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -13,11 +14,12 @@ const RequestedUsers = ({ skills }) => {
       try {
         const response = await dispatch(getUserForSkills(skills)).unwrap();
         if (response && response.length > 0) {
-          console.log("Fetched Users:", response);
           setUsers(response);
         }
       } catch (error) {
         console.error("Failed to fetch users:", error);
+      } finally {
+        setUserLoading(false);
       }
     };
 
@@ -27,10 +29,16 @@ const RequestedUsers = ({ skills }) => {
   }, [skills, dispatch]);
 
   return (
-    <Container>
+    <Container className="mb-5">
       <Row>
         <Col>
-          {users.length > 0 ? (
+          {userLoading ? (
+            <>
+              <div className="text-center">
+                <Spinner animation="grow" />
+              </div>
+            </>
+          ) : users.length > 0 ? (
             <TopImageCarousal label="Skilled Users" users={users} />
           ) : (
             <p>No users found</p>

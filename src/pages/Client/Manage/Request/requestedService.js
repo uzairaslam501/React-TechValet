@@ -115,7 +115,7 @@ const RequestedService = () => {
                 <Row>
                   {recordForUpdate.categoriesOfProblems &&
                     recordForUpdate.categoriesOfProblems
-                      .split(", ")
+                      .split(",")
                       .map((problem, index) => (
                         <Col md={4} sm={6} xs={12} key={index}>
                           <Form.Check

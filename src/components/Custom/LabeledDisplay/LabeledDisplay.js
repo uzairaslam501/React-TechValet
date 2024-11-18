@@ -2,7 +2,6 @@ import React from "react";
 import { Badge } from "react-bootstrap";
 import { serviceTime } from "../../../utils/client/data/requestedData";
 const LabeledDisplay = ({ preferredServiceTime }) => {
-  console.log(serviceTime);
   return (
     <div className="border border-grey rounded bg-white py-2 px-1">
       {preferredServiceTime &&

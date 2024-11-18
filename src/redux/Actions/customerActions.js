@@ -6,7 +6,7 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { toast } from "react-toastify";
-import { getAuthConfig, getToken } from "../../utils/_apiConfig";
+import { getAuthConfig, getAuthUserId, getToken } from "../../utils/_apiConfig";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -111,6 +111,36 @@ export const getUserForSkills = createAsyncThunk(
         }
       );
       const { data, message } = processApiResponse(response, dispatch);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch);
+    }
+  }
+);
+//#endregion
+
+//#region Packages
+export const requestGetUserPackages = createAsyncThunk(
+  "packages/requestGetUserPackages",
+  async (_, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const jwtToken = getToken(getState);
+      const userId = getAuthUserId(getState);
+      const response = await api.get(
+        `/User/GetUserSessionStatus?customerId=${userId}`,
+        {
+          headers: {
+            Authorization: `${jwtToken}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch);
+      if (data > 0) {
+        toast.success(
+          `Your package is activated. You have ${data} remaining session(s).`
+        );
+      }
+
       return data;
     } catch (error) {
       handleApiError(error, dispatch);
