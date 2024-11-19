@@ -3,7 +3,7 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import logo from "../../../../assets/images/logo-for-white-bg.svg";
 import RadioCheck from "../../../../components/Custom/RadioChecks/radioChecks";
 import RadioCheckMultiple from "../../../../components/Custom/RadioChecks/multipleChecks";
-import Dropdown from "../../../../components/Custom/Dropdown/Dropdown";
+import CustomDropdown from "../../../../components/Custom/Dropdown/Dropdown";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
@@ -18,6 +18,7 @@ import {
   initialValues,
   languageOptions,
 } from "../../../../utils/client/data/requestedData";
+import image from "../../../../assets/images/request-service.png";
 
 export const validationSchema = Yup.object({
   requestServiceType: Yup.string().required("Please select a service type"),
@@ -168,7 +169,7 @@ const RequestService = () => {
         <Row>
           <Col lg={6} className="text-center my-auto">
             <img
-              src={logo}
+              src={image}
               style={{ width: "100%", height: "500px" }}
               alt="Request Service"
             />
@@ -221,7 +222,7 @@ const RequestService = () => {
                             Preferred Service Time
                             <span className="text-danger">*</span>
                           </Form.Label>
-                          <Dropdown
+                          <CustomDropdown
                             optionsList={serviceTime}
                             handleChange={handleServiceTimeChange}
                             handleBlur={() => {}}
@@ -317,7 +318,7 @@ const RequestService = () => {
                       What best describes your problem
                       <span className="text-danger">*</span>
                     </Form.Label>
-                    <Dropdown
+                    <CustomDropdown
                       optionsList={subOptions}
                       handleChange={handleSubcategoryChange}
                       handleBlur={() => {}}
@@ -340,7 +341,7 @@ const RequestService = () => {
                   <Form.Label>
                     Issues <span className="text-danger">*</span>
                   </Form.Label>
-                  <Dropdown
+                  <CustomDropdown
                     optionsList={issuesInCategories}
                     handleChange={handleIssuesInCategoiesChange}
                     handleBlur={() => {}}
@@ -362,7 +363,7 @@ const RequestService = () => {
                   <Form.Label>
                     Preferred Language <span className="text-danger">*</span>
                   </Form.Label>
-                  <Dropdown
+                  <CustomDropdown
                     optionsList={languageOptions}
                     handleChange={handleServiceLangaugeChange}
                     handleBlur={() => {}}

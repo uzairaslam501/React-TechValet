@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { countryCodeList } from "../../../utils/client/data/countries";
 import { Form, InputGroup } from "react-bootstrap";
+import "./PhoneInput.css";
 
 const formatPhoneNumber = (number, format) => {
   let formatted = "";
@@ -23,9 +24,8 @@ const CustomPhoneInput = ({
   className = "",
   value = "",
   onChange,
-  countryFilter = [], // Restrict dropdown to specific countries
+  countryFilter = [],
 }) => {
-  // Filter the country list based on countryFilter prop
   const filteredCountries = countryFilter.length
     ? countryCodeList.filter((country) => countryFilter.includes(country.code))
     : countryCodeList;
@@ -51,31 +51,55 @@ const CustomPhoneInput = ({
   return (
     <div style={{ maxWidth: "400px", margin: "0 auto" }}>
       <InputGroup className="mb-3">
-        <InputGroup.Text style={{ padding: "0.5rem 0.75rem" }}>
+        <InputGroup.Text style={{ padding: "0", borderRight: "none" }}>
           <Form.Select
-            value={selectedCountry.flag}
+            value={selectedCountry.code}
             onChange={handleCountryChange}
-            style={{ flex: "1" }}
+            style={{
+              border: "none",
+              fontSize: "1rem",
+              padding: "0.5rem 1rem",
+              width: "80px",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
           >
             {filteredCountries.map((country) => (
-              <option key={country.code} value={country.code}>
+              <option
+                key={country.code}
+                value={country.code}
+                style={{
+                  backgroundSize: "contain",
+                  fontSize: "1rem",
+                  padding: "0.25rem",
+                }}
+              >
                 {country.flag}
               </option>
             ))}
           </Form.Select>
         </InputGroup.Text>
+
+        <InputGroup.Text
+          style={{
+            padding: "0.5rem 0.75rem",
+            fontSize: "1rem",
+            borderLeft: "none",
+            borderRight: "none",
+          }}
+        >
+          {selectedCountry.dialCode}
+        </InputGroup.Text>
+
         <Form.Control
           type="text"
           value={phoneNumber}
           onChange={handlePhoneNumberChange}
           placeholder={placeholder}
           className={className}
+          style={{ borderLeft: "none" }}
         />
       </InputGroup>
-
-      <div style={{ fontSize: "1rem", color: "#555", textAlign: "center" }}>
-        Formatted Number: {phoneNumber || "Not entered"}
-      </div>
     </div>
   );
 };

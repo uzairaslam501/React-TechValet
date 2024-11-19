@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 
-const Dropdown = ({
+const CustomDropdown = ({
   optionsList,
   handleChange,
   handleBlur,
@@ -56,4 +56,4 @@ const Dropdown = ({
   );
 };
 
-export default Dropdown;
+export default CustomDropdown;

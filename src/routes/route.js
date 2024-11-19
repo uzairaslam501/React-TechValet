@@ -25,7 +25,7 @@ import ViewPackages from "../pages/Client/Manage/Packages/viewPackages";
 import ScheduledAppointment from "../pages/Client/Manage/Scheduled/scheduledAppointment";
 import RequestService from "../pages/Client/Manage/Request/requestService";
 import RequestedService from "../pages/Client/Manage/Request/requestedService";
-import Account from "../pages/Client/ClientAuth/Account/account";
+import Index from "../pages/Client/ClientAuth/Profile/index";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -47,7 +47,7 @@ const createRoute = createBrowserRouter(
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<ClientLogin />} />
         <Route element={<ProtectedClient />}>
-          <Route path="/account" element={<Account />} />
+          <Route path="/account" element={<Index />} />
 
           <Route path="/search/:value?" element={<Search />} />
           <Route path="/appointment" element={<ManageAppointment />} />

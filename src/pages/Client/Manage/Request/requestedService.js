@@ -8,6 +8,7 @@ import { convertToFormattedDateTimeWithAMPM } from "../../../../utils/_helpers";
 import LabeledDisplay from "../../../../components/Custom/LabeledDisplay/LabeledDisplay";
 import BadgeDisplay from "../../../../components/Custom/BadgeDisplay/BadgeDisplay";
 import RequestedUsers from "./requestedUsers";
+import image from "../../../../assets/images/request-service.png";
 
 const RequestedService = () => {
   const { state } = useLocation();
@@ -17,9 +18,9 @@ const RequestedService = () => {
     <>
       <Container className="py-5 text-black">
         <Row>
-          <Col lg={6} className="text-center my-auto">
+          <Col lg={5} className="text-center my-auto">
             <img
-              src={logo}
+              src={image}
               style={{ width: "100%", height: "500px" }}
               alt="Request Service"
             />
