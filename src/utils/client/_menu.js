@@ -1,4 +1,4 @@
-export const navLinks = [
+export const valetMenu = [
   {
     href: "/appointment",
     iconClass: "bi bi-envelope",
@@ -6,32 +6,32 @@ export const navLinks = [
     label: "Manage Appointments",
   },
   {
-    href: "#about",
-    iconClass: "bi bi-cash",
+    href: "#earning",
+    iconClass: "bi bi-cash-coin",
     className: "",
     label: "Manage Earnings",
   },
   {
-    href: "#services",
+    href: "#account",
     iconClass: "bi bi-eye",
     className: "",
     label: "Preview Profile",
   },
   {
-    href: "#portfolio",
-    iconClass: "bi bi-calendar2-minus",
+    href: "/scheduled-appointment",
+    iconClass: "bi bi-calendar-event",
     className: "",
     label: "Scheduled Appointments",
   },
   {
     href: "#referal",
     iconClass: "",
-    className: "btn ms-3 py-1 px-3 bg-white text-black",
-    label: "Referal",
+    className: "btn ms-3 py-1 px-3 bg-white border-0 text-black",
+    label: "Share Your Referal",
   },
 ];
 
-export const navLinksCustomer = [
+export const customerMenu = [
   {
     href: "/request-service",
     iconClass: "bi bi-list-task",

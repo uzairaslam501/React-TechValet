@@ -18,7 +18,7 @@ const ClientTopbar = () => {
 
   return (
     <>
-      <Navbar style={{ background: "#000", borderBottom: "1px solid #fcd609" }}>
+      <Navbar className="top-navbar">
         <Container>
           <a href="/" className="logo d-flex align-items-center me-auto">
             <img src={logo} alt="Logo" style={{ width: "120px" }} />

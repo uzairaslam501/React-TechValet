@@ -1,3 +1,8 @@
+.top-navbar {
+  background: #000;
+  border-bottom: 2px solid #fcd609;
+}
+
 .navbar-expand .navbar-nav .dropdown-menu {
   z-index: 9999;
   left: -125px;
