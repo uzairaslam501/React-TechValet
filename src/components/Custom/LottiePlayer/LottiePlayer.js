@@ -1,10 +1,10 @@
 import React from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
 
-const LottiePlayer = ({ src, style, autoplay = true, loop = true }) => {
+const LottiePlayer = ({ src, style }) => {
   return (
     <>
-      <Player src={src} style={style} loop={loop} autoplay={autoplay} />
+      <Player src={src} style={style} loop autoplay />
     </>
   );
 };

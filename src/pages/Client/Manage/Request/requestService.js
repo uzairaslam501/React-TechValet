@@ -240,8 +240,6 @@ const RequestService = () => {
           <LottiePlayer
             src={animationData}
             style={{ height: "100%", width: "100%" }}
-            loop="true"
-            autoplay="true"
           />
         </Col>
         <Col lg={6} sm={12}>
