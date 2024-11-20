@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+} from "react-bootstrap";
 import logo from "../../../../assets/images/logo-for-white-bg.svg";
 import RadioCheck from "../../../../components/Custom/RadioChecks/radioChecks";
 import RadioCheckMultiple from "../../../../components/Custom/RadioChecks/multipleChecks";
@@ -19,12 +28,14 @@ import {
   languageOptions,
 } from "../../../../utils/client/data/requestedData";
 import image from "../../../../assets/images/request-service.png";
+import { disabledPreviousDateTime } from "../../../../utils/_helpers";
 
 export const validationSchema = Yup.object({
   requestServiceType: Yup.string().required("Please select a service type"),
-  prefferedServiceTime: Yup.array().when("requestServiceType", {
+  prefferedServiceTime: Yup.string().when("requestServiceType", {
     is: "2",
-    then: (schema) => schema.min(1, "At least one time slot must be selected"),
+
+    then: (schema) => schema.required("Please select preffered service time"),
     otherwise: (schema) => schema.nullable(),
   }),
   fromDateTime: Yup.date().when("requestServiceType", {
@@ -53,8 +64,8 @@ export const validationSchema = Yup.object({
   issuesInCategoriesSelected: Yup.string().required(
     "You must have to select the issue you are facing"
   ),
-  serviceLanguage: Yup.array().min(1, "Please select at least one language"),
-  serviceDescription: Yup.string().required(
+  serviceLanguage: Yup.array().nullable("Please select at least one language"),
+  serviceDescription: Yup.string().nullable(
     "Please enter additional information"
   ),
 });
@@ -78,7 +89,7 @@ const RequestService = () => {
       : [...selectedCategories, category];
     // Update selectedCategories with the updated list
     setSelectedCategories(updatedCategories);
-    formik.setFieldValue("categoriesOfProblems", updatedCategories);
+    setFieldValue("categoriesOfProblems", updatedCategories);
     console.log("updatedCategories", updatedCategories);
 
     const newSubOptions = [
@@ -89,55 +100,49 @@ const RequestService = () => {
     setSubOptions(newSubOptions.map((sub) => ({ id: sub, value: sub })));
   };
 
-  const handleSubcategoryChange = (selectedSubcategoryIds) => {
-    setSelectedSubcategories(selectedSubcategoryIds);
-    console.log("selectedSubcategoryIds", selectedSubcategoryIds);
-    formik.setFieldValue("requestServiceSkills", selectedSubcategoryIds);
-  };
-
   const handleServiceLangaugeChange = (language) => {
     setSelectedLanguage(language);
-    console.log("serviceLanguage", language);
-    formik.setFieldValue("serviceLanguage", language);
+    setFieldValue("serviceLanguage", language);
   };
 
   const handleServiceTimeChange = (time) => {
     setSelectedTime(time);
-    console.log("Preffered Service Time", time);
-    formik.setFieldValue("prefferedServiceTime", time);
+    if (time.length === 0) {
+      setFieldValue("fromDateTime", "");
+      setFieldValue("toDateTime", "");
+    }
+
+    setFieldValue("prefferedServiceTime", time.join(","));
+  };
+
+  const handleSubcategoryChange = (selectedSubcategoryIds) => {
+    setSelectedSubcategories(selectedSubcategoryIds);
+    setFieldValue("requestServiceSkills", selectedSubcategoryIds);
   };
 
   const handleIssuesInCategoiesChange = (issue) => {
     setSelectedIssue(issue);
     console.log("Issues in Categories", issue);
-    formik.setFieldValue("issuesInCategoriesSelected", issue);
+    setFieldValue("issuesInCategoriesSelected", issue);
   };
 
-  const formik = useFormik({
+  const {
+    values,
+    touched,
+    errors,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    setFieldValue,
+  } = useFormik({
     initialValues,
     validationSchema,
     validateOnChange: false,
     validateOnBlur: true,
     onSubmit: (values) => {
       try {
-        let ssssssss = ""; // Use let instead of const and initialize as a string
-        const serccccc = values.prefferedServiceTime.join(", ");
-
-        if (serccccc.includes("8,9,10,11,12")) {
-          ssssssss = "1"; // Start with "1"
-        }
-        if (serccccc.includes("12,13,14,15,16,17")) {
-          ssssssss += ssssssss ? ", 2" : "2"; // Add ", 2" if not empty, else "2"
-        }
-        if (serccccc.includes("17,18,19,20,21,22")) {
-          ssssssss += ssssssss ? ", 3" : "3"; // Add ", 3" if not empty, else "3"
-        }
-        if (serccccc.includes("22,23,00,01,02,03,04,05,06,07")) {
-          ssssssss += ssssssss ? ", 4" : "4"; // Add ", 4" if not empty, else "4"
-        }
         const convertedData = {
           ...values,
-          prefferedServiceTime: ssssssss,
           categoriesOfProblems: values.categoriesOfProblems.join(", "),
           requestServiceSkills: values.requestServiceSkills.join(", "),
           serviceLanguage: values.serviceLanguage.join(", "),
@@ -156,260 +161,286 @@ const RequestService = () => {
   });
 
   useEffect(() => {
-    if (formik.values.requestServiceType !== "2") {
-      formik.setFieldValue("prefferedServiceTime", "");
-      formik.setFieldValue("fromDateTime", "");
-      formik.setFieldValue("toDateTime", "");
+    if (values.requestServiceType !== "2") {
+      setFieldValue("prefferedServiceTime", "");
+      setFieldValue("fromDateTime", "");
+      setFieldValue("toDateTime", "");
     }
-  }, [formik.values.requestServiceType]);
+  }, [values.requestServiceType]);
 
   return (
-    <div className="reqService">
-      <Container className="py-5 text-black">
-        <Row>
-          <Col lg={6} className="text-center my-auto">
-            <img
-              src={image}
-              style={{ width: "100%", height: "500px" }}
-              alt="Request Service"
-            />
-          </Col>
-          <Col lg={6} className="mx-auto shadow-sm">
-            <div className="py-4">
-              <div className="text-center mb-4">
-                <a href="/">
-                  <img
-                    src={logo}
-                    alt="Logo"
-                    style={{ width: "140px", height: "65px" }}
-                  />
-                </a>
+    <Container className="py-5 text-black">
+      <Row>
+        <Col lg={6} className="text-center my-auto">
+          <img
+            src={image}
+            style={{ width: "100%", height: "500px" }}
+            alt="Request Service"
+          />
+        </Col>
+        <Col lg={6}>
+          <Card
+            className="mx-auto shadow-sm border border-dark"
+            style={{
+              borderRadius: "25px",
+              backgroundColor: "#f3f3f3",
+            }}
+          >
+            <CardBody>
+              <CardBody className="text-center">
+                <img
+                  src={logo}
+                  alt="Logo"
+                  style={{ width: "140px", height: "65px" }}
+                />
                 <h5 className="fw-semibold mt-3 text-black">
                   Service Required
                 </h5>
-              </div>
-              <Form onSubmit={formik.handleSubmit}>
-                <Form.Group controlId="requestServiceType" className="mb-3">
-                  <Form.Label className="text-black">
-                    When do you want help from your Tech Valet
-                    <span className="text-danger"> *</span>
-                  </Form.Label>
-                  <RadioCheck
-                    checkType="radio"
-                    inlineOrNot={true}
-                    options={options}
-                    name="requestServiceType"
-                    selectedValue={formik.values.requestServiceType}
-                    onBlur={formik.handleBlur}
-                    onChange={(e) =>
-                      formik.setFieldValue("requestServiceType", e.target.value)
-                    }
-                  />
-                  {formik.touched.requestServiceType &&
-                  formik.errors.requestServiceType ? (
-                    <div className="text-danger">
-                      {formik.errors.requestServiceType}
-                    </div>
-                  ) : null}
-                </Form.Group>
+              </CardBody>
+              <CardBody>
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group controlId="requestServiceType" className="mb-3">
+                    <Form.Label className="text-black">
+                      When do you want help from your Tech Valet
+                      <span className="text-danger"> *</span>
+                    </Form.Label>
+                    <RadioCheck
+                      checkType="radio"
+                      inlineOrNot={true}
+                      options={options}
+                      name="requestServiceType"
+                      selectedValue={values.requestServiceType}
+                      onBlur={handleBlur("requestServiceType")}
+                      onChange={handleChange("requestServiceType")}
+                    />
+                  </Form.Group>
 
-                {formik.values.requestServiceType === "2" && (
-                  <>
-                    <Row className="mb-3">
-                      <Col>
-                        <Form.Group controlId="Time">
-                          <Form.Label>
-                            Preferred Service Time
-                            <span className="text-danger">*</span>
-                          </Form.Label>
-                          <CustomDropdown
-                            optionsList={serviceTime}
-                            handleChange={handleServiceTimeChange}
-                            handleBlur={() => {}}
-                            values={{ preferredTime: selectedTime }}
-                            isMultiSelect={true}
-                            isSearchable={false}
-                            valueKey="preferredTime"
-                            fieldName="Time"
-                          />
-                          {formik.touched.prefferedServiceTime &&
-                          formik.errors.prefferedServiceTime ? (
-                            <div className="text-danger">
-                              {formik.errors.prefferedServiceTime}
-                            </div>
-                          ) : null}
-                        </Form.Group>
-                      </Col>
-                    </Row>
+                  {values.requestServiceType === "2" && (
+                    <>
+                      <Row className="mb-3">
+                        <Col>
+                          <Form.Group controlId="Time">
+                            <Form.Label>
+                              Preferred Service Time
+                              <span className="text-danger">*</span>
+                            </Form.Label>
+                            <CustomDropdown
+                              optionsList={serviceTime}
+                              selectedOptions={selectedTime}
+                              handleChange={handleServiceTimeChange}
+                              values={{ preferredTime: selectedTime }}
+                              isMultiSelect
+                              isSearchable={false}
+                              valueKey="preferredTime"
+                              fieldName="Time"
+                              isInvalid={
+                                !!errors.prefferedServiceTime &&
+                                touched.prefferedServiceTime
+                              }
+                            />
+                            {touched.prefferedServiceTime &&
+                              errors.prefferedServiceTime && (
+                                <div className="text-danger">
+                                  {errors.prefferedServiceTime}
+                                </div>
+                              )}
+                          </Form.Group>
+                        </Col>
+                      </Row>
 
-                    <Row className="mb-3">
-                      <Col md={6}>
-                        <Form.Group>
-                          <Form.Label>
-                            From Date Time
-                            <span className="text-danger">*</span>
-                          </Form.Label>
-                          <Form.Control
-                            type="datetime-local"
-                            name="fromDateTime"
-                            onBlur={formik.handleBlur}
-                            onChange={(e) => {
-                              formik.handleChange(e);
-                              // handleTimeCheck(e);
-                            }}
-                          />
-                          {formik.touched.fromDateTime &&
-                          formik.errors.fromDateTime ? (
-                            <div className="text-danger">
-                              {formik.errors.fromDateTime}
-                            </div>
-                          ) : null}
-                        </Form.Group>
-                      </Col>
-                      <Col md={6}>
-                        <Form.Group>
-                          <Form.Label>
-                            To Date Time <span className="text-danger">*</span>
-                          </Form.Label>
-                          <Form.Control
-                            type="datetime-local"
-                            name="toDateTime"
-                            onBlur={formik.handleBlur}
-                            onChange={formik.handleChange}
-                          />
-                          {formik.touched.toDateTime &&
-                          formik.errors.toDateTime ? (
-                            <div className="text-danger">
-                              {formik.errors.toDateTime}
-                            </div>
-                          ) : null}
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                  </>
-                )}
+                      <Row className="mb-3">
+                        <Col md={6}>
+                          <Form.Group>
+                            <Form.Label>
+                              From Date Time
+                              <span className="text-danger">*</span>
+                            </Form.Label>
+                            <Form.Control
+                              type="datetime-local"
+                              value={values.fromDateTime}
+                              onBlur={handleBlur("fromDateTime")}
+                              onChange={handleChange("fromDateTime")}
+                              min={disabledPreviousDateTime()}
+                              disabled={selectedTime.length === 0}
+                              isInvalid={
+                                !!errors.fromDateTime && touched.fromDateTime
+                              }
+                            />
+                            {selectedTime.length === 0 && (
+                              <div className="text-danger">
+                                Please select a service time.
+                              </div>
+                            )}
+                            {touched.fromDateTime && errors.fromDateTime && (
+                              <div className="text-danger">
+                                {errors.fromDateTime}
+                              </div>
+                            )}
+                          </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                          <Form.Group>
+                            <Form.Label>
+                              To Date Time
+                              <span className="text-danger">*</span>
+                            </Form.Label>
+                            <Form.Control
+                              type="datetime-local"
+                              onBlur={handleBlur("toDateTime")}
+                              onChange={handleChange("toDateTime")}
+                              value={values.toDateTime}
+                              min={disabledPreviousDateTime()}
+                              disabled={selectedTime.length === 0}
+                              isInvalid={
+                                !!errors.toDateTime && touched.toDateTime
+                              }
+                            />
+                            {touched.toDateTime && errors.toDateTime && (
+                              <div className="text-danger">
+                                {errors.toDateTime}
+                              </div>
+                            )}
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                    </>
+                  )}
 
-                <Form.Group controlId="requestCategoryProblem" className="mb-3">
-                  <Form.Label className="text-black">
-                    Categories of Problem <span className="text-danger">*</span>
-                  </Form.Label>
-                  <RadioCheckMultiple
-                    checkType="checkbox"
-                    inlineOrNot={true}
-                    options={problemOptions}
-                    name="categoriesOfProblems"
-                    selectedValue={formik.values.categoriesOfProblems}
-                    onBlur={formik.handleBlur}
-                    onChange={(e) => {
-                      handleCategoryChange(e.target.value);
-                    }}
-                  />
-                  {formik.touched.categoriesOfProblems &&
-                  formik.errors.categoriesOfProblems ? (
-                    <div className="text-danger">
-                      {formik.errors.categoriesOfProblems}
-                    </div>
-                  ) : null}
-                </Form.Group>
-
-                {selectedCategories.length > 0 && (
-                  <Form.Group controlId="subCategory" className="mb-3">
-                    <Form.Label>
-                      What best describes your problem
+                  <Form.Group
+                    controlId="requestCategoryProblem"
+                    className="mb-3"
+                  >
+                    <Form.Label className="text-black">
+                      Categories of Problem{" "}
                       <span className="text-danger">*</span>
                     </Form.Label>
-                    <CustomDropdown
-                      optionsList={subOptions}
-                      handleChange={handleSubcategoryChange}
-                      handleBlur={() => {}}
-                      values={{ subcategories: selectedSubcategories }}
-                      isMultiSelect={true}
-                      isSearchable={true}
-                      valueKey="subcategories"
-                      fieldName="Subcategory"
+                    <RadioCheckMultiple
+                      checkType="switch"
+                      inlineOrNot={true}
+                      options={problemOptions}
+                      selectedValue={values.categoriesOfProblems}
+                      onBlur={handleBlur("categoriesOfProblems")}
+                      className="mb-2"
+                      onChange={(e) => {
+                        handleCategoryChange(e.target.value);
+                      }}
+                      isInvalid={
+                        !!errors.categoriesOfProblems &&
+                        touched.categoriesOfProblems
+                      }
                     />
-                    {formik.touched.requestServiceSkills &&
-                    formik.errors.requestServiceSkills ? (
+                    {touched.categoriesOfProblems &&
+                    errors.categoriesOfProblems ? (
                       <div className="text-danger">
-                        {formik.errors.requestServiceSkills}
+                        {errors.categoriesOfProblems}
                       </div>
                     ) : null}
                   </Form.Group>
-                )}
 
-                <Form.Group controlId="SelectIssuesFound" className="mb-3">
-                  <Form.Label>
-                    Issues <span className="text-danger">*</span>
-                  </Form.Label>
-                  <CustomDropdown
-                    optionsList={issuesInCategories}
-                    handleChange={handleIssuesInCategoiesChange}
-                    handleBlur={() => {}}
-                    values={{ issueFound: selectedIssue }}
-                    isMultiSelect={false}
-                    isSearchable={true}
-                    valueKey="issueFound"
-                    fieldName="Issues"
-                  />
-                  {formik.touched.issuesInCategoriesSelected &&
-                  formik.errors.issuesInCategoriesSelected ? (
-                    <div className="text-danger">
-                      {formik.errors.issuesInCategoriesSelected}
-                    </div>
-                  ) : null}
-                </Form.Group>
+                  {selectedCategories.length > 0 && (
+                    <Form.Group controlId="subCategory" className="mb-3">
+                      <Form.Label>
+                        What best describes your problem
+                        <span className="text-danger">*</span>
+                      </Form.Label>
+                      <CustomDropdown
+                        optionsList={subOptions}
+                        selectedOptions={selectedSubcategories}
+                        handleChange={handleSubcategoryChange}
+                        values={{ subcategories: selectedSubcategories }}
+                        isMultiSelect
+                        isSearchable={true}
+                        valueKey="subcategories"
+                        fieldName="Subcategory"
+                        isInvalid={
+                          !!errors.requestServiceSkills &&
+                          touched.requestServiceSkills
+                        }
+                      />
+                      {touched.requestServiceSkills &&
+                      errors.requestServiceSkills ? (
+                        <div className="text-danger">
+                          {errors.requestServiceSkills}
+                        </div>
+                      ) : null}
+                    </Form.Group>
+                  )}
 
-                <Form.Group controlId="SelectLanguage" className="mb-3">
-                  <Form.Label>
-                    Preferred Language <span className="text-danger">*</span>
-                  </Form.Label>
-                  <CustomDropdown
-                    optionsList={languageOptions}
-                    handleChange={handleServiceLangaugeChange}
-                    handleBlur={() => {}}
-                    values={{ preferredLanguage: selectedLanguage }}
-                    isMultiSelect={true}
-                    isSearchable={true}
-                    valueKey="preferredLanguage"
-                    fieldName="Language"
-                  />
-                  {formik.touched.serviceLanguage &&
-                  formik.errors.serviceLanguage ? (
-                    <div className="text-danger">
-                      {formik.errors.serviceLanguage}
-                    </div>
-                  ) : null}
-                </Form.Group>
+                  <Form.Group controlId="SelectIssuesFound" className="mb-3">
+                    <Form.Label>
+                      Issues <span className="text-danger">*</span>
+                    </Form.Label>
+                    <CustomDropdown
+                      optionsList={issuesInCategories}
+                      selectedOptions={selectedIssue}
+                      handleChange={handleIssuesInCategoiesChange}
+                      values={{ issueFound: selectedIssue }}
+                      isSearchable={true}
+                      valueKey="issueFound"
+                      fieldName="Issues"
+                      isInvalid={
+                        !!errors.issuesInCategoriesSelected &&
+                        touched.issuesInCategoriesSelected
+                      }
+                    />
+                    {touched.issuesInCategoriesSelected &&
+                    errors.issuesInCategoriesSelected ? (
+                      <div className="text-danger">
+                        {errors.issuesInCategoriesSelected}
+                      </div>
+                    ) : null}
+                  </Form.Group>
 
-                <Form.Group controlId="serviceDescription" className="mb-3">
-                  <Form.Label>
-                    Is there anything else we should know about?
-                  </Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={5}
-                    name="serviceDescription"
-                    placeholder="Enter additional information"
-                    onBlur={formik.handleBlur}
-                    onChange={formik.handleChange}
-                  />
-                  {formik.touched.serviceDescription &&
-                  formik.errors.serviceDescription ? (
-                    <div className="text-danger">
-                      {formik.errors.serviceDescription}
-                    </div>
-                  ) : null}
-                </Form.Group>
+                  <Form.Group controlId="SelectLanguage" className="mb-3">
+                    <Form.Label>Preferred Language</Form.Label>
+                    <CustomDropdown
+                      optionsList={languageOptions}
+                      selectedOptions={selectedLanguage}
+                      handleChange={handleServiceLangaugeChange}
+                      values={{ preferredLanguage: selectedLanguage }}
+                      isMultiSelect
+                      isSearchable={true}
+                      valueKey="preferredLanguage"
+                      fieldName="Language"
+                      isInvalid={
+                        !!errors.serviceLanguage && touched.serviceLanguage
+                      }
+                    />
+                    {touched.serviceLanguage && errors.serviceLanguage ? (
+                      <div className="text-danger">
+                        {errors.serviceLanguage}
+                      </div>
+                    ) : null}
+                  </Form.Group>
 
-                <Button type="submit" variant="success" block>
-                  Submit Service
-                </Button>
-              </Form>
-            </div>
-          </Col>
-        </Row>
-      </Container>
-    </div>
+                  <Form.Group controlId="serviceDescription" className="mb-3">
+                    <Form.Label>
+                      Is there anything else we should know about?
+                    </Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={5}
+                      placeholder="Enter additional information"
+                      onBlur={handleBlur("serviceDescription")}
+                      onChange={handleChange("serviceDescription")}
+                    />
+                    {touched.serviceDescription && errors.serviceDescription ? (
+                      <div className="text-danger">
+                        {errors.serviceDescription}
+                      </div>
+                    ) : null}
+                  </Form.Group>
+
+                  <Button type="submit" variant="primary" className="w-100">
+                    Submit Service
+                  </Button>
+                </Form>
+              </CardBody>
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

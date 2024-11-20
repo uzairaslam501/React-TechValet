@@ -4,13 +4,13 @@ export const options = [
 ];
 
 export const serviceTime = [
-  { value: "Morning (8AM-12PM)", id: "8,9,10,11,12", match: "1" },
-  { value: "Afternoon (12PM-5PM)", id: "12,13,14,15,16,17", match: "2" },
-  { value: "Evening (5PM-10PM)", id: "17,18,19,20,21,22", match: "3" },
+  { value: "Morning (8AM-12PM)", match: "8,9,10,11,12", id: "1" },
+  { value: "Afternoon (12PM-5PM)", match: "12,13,14,15,16,17", id: "2" },
+  { value: "Evening (5PM-10PM)", match: "17,18,19,20,21,22", id: "3" },
   {
     value: "Night (10PM-7AM)",
-    id: "22,23,00,01,02,03,04,05,06,07",
-    match: "4",
+    match: "22,23,00,01,02,03,04,05,06,07",
+    id: "4",
   },
 ];
 

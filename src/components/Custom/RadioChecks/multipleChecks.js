@@ -8,15 +8,16 @@ const RadioCheckMultiple = ({
   name,
   selectedValues,
   onChange,
+  className = "",
 }) => {
   return (
     <Row>
       {options.map((option) => (
         <Col
-          md={4}
+          md={6}
           sm={12}
           key={`${inlineOrNot}-${option.value}`}
-          className="mb-3"
+          className={className}
         >
           <FormCheck
             inline={inlineOrNot}
