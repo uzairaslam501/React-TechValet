@@ -7,7 +7,6 @@ import {
   Button,
   Card,
   CardBody,
-  CardHeader,
 } from "react-bootstrap";
 import logo from "../../../../assets/images/logo-for-white-bg.svg";
 import RadioCheck from "../../../../components/Custom/RadioChecks/radioChecks";
@@ -81,6 +80,7 @@ const RequestService = () => {
   const [selectedLanguage, setSelectedLanguage] = useState([]);
   const [selectedTime, setSelectedTime] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState([]);
+  const [foundMatch, setFoundMatch] = useState([]);
 
   const handleCategoryChange = (category) => {
     // Compute the updated selected categories
@@ -107,10 +107,24 @@ const RequestService = () => {
 
   const handleServiceTimeChange = (time) => {
     setSelectedTime(time);
+    console.log(time);
+
+    // Create a new array of matched times based on the selected ids
+    const newFoundMatchTime = time.map((id) => {
+      const foundTime = serviceTime.find((item) => item.id === String(id)); // Ensure id is treated as a string
+      return foundTime ? foundTime.match : null; // Return the match or null if no match is found
+    });
+
+    // Set the found matches state
+    setFoundMatch(newFoundMatchTime);
+
+    // Clear date time fields if no time is selected
     if (time.length === 0) {
       setFieldValue("fromDateTime", "");
       setFieldValue("toDateTime", "");
     }
+
+    console.log(newFoundMatchTime);
 
     setFieldValue("prefferedServiceTime", time.join(","));
   };
@@ -167,6 +181,55 @@ const RequestService = () => {
       setFieldValue("toDateTime", "");
     }
   }, [values.requestServiceType]);
+
+  const handleTimeChange = (dateTime) => {
+    const selectedDate = new Date(dateTime);
+    const selectedHour = selectedDate.getHours();
+
+    const allMatchedHours = foundMatch.join(",");
+    const hourRange = allMatchedHours
+      .split(",")
+      .map((hour) => parseInt(hour, 10));
+
+    const firstHourList = [];
+    const lastHourList = [];
+    const unmatchedLastHours = [];
+
+    foundMatch.forEach((timeRange) => {
+      const hours = timeRange.split(",");
+      firstHourList.push(hours[0]); // First hour of the range
+      lastHourList.push(hours[hours.length - 1]); // Last hour of the range
+    });
+
+    lastHourList.forEach((lastHour) => {
+      if (!firstHourList.includes(lastHour)) {
+        unmatchedLastHours.push(parseInt(lastHour, 10));
+      }
+    });
+
+    if (hourRange.includes(selectedHour)) {
+      const selectedMinutes = selectedDate.getMinutes();
+
+      if (unmatchedLastHours.includes(selectedHour) && selectedMinutes > 0) {
+        selectedDate.setMinutes(0);
+      }
+
+      setFieldValue("fromDateTime", selectedDate.toISOString().slice(0, 16));
+    } else {
+      setFieldValue("fromDateTime", "");
+    }
+  };
+
+  const handleEndTime = (dateTime) => {
+    const startDateValues = values.fromDateTime;
+    const startDate = new Date(startDateValues);
+    const endDate = new Date(dateTime);
+    if (startDate >= endDate) {
+      setFieldValue("toDateTime", "");
+    } else {
+      setFieldValue("toDateTime", dateTime);
+    }
+  };
 
   return (
     <Container className="py-5 text-black">
@@ -259,7 +322,10 @@ const RequestService = () => {
                               type="datetime-local"
                               value={values.fromDateTime}
                               onBlur={handleBlur("fromDateTime")}
-                              onChange={handleChange("fromDateTime")}
+                              onChange={(e) => {
+                                handleChange("fromDateTime");
+                                handleTimeChange(e.target.value);
+                              }}
                               min={disabledPreviousDateTime()}
                               disabled={selectedTime.length === 0}
                               isInvalid={
@@ -287,7 +353,10 @@ const RequestService = () => {
                             <Form.Control
                               type="datetime-local"
                               onBlur={handleBlur("toDateTime")}
-                              onChange={handleChange("toDateTime")}
+                              onChange={(e) => {
+                                handleChange("toDateTime");
+                                handleEndTime(e.target.value);
+                              }}
                               value={values.toDateTime}
                               min={disabledPreviousDateTime()}
                               disabled={selectedTime.length === 0}
