@@ -28,6 +28,8 @@ import {
 } from "../../../../utils/client/data/requestedData";
 import image from "../../../../assets/images/request-service.png";
 import { disabledPreviousDateTime } from "../../../../utils/_helpers";
+import animationData from "../../../../assets/lottie/video-tablet.json";
+import LottiePlayer from "../../../../components/Custom/LottiePlayer/LottiePlayer";
 
 export const validationSchema = Yup.object({
   requestServiceType: Yup.string().required("Please select a service type"),
@@ -235,15 +237,16 @@ const RequestService = () => {
     <Container className="py-5 text-black">
       <Row>
         <Col lg={6} className="text-center my-auto">
-          <img
-            src={image}
-            style={{ width: "100%", height: "500px" }}
-            alt="Request Service"
+          <LottiePlayer
+            src={animationData}
+            style={{ height: "100%", width: "100%" }}
+            loop="true"
+            autoplay="true"
           />
         </Col>
-        <Col lg={6}>
+        <Col lg={6} sm={12}>
           <Card
-            className="mx-auto shadow-sm border border-dark"
+            className="shadow border border-dark"
             style={{
               borderRadius: "25px",
               backgroundColor: "#f3f3f3",

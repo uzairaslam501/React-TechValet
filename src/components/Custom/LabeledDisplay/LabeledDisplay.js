@@ -7,7 +7,7 @@ const LabeledDisplay = ({ preferredServiceTime }) => {
       {preferredServiceTime &&
         preferredServiceTime.split(",").map((time) => {
           const matchedOption = serviceTime.find(
-            (option) => option.match === time.trim()
+            (option) => option.id === time.trim()
           );
           return (
             <Badge bg="secondary" className="p-2 fw-normal" key={time}>
