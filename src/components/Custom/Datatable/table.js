@@ -66,7 +66,7 @@ function CustomTable({
           <Button
             key={i}
             onClick={() => handlePageClick(i)}
-            variant={page === i ? "primary" : "secondary"}
+            variant={page === i ? "secondary" : "primary"}
             className="m-1"
           >
             {i + 1}
@@ -211,7 +211,12 @@ function CustomTable({
               currentRecords.map((row) => (
                 <tr key={row.id}>
                   {headers.map((header) => (
-                    <td key={header.column}>
+                    <td
+                      key={header.column}
+                      style={{
+                        color: "#666",
+                      }}
+                    >
                       {header.column === "Action" ? (
                         <CustomButtons buttons={buttons} row={row} />
                       ) : header.column === "profilePath" ||

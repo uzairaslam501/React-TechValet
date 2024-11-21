@@ -6,7 +6,7 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { toast } from "react-toastify";
-import { getAuthConfig, getToken } from "../../utils/_apiConfig";
+import { getAuthConfig, getAuthUserId, getToken } from "../../utils/_apiConfig";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -74,6 +74,83 @@ export const getValetsBySearch = createAsyncThunk(
   }
 );
 
+//#region  RequestService
+export const requestService = createAsyncThunk(
+  "user/requestService",
+  async (record, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const jwtToken = getToken(getState);
+      const response = await api.post(
+        "/Customer/PostAddRequestService",
+        record,
+        {
+          headers: {
+            Authorization: `${jwtToken}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch);
+    }
+  }
+);
+
+export const getUserForSkills = createAsyncThunk(
+  "user/getUserForSkills",
+  async (skills, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const jwtToken = getToken(getState);
+      const response = await api.get(
+        `/User/GetItValetsByRequestSkills?RequestSkills=${skills}`,
+        {
+          headers: {
+            Authorization: `${jwtToken}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch);
+    }
+  }
+);
+//#endregion
+
+//#region Packages
+export const requestGetUserPackages = createAsyncThunk(
+  "packages/requestGetUserPackages",
+  async (_, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const jwtToken = getToken(getState);
+      const userId = getAuthUserId(getState);
+      const response = await api.get(
+        `/User/GetUserSessionStatus?customerId=${userId}`,
+        {
+          headers: {
+            Authorization: `${jwtToken}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch);
+      if (data > 0) {
+        toast.success(
+          `Your package is activated. You have ${data} remaining session(s).`
+        );
+      }
+
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch);
+    }
+  }
+);
+//#endregion
+
+//#region Tables
+
 export const getRecords = createAsyncThunk(
   "customer/getRecords",
   async (
@@ -82,10 +159,9 @@ export const getRecords = createAsyncThunk(
   ) => {
     try {
       const config = getAuthConfig(getState);
-      const response = await axios.post(
+      const response = await axios.get(
         `${baseUrl}/Datatable/GetRequestServicesDatatableByUserIdAsync?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}`,
-        null,
         config
       );
       const responseBack = response;
@@ -105,10 +181,9 @@ export const getOrderRecords = createAsyncThunk(
   ) => {
     try {
       const config = getAuthConfig(getState);
-      const response = await axios.post(
+      const response = await axios.get(
         `${baseUrl}/Datatable/GetOrdersDatatableByUserId?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}`,
-        null,
         config
       );
       const responseBack = response?.data;
@@ -128,10 +203,9 @@ export const getUserPackagesRecords = createAsyncThunk(
   ) => {
     try {
       const config = getAuthConfig(getState);
-      const response = await axios.post(
+      const response = await axios.get(
         `${baseUrl}/Datatable/GetUserPackageDatatableAsync?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}`,
-        null,
         config
       );
       const responseBack = response?.data;
@@ -158,10 +232,9 @@ export const getUserPackagesConsumptionRecords = createAsyncThunk(
   ) => {
     try {
       const config = getAuthConfig(getState);
-      const response = await axios.post(
+      const response = await axios.get(
         `${baseUrl}/Datatable/GetOrdersDatatableByPackageId?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}&packageId=${packageId}`,
-        null,
         config
       );
       const responseBack = response?.data;
@@ -172,3 +245,5 @@ export const getUserPackagesConsumptionRecords = createAsyncThunk(
     }
   }
 );
+
+//#endregion

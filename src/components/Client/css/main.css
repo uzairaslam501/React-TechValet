@@ -135,9 +135,11 @@ h6 {
   --heading-color: #ffffff;
   color: var(--default-color);
   background-color: var(--background-color);
-  padding: 15px 0;
+  padding: 10px 0;
   transition: all 0.5s;
   z-index: 997;
+  border-top: 1px solid #fff;
+  border-bottom: 3px solid #e6c924;
 }
 
 .header .logo {
@@ -229,7 +231,7 @@ h6 {
   .navmenu a,
   .navmenu a:focus {
     color: var(--nav-color);
-    padding: 18px 15px;
+    padding: 10px 15px;
     font-size: 15px;
     font-family: var(--nav-font);
     font-weight: 400;

@@ -54,7 +54,7 @@ const CustomSidebar = ({ isOpen }) => {
           {/* User Info Section */}
           <ListGroupItem>
             <NavLink
-              to="/home"
+              to="/"
               style={{ textDecoration: "none", color: "inherit" }}
             >
               <Row>

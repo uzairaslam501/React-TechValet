@@ -8,12 +8,12 @@ import defaultImage from "../../../assets/images/no-user-image.jpg";
 import "./topImageCarousal.css";
 import { truncateCharacters } from "../../../utils/_helpers";
 
-const TopImageCarousal = ({ users = [] }) => {
+const TopImageCarousal = ({ label, users = [] }) => {
   return (
     <div className="container">
       <div className="row">
         <div className="col-lg-10 offset-lg-1">
-          <h3>Recently Viewed & More</h3>
+          <h3>{label}</h3>
           <Swiper
             loop={true}
             slidesPerView={1}

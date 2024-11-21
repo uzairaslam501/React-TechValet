@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
 import { Card, CardBody, Col, Row } from "react-bootstrap";
 import CustomTable from "../../../../components/Custom/Datatable/table";
-import {
-  getUserPackagesConsumptionRecords,
-  getUserPackagesRecords,
-} from "../../../../redux/Actions/customerActions";
+import { getUserPackagesRecords } from "../../../../redux/Actions/customerActions";
 import Dialogue from "../../../../components/Custom/Modal/modal";
 import ViewConsumption from "./viewConsumption";
 
 const ViewPackages = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [records, setRecords] = useState([]);
   const [pageLength, setPageLength] = useState(5);

@@ -1,17 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar, Nav, NavDropdown, Container, Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { navLinksCustomer } from "../../../utils/client/_menu";
+import { valetMenu, customerMenu } from "../../../utils/client/_menu";
+import { toast } from "react-toastify";
 
 const ClientNavbar = () => {
   const { userAuth } = useSelector((state) => state.authentication);
+  const [menuBar, setMenuBar] = useState();
+
+  const handleCopyReferral = async () => {
+    const systemUrl = `${window.location.origin}`;
+    const textToCopy = `${systemUrl}?referredBy=${userAuth?.userName}`;
+
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      console.log("Copied to clipboard:", textToCopy);
+      toast.success("Copied to clipboard");
+    } catch (err) {
+      console.error("Failed to copy to clipboard:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (userAuth?.role === "Valet") {
+      setMenuBar(valetMenu);
+    }
+    if (userAuth?.role === "Customer") {
+      setMenuBar(customerMenu);
+    }
+  }, [userAuth?.role]);
+
   return (
     <>
-      <header
-        id="header"
-        className="header"
-        style={{ borderBottom: "2px solid #f3f3f3" }}
-      >
+      <header id="header" className="header">
         <div className="container-fluid container-xl d-flex align-items-center justify-content-center text-uppercase">
           <a
             href="index.html"
@@ -32,11 +53,57 @@ const ClientNavbar = () => {
                   <i className="bi bi-list"></i>
                 </Navbar.Toggle>
                 <Navbar.Collapse id="basic-navbar-nav">
-                  {navLinksCustomer.map((link, index) =>
-                    link.submenu ? (
-                      <NavDropdown
-                        title={
-                          <>
+                  {menuBar &&
+                    menuBar.map((link, index) =>
+                      link.submenu ? (
+                        <NavDropdown
+                          title={
+                            <>
+                              {link.iconClass && (
+                                <i
+                                  className={`${link.iconClass} me-2`}
+                                  style={{ fontSize: "1rem" }}
+                                ></i>
+                              )}
+                              {link.label}
+                            </>
+                          }
+                          key={index}
+                          id={`nav-dropdown-${index}`}
+                          className={`${link.className}`}
+                        >
+                          {link.submenu.map((subLink, subIndex) => (
+                            <NavDropdown.Item
+                              href={subLink.href}
+                              key={subIndex}
+                              className={`${subLink.className}`}
+                            >
+                              {subLink.iconClass && (
+                                <i
+                                  className={`${subLink.iconClass} me-2`}
+                                  style={{ fontSize: "1rem" }}
+                                ></i>
+                              )}
+                              {subLink.label}
+                            </NavDropdown.Item>
+                          ))}
+                        </NavDropdown>
+                      ) : link.label === "Share Your Referal" ? (
+                        <>
+                          <Button
+                            onClick={() => handleCopyReferral()}
+                            className={link.className}
+                          >
+                            {link.label}
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Nav.Link
+                            href={link.href}
+                            key={index}
+                            className={`${link.className}`}
+                          >
                             {link.iconClass && (
                               <i
                                 className={`${link.iconClass} me-2`}
@@ -44,44 +111,10 @@ const ClientNavbar = () => {
                               ></i>
                             )}
                             {link.label}
-                          </>
-                        }
-                        key={index}
-                        id={`nav-dropdown-${index}`}
-                        className={`${link.className}`}
-                      >
-                        {link.submenu.map((subLink, subIndex) => (
-                          <NavDropdown.Item
-                            href={subLink.href}
-                            key={subIndex}
-                            className={`${subLink.className}`}
-                          >
-                            {subLink.iconClass && (
-                              <i
-                                className={`${subLink.iconClass} me-2`}
-                                style={{ fontSize: "1rem" }}
-                              ></i>
-                            )}
-                            {subLink.label}
-                          </NavDropdown.Item>
-                        ))}
-                      </NavDropdown>
-                    ) : (
-                      <Nav.Link
-                        href={link.href}
-                        key={index}
-                        className={`${link.className}`}
-                      >
-                        {link.iconClass && (
-                          <i
-                            className={`${link.iconClass} me-2`}
-                            style={{ fontSize: "1rem" }}
-                          ></i>
-                        )}
-                        {link.label}
-                      </Nav.Link>
-                    )
-                  )}
+                          </Nav.Link>
+                        </>
+                      )
+                    )}
                 </Navbar.Collapse>
               </Navbar>
             </>
