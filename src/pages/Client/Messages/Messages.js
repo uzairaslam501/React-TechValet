@@ -1,37 +1,102 @@
-import React, { useEffect, useState } from "react";
-import "./style.css";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getMessagesSidebar } from "../../../redux/Actions/messagesAction";
 import HandleImages from "../../../components/Custom/Avatars/HandleImages";
+import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
+import { truncateCharacters } from "../../../utils/_helpers";
+import RenderOfferStatus from "./RendersCard/RenderOfferStatus";
+import "./style.css";
 
 const Messages = () => {
-  const { userAuth } = useSelector((state) => state?.authentication);
   const dispatch = useDispatch();
+  const chatContainerRef = useRef(null);
+  const [messages, setMessages] = useState();
   const [usersList, setUsersList] = useState();
+  const [activeChat, setActiveChat] = useState();
+  const [defaultMessage, setDefaultMessage] = useState();
+  const [messageLoader, setMessagesLoader] = useState(true);
+  const [isMessageSidebarOpen, setMessageSidebarOpen] = useState(false);
+  const [userSideBarLoader, setUserSideBarLoader] = useState(false);
+  const { userAuth } = useSelector((state) => state?.authentication);
 
-  const fetchSideBar = () => {
-    dispatch(
-      getMessagesSidebar(
-        `Message/GetMessageSideBarLists?loggedInUserId=${userAuth?.id}`
-      )
-    ).then((response) => {
-      setUsersList(response?.payload);
-    });
+  const fetchSideBar = (findUser = "") => {
+    try {
+      dispatch(
+        getMessagesSidebar(
+          `Message/GetMessageSideBarLists?loggedInUserId=${userAuth?.id}&Name=${findUser}`
+        )
+      ).then((response) => {
+        console.log("response?.payload", response?.payload);
+        setDefaultMessage(response?.payload[0]);
+        setUsersList(response?.payload);
+      });
+    } catch (error) {
+      console.error("Error fetching sidebar:", error);
+    }
+  };
+
+  const fetchMessages = (userId) => {
+    try {
+      dispatch(
+        getMessagesSidebar(
+          `Message/GetMessagesForUsers?loggedInUserId=${userAuth?.id}&userId=${userId}`
+        )
+      ).then((response) => {
+        console.log("Messages", response?.payload);
+        setMessages(response?.payload);
+        setMessagesLoader(false);
+      });
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      setMessagesLoader(false);
+    }
   };
 
   const handleSearchMessage = (value) => {
-    console.log("handleSearchMessage", value);
+    fetchSideBar(value);
+  };
+
+  const handleSelectedChat = (user) => {
+    if (user?.userDecId !== activeChat?.userDecId) {
+      setMessagesLoader(true);
+      setActiveChat(user);
+      fetchMessages(user?.userDecId);
+    }
+  };
+
+  const toggleSidebar = () => {
+    setMessageSidebarOpen(!isMessageSidebarOpen);
   };
 
   useEffect(() => {
-    fetchSideBar();
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (defaultMessage && defaultMessage?.userDecId !== undefined) {
+      fetchMessages(defaultMessage?.userDecId);
+      setActiveChat(defaultMessage);
+    }
+  }, [defaultMessage]);
+
+  useEffect(() => {
+    if (userAuth?.id) {
+      fetchSideBar();
+    }
   }, [userAuth?.id]);
+
   return (
-    <div className="container">
-      <div className="row clearfix">
-        <div className="col-lg-12">
-          <div className="card chat-app">
-            <div id="plist" className="people-list">
+    <Container className="py-5">
+      <Row className="clearfix">
+        <Col md={12}>
+          <div className="card chat-app shadow">
+            <div
+              id="plist"
+              className={`people-list ${isMessageSidebarOpen ? "open" : ""}`}
+            >
               <div className="input-group">
                 <div className="input-group-prepend">
                   <span className="input-group-text">
@@ -46,13 +111,17 @@ const Messages = () => {
                 />
               </div>
               <ul className="list-unstyled chat-list mt-2 mb-0">
-                {usersList &&
+                {usersList && usersList.length > 0 ? (
                   usersList.map((user, index) => {
                     return (
                       <>
                         <li
-                          className={`${index === 0 && "active"} clearfix`}
+                          className={`${
+                            activeChat?.userDecId === user?.userDecId &&
+                            "active"
+                          } clearfix`}
                           key={`${index}-${user.username}`}
+                          onClick={() => handleSelectedChat(user)}
                         >
                           <HandleImages
                             imagePath={user?.userImage}
@@ -60,89 +129,174 @@ const Messages = () => {
                           />
 
                           <div className="about">
-                            <div className="name">{user?.username}</div>
+                            <div className="name">
+                              {truncateCharacters(user?.username, 15)}
+                            </div>
                             <div className="status">
                               {`${
                                 user?.lastMessageUsername != ""
                                   ? user?.lastMessageUsername
                                   : "You"
-                              }: ${user?.messageDescription}`}
+                              }: ${truncateCharacters(
+                                user?.messageDescription,
+                                12
+                              )}`}
                             </div>
                           </div>
                         </li>
                       </>
                     );
-                  })}
+                  })
+                ) : (
+                  <>
+                    <li
+                      style={{
+                        backgroundColor: "#fff",
+                        cursor: "auto",
+                        textAlign: "center",
+                      }}
+                    >
+                      <p>No Results</p>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
             <div className="chat">
               <div className="chat-header clearfix">
                 <div className="row">
-                  <div className="col-lg-6">
-                    <img
-                      src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                      alt="avatar"
-                    />
-                    <div className="chat-about">
-                      <h6 className="m-b-0">Aiden Chavez</h6>
-                      <small>Last seen: 2 hours ago</small>
+                  <div className="col-sm-10">
+                    <div>
+                      {messageLoader ? (
+                        <>
+                          <Spinner animation="grow" />
+                        </>
+                      ) : (
+                        activeChat &&
+                        activeChat && (
+                          <>
+                            <HandleImages
+                              imagePath={activeChat?.userImage}
+                              imageAlt={activeChat?.username}
+                            />
+                            <div className="chat-about">
+                              <h6 className="mb-0">{activeChat?.username}</h6>
+                              <div>
+                                <small>
+                                  Online
+                                  <sup>
+                                    <i className="bi bi-circle-fill offline mx-1"></i>
+                                  </sup>
+                                </small>
+                              </div>
+                            </div>
+                          </>
+                        )
+                      )}
+                    </div>
+                    <div className="text-end">
+                      <button
+                        className="btn btn-light d-md-none" // Visible on mobile only
+                        onClick={toggleSidebar}
+                      >
+                        <i className="bi bi-list"></i>
+                      </button>
                     </div>
                   </div>
+                  <div className="col-sm-2"></div>
                 </div>
               </div>
-              <div className="chat-history">
-                <ul className="m-b-0">
-                  <li className="clearfix">
-                    <div className="message-data text-right">
-                      <span className="message-data-time">10:10 AM, Today</span>
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar7.png"
-                        alt="avatar"
-                      />
+              <div className="chatbox-container" ref={chatContainerRef}>
+                {messageLoader ? (
+                  <>
+                    <div className="text-center">
+                      <Spinner animation="grow" />
                     </div>
-                    <div className="message other-message float-right">
-                      {" "}
-                      Hi Aiden, how are you? How is the project coming along?{" "}
-                    </div>
-                  </li>
-                  <li className="clearfix">
-                    <div className="message-data">
-                      <span className="message-data-time">10:12 AM, Today</span>
-                    </div>
-                    <div className="message my-message">
-                      Are we meeting today?
-                    </div>
-                  </li>
-                  <li className="clearfix">
-                    <div className="message-data">
-                      <span className="message-data-time">10:15 AM, Today</span>
-                    </div>
-                    <div className="message my-message">
-                      Project has been already finished and I have results to
-                      show you.
-                    </div>
-                  </li>
-                </ul>
+                  </>
+                ) : (
+                  <ul className="chatbox-list">
+                    {messages &&
+                      messages.length > 0 &&
+                      messages.map((message) => (
+                        <li
+                          key={message.id}
+                          className={`chatbox-message ${
+                            message.senderId === String(userAuth?.id)
+                              ? "sent"
+                              : "received"
+                          }`}
+                        >
+                          <div className="profile-image">
+                            <HandleImages
+                              imagePath={message.profileImage}
+                              imageAlt={message.name}
+                              imageStyle={{ width: "100%" }}
+                            />
+                          </div>
+                          <div className="message-content">
+                            <div className="sender-name">{message.name}</div>
+                            {message.offerTitle ? (
+                              <>
+                                {RenderOfferStatus(
+                                  message.offerStatus,
+                                  message,
+                                  userAuth
+                                )}
+                              </>
+                            ) : (
+                              <>
+                                <div className="message-text">
+                                  {message.messageDescription}
+                                </div>
+                              </>
+                            )}
+
+                            <div className="message-time">
+                              {message.messageTime}
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                  </ul>
+                )}
               </div>
               <div className="chat-message clearfix">
                 <div className="input-group mb-0">
                   <div className="input-group-prepend">
-                    <span className="input-group-text">
-                      <i className="fa fa-send"></i>
+                    <span
+                      className="input-group-text"
+                      style={{ borderRadius: "0px" }}
+                    >
+                      <i className="bi bi-send"></i>
                     </span>
                   </div>
-                  <input
-                    type="text"
+                  <textarea
                     className="form-control"
                     placeholder="Enter text here..."
+                    rows={1}
                   />
+                </div>
+                <div className="row py-3">
+                  <div className="col-md-2 col-sm-12 mb-2">
+                    <Button
+                      variant="secondary-secondary"
+                      className="btn-sm w-100"
+                    >
+                      <i className="bi bi-coin"></i> Create Offer
+                    </Button>
+                  </div>
+                  <div className="col-md-2 offset-md-8 col-sm-12 mb-2 text-end">
+                    <Button variant="primary" className="btn-sm w-100">
+                      <i className="bi bi-send-check"></i> Send
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

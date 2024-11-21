@@ -11,9 +11,8 @@ const ClientTopbar = () => {
   const { userAuth } = useSelector((state) => state.authentication);
 
   const handleLogout = () => {
-    dispatch(logout()); // Dispatch the logout action
-    localStorage.removeItem("userInfo"); // Optionally, clear user info from local storage
-    // Optionally, redirect to login page or home page here
+    dispatch(logout());
+    localStorage.removeItem("userInfo");
   };
 
   return (
@@ -49,6 +48,8 @@ const ClientTopbar = () => {
                 <i className="bi bi-list-ul"></i>
               </Nav.Link>
               <Nav.Link
+                as={NavLink}
+                to="/messages"
                 className="border border-secondary"
                 style={{
                   borderRadius: "50px",

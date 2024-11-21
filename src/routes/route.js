@@ -26,6 +26,7 @@ import ScheduledAppointment from "../pages/Client/Manage/Scheduled/scheduledAppo
 import RequestService from "../pages/Client/Manage/Request/requestService";
 import RequestedService from "../pages/Client/Manage/Request/requestedService";
 import Index from "../pages/Client/ClientAuth/Profile/index";
+import Messages from "../pages/Client/Messages/Messages";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -59,6 +60,7 @@ const createRoute = createBrowserRouter(
           />
           <Route path="/request-service" element={<RequestService />} />
           <Route path="/requested-service" element={<RequestedService />} />
+          <Route path="/messages" element={<Messages />} />
         </Route>
       </Route>
       <Route path="/welcome" element={<Welcome />} />
