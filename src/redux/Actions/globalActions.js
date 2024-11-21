@@ -6,6 +6,7 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { getToken } from "../../utils/_apiConfig";
+import { useSelector } from "react-redux";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -33,6 +34,8 @@ export const postUpdate = createAsyncThunk(
   "global/postUpdate",
   async (endpoint, { rejectWithValue, getState, dispatch }) => {
     try {
+      const userAuth = getState()?.authentication?.userAuth;
+      console.log("userAuth", userAuth);
       const jwtToken = getToken(getState);
       const response = await api.post(endpoint, {
         headers: {

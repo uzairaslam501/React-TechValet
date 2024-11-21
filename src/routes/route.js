@@ -5,11 +5,11 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import Login from "../pages/Auth/Login/Login";
-import Register from "../pages/Auth/Register/Register";
+import Login from "../pages/Admin/Auth/Login/Login";
+import Register from "../pages/Admin/Auth/Register/Register";
 import AuthLayout from "../components/Layouts/authLayout";
 import ProtectedLayout from "../components/Layouts/protected";
-import Dashboard from "../pages/Dashboard/Dashboard";
+import Dashboard from "../pages/Admin/Dashboard/Dashboard";
 import RootLayout from "../components/Layouts/rootLayout";
 import ProtectedClient from "../components/Client/Layouts/clientProtected";
 import ClientRoot from "../components/Client/Layouts/clientRoot";
