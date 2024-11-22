@@ -3,8 +3,8 @@ import React from "react";
 const RenderOfferDetails = (message, userAuth) => {
   return (
     <div>
-      <div className="p-3 border-bottom">
-        <h6 className="text-dark">
+      <div className="p-3 border-bottom text-dark">
+        <h6>
           <span
             style={{ wordBreak: "break-all" }}
             className="fw-bold"

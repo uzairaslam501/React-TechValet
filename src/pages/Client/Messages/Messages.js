@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getMessagesSidebar } from "../../../redux/Actions/messagesAction";
+import {
+  getMessagesSidebar,
+  sendUsersMessages,
+} from "../../../redux/Actions/messagesAction";
 import HandleImages from "../../../components/Custom/Avatars/HandleImages";
 import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import { truncateCharacters } from "../../../utils/_helpers";
@@ -15,23 +18,26 @@ const Messages = () => {
   const [activeChat, setActiveChat] = useState();
   const [defaultMessage, setDefaultMessage] = useState();
   const [messageLoader, setMessagesLoader] = useState(true);
+  const [userSideBarLoader, setUserSideBarLoader] = useState(true);
   const [isMessageSidebarOpen, setMessageSidebarOpen] = useState(false);
-  const [userSideBarLoader, setUserSideBarLoader] = useState(false);
+  const [messageTyped, setMessageTyped] = useState("");
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const fetchSideBar = (findUser = "") => {
     try {
+      setUserSideBarLoader(true);
       dispatch(
         getMessagesSidebar(
           `Message/GetMessageSideBarLists?loggedInUserId=${userAuth?.id}&Name=${findUser}`
         )
       ).then((response) => {
-        console.log("response?.payload", response?.payload);
         setDefaultMessage(response?.payload[0]);
         setUsersList(response?.payload);
+        setUserSideBarLoader(false);
       });
     } catch (error) {
       console.error("Error fetching sidebar:", error);
+    } finally {
     }
   };
 
@@ -42,7 +48,6 @@ const Messages = () => {
           `Message/GetMessagesForUsers?loggedInUserId=${userAuth?.id}&userId=${userId}`
         )
       ).then((response) => {
-        console.log("Messages", response?.payload);
         setMessages(response?.payload);
         setMessagesLoader(false);
       });
@@ -66,6 +71,29 @@ const Messages = () => {
 
   const toggleSidebar = () => {
     setMessageSidebarOpen(!isMessageSidebarOpen);
+  };
+
+  const handleTypeMessage = (value) => {
+    setMessageTyped(value);
+  };
+
+  const handleSendMessage = (receiverId) => {
+    if (messageTyped) {
+      const data = {
+        SenderId: String(userAuth?.id),
+        ReceiverId: receiverId,
+        MessageDescription: messageTyped,
+      };
+      dispatch(sendUsersMessages(data)).then((response) => {
+        console.log(response);
+        if (response?.payload) {
+          console.log(messages);
+          setMessages((prev) => [...prev, response.payload]);
+        } else {
+          console.error("Invalid response payload:", response);
+        }
+      });
+    }
   };
 
   useEffect(() => {
@@ -111,53 +139,61 @@ const Messages = () => {
                 />
               </div>
               <ul className="list-unstyled chat-list mt-2 mb-0">
-                {usersList && usersList.length > 0 ? (
-                  usersList.map((user, index) => {
-                    return (
-                      <>
-                        <li
-                          className={`${
-                            activeChat?.userDecId === user?.userDecId &&
-                            "active"
-                          } clearfix`}
-                          key={`${index}-${user.username}`}
-                          onClick={() => handleSelectedChat(user)}
-                        >
-                          <HandleImages
-                            imagePath={user?.userImage}
-                            imageAlt={user?.username}
-                          />
-
-                          <div className="about">
-                            <div className="name">
-                              {truncateCharacters(user?.username, 15)}
-                            </div>
-                            <div className="status">
-                              {`${
-                                user?.lastMessageUsername != ""
-                                  ? user?.lastMessageUsername
-                                  : "You"
-                              }: ${truncateCharacters(
-                                user?.messageDescription,
-                                12
-                              )}`}
-                            </div>
-                          </div>
-                        </li>
-                      </>
-                    );
-                  })
+                {userSideBarLoader ? (
+                  <div className="text-center">
+                    <Spinner animation="grow" />
+                  </div>
                 ) : (
                   <>
-                    <li
-                      style={{
-                        backgroundColor: "#fff",
-                        cursor: "auto",
-                        textAlign: "center",
-                      }}
-                    >
-                      <p>No Results</p>
-                    </li>
+                    {usersList && usersList.length > 0 ? (
+                      usersList.map((user, index) => {
+                        return (
+                          <>
+                            <li
+                              className={`${
+                                activeChat?.userDecId === user?.userDecId &&
+                                "active"
+                              } clearfix`}
+                              key={`${index}-${user.username}`}
+                              onClick={() => handleSelectedChat(user)}
+                            >
+                              <HandleImages
+                                imagePath={user?.userImage}
+                                imageAlt={user?.username}
+                              />
+
+                              <div className="about">
+                                <div className="name">
+                                  {truncateCharacters(user?.username, 15)}
+                                </div>
+                                <div className="status">
+                                  {`${
+                                    user?.lastMessageUsername != ""
+                                      ? user?.lastMessageUsername
+                                      : "You"
+                                  }: ${truncateCharacters(
+                                    user?.messageDescription,
+                                    12
+                                  )}`}
+                                </div>
+                              </div>
+                            </li>
+                          </>
+                        );
+                      })
+                    ) : (
+                      <>
+                        <li
+                          style={{
+                            backgroundColor: "#fff",
+                            cursor: "auto",
+                            textAlign: "center",
+                          }}
+                        >
+                          <p>No Results</p>
+                        </li>
+                      </>
+                    )}
                   </>
                 )}
               </ul>
@@ -167,31 +203,24 @@ const Messages = () => {
                 <div className="row">
                   <div className="col-sm-10">
                     <div>
-                      {messageLoader ? (
+                      {activeChat && (
                         <>
-                          <Spinner animation="grow" />
-                        </>
-                      ) : (
-                        activeChat &&
-                        activeChat && (
-                          <>
-                            <HandleImages
-                              imagePath={activeChat?.userImage}
-                              imageAlt={activeChat?.username}
-                            />
-                            <div className="chat-about">
-                              <h6 className="mb-0">{activeChat?.username}</h6>
-                              <div>
-                                <small>
-                                  Online
-                                  <sup>
-                                    <i className="bi bi-circle-fill offline mx-1"></i>
-                                  </sup>
-                                </small>
-                              </div>
+                          <HandleImages
+                            imagePath={activeChat?.userImage}
+                            imageAlt={activeChat?.username}
+                          />
+                          <div className="chat-about">
+                            <h6 className="mb-0">{activeChat?.username}</h6>
+                            <div>
+                              <small>
+                                Online
+                                <sup>
+                                  <i className="bi bi-circle-fill offline mx-1"></i>
+                                </sup>
+                              </small>
                             </div>
-                          </>
-                        )
+                          </div>
+                        </>
                       )}
                     </div>
                     <div className="text-end">
@@ -274,6 +303,7 @@ const Messages = () => {
                     className="form-control"
                     placeholder="Enter text here..."
                     rows={1}
+                    onChange={(e) => handleTypeMessage(e.target.value)}
                   />
                 </div>
                 <div className="row py-3">
@@ -286,7 +316,11 @@ const Messages = () => {
                     </Button>
                   </div>
                   <div className="col-md-2 offset-md-8 col-sm-12 mb-2 text-end">
-                    <Button variant="primary" className="btn-sm w-100">
+                    <Button
+                      variant="primary"
+                      className="btn-sm w-100"
+                      onClick={() => handleSendMessage(activeChat?.userDecId)}
+                    >
                       <i className="bi bi-send-check"></i> Send
                     </Button>
                   </div>
