@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import "./topbar.css";
 import { logout } from "../../../../redux/Reducers/authSlice";
+import NotificationCard from "../../../Custom/Notification/NotificationCard";
 
 const ClientTopbar = () => {
   const dispatch = useDispatch();
@@ -25,17 +26,7 @@ const ClientTopbar = () => {
           <Navbar.Toggle />
           {userAuth && (
             <Navbar.Collapse className="justify-content-end">
-              <Nav.Link
-                className="border border-secondary"
-                style={{
-                  borderRadius: "50px",
-                  padding: "3px 7px",
-                  background: "#e1e1e1",
-                  color: "#000",
-                }}
-              >
-                <i className="bi bi-bell-fill"></i>
-              </Nav.Link>
+              <NotificationCard />
               <Nav.Link
                 className="border border-secondary mx-2"
                 style={{
