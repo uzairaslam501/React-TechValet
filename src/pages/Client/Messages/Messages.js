@@ -177,7 +177,6 @@ const Messages = () => {
         messageDescription: messageDescription,
         messageTime: msgTime,
       };
-      console.log("setSignalRMessageObject", setSignalRMessageObject);
       setMessages((prev) => [...prev, setSignalRMessageObject]);
     };
 

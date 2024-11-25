@@ -7,6 +7,10 @@ class SignalRService {
   }
 
   initializeConnection(url, userId) {
+    if (this.connection && this.connection.state === "Connected") {
+      console.log("Connection already initialized");
+      return;
+    }
     this.connection = new signalR.HubConnectionBuilder().withUrl(url).build();
 
     this.connection.on(
@@ -37,6 +41,38 @@ class SignalRService {
       }
     );
 
+    this.connection.on(
+      "ReloadNotifications",
+      (
+        receiverId,
+        title,
+        isRead,
+        isActive,
+        url,
+        createdAt,
+        description,
+        notificationType
+      ) => {
+        try {
+          if (receiverId === userId) {
+            // Process the message
+            this.broadcastNotification(
+              receiverId,
+              title,
+              isRead,
+              isActive,
+              url,
+              createdAt,
+              description,
+              notificationType
+            );
+          }
+        } catch (error) {
+          console.error("Error processing received Notification:", error);
+        }
+      }
+    );
+
     this.connection
       .start()
       .then(() => console.log("SignalR connection established"))
@@ -44,7 +80,9 @@ class SignalRService {
   }
 
   subscribe(callback) {
-    this.subscribers.push(callback);
+    if (!this.subscribers.includes(callback)) {
+      this.subscribers.push(callback);
+    }
   }
 
   unsubscribe(callback) {
@@ -67,6 +105,30 @@ class SignalRService {
         profile,
         messageDescription,
         msgTime
+      )
+    );
+  }
+
+  broadcastNotification(
+    receiverId,
+    title,
+    isRead,
+    isActive,
+    url,
+    createdAt,
+    description,
+    notificationType
+  ) {
+    this.subscribers.forEach((callback) =>
+      callback(
+        receiverId,
+        title,
+        isRead,
+        isActive,
+        url,
+        createdAt,
+        description,
+        notificationType
       )
     );
   }

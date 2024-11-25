@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Nav,
   NavDropdown,
@@ -16,12 +16,16 @@ import {
   getNotificationsCount,
   markNotifications,
 } from "../../../redux/Actions/notificationActions";
+import signalRService from "../../../services/SignalR";
+import { notificationURL } from "../../../utils/_envConfig";
 
 const NotificationCard = () => {
   const dispatch = useDispatch();
+  const isSubscribed = useRef(false);
   const [unReadCount, setUnReadCount] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [notificationLoader, setNotificationLoader] = useState(false);
+  const [notificationCardOpen, setNotificationCardOpen] = useState(false);
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const fetchNotificationsList = async () => {
@@ -39,16 +43,10 @@ const NotificationCard = () => {
   const fetchNotificationsCount = () => {
     try {
       dispatch(getNotificationsCount(userAuth?.id)).then((response) => {
-        if (response?.payload > 0) {
-          setUnReadCount(response?.payload);
-        }
+        setUnReadCount(response?.payload);
       });
     } catch (error) {}
   };
-
-  useEffect(() => {
-    fetchNotificationsCount();
-  }, [dispatch]);
 
   // Delete notification
   const handleDelete = (id) => {
@@ -86,9 +84,44 @@ const NotificationCard = () => {
   };
 
   const handleNotificationPanel = async () => {
-    setNotificationLoader(true);
+    setNotificationCardOpen(true);
     await fetchNotificationsList();
   };
+
+  const handleIncomingNotification = useCallback(
+    (
+      receiverId,
+      title,
+      isRead,
+      isActive,
+      url,
+      createdAt,
+      description,
+      notificationType
+    ) => {
+      setUnReadCount((prev) => prev + 1);
+    },
+    []
+  );
+
+  useEffect(() => {
+    fetchNotificationsCount();
+  }, [dispatch]);
+
+  useEffect(() => {
+    signalRService.initializeConnection(notificationURL, userAuth?.id);
+
+    if (!isSubscribed.current) {
+      signalRService.subscribe(handleIncomingNotification);
+      isSubscribed.current = true;
+    }
+
+    return () => {
+      signalRService.unsubscribe(handleIncomingNotification);
+      isSubscribed.current = false;
+      signalRService.disconnect();
+    };
+  }, [handleIncomingNotification, userAuth?.id]);
 
   return (
     <Nav
