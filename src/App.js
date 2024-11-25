@@ -11,6 +11,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "aos/dist/aos.css"; // For animation
 import "./assets/fonts/myriad-pro/style.css";
 import AOS from "aos";
+import { notificationURL } from "./utils/_envConfig";
 
 const App = () => {
   const { userAuth } = useSelector((state) => state.authentication); // Get user info from Redux store
@@ -25,7 +26,7 @@ const App = () => {
 
     // Initialize SignalR
     if (userAuth?.id) {
-      const URL = `${process.env.REACT_APP_NOTIFICATION_URL}notificationHub`;
+      const URL = `${notificationURL}`;
       signalRService.initializeConnection(URL, userAuth.id);
     }
 

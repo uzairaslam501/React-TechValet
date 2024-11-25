@@ -9,19 +9,37 @@ class SignalRService {
   initializeConnection(url, userId) {
     this.connection = new signalR.HubConnectionBuilder().withUrl(url).build();
 
-    this.connection.on("RecieveMessage", (message, targetUserIds) => {
-      try {
-        const userIdsArray = JSON.parse(targetUserIds);
-        if (userIdsArray.includes(userId)) {
-          this.broadcastMessage(message);
+    this.connection.on(
+      "ReceiveMessage",
+      (
+        senderId,
+        receiverId,
+        username,
+        profile,
+        messageDescription,
+        msgTime
+      ) => {
+        try {
+          if (receiverId === userId) {
+            // Process the message
+            this.broadcastMessage(
+              senderId,
+              receiverId,
+              username,
+              profile,
+              messageDescription,
+              msgTime
+            );
+          }
+        } catch (error) {
+          console.error("Error processing received message:", error);
         }
-      } catch (error) {
-        console.error("Error processing message:", error);
       }
-    });
+    );
 
     this.connection
       .start()
+      .then(() => console.log("SignalR connection established"))
       .catch((err) => console.error("Connection error:", err));
   }
 
@@ -33,8 +51,30 @@ class SignalRService {
     this.subscribers = this.subscribers.filter((sub) => sub !== callback);
   }
 
-  broadcastMessage(message) {
-    this.subscribers.forEach((callback) => callback(message));
+  broadcastMessage(
+    senderId,
+    receiverId,
+    username,
+    profile,
+    messageDescription,
+    msgTime
+  ) {
+    this.subscribers.forEach((callback) =>
+      callback(
+        senderId,
+        receiverId,
+        username,
+        profile,
+        messageDescription,
+        msgTime
+      )
+    );
+  }
+
+  sendMessage(data) {
+    return this.connection
+      .invoke("SendMessage", data?.senderId, data?.receiverId, data?.message)
+      .catch((err) => console.error("Error sending message:", err));
   }
 
   disconnect() {

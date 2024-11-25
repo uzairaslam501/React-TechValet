@@ -10,6 +10,8 @@ import { truncateCharacters } from "../../../utils/_helpers";
 import RenderOfferStatus from "./RendersCard/RenderOfferStatus";
 import "./style.css";
 import OfferDialogue from "./OfferDialogue/OfferDialogue";
+import signalRService from "../../../services/SignalR";
+import { notificationURL } from "../../../utils/_envConfig";
 
 const Messages = () => {
   const dispatch = useDispatch();
@@ -50,7 +52,6 @@ const Messages = () => {
       dispatch(
         getMessagesSidebar(`Message/GetReceiverStatuses/${userId}`)
       ).then((response) => {
-        console.log("response", response?.payload);
         setUserOnlineStatus(response?.payload);
       });
     } catch (error) {
@@ -67,6 +68,7 @@ const Messages = () => {
           `Message/GetMessagesForUsers?loggedInUserId=${userAuth?.id}&userId=${userId}`
         )
       ).then((response) => {
+        console.log("messages", response?.payload);
         setMessages(response?.payload);
         setMessagesLoader(false);
       });
@@ -106,7 +108,17 @@ const Messages = () => {
       };
       dispatch(sendUsersMessages(data)).then((response) => {
         if (response?.payload) {
-          setMessages((prev) => [...prev, response.payload]);
+          const newMessage = response.payload;
+          // Send the message via SignalR
+          const messageForSignalR = {
+            senderId: newMessage.senderId,
+            receiverId: newMessage.receiverId,
+            message: newMessage?.messageDescription,
+          };
+          setMessages((prev) => [...prev, newMessage]);
+          if (userAuth?.id === newMessage.senderId) {
+            signalRService.sendMessage(messageForSignalR);
+          }
           setMessageTyped("");
           setSendLoader(false);
         } else {
@@ -143,6 +155,38 @@ const Messages = () => {
     if (userAuth?.id) {
       fetchSideBar();
     }
+  }, [userAuth?.id]);
+
+  useEffect(() => {
+    signalRService.initializeConnection(notificationURL, userAuth?.id);
+
+    // Subscribe to incoming messages
+    const handleIncomingMessage = (
+      senderId,
+      receiverId,
+      username,
+      profile,
+      messageDescription,
+      msgTime
+    ) => {
+      const setSignalRMessageObject = {
+        senderId: senderId,
+        receiverId: receiverId,
+        name: username,
+        profileImage: profile,
+        messageDescription: messageDescription,
+        messageTime: msgTime,
+      };
+      console.log("setSignalRMessageObject", setSignalRMessageObject);
+      setMessages((prev) => [...prev, setSignalRMessageObject]);
+    };
+
+    signalRService.subscribe(handleIncomingMessage);
+
+    return () => {
+      signalRService.disconnect();
+      signalRService.unsubscribe(handleIncomingMessage);
+    };
   }, [userAuth?.id]);
 
   return (
