@@ -5,19 +5,11 @@ import {
   sendUsersMessages,
 } from "../../../redux/Actions/messagesAction";
 import HandleImages from "../../../components/Custom/Avatars/HandleImages";
-import {
-  Button,
-  Col,
-  Container,
-  FloatingLabel,
-  Form,
-  Row,
-  Spinner,
-} from "react-bootstrap";
+import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import { truncateCharacters } from "../../../utils/_helpers";
 import RenderOfferStatus from "./RendersCard/RenderOfferStatus";
 import "./style.css";
-import Dialogue from "../../../components/Custom/Modal/modal";
+import OfferDialogue from "./OfferDialogue/OfferDialogue";
 
 const Messages = () => {
   const dispatch = useDispatch();
@@ -131,10 +123,6 @@ const Messages = () => {
 
   const handleOrderClose = () => {
     setShowOrderDialogue(false);
-  };
-
-  const handleSubmitOrderForm = () => {
-    console.log("first");
   };
 
   useEffect(() => {
@@ -405,54 +393,13 @@ const Messages = () => {
         </Row>
       </Container>
 
-      <Dialogue
-        show={showOrderDialogue}
-        onHide={handleOrderClose}
-        headerClass="px-3 py-2"
-        title="Create Offer"
-        bodyContent={
-          <Form>
-            <Form>
-              <Form.Group className="mb-3" controlId="formGroupEmail">
-                <Form.Label>Offer Title:</Form.Label>
-                <Form.Control type="text" placeholder="Offer Title" />
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="formGroupPassword">
-                <Form.Label>From Date Time:</Form.Label>
-                <Form.Control type="datetime-local" />
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="formGroupPassword">
-                <Form.Label>To Date Time:</Form.Label>
-                <Form.Control type="datetime-local" />
-              </Form.Group>
-              <FloatingLabel
-                controlId="floatingTextarea2"
-                label="Describe the required services - please be as detailed as
-                  possible:"
-              >
-                <Form.Control
-                  as="textarea"
-                  placeholder="Leave a comment here"
-                  style={{ height: "100px" }}
-                />
-              </FloatingLabel>
-            </Form>
-          </Form>
-        }
-        backdrop="static"
-        customFooterButtons={[
-          {
-            text: "Cancel",
-            className: "btn-secondary-secondary",
-            onClick: handleOrderClose,
-          },
-          {
-            text: "Send Offer",
-            variant: "primary",
-            onClick: handleSubmitOrderForm,
-          },
-        ]}
-      />
+      {showOrderDialogue && (
+        <OfferDialogue
+          handleOrderClose={handleOrderClose}
+          messageObject={defaultMessage}
+          showOrderDialogue={showOrderDialogue}
+        />
+      )}
     </>
   );
 };
