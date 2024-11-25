@@ -1,52 +1,93 @@
-import React, { useState } from "react";
-import { Nav, NavDropdown, Badge, ListGroup, Button } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import {
+  Nav,
+  NavDropdown,
+  Badge,
+  ListGroup,
+  Button,
+  Spinner,
+} from "react-bootstrap";
 import "./NotificationCard.css";
 import { truncateCharacters } from "../../../utils/_helpers";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteNotification,
+  getNotifications,
+  getNotificationsCount,
+  markNotifications,
+} from "../../../redux/Actions/notificationActions";
 
 const NotificationCard = () => {
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      title: "New Message",
-      description: "You received a new message",
-      isNew: true,
-    },
-    {
-      id: 2,
-      title: "System Update",
-      description: "Your system was updated",
-      isNew: false,
-    },
-    {
-      id: 3,
-      title: "Promotion",
-      description: "Check out our latest offers",
-      isNew: true,
-    },
-    {
-      id: 4,
-      title: "Promotion",
-      description: "Check out our latest offers",
-      isNew: true,
-    },
-    {
-      id: 5,
-      title: "Promotion",
-      description: "Check out our latest offers",
-      isNew: true,
-    },
-  ]);
+  const dispatch = useDispatch();
+  const [unReadCount, setUnReadCount] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [notificationLoader, setNotificationLoader] = useState(false);
+  const { userAuth } = useSelector((state) => state?.authentication);
+
+  const fetchNotificationsList = async () => {
+    try {
+      dispatch(getNotifications(userAuth?.id)).then((response) => {
+        setNotifications(response?.payload);
+        setNotificationLoader(false);
+      });
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    } finally {
+    }
+  };
+
+  const fetchNotificationsCount = () => {
+    try {
+      dispatch(getNotificationsCount(userAuth?.id)).then((response) => {
+        if (response?.payload > 0) {
+          setUnReadCount(response?.payload);
+        }
+      });
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    fetchNotificationsCount();
+  }, [dispatch]);
 
   // Delete notification
   const handleDelete = (id) => {
+    try {
+      dispatch(deleteNotification(id)).then((response) => {
+        fetchNotificationsCount();
+        fetchNotificationsList();
+      });
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    } finally {
+    }
     setNotifications(notifications.filter((n) => n.id !== id));
   };
 
   // Mark notification as read
   const handleMarkAsRead = (id) => {
-    setNotifications(
-      notifications.map((n) => (n.id === id ? { ...n, isNew: false } : n))
-    );
+    try {
+      dispatch(markNotifications(id)).then((response) => {
+        if (response?.payload === true) {
+          setNotifications((prev) =>
+            prev.map((notification) =>
+              notification.notificationId === id
+                ? { ...notification, isRead: 1 }
+                : notification
+            )
+          );
+          setUnReadCount(unReadCount - 1);
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    } finally {
+    }
+  };
+
+  const handleNotificationPanel = async () => {
+    setNotificationLoader(true);
+    await fetchNotificationsList();
   };
 
   return (
@@ -64,7 +105,7 @@ const NotificationCard = () => {
         title={
           <div style={{ position: "relative" }}>
             <i className="bi bi-bell-fill"></i>
-            {notifications.some((n) => n.isNew) && (
+            {unReadCount && (
               <Badge
                 bg="danger"
                 pill
@@ -76,69 +117,82 @@ const NotificationCard = () => {
                   zIndex: 1,
                 }}
               >
-                {notifications.filter((n) => n.isNew).length}
+                {unReadCount > 9 ? `9+` : unReadCount}
               </Badge>
             )}
           </div>
         }
         id="notification-dropdown"
         className="custom-notification-dropdown"
+        onClick={handleNotificationPanel}
       >
         <div className="notification-dropdown">
           <h6 className="dropdown-header text-center mb-3">
             Notification Center
           </h6>
-          {notifications.length > 0 ? (
-            <ListGroup>
-              {notifications.map((notification) => (
-                <ListGroup.Item
-                  key={notification.id}
-                  className={`d-flex justify-content-between align-items-start ${
-                    notification.isNew ? "bg-light" : ""
-                  }`}
-                  style={{
-                    borderRadius: "8px",
-                    marginBottom: "10px",
-                  }}
-                >
-                  <div>
-                    <div
-                      className="fw-bold"
-                      style={{
-                        wordBreak: "break-all",
-                      }}
-                    >
-                      {truncateCharacters(notification.title, 33)}
-                    </div>
-                    <small
-                      style={{
-                        wordBreak: "break-all",
-                      }}
-                    >
-                      {truncateCharacters(notification.description, 76)}
-                    </small>
-                  </div>
-                  <div className="d-flex flex-column">
-                    {notification.isNew && (
-                      <Button
-                        variant="outline-primary bg-light text-primary border-0"
-                        size="sm"
-                        onClick={() => handleMarkAsRead(notification.id)}
-                        className="bi bi-circle-fill"
-                      ></Button>
-                    )}
-                    <Button
-                      variant="outline-danger border-0"
-                      size="sm"
-                      onClick={() => handleDelete(notification.id)}
-                      className="bi bi-trash"
-                    ></Button>
-                  </div>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
+          {notificationLoader ? (
+            <div className="text-center">
+              <Spinner animation="grow" />
+            </div>
           ) : (
-            <p className="text-center">No notifications</p>
+            <>
+              {notifications.length > 0 ? (
+                <ListGroup>
+                  {notifications.map((notification) => (
+                    <ListGroup.Item
+                      key={notification.notificationId}
+                      className={`d-flex justify-content-between align-items-start shadow-sm`}
+                      style={{
+                        borderRadius: "8px",
+                        marginBottom: "10px",
+                        backgroundColor:
+                          notification.isRead === 0 ? "#ebeaea" : "",
+                      }}
+                    >
+                      <div>
+                        <div
+                          className="fw-bold"
+                          style={{
+                            wordBreak: "break-all",
+                          }}
+                        >
+                          {truncateCharacters(notification.title, 33)}
+                        </div>
+                        <small
+                          style={{
+                            wordBreak: "break-all",
+                          }}
+                        >
+                          {truncateCharacters(notification.description, 76)}
+                        </small>
+                      </div>
+                      <div className="d-flex flex-column">
+                        {notification.isRead === 0 && (
+                          <Button
+                            variant="outline-primary bg-light text-primary border-0"
+                            size="sm"
+                            onClick={() =>
+                              handleMarkAsRead(notification.notificationId)
+                            }
+                            className="bi bi-circle-fill"
+                          ></Button>
+                        )}
+                        <Button
+                          variant="outline-danger border-0"
+                          size="sm"
+                          onClick={() =>
+                            handleDelete(notification.notificationId)
+                          }
+                          className="bi bi-trash"
+                        ></Button>
+                      </div>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              ) : (
+                <p className="text-center">No notifications</p>
+              )}
+            </>
           )}
         </div>
       </NavDropdown>
