@@ -1,8 +1,8 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { postRegister } from "../../../redux/Actions/authActions";
-import { registerUser } from "../../../utils/api";
+import { postRegister } from "../../../../redux/Actions/authActions";
+import { registerUser } from "../../../../utils/api";
 import { Form, Button, Row, Col, Alert } from "react-bootstrap";
 import { Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";

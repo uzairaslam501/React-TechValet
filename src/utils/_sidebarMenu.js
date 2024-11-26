@@ -2,26 +2,30 @@ export const menuItems = [
   {
     title: "Dashboard",
     path: "/admin",
-    icon: "",
+    icon: "bi bi-speedometer2",
   },
   {
     title: "Manage Users",
-    icon: "",
+    icon: "bi bi-person-circle",
     subItems: [
-      { title: "Add User", path: "/add-user", icon: "" },
-      { title: "Users List", path: "/users-list", icon: "" },
+      { title: "Add User", path: "/add-user", icon: "bi bi-plus-circle" },
+      { title: "Users List", path: "/users-list", icon: "bi bi-list-task" },
     ],
   },
   {
     title: "Manage Categories",
-    icon: "",
+    icon: "bi bi-journal",
     subItems: [
       {
         title: "Add Category",
         path: "/add-categories",
-        icon: "",
+        icon: "bi bi-plus-circle",
       },
-      { title: "Categories List", path: "/categories", icon: "" },
+      {
+        title: "Categories List",
+        path: "/categories",
+        icon: "bi bi-list-task",
+      },
     ],
   },
 ];

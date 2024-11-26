@@ -15,6 +15,7 @@ import {
 import { countries } from "../../../../../utils/client/data/countries";
 import CustomPhoneInput from "../../../../../components/Custom/PhoneInput/PhoneInput";
 import { languageOptions } from "../../../../../utils/client/data/requestedData";
+import CustomDropdown from "../../../../../components/Custom/Dropdown/Dropdown";
 
 const validation = Yup.object().shape({
   firstName: Yup.string()
@@ -54,12 +55,22 @@ const validation = Yup.object().shape({
 const Account = ({ userRecord }) => {
   const dispatch = useDispatch();
   const [timeZones, setTimeZones] = useState([]);
+  const [selectedPreferredLanguage, setSelectedPreferredLanguage] = useState(
+    []
+  );
 
   const fetchTimeZones = () => {
     dispatch(getRecordById(`/Admin/GetTimeZones`)).then((response) => {
       setTimeZones(Object.values(response.payload));
     });
   };
+
+  //#region Language Handle
+  const handlePreferredLanguage = (val) => {
+    setSelectedPreferredLanguage(val);
+    setFieldValue("language", val.join(","));
+  };
+  //#endregion Language
 
   const initialValues = {
     firstName: userRecord.firstName || "",
@@ -103,7 +114,11 @@ const Account = ({ userRecord }) => {
 
   useEffect(() => {
     fetchTimeZones();
+
+    setSelectedPreferredLanguage(userRecord?.language?.split(","));
   }, [userRecord?.timezone]);
+
+  console.log(selectedPreferredLanguage);
 
   return (
     <>
@@ -337,24 +352,15 @@ const Account = ({ userRecord }) => {
             <Col sm={12} className="mb-2">
               <FormGroup>
                 <FormLabel>Preferred Language</FormLabel>
-                <FormControl
-                  as="select"
-                  multiple
-                  value={userRecord?.language?.split(",") || []}
-                  onChange={(e) => {
-                    const selectedLanguages = Array.from(
-                      e.target.selectedOptions,
-                      (option) => option.value
-                    );
-                    setFieldValue("language", selectedLanguages.join(","));
-                  }}
-                >
-                  {languageOptions.map((language, index) => {
-                    return (
-                      <option value={language.value}>{language.value}</option>
-                    );
-                  })}
-                </FormControl>
+                <CustomDropdown
+                  optionsList={languageOptions}
+                  selectedOptions={selectedPreferredLanguage || []}
+                  handleChange={handlePreferredLanguage}
+                  isMultiSelect={true}
+                  isSearchable={false}
+                  fieldName="Language"
+                  isInvalid={!!errors.language && touched.language}
+                />
               </FormGroup>
             </Col>
           </Row>

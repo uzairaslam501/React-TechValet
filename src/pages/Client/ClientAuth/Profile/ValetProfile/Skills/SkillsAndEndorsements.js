@@ -6,45 +6,40 @@ import {
   getRecordById,
   postUpdate,
 } from "../../../../../../redux/Actions/globalActions";
+import CustomDropdown from "../../../../../../components/Custom/Dropdown/Dropdown";
 
 const SkillsAndEndorsements = ({ userRecord }) => {
   const dispatch = useDispatch();
-  const [selectedSkills, setSelectedSkills] = useState([]);
   const [alertMessage, setAlertMessage] = useState("");
   const [userSkills, setUserSkills] = useState("");
+  const [selectedUserSkills, setSelectedUserSkills] = useState([]);
 
-  const handleSkillChange = (event) => {
-    const selected = Array.from(
-      event.target.selectedOptions,
-      (option) => option.value
-    );
-    setSelectedSkills(selected);
+  const handleSkillChange = (val) => {
+    setSelectedUserSkills(val);
   };
 
-  const updateSkills = () => {
-    if (selectedSkills.length === 0) {
+  const handleUpdateSkills = () => {
+    if (selectedUserSkills.length === 0) {
       setAlertMessage("Please select at least one skill to update.");
     } else {
       setAlertMessage("");
-      const ssss = selectedSkills.join(",");
-      updateSkillss();
-      console.log("Updated Skills:", ssss);
+      console.log("Updated Skills:", selectedUserSkills.join(","));
+      updateUserSkills();
     }
   };
 
-  const updateSkillss = () => {
+  const updateUserSkills = () => {
     try {
-      const ssss = selectedSkills.join(",");
+      const userSkillsCommaSeperated = selectedUserSkills.join(",");
       dispatch(
         postUpdate(
-          `User/PostAddUserSkill?SkillName=${ssss}&UserId=${userRecord?.id}`
-        ).then((response) => {
-          console.log("Update Skills", response?.payload);
-        })
-      );
+          `/User/PostAddUserSkill?SkillName=${userSkillsCommaSeperated}&UserId=${userRecord?.id}`
+        )
+      ).then((response) => {
+        console.log("Update Skills", response?.payload);
+      });
     } catch (error) {
       console.log("PostAddUserSkill Error", error);
-    } finally {
     }
   };
 
@@ -53,7 +48,7 @@ const SkillsAndEndorsements = ({ userRecord }) => {
       getRecordById(`/User/GetUserSkillByUserId?UserId=${userRecord?.id}`)
     ).then((response) => {
       setUserSkills(response.payload);
-      console.log("Skills", response.payload);
+      setSelectedUserSkills(response.payload.map((skill) => skill.skillName));
     });
   };
 
@@ -87,7 +82,7 @@ const SkillsAndEndorsements = ({ userRecord }) => {
         <div className="align-items-center osahan-post-header p-3 border-bottom people-list">
           <Form.Group>
             <Form.Label>Add/Update your Skills</Form.Label>
-            <Form.Control
+            {/* <Form.Control
               as="select"
               multiple
               value={selectedSkills}
@@ -99,7 +94,15 @@ const SkillsAndEndorsements = ({ userRecord }) => {
                   {skill}
                 </option>
               ))}
-            </Form.Control>
+            </Form.Control> */}
+            <CustomDropdown
+              optionsList={skillsOptions}
+              selectedOptions={selectedUserSkills || []}
+              handleChange={handleSkillChange}
+              isMultiSelect={true}
+              isSearchable={true}
+              fieldName="Skill"
+            />
           </Form.Group>
           {alertMessage && <span className="text-danger">{alertMessage}</span>}
           <div className="text-right mt-3">
@@ -107,7 +110,7 @@ const SkillsAndEndorsements = ({ userRecord }) => {
               variant="outline-warning"
               size="sm"
               id="updateSkillsBtn"
-              onClick={updateSkills}
+              onClick={handleUpdateSkills}
             >
               Update Skills
             </Button>
