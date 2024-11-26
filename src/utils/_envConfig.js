@@ -3,3 +3,4 @@ export const notificationURL = process.env.REACT_APP_API_Notification_URL;
 export const Key = process.env.REACT_APP_API_MAP_KEY;
 
 console.log(baseUrl);
+console.log(notificationURL);

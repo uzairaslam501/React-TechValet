@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Navbar, Nav, NavDropdown, Container, Button } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { valetMenu, customerMenu } from "../../../utils/client/_menu";
 import { toast } from "react-toastify";
@@ -35,12 +36,10 @@ const ClientNavbar = () => {
       <header id="header" className="header">
         <div className="container-fluid container-xl d-flex align-items-center justify-content-center text-uppercase">
           <a
-            href="index.html"
-            className="logo d-flex align-items-center me-auto"
+            href="/"
+            className="logo d-flex align-items-center me-auto text-white"
           >
-            <a className="text-white">
-              <i className="bi bi-house-check"></i> Home
-            </a>
+            <i className="bi bi-house-check me-2"></i> Home
           </a>
 
           {userAuth ? (
@@ -74,7 +73,8 @@ const ClientNavbar = () => {
                         >
                           {link.submenu.map((subLink, subIndex) => (
                             <NavDropdown.Item
-                              href={subLink.href}
+                              as={NavLink}
+                              to={subLink.href}
                               key={subIndex}
                               className={`${subLink.className}`}
                             >
@@ -100,7 +100,8 @@ const ClientNavbar = () => {
                       ) : (
                         <>
                           <Nav.Link
-                            href={link.href}
+                            as={NavLink}
+                            to={link.href}
                             key={index}
                             className={`${link.className}`}
                           >
@@ -120,12 +121,13 @@ const ClientNavbar = () => {
             </>
           ) : (
             <>
-              <Nav.Link href="/login" className="ms-3 text-white">
+              <Nav.Link as={NavLink} to="/login" className="ms-3 text-white">
                 <i className="bi bi-person-fill-lock"></i> Sign In
               </Nav.Link>
 
               <Nav.Link
-                href=""
+                as={NavLink}
+                to="/login"
                 className="btn ms-3 py-1 px-3"
                 style={{ background: "#fff", color: "#000" }}
               >

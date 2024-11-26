@@ -5,15 +5,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import "./topbar.css";
 import { logout } from "../../../../redux/Reducers/authSlice";
+import NotificationCard from "../../../Custom/Notification/NotificationCard";
 
 const ClientTopbar = () => {
   const dispatch = useDispatch();
   const { userAuth } = useSelector((state) => state.authentication);
 
   const handleLogout = () => {
-    dispatch(logout()); // Dispatch the logout action
-    localStorage.removeItem("userInfo"); // Optionally, clear user info from local storage
-    // Optionally, redirect to login page or home page here
+    dispatch(logout());
+    localStorage.removeItem("userInfo");
   };
 
   return (
@@ -26,38 +26,38 @@ const ClientTopbar = () => {
           <Navbar.Toggle />
           {userAuth && (
             <Navbar.Collapse className="justify-content-end">
+              <NotificationCard />
+              <Nav
+                as={NavLink}
+                to="/appointment"
+                className="border border-secondary mx-1"
+                style={{
+                  borderRadius: "50px",
+                  padding: "8px 12px",
+                  background: "#e1e1e1",
+                  color: "#000",
+                  position: "relative",
+                }}
+              >
+                <div style={{ position: "relative" }}>
+                  <i className="bi bi-list-ul"></i>
+                </div>
+              </Nav>
               <Nav.Link
+                as={NavLink}
+                to="/messages"
                 className="border border-secondary"
                 style={{
                   borderRadius: "50px",
-                  padding: "3px 7px",
+                  padding: "8px 12px",
                   background: "#e1e1e1",
                   color: "#000",
+                  position: "relative",
                 }}
               >
-                <i className="bi bi-bell-fill"></i>
-              </Nav.Link>
-              <Nav.Link
-                className="border border-secondary mx-2"
-                style={{
-                  borderRadius: "50px",
-                  padding: "3px 7px",
-                  background: "#e1e1e1",
-                  color: "#000",
-                }}
-              >
-                <i className="bi bi-list-ul"></i>
-              </Nav.Link>
-              <Nav.Link
-                className="border border-secondary"
-                style={{
-                  borderRadius: "50px",
-                  padding: "3px 7px",
-                  background: "#e1e1e1",
-                  color: "#000",
-                }}
-              >
-                <i className="bi bi-envelope-arrow-down-fill"></i>
+                <div style={{ position: "relative" }}>
+                  <i className="bi bi-envelope-arrow-down-fill"></i>
+                </div>
               </Nav.Link>
 
               <Nav className="mx-2">

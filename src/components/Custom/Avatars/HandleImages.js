@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const HandleImages = ({ imagePath, imageAlt }) => {
+const HandleImages = ({ imagePath, imageAlt, imageStyle }) => {
   const [imageSrc, setImageSrc] = useState(
     imagePath || "https://bootdey.com/img/Content/avatar/avatar2.png"
   );
@@ -15,7 +15,14 @@ const HandleImages = ({ imagePath, imageAlt }) => {
     );
   }, [imagePath]);
 
-  return <img onError={handleBrokenImage} src={imageSrc} alt={imageAlt} />;
+  return (
+    <img
+      onError={handleBrokenImage}
+      src={imageSrc}
+      alt={imageAlt}
+      style={imageStyle}
+    />
+  );
 };
 
 export default HandleImages;

@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Button,
-  Modal,
-  Form,
-} from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { requestGetUserPackages } from "../../../../redux/Actions/customerActions";
 import Dialogue from "../../../../components/Custom/Modal/modal";
@@ -32,7 +24,6 @@ const PackageSelection = () => {
   const fetchPackages = () => {
     try {
       dispatch(requestGetUserPackages()).then((response) => {
-        console.log("requestGetUserPackages", response);
         setTotalRemainings(response.payload);
       });
     } catch (error) {
@@ -44,8 +35,6 @@ const PackageSelection = () => {
   useEffect(() => {
     fetchPackages();
   }, [dispatch]);
-
-  const handleCloseModal = () => setShowModal(false);
 
   return (
     <>
@@ -72,7 +61,6 @@ const PackageSelection = () => {
               <Button
                 variant="primary-secondary"
                 size="lg"
-                block
                 className="my-3"
                 onClick={() => handleShowModal("one-year")}
                 disabled={totalRemainings > 0}
@@ -104,7 +92,6 @@ const PackageSelection = () => {
               <Button
                 variant="primary-secondary"
                 size="lg"
-                block
                 className="my-3"
                 onClick={() => handleShowModal("two-year")}
                 disabled={totalRemainings > 0}

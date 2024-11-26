@@ -7,6 +7,39 @@
   --text-secondary-dark: #cfcfcf;
 }
 
+/* General styles for scrollbar */
+::-webkit-scrollbar {
+  width: 5px; /* Width of the vertical scrollbar */
+  height: 10px; /* Height of the horizontal scrollbar */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: linear-gradient(
+    45deg,
+    #f3f3f3,
+    #ddd
+  ); /* Subtle gradient background */
+  border-radius: 10px; /* Curve the track */
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #f3f3f3); /* Gradient for the thumb */
+  border-radius: 10px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #f3f3f3); /* Slightly darker on hover */
+}
+
+/* Firefox support */
+* {
+  scrollbar-width: thin; /* Thin scrollbar width */
+  scrollbar-color: #f3f3f3; /* Thumb color and track color */
+}
+
 .light-mode {
   background-color: var(--primary-light);
   color: var(--text-primary-light);
@@ -93,4 +126,31 @@
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: #000;
   --bs-btn-disabled-border-color: #000;
+}
+
+/* Scrollbar for specific areas */
+.custom-scroll {
+  overflow-y: auto;
+  scrollbar-width: thin; /* Use browser's automatic scrollbar width */
+  scrollbar-color: #9b9999;
+}
+
+/* Add a horizontal scrollbar style */
+.horizontal-scroll {
+  overflow-x: auto;
+  scrollbar-color: #9b9999;
+}
+
+/* Scrollbar for dark mode */
+body.dark-mode ::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #ff4500, #ff6347);
+}
+
+/* Smooth scrolling for better experience */
+html {
+  scroll-behavior: smooth;
 }
