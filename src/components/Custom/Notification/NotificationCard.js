@@ -25,7 +25,6 @@ const NotificationCard = () => {
   const [unReadCount, setUnReadCount] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [notificationLoader, setNotificationLoader] = useState(false);
-  const [notificationCardOpen, setNotificationCardOpen] = useState(false);
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const fetchNotificationsList = async () => {
@@ -84,7 +83,6 @@ const NotificationCard = () => {
   };
 
   const handleNotificationPanel = async () => {
-    setNotificationCardOpen(true);
     await fetchNotificationsList();
   };
 

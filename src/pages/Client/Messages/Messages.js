@@ -12,6 +12,7 @@ import "./style.css";
 import OfferDialogue from "./OfferDialogue/OfferDialogue";
 import signalRService from "../../../services/SignalR";
 import { notificationURL } from "../../../utils/_envConfig";
+import { debounce } from "lodash";
 
 const Messages = () => {
   const dispatch = useDispatch();
@@ -78,9 +79,9 @@ const Messages = () => {
     }
   };
 
-  const handleSearchMessage = (value) => {
+  const handleSearchMessage = debounce((value) => {
     fetchSideBar(value);
-  };
+  }, 300);
 
   const handleSelectedChat = (user) => {
     if (user?.userDecId !== activeChat?.userDecId) {

@@ -27,29 +27,37 @@ const ClientTopbar = () => {
           {userAuth && (
             <Navbar.Collapse className="justify-content-end">
               <NotificationCard />
-              <Nav.Link
-                className="border border-secondary mx-2"
+              <Nav
+                as={NavLink}
+                to="/appointment"
+                className="border border-secondary mx-1"
                 style={{
                   borderRadius: "50px",
-                  padding: "3px 7px",
+                  padding: "8px 12px",
                   background: "#e1e1e1",
                   color: "#000",
+                  position: "relative",
                 }}
               >
-                <i className="bi bi-list-ul"></i>
-              </Nav.Link>
+                <div style={{ position: "relative" }}>
+                  <i className="bi bi-list-ul"></i>
+                </div>
+              </Nav>
               <Nav.Link
                 as={NavLink}
                 to="/messages"
                 className="border border-secondary"
                 style={{
                   borderRadius: "50px",
-                  padding: "3px 7px",
+                  padding: "8px 12px",
                   background: "#e1e1e1",
                   color: "#000",
+                  position: "relative",
                 }}
               >
-                <i className="bi bi-envelope-arrow-down-fill"></i>
+                <div style={{ position: "relative" }}>
+                  <i className="bi bi-envelope-arrow-down-fill"></i>
+                </div>
               </Nav.Link>
 
               <Nav className="mx-2">
