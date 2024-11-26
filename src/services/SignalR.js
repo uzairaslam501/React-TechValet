@@ -4,10 +4,11 @@ class SignalRService {
   constructor() {
     this.connection = null;
     this.subscribers = [];
+    this.isInitialized = false;
   }
 
   initializeConnection(url, userId) {
-    if (this.connection && this.connection.state === "Connected") {
+    if (this.isInitialized) {
       console.log("Connection already initialized");
       return;
     }
@@ -73,9 +74,23 @@ class SignalRService {
       }
     );
 
+    this.connection.on("ReceiveOffers", (model, senderId, receiverId) => {
+      try {
+        if (receiverId === userId) {
+          // Process the message
+          this.broadcastOffer(senderId, receiverId, model);
+        }
+      } catch (error) {
+        console.error("Error processing received Offer:", error);
+      }
+    });
+
     this.connection
       .start()
-      .then(() => console.log("SignalR connection established"))
+      .then(() => {
+        this.isInitialized = true;
+        console.log("SignalR connection established");
+      })
       .catch((err) => console.error("Connection error:", err));
   }
 
@@ -133,15 +148,43 @@ class SignalRService {
     );
   }
 
+  broadcastOffer(senderId, receiverId, mdoel) {
+    this.subscribers.forEach((callback) =>
+      callback(senderId, receiverId, mdoel)
+    );
+  }
+
   sendMessage(data) {
+    if (!this.connection || this.connection.state !== "Connected") {
+      console.error("SignalR connection not established");
+      return;
+    }
+
     return this.connection
       .invoke("SendMessage", data?.senderId, data?.receiverId, data?.message)
+      .catch((err) => console.error("Error sending message:", err));
+  }
+
+  sendOfferObject(data) {
+    if (!this.connection || this.connection.state !== "Connected") {
+      console.error("SignalR connection not established");
+      return;
+    }
+
+    return this.connection
+      .invoke(
+        "SendOfferObject",
+        data?.senderId,
+        data?.receiverId,
+        data?.message
+      )
       .catch((err) => console.error("Error sending message:", err));
   }
 
   disconnect() {
     if (this.connection) {
       this.connection.stop();
+      this.isInitialized = false;
     }
   }
 }

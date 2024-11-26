@@ -35,6 +35,7 @@ const Dialogue = ({
             ? customFooterButtons.map((button, index) => (
                 <Button
                   key={index}
+                  type={button.type === "submit" || "button"}
                   variant={button.variant || "primary"}
                   className={button.className}
                   onClick={button.onClick}

@@ -26,8 +26,8 @@ const Messages = () => {
   const [messageLoader, setMessagesLoader] = useState(true);
   const [userOnlineStatus, setUserOnlineStatus] = useState(-1);
   const [userSideBarLoader, setUserSideBarLoader] = useState(true);
-  const [isMessageSidebarOpen, setMessageSidebarOpen] = useState(false);
   const [showOrderDialogue, setShowOrderDialogue] = useState(false);
+  const [isMessageSidebarOpen, setMessageSidebarOpen] = useState(false);
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const fetchSideBar = (findUser = "") => {
@@ -99,6 +99,14 @@ const Messages = () => {
     setMessageTyped(value);
   };
 
+  const handleCreateOrder = async () => {
+    setShowOrderDialogue(true);
+  };
+
+  const handleOrderClose = () => {
+    setShowOrderDialogue(false);
+  };
+
   const handleSendMessage = (receiverId) => {
     if (messageTyped) {
       setSendLoader(true);
@@ -107,35 +115,54 @@ const Messages = () => {
         ReceiverId: receiverId,
         MessageDescription: messageTyped,
       };
-      dispatch(sendUsersMessages(data)).then((response) => {
-        if (response?.payload) {
-          const newMessage = response.payload;
-          // Send the message via SignalR
-          const messageForSignalR = {
-            senderId: newMessage.senderId,
-            receiverId: newMessage.receiverId,
-            message: newMessage?.messageDescription,
-          };
-          setMessages((prev) => [...prev, newMessage]);
-          if (userAuth?.id === newMessage.senderId) {
-            signalRService.sendMessage(messageForSignalR);
-          }
-          setMessageTyped("");
-          setSendLoader(false);
-        } else {
-          console.error("Invalid response payload:", response);
-          setSendLoader(false);
-        }
-      });
+      handleResponse(data);
     }
   };
 
-  const handleCreateOrder = async () => {
-    setShowOrderDialogue(true);
+  const handleSendOffer = (values) => {
+    if (values) {
+      setSendLoader(true);
+      const data = {
+        SenderId: String(userAuth?.id),
+        CustomerId: String(userAuth?.id),
+        valetId: String(values?.valetId),
+        ReceiverId: values.receiverId,
+        MessageDescription: "Offer Send",
+        OfferTitle: values.offerTitle,
+        StartedDateTime: values.startedDateTime,
+        EndedDateTime: values.endedDateTime,
+        OfferDescription: values.offerDescription,
+      };
+      handleResponse(data);
+    }
   };
 
-  const handleOrderClose = () => {
-    setShowOrderDialogue(false);
+  const handleResponse = (data) => {
+    try {
+      dispatch(sendUsersMessages(data)).then((response) => {
+        if (response?.payload) {
+          const newMessage = response.payload;
+          setMessages((prev) => [...prev, newMessage?.model]);
+          if (userAuth?.id === newMessage.senderId) {
+            const data = {
+              senderId: newMessage.senderId,
+              receiverId: newMessage.receiverId,
+              message: newMessage?.model,
+            };
+            signalRService.sendOfferObject(data);
+          }
+        }
+
+        setShowOrderDialogue(false);
+        setMessageTyped("");
+        setSendLoader(false);
+      });
+    } catch (error) {
+      console.error("Invalid response payload:", error);
+      setShowOrderDialogue(false);
+      setMessageTyped("");
+      setSendLoader(false);
+    }
   };
 
   useEffect(() => {
@@ -161,31 +188,22 @@ const Messages = () => {
   useEffect(() => {
     signalRService.initializeConnection(notificationURL, userAuth?.id);
 
-    // Subscribe to incoming messages
-    const handleIncomingMessage = (
-      senderId,
-      receiverId,
-      username,
-      profile,
-      messageDescription,
-      msgTime
-    ) => {
-      const setSignalRMessageObject = {
-        senderId: senderId,
-        receiverId: receiverId,
-        name: username,
-        profileImage: profile,
-        messageDescription: messageDescription,
-        messageTime: msgTime,
-      };
-      setMessages((prev) => [...prev, setSignalRMessageObject]);
+    const handleIncomingData = (senderId, receiverId, model) => {
+      if (userAuth?.id === receiverId) {
+        setMessages((prev) => {
+          if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
+            return [...prev, model];
+          }
+          return prev;
+        });
+      }
     };
 
-    signalRService.subscribe(handleIncomingMessage);
+    signalRService.subscribe(handleIncomingData);
 
     return () => {
+      signalRService.unsubscribe(handleIncomingData);
       signalRService.disconnect();
-      signalRService.unsubscribe(handleIncomingMessage);
     };
   }, [userAuth?.id]);
 
@@ -214,7 +232,7 @@ const Messages = () => {
                 </div>
                 <ul className="list-unstyled chat-list mt-2 mb-0">
                   {userSideBarLoader ? (
-                    <div className="text-center">
+                    <div className="text-center" key="spinner-loader">
                       <Spinner animation="grow" />
                     </div>
                   ) : (
@@ -442,6 +460,7 @@ const Messages = () => {
           handleOrderClose={handleOrderClose}
           messageObject={defaultMessage}
           showOrderDialogue={showOrderDialogue}
+          handleSendOffer={handleSendOffer}
         />
       )}
     </>

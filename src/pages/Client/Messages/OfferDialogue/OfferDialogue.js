@@ -16,19 +16,16 @@ const OfferDialogue = ({
   handleOrderClose,
   messageObject,
   showOrderDialogue,
+  handleSendOffer,
 }) => {
-  const dispatch = useDispatch();
   const { userAuth } = useSelector((state) => state?.authentication);
-  const handleSubmitOrderForm = () => {
-    console.log("first");
-  };
 
   const initialValues = {
-    MessageDescription: "Offer Send",
-    SenderId: String(userAuth?.id),
-    ReceiverId: String(messageObject?.userDecId),
-    CustomerId: String(userAuth?.id),
-    ValetId: String(messageObject?.userDecId),
+    messageDescription: "Offer Send",
+    senderId: String(userAuth?.id),
+    receiverId: String(messageObject?.userDecId),
+    customerId: String(userAuth?.id),
+    valetId: String(messageObject?.userDecId),
     offerTitle: "",
     startedDateTime: "",
     endedDateTime: "",
@@ -42,7 +39,7 @@ const OfferDialogue = ({
       validateOnChange: false,
       validateOnBlur: true,
       onSubmit: (values) => {
-        console.log(values);
+        handleSendOffer(values);
       },
     });
   return (
@@ -53,59 +50,55 @@ const OfferDialogue = ({
         headerClass="px-3 py-2"
         title="Create Offer"
         bodyContent={
-          <Form>
-            <Form>
-              <Form.Group className="mb-3" controlId="formGroupEmail">
-                <Form.Label>Offer Title:</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Offer Title"
-                  value={values.offerTitle}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  isInvalid={touched.offerTitle && !!errors.offerTitle}
-                />
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="formGroupPassword">
-                <Form.Label>From Date Time:</Form.Label>
-                <Form.Control
-                  type="datetime-local"
-                  value={values.startedDateTime}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  isInvalid={
-                    touched.startedDateTime && !!errors.startedDateTime
-                  }
-                />
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="formGroupPassword">
-                <Form.Label>To Date Time:</Form.Label>
-                <Form.Control
-                  type="datetime-local"
-                  value={values.endedDateTime}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  isInvalid={touched.endedDateTime && !!errors.endedDateTime}
-                />
-              </Form.Group>
-              <FloatingLabel
-                controlId="floatingTextarea2"
-                label="Describe the required services - please be as detailed as
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3" controlId="formGroupEmail">
+              <Form.Label>Offer Title:</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Offer Title"
+                value={values.offerTitle}
+                onBlur={handleBlur("offerTitle")}
+                onChange={handleChange("offerTitle")}
+                isInvalid={touched.offerTitle && !!errors.offerTitle}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formGroupPassword">
+              <Form.Label>From Date Time:</Form.Label>
+              <Form.Control
+                type="datetime-local"
+                value={values.startedDateTime}
+                onBlur={handleBlur("startedDateTime")}
+                onChange={handleChange("startedDateTime")}
+                isInvalid={touched.startedDateTime && !!errors.startedDateTime}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formGroupPassword">
+              <Form.Label>To Date Time:</Form.Label>
+              <Form.Control
+                type="datetime-local"
+                value={values.endedDateTime}
+                onBlur={handleBlur("endedDateTime")}
+                onChange={handleChange("endedDateTime")}
+                isInvalid={touched.endedDateTime && !!errors.endedDateTime}
+              />
+            </Form.Group>
+            <FloatingLabel
+              controlId="floatingTextarea2"
+              label="Describe the required services - please be as detailed as
                   possible:"
-              >
-                <Form.Control
-                  as="textarea"
-                  placeholder="Leave a comment here"
-                  style={{ height: "100px" }}
-                  value={values.offerDescription}
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  isInvalid={
-                    touched.offerDescription && !!errors.offerDescription
-                  }
-                />
-              </FloatingLabel>
-            </Form>
+            >
+              <Form.Control
+                as="textarea"
+                placeholder="Leave a comment here"
+                style={{ height: "100px" }}
+                value={values.offerDescription}
+                onBlur={handleBlur("offerDescription")}
+                onChange={handleChange("offerDescription")}
+                isInvalid={
+                  touched.offerDescription && !!errors.offerDescription
+                }
+              />
+            </FloatingLabel>
           </Form>
         }
         backdrop="static"
@@ -118,7 +111,7 @@ const OfferDialogue = ({
           {
             text: "Send Offer",
             variant: "primary",
-            onClick: handleSubmitOrderForm,
+            onClick: handleSubmit,
           },
         ]}
       />

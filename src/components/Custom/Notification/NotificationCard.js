@@ -44,7 +44,9 @@ const NotificationCard = () => {
       dispatch(getNotificationsCount(userAuth?.id)).then((response) => {
         setUnReadCount(response?.payload);
       });
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error fetching unread count:", error);
+    }
   };
 
   // Delete notification
@@ -86,6 +88,8 @@ const NotificationCard = () => {
     await fetchNotificationsList();
   };
 
+  const [receivedNotifications, setReceivedNotifications] = useState(new Set());
+
   const handleIncomingNotification = useCallback(
     (
       receiverId,
@@ -97,9 +101,14 @@ const NotificationCard = () => {
       description,
       notificationType
     ) => {
-      setUnReadCount((prev) => prev + 1);
+      const notificationKey = `${receiverId}-${createdAt}`;
+      if (!receivedNotifications.has(notificationKey)) {
+        receivedNotifications.add(notificationKey);
+        setReceivedNotifications(new Set(receivedNotifications));
+        setUnReadCount((prev) => prev + 1); // Only increment if notification is unique
+      }
     },
-    []
+    [receivedNotifications]
   );
 
   useEffect(() => {
