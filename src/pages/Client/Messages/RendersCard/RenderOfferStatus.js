@@ -1,7 +1,7 @@
 import React from "react";
 import RenderOfferDetails from "./RenderOfferDetails";
 
-const RenderOfferStatus = (status, message, userAuth) => {
+const RenderOfferStatus = (status, message, userAuth, handleOfferStatus) => {
   const statusMessages = {
     1: "Offer Sent",
     2: "Offer Accepted",
@@ -40,13 +40,26 @@ const RenderOfferStatus = (status, message, userAuth) => {
             >
               Accept
             </button>
-            <button
-              id={`offerRequestBtnR-${message.offerTitleId}`}
-              className="btn btn-sm btn-danger w-100"
-              // onClick={() => handleOrderStatus(message.offerTitleId, "Reject")}
-            >
-              Reject
-            </button>
+            {message?.offerTitleId != null && (
+              <button
+                id={`offerRequestBtnR-${message.offerTitleId}`}
+                className="btn btn-sm btn-danger w-100"
+                onClick={() => {
+                  const offerModel = {
+                    OfferDetailId: message.offerTitleId,
+                    MessageDescription: "Reject",
+                    OfferTitle: message.offerTitle,
+                    OfferDescription: message.offerDescription,
+                    OfferPrice: message.offerPrice,
+                    StartedDateTime: message.startedDateTime,
+                    EndedDateTime: message.endedDateTime,
+                  };
+                  handleOfferStatus(offerModel);
+                }}
+              >
+                Reject
+              </button>
+            )}
           </>
         )}
     </div>

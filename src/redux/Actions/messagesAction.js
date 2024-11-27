@@ -68,3 +68,28 @@ export const sendUsersMessages = createAsyncThunk(
     }
   }
 );
+
+export const handleOrderOffer = createAsyncThunk(
+  "messages/handleOrderOffer",
+  async (records, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const jwtToken = getToken(getState);
+      const response = await api.put(
+        "/Message/UpdateOrderOfferStatus",
+        records,
+        {
+          headers: {
+            Authorization: `${jwtToken}`, // Token included in the request headers
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch);
+      if (data) {
+        toast.success(message);
+      }
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch);
+    }
+  }
+);

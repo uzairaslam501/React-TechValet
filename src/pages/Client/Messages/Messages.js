@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getMessagesSidebar,
+  handleOrderOffer,
   sendUsersMessages,
 } from "../../../redux/Actions/messagesAction";
 import HandleImages from "../../../components/Custom/Avatars/HandleImages";
@@ -165,6 +166,34 @@ const Messages = () => {
     }
   };
 
+  const handleOfferStatus = (data) => {
+    try {
+      dispatch(handleOrderOffer(data)).then((response) => {
+        if (response?.payload) {
+          const newMessage = response.payload;
+          console.log(newMessage?.model);
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.offerTitleId === newMessage?.model?.offerTitleId
+                ? { ...msg, ...newMessage?.model }
+                : msg
+            )
+          );
+          if (userAuth?.id !== newMessage.senderId) {
+            const data = {
+              senderId: newMessage.senderId,
+              receiverId: newMessage.receiverId,
+              message: newMessage?.model,
+            };
+            signalRService.sendOfferObject(data);
+          }
+        }
+      });
+    } catch (error) {
+      console.error("Invalid response payload:", error);
+    }
+  };
+
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -189,13 +218,25 @@ const Messages = () => {
     signalRService.initializeConnection(notificationURL, userAuth?.id);
 
     const handleIncomingData = (senderId, receiverId, model) => {
-      if (userAuth?.id === receiverId) {
-        setMessages((prev) => {
-          if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
-            return [...prev, model];
-          }
-          return prev;
-        });
+      if (model.messageDescription === "Reject") {
+        if (userAuth?.id !== receiverId) {
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.offerTitleId === model?.offerTitleId
+                ? { ...msg, ...model }
+                : msg
+            )
+          );
+        }
+      } else {
+        if (userAuth?.id === receiverId) {
+          setMessages((prev) => {
+            if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
+              return [...prev, model]; // Add the new message if it's not already in the list
+            }
+            return prev; // Otherwise, keep the previous state
+          });
+        }
       }
     };
 
@@ -380,7 +421,8 @@ const Messages = () => {
                                   {RenderOfferStatus(
                                     message.offerStatus,
                                     message,
-                                    userAuth
+                                    userAuth,
+                                    handleOfferStatus
                                   )}
                                 </>
                               ) : (
