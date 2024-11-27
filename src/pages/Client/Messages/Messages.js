@@ -69,7 +69,7 @@ const Messages = () => {
           `Message/GetMessagesForUsers?loggedInUserId=${userAuth?.id}&userId=${userId}`
         )
       ).then((response) => {
-        console.log("messages", response?.payload);
+        console.log(response?.payload);
         setMessages(response?.payload);
         setMessagesLoader(false);
       });
@@ -461,6 +461,7 @@ const Messages = () => {
           messageObject={defaultMessage}
           showOrderDialogue={showOrderDialogue}
           handleSendOffer={handleSendOffer}
+          loader={sendLoader}
         />
       )}
     </>

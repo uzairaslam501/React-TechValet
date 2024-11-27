@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Spinner } from "react-bootstrap";
 
 const Dialogue = ({
   show,
@@ -39,7 +39,11 @@ const Dialogue = ({
                   variant={button.variant || "primary"}
                   className={button.className}
                   onClick={button.onClick}
+                  disabled={button.loader}
                 >
+                  {button.loader && (
+                    <Spinner animation="border" size="sm" className="me-1" />
+                  )}
                   {button.text}
                 </Button>
               ))

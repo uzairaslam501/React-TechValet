@@ -21,7 +21,13 @@ const RenderOfferStatus = (status, message, userAuth) => {
           backgroundColor: "#deb887",
         }}
       >
-        <span>{statusMessages[status]}</span>
+        <span>
+          {message.messageDescription === "Offer Send" &&
+          status === "1" &&
+          message.senderId !== String(userAuth?.id)
+            ? "Offer Recieved"
+            : statusMessages[status]}
+        </span>
       </p>
       {status === "1" &&
         message.senderId !== String(userAuth?.id) &&

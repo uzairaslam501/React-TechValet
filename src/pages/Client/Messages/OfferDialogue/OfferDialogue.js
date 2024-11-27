@@ -3,13 +3,28 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import { FloatingLabel, Form } from "react-bootstrap";
 import Dialogue from "../../../../components/Custom/Modal/modal";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { disabledPreviousDateTime } from "../../../../utils/_helpers";
 
 const validateLogin = Yup.object().shape({
-  offerTitle: Yup.string().required(),
-  startedDateTime: Yup.date().required(),
-  endedDateTime: Yup.date().required(),
-  offerDescription: Yup.string().required(),
+  offerTitle: Yup.string().required("This Field is Required"),
+  startedDateTime: Yup.date().required("This Field is Required"),
+  endedDateTime: Yup.date()
+    .required("This Field is Required")
+    .typeError("Invalid date-time format")
+    .test(
+      "is-at-least-one-hour-later",
+      "The end date and time must be at least one hour after the start date and time.",
+      function (value) {
+        const { startedDateTime } = this.parent;
+        if (!startedDateTime || !value) return true;
+        const start = new Date(startedDateTime);
+        const end = new Date(value);
+        const differenceInHours = (end - start) / (1000 * 60 * 60);
+        return differenceInHours >= 1;
+      }
+    ),
+  offerDescription: Yup.string().required("This Field is Required"),
 });
 
 const OfferDialogue = ({
@@ -17,6 +32,7 @@ const OfferDialogue = ({
   messageObject,
   showOrderDialogue,
   handleSendOffer,
+  loader,
 }) => {
   const { userAuth } = useSelector((state) => state?.authentication);
 
@@ -32,16 +48,30 @@ const OfferDialogue = ({
     offerDescription: "",
   };
 
-  const { values, touched, errors, handleBlur, handleChange, handleSubmit } =
-    useFormik({
-      initialValues: initialValues,
-      validationSchema: validateLogin,
-      validateOnChange: false,
-      validateOnBlur: true,
-      onSubmit: (values) => {
-        handleSendOffer(values);
-      },
-    });
+  const {
+    values,
+    touched,
+    errors,
+    setFieldValue,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+  } = useFormik({
+    initialValues: initialValues,
+    validationSchema: validateLogin,
+    validateOnChange: false,
+    validateOnBlur: true,
+    onSubmit: (values) => {
+      handleSendOffer(values);
+    },
+  });
+
+  const handleDateTimeMatch = (value, field) => {
+    if (field === "startedDateTime" && !value) {
+      setFieldValue("endedDateTime", "");
+    }
+    setFieldValue(field, value);
+  };
   return (
     <>
       <Dialogue
@@ -61,6 +91,11 @@ const OfferDialogue = ({
                 onChange={handleChange("offerTitle")}
                 isInvalid={touched.offerTitle && !!errors.offerTitle}
               />
+              {touched.offerTitle && !!errors.offerTitle && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.offerTitle}
+                </Form.Control.Feedback>
+              )}
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupPassword">
               <Form.Label>From Date Time:</Form.Label>
@@ -68,9 +103,18 @@ const OfferDialogue = ({
                 type="datetime-local"
                 value={values.startedDateTime}
                 onBlur={handleBlur("startedDateTime")}
-                onChange={handleChange("startedDateTime")}
+                onChange={(e) => {
+                  handleChange("startedDateTime");
+                  handleDateTimeMatch(e.target.value, "startedDateTime");
+                }}
+                min={disabledPreviousDateTime()}
                 isInvalid={touched.startedDateTime && !!errors.startedDateTime}
               />
+              {touched.startedDateTime && !!errors.startedDateTime && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.startedDateTime}
+                </Form.Control.Feedback>
+              )}
             </Form.Group>
             <Form.Group className="mb-3" controlId="formGroupPassword">
               <Form.Label>To Date Time:</Form.Label>
@@ -78,9 +122,19 @@ const OfferDialogue = ({
                 type="datetime-local"
                 value={values.endedDateTime}
                 onBlur={handleBlur("endedDateTime")}
-                onChange={handleChange("endedDateTime")}
+                onChange={(e) => {
+                  handleChange("endedDateTime");
+                  handleDateTimeMatch(e.target.value, "endedDateTime");
+                }}
+                disabled={!values.startedDateTime}
+                min={disabledPreviousDateTime()}
                 isInvalid={touched.endedDateTime && !!errors.endedDateTime}
               />
+              {touched.endedDateTime && !!errors.endedDateTime && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.endedDateTime}
+                </Form.Control.Feedback>
+              )}
             </Form.Group>
             <FloatingLabel
               controlId="floatingTextarea2"
@@ -98,6 +152,11 @@ const OfferDialogue = ({
                   touched.offerDescription && !!errors.offerDescription
                 }
               />
+              {touched.offerDescription && !!errors.offerDescription && (
+                <Form.Control.Feedback type="invalid">
+                  {errors.offerDescription}
+                </Form.Control.Feedback>
+              )}
             </FloatingLabel>
           </Form>
         }
@@ -112,6 +171,7 @@ const OfferDialogue = ({
             text: "Send Offer",
             variant: "primary",
             onClick: handleSubmit,
+            loader: loader,
           },
         ]}
       />
