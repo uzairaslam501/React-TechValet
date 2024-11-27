@@ -145,12 +145,7 @@ const Messages = () => {
           const newMessage = response.payload;
           setMessages((prev) => [...prev, newMessage?.model]);
           if (userAuth?.id === newMessage.senderId) {
-            const data = {
-              senderId: newMessage.senderId,
-              receiverId: newMessage.receiverId,
-              message: newMessage?.model,
-            };
-            signalRService.sendOfferObject(data);
+            handleSignalRCall(newMessage);
           }
         }
 
@@ -180,18 +175,22 @@ const Messages = () => {
             )
           );
           if (userAuth?.id !== newMessage.senderId) {
-            const data = {
-              senderId: newMessage.senderId,
-              receiverId: newMessage.receiverId,
-              message: newMessage?.model,
-            };
-            signalRService.sendOfferObject(data);
+            handleSignalRCall(newMessage);
           }
         }
       });
     } catch (error) {
       console.error("Invalid response payload:", error);
     }
+  };
+
+  const handleSignalRCall = (newMessage) => {
+    const data = {
+      senderId: newMessage.senderId,
+      receiverId: newMessage.receiverId,
+      message: newMessage?.model,
+    };
+    signalRService.sendOfferObject(data);
   };
 
   useEffect(() => {

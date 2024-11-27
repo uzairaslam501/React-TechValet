@@ -77,8 +77,12 @@ class SignalRService {
     this.connection.on("ReceiveOffers", (model, senderId, receiverId) => {
       try {
         if (receiverId === userId) {
-          // Process the message
           this.broadcastOffer(senderId, receiverId, model);
+        }
+        if (model.messageDescription === "Reject") {
+          if (senderId === userId) {
+            this.broadcastOffer(senderId, receiverId, model);
+          }
         }
       } catch (error) {
         console.error("Error processing received Offer:", error);
