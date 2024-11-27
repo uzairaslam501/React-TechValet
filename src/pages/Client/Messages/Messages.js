@@ -249,7 +249,7 @@ const Messages = () => {
   }, [userAuth?.id]);
 
   return (
-    <>
+    <div>
       <Container className="py-5">
         <Row className="clearfix">
           <Col md={12}>
@@ -273,61 +273,57 @@ const Messages = () => {
                 </div>
                 <ul className="list-unstyled chat-list mt-2 mb-0">
                   {userSideBarLoader ? (
-                    <div className="text-center" key="spinner-loader">
-                      <Spinner animation="grow" />
+                    <div className="text-center">
+                      <Spinner animation="grow" size="sm" />
                     </div>
                   ) : (
-                    <>
+                    <div>
                       {usersList && usersList.length > 0 ? (
                         usersList.map((user, index) => {
                           return (
-                            <>
-                              <li
-                                className={`${
-                                  activeChat?.userDecId === user?.userDecId &&
-                                  "active"
-                                } clearfix`}
-                                key={`${index}-${user.username}`}
-                                onClick={() => handleSelectedChat(user)}
-                              >
-                                <HandleImages
-                                  imagePath={user?.userImage}
-                                  imageAlt={user?.username}
-                                />
+                            <li
+                              className={`${
+                                activeChat?.userDecId === user?.userDecId &&
+                                "active"
+                              } clearfix`}
+                              key={`${index}-${user?.userDecId}`}
+                              onClick={() => handleSelectedChat(user)}
+                            >
+                              <HandleImages
+                                imagePath={user?.userImage}
+                                imageAlt={user?.username}
+                              />
 
-                                <div className="about">
-                                  <div className="name">
-                                    {truncateCharacters(user?.username, 15)}
-                                  </div>
-                                  <div className="status">
-                                    {`${
-                                      user?.lastMessageUsername != ""
-                                        ? user?.lastMessageUsername
-                                        : "You"
-                                    }: ${truncateCharacters(
-                                      user?.messageDescription,
-                                      12
-                                    )}`}
-                                  </div>
+                              <div className="about">
+                                <div className="name">
+                                  {truncateCharacters(user?.username, 15)}
                                 </div>
-                              </li>
-                            </>
+                                <div className="status">
+                                  {`${
+                                    user?.lastMessageUsername != ""
+                                      ? user?.lastMessageUsername
+                                      : "You"
+                                  }: ${truncateCharacters(
+                                    user?.messageDescription,
+                                    12
+                                  )}`}
+                                </div>
+                              </div>
+                            </li>
                           );
                         })
                       ) : (
-                        <>
-                          <li
-                            style={{
-                              backgroundColor: "#fff",
-                              cursor: "auto",
-                              textAlign: "center",
-                            }}
-                          >
-                            <p>No Results</p>
-                          </li>
-                        </>
+                        <li
+                          style={{
+                            backgroundColor: "#fff",
+                            cursor: "auto",
+                            textAlign: "center",
+                          }}
+                        >
+                          <p>No Results</p>
+                        </li>
                       )}
-                    </>
+                    </div>
                   )}
                 </ul>
               </div>
@@ -337,7 +333,7 @@ const Messages = () => {
                     <div className="col-sm-10">
                       <div>
                         {activeChat && (
-                          <>
+                          <div>
                             <HandleImages
                               imagePath={activeChat?.userImage}
                               imageAlt={activeChat?.username}
@@ -345,34 +341,28 @@ const Messages = () => {
                             <div className="chat-about">
                               <h6 className="mb-0">{activeChat?.username}</h6>
                               <div>
-                                {userOnlineStatus === -1 ? (
-                                  <></>
-                                ) : (
-                                  <>
+                                {userOnlineStatus !== -1 && (
+                                  <div>
                                     {userOnlineStatus === 1 ? (
-                                      <>
-                                        <small>
-                                          Online
-                                          <sup>
-                                            <i className="bi bi-circle-fill online mx-1"></i>
-                                          </sup>
-                                        </small>
-                                      </>
+                                      <small>
+                                        Online
+                                        <sup>
+                                          <i className="bi bi-circle-fill online mx-1"></i>
+                                        </sup>
+                                      </small>
                                     ) : (
-                                      <>
-                                        <small>
-                                          Offline
-                                          <sup>
-                                            <i className="bi bi-circle-fill offline mx-1"></i>
-                                          </sup>
-                                        </small>
-                                      </>
+                                      <small>
+                                        Offline
+                                        <sup>
+                                          <i className="bi bi-circle-fill offline mx-1"></i>
+                                        </sup>
+                                      </small>
                                     )}
-                                  </>
+                                  </div>
                                 )}
                               </div>
                             </div>
-                          </>
+                          </div>
                         )}
                       </div>
                       <div className="text-end">
@@ -389,11 +379,9 @@ const Messages = () => {
                 </div>
                 <div className="chatbox-container" ref={chatContainerRef}>
                   {messageLoader ? (
-                    <>
-                      <div className="text-center">
-                        <Spinner animation="grow" />
-                      </div>
-                    </>
+                    <div className="text-center">
+                      <Spinner animation="grow" />
+                    </div>
                   ) : (
                     <ul className="chatbox-list">
                       {messages &&
@@ -417,20 +405,20 @@ const Messages = () => {
                             <div className="message-content">
                               <div className="sender-name">{message.name}</div>
                               {message.offerTitle ? (
-                                <>
+                                <div>
                                   {RenderOfferStatus(
                                     message.offerStatus,
                                     message,
                                     userAuth,
                                     handleOfferStatus
                                   )}
-                                </>
+                                </div>
                               ) : (
-                                <>
+                                <div>
                                   <div className="message-text">
                                     {message.messageDescription}
                                   </div>
-                                </>
+                                </div>
                               )}
 
                               <div className="message-time">
@@ -506,7 +494,7 @@ const Messages = () => {
           loader={sendLoader}
         />
       )}
-    </>
+    </div>
   );
 };
 
