@@ -1,96 +1,108 @@
+.customswipper {
+  padding-top: 20px;
+}
+
 .customswipper .swiper-slide {
   height: fit-content;
 }
 
-.user-card {
-  width: 100%;
+.customswipper .swiper-slide:hover {
+  box-shadow: 1px 1px 10px #999;
 }
 
-.user-card__link {
+.user-card-top {
+  width: 100%;
+  border: 1px solid #000;
+  border-radius: 12px;
+}
+
+.user-card-top__link {
   display: block;
   text-decoration: none;
 }
 
-.user-card__image-wrapper {
+.user-card-top__image-wrapper {
   width: 100%;
   overflow: hidden;
   height: 200px;
+  border-bottom: 1px solid #000;
+  border-radius: 12px 12px 0 0;
 }
 
-.user-card__image {
+.user-card-top__image {
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
 }
 
-.user-card__details {
-  padding: 15px;
+.user-card-top__details {
+  padding: 14px;
 }
 
-.user-card__header {
+.user-card-top__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.user-card__name {
+.user-card-top__name {
   font-size: 1.2rem;
   font-weight: bold;
   margin: 0;
 }
 
-.user-card__name-link {
+.user-card-top__name-link {
   color: #333;
   text-decoration: none;
   transition: color 0.3s;
   word-break: break-all;
 }
 
-.user-card__name-link:hover {
+.user-card-top__name-link:hover {
   color: #000;
 }
 
-.user-card__location {
+.user-card-top__location {
   font-size: 0.9rem;
   color: #999;
 }
 
-.user-card__description {
+.user-card-top__description {
   font-size: 1rem;
   color: #555;
   margin-bottom: 15px;
   word-break: break-all;
 }
 
-.user-card__no-description {
+.user-card-top__no-description {
   color: #bbb;
 }
 
-.user-card__rating {
+.user-card-top__rating {
   display: flex;
   align-items: center;
   margin-bottom: 15px;
 }
 
-.user-card__rating-star {
+.user-card-top__rating-star {
   margin-right: 5px;
   color: #ffb400;
 }
 
-.user-card__footer {
+.user-card-top__footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.user-card__price {
+.user-card-top__price {
   font-size: 1.1rem;
   color: #000;
 }
 
-.user-card__favorite-btn {
+.user-card-top__favorite-btn {
   background: none;
   border: none;
   font-size: 1.5rem;
@@ -98,7 +110,7 @@
   cursor: pointer;
 }
 
-.user-card__favorite-btn:hover {
+.user-card-top__favorite-btn:hover {
   color: #ff6b6b;
 }
 

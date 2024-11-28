@@ -3,9 +3,9 @@ import { useDispatch } from "react-redux";
 import { getValetsList } from "../../../../redux/Actions/customerActions";
 import TopImageCarousal from "../../../../components/Custom/CarousalWithTopImage/topImageCarousal";
 
-const ValetSliders = () => {
+const ValetSlider = () => {
   const dispatch = useDispatch();
-  const [valetRecords, setValetRecords] = useState([]); // Initialized as an empty array
+  const [valetRecords, setValetRecords] = useState([]);
 
   useEffect(() => {
     getValetsRecords();
@@ -13,14 +13,10 @@ const ValetSliders = () => {
 
   const getValetsRecords = async () => {
     const response = await dispatch(getValetsList());
-    setValetRecords(response?.payload || []); // Ensure fallback to an empty array if response is undefined
+    setValetRecords(response?.payload || []);
   };
 
-  return (
-    <>
-      <TopImageCarousal label={"Recently Viewed & More"} users={valetRecords} />
-    </>
-  );
+  return <TopImageCarousal users={valetRecords} />;
 };
 
-export default ValetSliders;
+export default ValetSlider;

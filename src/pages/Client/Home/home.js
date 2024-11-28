@@ -1,13 +1,14 @@
 import React from "react";
 import { Button, Col, Container, Row, Card, CardBody } from "react-bootstrap";
 import TestimonialSlider from "../../../components/Custom/Testimonials/Testimonial";
+import { homeCarousalData } from "../../../utils/client/data/carousalData";
 import CustomCarousel from "../../../components/Custom/CardCarousal/cardCarousal";
 import {
   CategoriesList,
   testimonials,
 } from "../../../utils/client/data/carousalData";
 import SearchSection from "./Search/Search";
-import ValetSliders from "./Section1/valetSliders";
+import ValetSlider from "./ValetSlider/ValetSlider";
 import { useSelector } from "react-redux";
 
 const Home = () => {
@@ -16,22 +17,33 @@ const Home = () => {
     <>
       <SearchSection />
 
-      <section className="">
-        <Container>
-          <Row>
-            <Col md={{ span: 10, offset: 1 }}>
-              <h4 style={{ background: "#fcd609", width: "fit-content" }}>
-                Popular Professional Services
-              </h4>
-              <CustomCarousel />
-            </Col>
-          </Row>
-        </Container>
+      <section>
+        <Row>
+          <Col md={{ span: 10, offset: 1 }}>
+            <Card
+              className="shadow p-2"
+              style={{ background: "#fcd609", width: "fit-content" }}
+            >
+              <h3 className="fw-bold mb-0">Popular Professional Services</h3>
+            </Card>
+            <CustomCarousel data={homeCarousalData} />
+          </Col>
+        </Row>
       </section>
 
       {userAuth && userAuth?.role === "Customer" && (
-        <section className="py-5">
-          <ValetSliders />
+        <section className="py-5 bg-white">
+          <Row>
+            <Col md={{ span: 10, offset: 1 }}>
+              <Card
+                className="shadow p-2"
+                style={{ background: "#fcd609", width: "fit-content" }}
+              >
+                <h3 className="fw-bold mb-0">Recently Viewed & More</h3>
+              </Card>
+              <ValetSlider />
+            </Col>
+          </Row>
         </section>
       )}
 

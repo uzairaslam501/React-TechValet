@@ -1,5 +1,10 @@
 .custom-card {
+  transition: transform 0.3s ease-in-out;
   border-radius: 20px !important;
+}
+
+.custom-card:hover {
+  transform: scale(1.05, 1.05) !important;
 }
 
 .primary {

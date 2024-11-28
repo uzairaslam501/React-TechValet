@@ -26,7 +26,7 @@ const SearchSection = () => {
                   borderRadius: "20px",
                 }}
                 data-aos="fade-up"
-                data-aos-delay="1000"
+                data-aos-delay="100"
               >
                 <h1 className="px-3">
                   Find The Perfect Freelance Services For Your Business
@@ -39,7 +39,7 @@ const SearchSection = () => {
                 }}
                 className="border-0"
                 data-aos="fade-up"
-                data-aos-delay="1500"
+                data-aos-delay="200"
               >
                 <p
                   className="px-1"
@@ -73,7 +73,7 @@ const SearchSection = () => {
                 titleClass="text-white"
                 textClass="text-white"
                 animationEffect="zoom-out-left"
-                animationEffectDelay="1600"
+                animationEffectDelay="300"
               >
                 {!userAuth ? (
                   <p className="mb-0 mt-3 text-white">
@@ -109,7 +109,7 @@ const SearchSection = () => {
                 titleClass="text-black"
                 textClass="text-black"
                 animationEffect="zoom-out-left"
-                animationEffectDelay="1900"
+                animationEffectDelay="350"
               >
                 {!userAuth ? (
                   <p className="mb-0 mt-3 text-white">

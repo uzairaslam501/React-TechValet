@@ -1,4 +1,3 @@
-import { homeCarousalData } from "../../../utils/client/data/carousalData";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -8,7 +7,7 @@ import "./carousal.css";
 // Import required modules
 import { Autoplay, Navigation } from "swiper/modules";
 
-function CustomCarousel() {
+function CustomCarousel({ data }) {
   return (
     <>
       <div className="swiper-container">
@@ -38,7 +37,7 @@ function CustomCarousel() {
           modules={[Autoplay, Navigation]}
           className="mySwiper"
         >
-          {homeCarousalData.map((card) => (
+          {data.map((card) => (
             <SwiperSlide key={card.id}>
               <div
                 className="carousel-card-item"

@@ -20,7 +20,7 @@
   cursor: pointer;
 }
 
-.swiper-slide:hover {
+.swiper-container .swiper-slide:hover {
   transform: scale(1.05);
 }
 
