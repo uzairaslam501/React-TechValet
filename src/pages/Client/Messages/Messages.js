@@ -16,6 +16,7 @@ import OfferDialogue from "./OfferDialogue/OfferDialogue";
 import signalRService from "../../../services/SignalR";
 import { notificationURL } from "../../../utils/_envConfig";
 import { debounce } from "lodash";
+import OfferAccept from "./OfferAccept/OfferAccept";
 
 const Messages = () => {
   const dispatch = useDispatch();
@@ -31,6 +32,9 @@ const Messages = () => {
   const [userSideBarLoader, setUserSideBarLoader] = useState(true);
   const [showOrderDialogue, setShowOrderDialogue] = useState(false);
   const [isMessageSidebarOpen, setMessageSidebarOpen] = useState(false);
+
+  const [showAcceptOrderDialogue, setShowAcceptOrderDialogue] = useState(false);
+  const [selectedOfferValues, setSelectedOfferValues] = useState(null);
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const fetchSideBar = (findUser = "") => {
@@ -61,7 +65,6 @@ const Messages = () => {
   const fetchMessages = (userId) => {
     try {
       dispatch(getUsersMessages(userId)).then((response) => {
-        console.log(response?.payload);
         setMessages(response?.payload);
         setMessagesLoader(false);
       });
@@ -97,6 +100,7 @@ const Messages = () => {
 
   const handleOrderClose = () => {
     setShowOrderDialogue(false);
+    setShowAcceptOrderDialogue(false);
   };
 
   const handleSendMessage = (receiverId) => {
@@ -157,7 +161,6 @@ const Messages = () => {
       dispatch(handleOrderOffer(data)).then((response) => {
         if (response?.payload) {
           const newMessage = response.payload;
-          console.log(newMessage?.model);
           setMessages((prev) =>
             prev.map((msg) =>
               msg.offerTitleId === newMessage?.model?.offerTitleId
@@ -173,6 +176,12 @@ const Messages = () => {
     } catch (error) {
       console.error("Invalid response payload:", error);
     }
+  };
+
+  const handlePaymentModal = (data) => {
+    console.log("data", data);
+    setSelectedOfferValues(data);
+    setShowAcceptOrderDialogue(true);
   };
 
   const handleSignalRCall = (newMessage) => {
@@ -400,7 +409,8 @@ const Messages = () => {
                                     message.offerStatus,
                                     message,
                                     userAuth,
-                                    handleOfferStatus
+                                    handleOfferStatus,
+                                    handlePaymentModal
                                   )}
                                 </div>
                               ) : (
@@ -482,6 +492,14 @@ const Messages = () => {
           showOrderDialogue={showOrderDialogue}
           handleSendOffer={handleSendOffer}
           loader={sendLoader}
+        />
+      )}
+
+      {showAcceptOrderDialogue && (
+        <OfferAccept
+          showAcceptOrderDialogue={showAcceptOrderDialogue}
+          handleOrderClose={handleOrderClose}
+          selectedOfferValues={selectedOfferValues}
         />
       )}
     </div>

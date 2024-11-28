@@ -1,7 +1,13 @@
 import React from "react";
 import RenderOfferDetails from "./RenderOfferDetails";
 
-const RenderOfferStatus = (status, message, userAuth, handleOfferStatus) => {
+const RenderOfferStatus = (
+  status,
+  message,
+  userAuth,
+  handleOfferStatus,
+  handlePaymentModal
+) => {
   const statusMessages = {
     1: "Offer Sent",
     2: "Offer Accepted",
@@ -36,7 +42,7 @@ const RenderOfferStatus = (status, message, userAuth, handleOfferStatus) => {
             <button
               id={`offerRequestBtnA-${message.offerTitleId}`}
               className="btn btn-sm btn-success w-100 mb-1"
-              // onClick={() => handlePaymentModal(message.offerTitleId)}
+              onClick={() => handlePaymentModal(message)}
             >
               Accept
             </button>
