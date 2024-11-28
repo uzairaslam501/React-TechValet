@@ -26,7 +26,7 @@ export const getMessagesSidebar = createAsyncThunk(
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data } = processApiResponse(response, dispatch);
       return data;
     } catch (error) {
       handleApiError(error, dispatch);
@@ -44,7 +44,7 @@ export const getUserStatus = createAsyncThunk(
           Authorization: `${jwtToken}`, // Token included in the request headers
         },
       });
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data } = processApiResponse(response, dispatch);
       return data;
     } catch (error) {
       handleApiError(error, dispatch);
@@ -66,7 +66,7 @@ export const getUsersMessages = createAsyncThunk(
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data } = processApiResponse(response, dispatch);
       return data;
     } catch (error) {
       handleApiError(error, dispatch);

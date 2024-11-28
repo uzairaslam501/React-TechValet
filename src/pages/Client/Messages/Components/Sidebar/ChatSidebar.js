@@ -57,7 +57,7 @@ const ChatSidebar = ({
                       </div>
                       <div className="status">
                         {`${
-                          user?.lastMessageUsername != ""
+                          user?.lastMessageUsername !== ""
                             ? user?.lastMessageUsername
                             : "You"
                         }: ${truncateCharacters(user?.messageDescription, 12)}`}

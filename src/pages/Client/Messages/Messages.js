@@ -290,7 +290,7 @@ const Messages = () => {
                                 </div>
                                 <div className="status">
                                   {`${
-                                    user?.lastMessageUsername != ""
+                                    user?.lastMessageUsername !== ""
                                       ? user?.lastMessageUsername
                                       : "You"
                                   }: ${truncateCharacters(
