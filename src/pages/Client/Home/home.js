@@ -6,16 +6,15 @@ import {
   CategoriesList,
   testimonials,
 } from "../../../utils/client/data/carousalData";
-import HeaderSection from "../../../components/HomeSections/Section2/headerSection";
-import ValetSliders from "../../../components/HomeSections/Section1/valetSliders";
+import SearchSection from "./Search/Search";
+import ValetSliders from "./Section1/valetSliders";
 import { useSelector } from "react-redux";
-import MyCalendar from "../../../components/Custom/Calendar/calender";
 
 const Home = () => {
   const { userAuth } = useSelector((state) => state?.authentication);
   return (
     <>
-      <HeaderSection />
+      <SearchSection />
 
       <section className="">
         <Container>

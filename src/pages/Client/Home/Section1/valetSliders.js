@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getValetsList } from "../../../redux/Actions/customerActions";
-import TopImageCarousal from "../../Custom/CarousalWithTopImage/topImageCarousal";
+import { getValetsList } from "../../../../redux/Actions/customerActions";
+import TopImageCarousal from "../../../../components/Custom/CarousalWithTopImage/topImageCarousal";
 
 const ValetSliders = () => {
   const dispatch = useDispatch();

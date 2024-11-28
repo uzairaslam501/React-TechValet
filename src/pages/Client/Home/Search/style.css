@@ -1,0 +1,20 @@
+.custom-card {
+  border-radius: 20px !important;
+}
+
+.primary {
+  background: #fcd609 !important;
+  border: 1px solid #000 !important;
+  border-bottom: 8px solid #000 !important;
+}
+
+.dark {
+  background: #000 !important;
+  border: 1px solid #fcd609 !important;
+  border-bottom: 8px solid #fcd609 !important;
+}
+
+.custom-card img {
+  width: 100px;
+  height: 100px;
+}

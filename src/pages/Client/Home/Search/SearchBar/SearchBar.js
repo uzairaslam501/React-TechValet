@@ -1,22 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Container, Button, Col, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { getKeywords } from "../../../redux/Actions/customerActions";
-import { capitalizeFirstLetter } from "../../../utils/_helpers";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { getKeywords } from "../../../../../redux/Actions/customerActions";
+import { capitalizeFirstLetter } from "../../../../../utils/_helpers";
+import { useNavigate } from "react-router-dom";
 
-const SearchFilter = () => {
+const SearchBar = () => {
   const { userAuth } = useSelector((state) => state?.authentication);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
   const [keywords, setKeywords] = useState([]);
-  const [searchKeyword, setSearchKeyword] = useState(""); // State for the search input
-
-  useEffect(() => {
-    if (userAuth?.token) {
-      getKeyword();
-    }
-  }, [userAuth?.token]);
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   const getKeyword = async () => {
     try {
@@ -28,37 +22,50 @@ const SearchFilter = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     if (searchKeyword) {
-      navigate(`/search/${encodeURIComponent(searchKeyword)}`); // Navigate to the search page with the search keyword
+      navigate(`/search/${encodeURIComponent(searchKeyword)}`);
     }
   };
 
   const clickKeword = (searchedValue) => {
     if (searchedValue) {
-      navigate(`/search/${encodeURIComponent(searchedValue)}`); // Navigate to the search page with the search keyword
+      navigate(`/search/${encodeURIComponent(searchedValue)}`);
     }
   };
 
+  useEffect(() => {
+    getKeyword();
+  }, [userAuth]);
+
   return (
-    <>
-      <Form onSubmit={handleSubmit}>
-        <Row className="form-row">
-          <Col lg={10} className="form-group">
+    <Container className="p-md-0">
+      <Form onSubmit={handleSubmit} className="form-row">
+        <Row>
+          <Col lg={10} className="form-group pe-md-0">
             <input
               name="searchKeyword"
+              style={{
+                backgroundColor: "#f9f9f9",
+                border: "1px solid #999",
+                borderRadius: "0",
+              }}
               type="text"
               placeholder="Find Services..."
-              className="form-control border-0 form-control-lg shadow-sm"
+              className="form-control form-control-lg shadow-sm"
               required
-              value={searchKeyword} // Bind the input value
-              onChange={(e) => setSearchKeyword(e.target.value)} // Update state on input change
+              value={searchKeyword}
+              onChange={(e) => setSearchKeyword(e.target.value)}
             />
           </Col>
-          <Col lg={2} className="form-group">
+          <Col lg={2} className="form-group ps-md-0">
             <Button
               type="submit"
-              className="btn-block btn-lg shadow-sm custom-button"
+              className="btn-block btn-lg shadow-sm custom-button w-100"
+              style={{
+                borderRadius: "0",
+                border: "1px solid #999",
+              }}
             >
               <i className="fa fa-search"></i>
               Search
@@ -82,8 +89,8 @@ const SearchFilter = () => {
             ))}
         </Col>
       </Row>
-    </>
+    </Container>
   );
 };
 
-export default SearchFilter;
+export default SearchBar;
