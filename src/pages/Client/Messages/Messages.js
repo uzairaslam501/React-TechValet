@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getMessagesSidebar,
+  getUserStatus,
+  getUsersMessages,
   handleOrderOffer,
   sendUsersMessages,
 } from "../../../redux/Actions/messagesAction";
@@ -34,26 +36,19 @@ const Messages = () => {
   const fetchSideBar = (findUser = "") => {
     try {
       setUserSideBarLoader(true);
-      dispatch(
-        getMessagesSidebar(
-          `Message/GetMessageSideBarLists?loggedInUserId=${userAuth?.id}&Name=${findUser}`
-        )
-      ).then((response) => {
+      dispatch(getMessagesSidebar(findUser)).then((response) => {
         setDefaultMessage(response?.payload[0]);
         setUsersList(response?.payload);
         setUserSideBarLoader(false);
       });
     } catch (error) {
       console.error("Error fetching sidebar:", error);
-    } finally {
     }
   };
 
   const fetchUserStatus = (userId) => {
     try {
-      dispatch(
-        getMessagesSidebar(`Message/GetReceiverStatuses/${userId}`)
-      ).then((response) => {
+      dispatch(getUserStatus(userId)).then((response) => {
         setUserOnlineStatus(response?.payload);
       });
     } catch (error) {
@@ -65,11 +60,7 @@ const Messages = () => {
 
   const fetchMessages = (userId) => {
     try {
-      dispatch(
-        getMessagesSidebar(
-          `Message/GetMessagesForUsers?loggedInUserId=${userAuth?.id}&userId=${userId}`
-        )
-      ).then((response) => {
+      dispatch(getUsersMessages(userId)).then((response) => {
         console.log(response?.payload);
         setMessages(response?.payload);
         setMessagesLoader(false);

@@ -5,7 +5,7 @@ import {
   processApiResponse,
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
-import { getToken } from "../../utils/_apiConfig";
+import { getAuthUserId, getToken } from "../../utils/_apiConfig";
 import { toast } from "react-toastify";
 
 const api = axios.create({
@@ -14,10 +14,32 @@ const api = axios.create({
 
 export const getMessagesSidebar = createAsyncThunk(
   "messages/getMessagesSidebar",
-  async (endpoint, { rejectWithValue, getState, dispatch }) => {
+  async (findUser, { rejectWithValue, getState, dispatch }) => {
     try {
       const jwtToken = getToken(getState);
-      const response = await api.get(endpoint, {
+      const userId = getAuthUserId(getState);
+      const response = await api.get(
+        `Message/GetMessageSideBarLists?loggedInUserId=${userId}&Name=${findUser}`,
+        {
+          headers: {
+            Authorization: `${jwtToken}`, // Token included in the request headers
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch);
+    }
+  }
+);
+
+export const getUserStatus = createAsyncThunk(
+  "messages/getUserStatus",
+  async (userId, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const jwtToken = getToken(getState);
+      const response = await api.get(`Message/GetReceiverStatuses/${userId}`, {
         headers: {
           Authorization: `${jwtToken}`, // Token included in the request headers
         },
@@ -32,14 +54,18 @@ export const getMessagesSidebar = createAsyncThunk(
 
 export const getUsersMessages = createAsyncThunk(
   "messages/getUsersMessages",
-  async (endpoint, { rejectWithValue, getState, dispatch }) => {
+  async (userId, { rejectWithValue, getState, dispatch }) => {
     try {
+      const loggedInUser = getAuthUserId(getState);
       const jwtToken = getToken(getState);
-      const response = await api.get(endpoint, {
-        headers: {
-          Authorization: `${jwtToken}`, // Token included in the request headers
-        },
-      });
+      const response = await api.get(
+        `Message/GetMessagesForUsers?loggedInUserId=${loggedInUser}&userId=${userId}`,
+        {
+          headers: {
+            Authorization: `${jwtToken}`, // Token included in the request headers
+          },
+        }
+      );
       const { data, message } = processApiResponse(response, dispatch);
       return data;
     } catch (error) {
