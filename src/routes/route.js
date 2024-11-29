@@ -29,6 +29,8 @@ import Index from "../pages/Client/ClientAuth/Profile/index";
 import Messages from "../pages/Client/Messages/Messages";
 import PaymentSuccess from "../pages/Client/PaymentVerification/PaymentSuccess";
 import PaymentCancelled from "../pages/Client/PaymentVerification/PaymentCancelled";
+import CustomCheckoutPage from "../pages/Client/Messages/OfferAccept/Payment/CustomCheckoutPage";
+import StripePaymentSuccess from "../pages/Client/PaymentVerification/Stripe/PaymentSuccess";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -65,6 +67,11 @@ const createRoute = createBrowserRouter(
           <Route path="/messages" element={<Messages />} />
           <Route path="/PaymentSuccess" element={<PaymentSuccess />} />
           <Route path="/PaymentCancelled" element={<PaymentCancelled />} />
+          <Route path="/checkout" element={<CustomCheckoutPage />} />
+          <Route
+            path="/PaymentSuccessfully"
+            element={<StripePaymentSuccess />}
+          />
         </Route>
       </Route>
       <Route path="/welcome" element={<Welcome />} />
