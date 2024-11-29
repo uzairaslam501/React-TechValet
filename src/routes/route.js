@@ -28,6 +28,7 @@ import RequestedService from "../pages/Client/Manage/Request/requestedService";
 import Index from "../pages/Client/ClientAuth/Profile/index";
 import Messages from "../pages/Client/Messages/Messages";
 import PaymentSuccess from "../pages/Client/PaymentVerification/PaymentSuccess";
+import PaymentCancelled from "../pages/Client/PaymentVerification/PaymentCancelled";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -63,6 +64,7 @@ const createRoute = createBrowserRouter(
           <Route path="/requested-service" element={<RequestedService />} />
           <Route path="/messages" element={<Messages />} />
           <Route path="/PaymentSuccess" element={<PaymentSuccess />} />
+          <Route path="/PaymentCancelled" element={<PaymentCancelled />} />
         </Route>
       </Route>
       <Route path="/welcome" element={<Welcome />} />
