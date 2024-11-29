@@ -27,7 +27,7 @@ const PayWithPaypal = ({ selectedOfferValues }) => {
       console.log("initialValues", initialValues);
       dispatch(postCheckoutForOrder(initialValues)).then((response) => {
         console.log(response);
-        window.location.href = response.url;
+        window.location.href = response?.payload?.url;
       });
     } catch (error) {}
   };
@@ -37,7 +37,7 @@ const PayWithPaypal = ({ selectedOfferValues }) => {
       onClick={() => handleCheckout()}
       className="btn-primary-secondary w-100"
     >
-      Buy with Package
+      Pay With Paypal
     </Button>
   );
 };
