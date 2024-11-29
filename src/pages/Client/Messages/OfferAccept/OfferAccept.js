@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Container } from "react-bootstrap";
 import Dialogue from "../../../../components/Custom/Modal/modal";
 import PayWithPaypal from "./Payment/PayWithPaypal";
+import PayWithStripe from "./Payment/PayWithStripe";
 
 const OfferAccept = ({
   showAcceptOrderDialogue,
@@ -19,9 +20,7 @@ const OfferAccept = ({
           <Button variant="success" className="w-100">
             Buy with Package
           </Button>
-          <Button className="btn-secondary-secondary w-100 my-2">
-            Buy with Package
-          </Button>
+          <PayWithStripe selectedOfferValues={selectedOfferValues} />
           <PayWithPaypal selectedOfferValues={selectedOfferValues} />
         </Container>
       }
