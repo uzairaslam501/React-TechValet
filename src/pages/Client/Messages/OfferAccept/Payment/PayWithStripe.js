@@ -27,6 +27,12 @@ const PayWithStripe = ({ selectedOfferValues }) => {
 
   const onToken = (token) => {
     setLoading(true);
+    const numericOfferPrice = parseFloat(selectedOfferValues?.offerPrice) || 0;
+    const stripeChargePercentage = 4; // 4% Stripe fee
+    const stripeAmount = numericOfferPrice * (stripeChargePercentage / 100);
+    const actualOfferPrice = Math.ceil(numericOfferPrice - stripeAmount);
+    initialValues.TotalWorkCharges = String(stripeAmount);
+    initialValues.ActualOrderPrice = String(actualOfferPrice);
     const values = {
       ...initialValues,
       StripeEmail: token.email,

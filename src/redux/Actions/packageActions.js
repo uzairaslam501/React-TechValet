@@ -14,7 +14,7 @@ const api = axios.create({
 
 export const getUserPackageByUserId = createAsyncThunk(
   "stripe/getUserPackageByUserId",
-  async (checkoutDto, { rejectWithValue, getState, dispatch }) => {
+  async (_, { rejectWithValue, getState, dispatch }) => {
     try {
       const jwtToken = getToken(getState);
       const userId = getAuthUserId(getState);

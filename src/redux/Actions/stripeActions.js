@@ -84,7 +84,6 @@ export const createStripeCharge = createAsyncThunk(
   async (checkoutDto, { rejectWithValue, getState, dispatch }) => {
     try {
       const jwtToken = getToken(getState);
-      const userId = getAuthUserId(getState);
       const response = await api.post(
         `StripePayment/CreateStripeCharge/`,
         checkoutDto,

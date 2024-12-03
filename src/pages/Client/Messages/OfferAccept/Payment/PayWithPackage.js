@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Card,
@@ -11,83 +11,101 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Dialogue from "../../../../../components/Custom/Modal/modal";
 import { getUserPackageByUserId } from "../../../../../redux/Actions/packageActions";
-import { convertToFormattedDateTimeWithAMPM } from "../../../../../utils/_helpers";
+import { convertToISO } from "../../../../../utils/_helpers";
+import { createStripeCharge } from "../../../../../redux/Actions/stripeActions";
 
 const PayWithPackage = ({ selectedOfferValues }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [calculatedValues, setCalculatedValues] = useState({});
   const [packageDetails, setUserPackageDetails] = useState(null);
+  const [packageSubmitButton, setPackageSubmitButton] = useState(false);
   const { userAuth } = useSelector((state) => state?.authentication);
-  const [numericOfferPrice, setNumericOfferPrice] = useState(0);
-  const [stripePercentage, setStripePercentage] = useState(0);
-  const [stripeAmount, setStripeAmount] = useState(0);
-  const [actualOfferPrice, setActualOfferPrice] = useState(0);
 
-  const initialValues = {
-    CustomerId: String(userAuth?.id),
-    ValetId: String(selectedOfferValues.valetId),
-    OfferId: parseInt(selectedOfferValues.offerTitleId, 10),
-    PaymentTitle: selectedOfferValues.offerTitle || null,
-    PaymentDescription: selectedOfferValues.offerDescription || null,
-    ActualOrderPrice: String(selectedOfferValues.offerPrice),
-    TotalWorkCharges: String(
-      parseFloat(selectedOfferValues.offerPrice || 0) +
-        parseFloat(selectedOfferValues.transactionFee || 0)
-    ),
-    FromDateTime: selectedOfferValues.startedDateTime,
-    ToDateTime: selectedOfferValues.endedDateTime,
+  const calculateDetails = () => {
+    console.log("selectedOfferValues", selectedOfferValues);
+    const numericOfferPrice = parseFloat(selectedOfferValues?.offerPrice) || 0;
+    const stripeChargePercentage = 4; // 4% Stripe fee
+    const stripeAmount = numericOfferPrice * (stripeChargePercentage / 100);
+    const actualOfferPrice = Math.ceil(numericOfferPrice - stripeAmount);
+
+    const startDate = new Date(
+      convertToISO(selectedOfferValues?.startedDateTime)
+    );
+    const endDate = new Date(convertToISO(selectedOfferValues?.endedDateTime));
+    const timeDifference = (endDate - startDate) / (1000 * 60 * 60); // Hours
+
+    const remainingSessions = packageDetails?.remainingSessions || 0;
+    const sessionsAfterConfirmation = Math.max(
+      remainingSessions - timeDifference,
+      0
+    );
+
+    setCalculatedValues({
+      stripeAmount,
+      actualOfferPrice,
+      timeDifference,
+      remainingSessions,
+      sessionsAfterConfirmation,
+    });
   };
 
   const handleCheckout = () => {
-    setNumericOfferPrice(parseFloat(initialValues?.ActualOrderPrice));
-    try {
-      setLoading(true);
-      setShowModal(true);
-      dispatch(getUserPackageByUserId()).then((response) => {
-        console.log(response?.payload);
-        calculcatesActualOfferPrice();
+    setLoading(true);
+    setShowModal(true);
+
+    dispatch(getUserPackageByUserId())
+      .then((response) => {
         setUserPackageDetails(response?.payload);
         setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
       });
-    } catch (error) {}
-  };
-
-  const calculcatesActualOfferPrice = () => {
-    if (numericOfferPrice) {
-      const stripeChargePercentage = 4; //In Percentage
-      const stripeAmount = numericOfferPrice * (stripeChargePercentage / 100);
-      const actualPriceOfOffer = numericOfferPrice - stripeAmount;
-      initialValues.ActualOrderPrice = Math.ceil(actualPriceOfOffer).toString();
-      setActualOfferPrice(Math.ceil(actualPriceOfOffer).toString());
-      handleLimitPackage();
-    }
-  };
-
-  const handleLimitPackage = () => {
-    const startDate = convertToFormattedDateTimeWithAMPM(
-      initialValues.FromDateTime
-    );
-
-    const endDate = convertToFormattedDateTimeWithAMPM(
-      initialValues.ToDateTime
-    );
-
-    const timeDifference = endDate - startDate;
-
-    const NoOfWorkingHour = timeDifference / (1000 * 60 * 60);
-    if (NoOfWorkingHour <= packageDetails?.remainingPackage) {
-      const remainingSession =
-        packageDetails?.remainingPackage - NoOfWorkingHour;
-      console.log("remainingSession", remainingSession);
-    } else {
-    }
   };
 
   const handleCloseModal = () => {
     setLoading(false);
     setShowModal(false);
   };
+
+  const handleSubmitPayment = () => {
+    setPackageSubmitButton(true);
+    const values = {
+      CustomerId: String(userAuth?.id),
+      ValetId: String(selectedOfferValues.valetId),
+      OfferId: parseInt(selectedOfferValues.offerTitleId, 10),
+      PaymentTitle: selectedOfferValues.offerTitle || null,
+      PaymentDescription: selectedOfferValues.offerDescription || null,
+      ActualOrderPrice: String(calculatedValues.actualOfferPrice),
+      TotalWorkCharges: String(calculatedValues.stripeAmount),
+      FromDateTime: selectedOfferValues.startedDateTime,
+      ToDateTime: selectedOfferValues.endedDateTime,
+      PackagePaidBy: packageDetails?.packagePaidBy,
+      PackageId: packageDetails?.id,
+    };
+    if (packageDetails.packagePaidBy === "STRIPE") {
+      console.log(values);
+      dispatch(createStripeCharge(values))
+        .then((response) => {
+          setUserPackageDetails(response?.payload);
+          setPackageSubmitButton(false);
+          setLoading(false);
+        })
+        .catch(() => {
+          setPackageSubmitButton(false);
+          setLoading(false);
+        });
+    } else {
+    }
+  };
+
+  useEffect(() => {
+    if (packageDetails) {
+      calculateDetails();
+    }
+  }, [packageDetails]);
 
   return (
     <>
@@ -102,7 +120,7 @@ const PayWithPackage = ({ selectedOfferValues }) => {
         show={showModal}
         onHide={handleCloseModal}
         headerClass="px-3 py-2"
-        title="Create Offer"
+        title="Pay With Package"
         bodyContent={
           <Container>
             {loading ? (
@@ -112,34 +130,43 @@ const PayWithPackage = ({ selectedOfferValues }) => {
                 <Card>
                   <CardHeader>
                     <h5>Use Sessions</h5>
-                    <h6>Project Title: {initialValues?.PaymentTitle}</h6>
+                    <h6>Project Title: {selectedOfferValues?.offerTitle}</h6>
                   </CardHeader>
                   <CardBody>
                     <Table>
-                      <tr>
-                        <td>1 Session = </td>
-                        <td>1 Hour</td>
-                      </tr>
-                      <tr>
-                        <td>Total Working Hours =</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Using Session</td>
-                        <td>1</td>
-                      </tr>
-                      <tr>
-                        <td>Remaining Sessions</td>
-                        <td>{packageDetails?.remainingSessions}</td>
-                      </tr>
-                      <tr>
-                        <td>Remaining Sessions After Confirmation</td>
-                        <td>{packageDetails?.remainingSessions}</td>
-                      </tr>
-                      <tr>
-                        <td>PAY By</td>
-                        <td>Package</td>
-                      </tr>
+                      <tbody>
+                        <tr>
+                          <td>1 Session =</td>
+                          <td>1 Hour</td>
+                        </tr>
+                        <tr>
+                          <td>Total Working Hours =</td>
+                          <td>{calculatedValues.timeDifference || 0}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            Stripe Charges = <br />
+                            <sup className="mt-1 text-danger">
+                              Stripe Charges 4%
+                            </sup>
+                          </td>
+                          <td>{calculatedValues.stripeAmount || 0}</td>
+                        </tr>
+                        <tr>
+                          <td>Actual Offer Price =</td>
+                          <td>{calculatedValues.actualOfferPrice || 0}</td>
+                        </tr>
+                        <tr>
+                          <td>Sessions Have =</td>
+                          <td>{calculatedValues.remainingSessions || 0}</td>
+                        </tr>
+                        <tr>
+                          <td>Sessions After Confirmation =</td>
+                          <td>
+                            {calculatedValues.sessionsAfterConfirmation || 0}
+                          </td>
+                        </tr>
+                      </tbody>
                     </Table>
                   </CardBody>
                 </Card>
@@ -150,9 +177,10 @@ const PayWithPackage = ({ selectedOfferValues }) => {
         backdrop="static"
         customFooterButtons={[
           {
-            text: "Cancel",
-            className: "btn-secondary-secondary",
-            onClick: handleCloseModal,
+            text: "Confirm Order",
+            className: "btn-primary-secondary",
+            onClick: handleSubmitPayment,
+            loader: packageSubmitButton,
           },
         ]}
       />

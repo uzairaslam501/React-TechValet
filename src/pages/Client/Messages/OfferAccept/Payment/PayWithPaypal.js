@@ -24,7 +24,14 @@ const PayWithPaypal = ({ selectedOfferValues }) => {
 
   const handleCheckout = () => {
     try {
-      console.log("initialValues", initialValues);
+      const numericOfferPrice =
+        parseFloat(selectedOfferValues?.offerPrice) || 0;
+      const stripeChargePercentage = 4; // 4% Stripe fee
+      const stripeAmount = numericOfferPrice * (stripeChargePercentage / 100);
+      const actualOfferPrice = Math.ceil(numericOfferPrice - stripeAmount);
+      initialValues.TotalWorkCharges = String(stripeAmount);
+      initialValues.ActualOrderPrice = String(actualOfferPrice);
+
       dispatch(postCheckoutForOrder(initialValues)).then((response) => {
         console.log(response);
         window.location.href = response?.payload?.url;
