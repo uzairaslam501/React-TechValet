@@ -9,6 +9,8 @@ const OfferAccept = ({
   showAcceptOrderDialogue,
   handleOrderClose,
   selectedOfferValues,
+  fetchMessages,
+  setShowAcceptOrderDialogue,
 }) => {
   return (
     <Dialogue
@@ -18,9 +20,19 @@ const OfferAccept = ({
       title="Create Offer"
       bodyContent={
         <Container>
-          <PayWithPackage selectedOfferValues={selectedOfferValues} />
-          <PayWithStripe selectedOfferValues={selectedOfferValues} />
-          <PayWithPaypal selectedOfferValues={selectedOfferValues} />
+          <PayWithPackage
+            selectedOfferValues={selectedOfferValues}
+            fetchMessages={fetchMessages}
+            setShowAcceptOrderDialogue={setShowAcceptOrderDialogue}
+          />
+          <PayWithStripe
+            selectedOfferValues={selectedOfferValues}
+            fetchMessages={fetchMessages}
+          />
+          <PayWithPaypal
+            selectedOfferValues={selectedOfferValues}
+            fetchMessages={fetchMessages}
+          />
         </Container>
       }
       backdrop="static"

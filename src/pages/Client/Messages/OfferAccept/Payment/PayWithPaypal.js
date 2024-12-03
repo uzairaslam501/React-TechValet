@@ -3,7 +3,11 @@ import { Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { postCheckoutForOrder } from "../../../../../redux/Actions/paypalActions";
 
-const PayWithPaypal = ({ selectedOfferValues }) => {
+const PayWithPaypal = ({
+  selectedOfferValues,
+  fetchMessages,
+  setShowAcceptOrderDialogue,
+}) => {
   const dispatch = useDispatch();
   const { userAuth } = useSelector((state) => state?.authentication);
 

@@ -500,6 +500,8 @@ const Messages = () => {
           showAcceptOrderDialogue={showAcceptOrderDialogue}
           handleOrderClose={handleOrderClose}
           selectedOfferValues={selectedOfferValues}
+          fetchMessages={fetchMessages}
+          setShowAcceptOrderDialogue={setShowAcceptOrderDialogue}
         />
       )}
     </div>

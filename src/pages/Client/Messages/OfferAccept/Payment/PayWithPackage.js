@@ -14,7 +14,11 @@ import { getUserPackageByUserId } from "../../../../../redux/Actions/packageActi
 import { convertToISO } from "../../../../../utils/_helpers";
 import { createStripeCharge } from "../../../../../redux/Actions/stripeActions";
 
-const PayWithPackage = ({ selectedOfferValues }) => {
+const PayWithPackage = ({
+  selectedOfferValues,
+  fetchMessages,
+  setShowAcceptOrderDialogue,
+}) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -34,12 +38,11 @@ const PayWithPackage = ({ selectedOfferValues }) => {
       convertToISO(selectedOfferValues?.startedDateTime)
     );
     const endDate = new Date(convertToISO(selectedOfferValues?.endedDateTime));
-    const timeDifference = (endDate - startDate) / (1000 * 60 * 60); // Hours
+    const timeDifference = Math.round((endDate - startDate) / (1000 * 60 * 60)); // Hours
 
     const remainingSessions = packageDetails?.remainingSessions || 0;
-    const sessionsAfterConfirmation = Math.max(
-      remainingSessions - timeDifference,
-      0
+    const sessionsAfterConfirmation = Math.round(
+      remainingSessions - timeDifference
     );
 
     setCalculatedValues({
@@ -68,6 +71,7 @@ const PayWithPackage = ({ selectedOfferValues }) => {
   const handleCloseModal = () => {
     setLoading(false);
     setShowModal(false);
+    setPackageSubmitButton(false);
   };
 
   const handleSubmitPayment = () => {
@@ -84,18 +88,19 @@ const PayWithPackage = ({ selectedOfferValues }) => {
       ToDateTime: selectedOfferValues.endedDateTime,
       PackagePaidBy: packageDetails?.packagePaidBy,
       PackageId: packageDetails?.id,
+      MessageId: String(selectedOfferValues.id),
     };
     if (packageDetails.packagePaidBy === "STRIPE") {
       console.log(values);
       dispatch(createStripeCharge(values))
         .then((response) => {
-          setUserPackageDetails(response?.payload);
-          setPackageSubmitButton(false);
-          setLoading(false);
+          console.log("Package Paid", response?.payload);
+          handleCloseModal();
+          fetchMessages(selectedOfferValues?.senderId);
+          setShowAcceptOrderDialogue(false);
         })
         .catch(() => {
-          setPackageSubmitButton(false);
-          setLoading(false);
+          handleCloseModal();
         });
     } else {
     }

@@ -5,7 +5,11 @@ import StripeCheckout from "react-stripe-checkout";
 import { createStripeCharge } from "../../../../../redux/Actions/stripeActions";
 import "./style.css";
 
-const PayWithStripe = ({ selectedOfferValues }) => {
+const PayWithStripe = ({
+  selectedOfferValues,
+  fetchMessages,
+  setShowAcceptOrderDialogue,
+}) => {
   const { userAuth } = useSelector((state) => state?.authentication);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
