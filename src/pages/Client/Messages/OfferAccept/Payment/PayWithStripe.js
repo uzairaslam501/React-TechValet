@@ -67,7 +67,7 @@ const PayWithStripe = ({ selectedOfferValues }) => {
           border: "0px",
           borderRadius: "0px",
           boxShadow: "none",
-        }} // Hide the actual Stripe button
+        }}
       />
     </Button>
   );
