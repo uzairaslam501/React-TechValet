@@ -5,7 +5,7 @@ const RenderOfferDetails = (message, userAuth) => {
     <div>
       <div
         className="p-3 border-bottom text-dark"
-        style={{ maxWidth: "295px" }}
+        style={{ maxWidth: "310px" }}
       >
         <h6>
           <span
@@ -41,7 +41,7 @@ const RenderOfferDetails = (message, userAuth) => {
         )}
         <p className="mb-1">
           <span className="fw-bold">Started From:</span>{" "}
-          <i className="bi bi-clock"></i>
+          <i className="bi bi-clock"></i>{" "}
           <span id={`startedDateTime${message.offerTitleId}`}>
             {message.startedDateTime}
           </span>
