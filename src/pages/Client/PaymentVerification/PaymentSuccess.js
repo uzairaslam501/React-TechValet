@@ -7,6 +7,10 @@ import {
   checkPaymentStatusForOrder,
   checkPaymentStatusForPackage,
 } from "../../../redux/Actions/paypalActions";
+import OrderComponent from "./Component/OrderComponent";
+import PackageComponent from "./Component/PackageComponent";
+import { getPackageById } from "../../../redux/Actions/packageActions";
+import { getOrderById } from "../../../redux/Actions/customerActions";
 
 const PaymentSuccess = () => {
   const dispatch = useDispatch();
@@ -19,6 +23,15 @@ const PaymentSuccess = () => {
   const token = searchParams.get("token");
   const payerId = searchParams.get("PayerID");
 
+  const fetchPackageDetails = (packageId) => {
+    try {
+      dispatch(getPackageById(packageId)).then((response) => {
+        console.log(response);
+        setPackageDetails(response?.payload);
+      });
+    } catch (error) {}
+  };
+
   useEffect(() => {
     try {
       const modelForOrderStatus = {
@@ -29,15 +42,13 @@ const PaymentSuccess = () => {
       if (paymentType === "Order") {
         dispatch(checkPaymentStatusForOrder(modelForOrderStatus)).then(
           (response) => {
-            console.log(response);
             setOrderDetails(response?.payload);
           }
         );
       } else {
         dispatch(checkPaymentStatusForPackage(modelForOrderStatus)).then(
           (response) => {
-            console.log(response);
-            setPackageDetails(response?.payload);
+            fetchPackageDetails(response?.payload.userPackageId);
           }
         );
       }
@@ -62,76 +73,10 @@ const PaymentSuccess = () => {
         <div className="text-start mb-4">
           <p className="fw-bold text-center">Order Summary:</p>
           {orderDetails && (
-            <table className="table">
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Order ID:
-                </td>{" "}
-                <td>{orderDetails?.encOrderId}</td>
-              </tr>
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Order Price:
-                </td>
-                <td>{`$${orderDetails?.totalPayment}`}</td>
-              </tr>
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Transaction Fee:
-                </td>
-                <td>{`$${orderDetails?.transactionFee}`}</td>
-              </tr>
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Payment Method:
-                </td>{" "}
-                <td>{orderDetails?.paymentMethod}</td>
-              </tr>
-            </table>
+            <OrderComponent orderDetails={orderDetails} boughtBy={"PAYPAL"} />
           )}
           {packageDetails && (
-            <table className="table">
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Pakcage Type:
-                </td>{" "}
-                <td>
-                  {packageDetails?.packageType === "IYear"
-                    ? "1 Year"
-                    : "2 Year"}
-                </td>
-              </tr>
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Sessions Included:
-                </td>{" "}
-                <td>
-                  {packageDetails?.packageType === "IYear"
-                    ? "6 Sessions"
-                    : "12 Sessions"}
-                </td>
-              </tr>
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Package Price:
-                </td>
-                <td>{`$${packageDetails?.packagePrice}`}</td>
-              </tr>
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Payment Id:
-                </td>
-                <td>{`${packageDetails?.paymentId}`}</td>
-              </tr>
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Payment Status:
-                </td>{" "}
-                <td>
-                  {packageDetails?.paymentStatus === "completed" && "Completed"}
-                </td>
-              </tr>
-            </table>
+            <PackageComponent packageDetails={packageDetails} />
           )}
         </div>
         {orderDetails && (

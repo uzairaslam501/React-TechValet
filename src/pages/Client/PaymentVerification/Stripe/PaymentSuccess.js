@@ -6,6 +6,8 @@ import { useLocation } from "react-router";
 import { getPackageById } from "../../../../redux/Actions/packageActions";
 import { getOrderById } from "../../../../redux/Actions/customerActions";
 import { formatDateTimeWithAmPm } from "../../../../utils/_helpers";
+import OrderComponent from "../Component/OrderComponent";
+import PackageComponent from "../Component/PackageComponent";
 
 const StripePaymentSuccess = () => {
   const dispatch = useDispatch();
@@ -64,89 +66,10 @@ const StripePaymentSuccess = () => {
         <div className="text-start mb-4">
           <p className="fw-bold text-center">Order Summary:</p>
           {orderDetails && (
-            <table className="table">
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Order Title:
-                </td>{" "}
-                <td>{orderDetails?.orderTitle}</td>
-              </tr>
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Order Price:
-                </td>
-                <td>{`$${
-                  orderDetails?.orderPrice +
-                  orderDetails?.totalAmountIncludedFee
-                }`}</td>
-              </tr>
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Order Start From:
-                </td>
-                <td>{`${formatDateTimeWithAmPm(
-                  orderDetails?.startDateTime
-                )}`}</td>
-              </tr>
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Order End To:
-                </td>
-                <td>{`${formatDateTimeWithAmPm(
-                  orderDetails?.endDateTime
-                )}`}</td>
-              </tr>
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Payment Method:
-                </td>{" "}
-                <td>{boughtBy && boughtBy}</td>
-              </tr>
-            </table>
+            <OrderComponent orderDetails={orderDetails} boughtBy={"STRIPE"} />
           )}
           {packageDetails && (
-            <table className="table">
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Pakcage Type:
-                </td>{" "}
-                <td>
-                  {packageDetails?.packageType === "IYear"
-                    ? "1 Year"
-                    : "2 Year"}
-                </td>
-              </tr>
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Sessions Included:
-                </td>{" "}
-                <td>
-                  {packageDetails?.packageType === "IYear"
-                    ? "6 Sessions"
-                    : "12 Sessions"}
-                </td>
-              </tr>
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Package Price:
-                </td>
-                <td>{`$${
-                  packageDetails?.packageType === "IYear" ? "100" : "200"
-                }`}</td>
-              </tr>
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Payment Id:
-                </td>
-                <td>{`${packageDetails?.paymentId}`}</td>
-              </tr>
-              <tr>
-                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Payment Status:
-                </td>
-                <td>{"Completed"}</td>
-              </tr>
-            </table>
+            <PackageComponent packageDetails={packageDetails} />
           )}
         </div>
         {orderDetails && (
