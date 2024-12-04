@@ -3,13 +3,18 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
-import { checkPaymentStatusForOrder } from "../../../redux/Actions/paypalActions";
+import {
+  checkPaymentStatusForOrder,
+  checkPaymentStatusForPackage,
+} from "../../../redux/Actions/paypalActions";
 
 const PaymentSuccess = () => {
   const dispatch = useDispatch();
   const [orderDetails, setOrderDetails] = useState(null);
+  const [packageDetails, setPackageDetails] = useState(null);
 
   const [searchParams] = useSearchParams();
+  const paymentType = searchParams.get("type");
   const paymentId = searchParams.get("paymentId");
   const token = searchParams.get("token");
   const payerId = searchParams.get("PayerID");
@@ -21,12 +26,21 @@ const PaymentSuccess = () => {
         token,
         payerId,
       };
-      dispatch(checkPaymentStatusForOrder(modelForOrderStatus)).then(
-        (response) => {
-          console.log(response);
-          setOrderDetails(response?.payload);
-        }
-      );
+      if (paymentType === "Order") {
+        dispatch(checkPaymentStatusForOrder(modelForOrderStatus)).then(
+          (response) => {
+            console.log(response);
+            setOrderDetails(response?.payload);
+          }
+        );
+      } else {
+        dispatch(checkPaymentStatusForPackage(modelForOrderStatus)).then(
+          (response) => {
+            console.log(response);
+            setPackageDetails(response?.payload);
+          }
+        );
+      }
     } catch (error) {
       console.log(error);
     }
@@ -75,19 +89,87 @@ const PaymentSuccess = () => {
               </tr>
             </table>
           )}
+          {packageDetails && (
+            <table className="table">
+              <tr>
+                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
+                  Pakcage Type:
+                </td>{" "}
+                <td>
+                  {packageDetails?.packageType === "IYear"
+                    ? "1 Year"
+                    : "2 Year"}
+                </td>
+              </tr>
+              <tr>
+                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
+                  Sessions Included:
+                </td>{" "}
+                <td>
+                  {packageDetails?.packageType === "IYear"
+                    ? "6 Sessions"
+                    : "12 Sessions"}
+                </td>
+              </tr>
+              <tr>
+                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
+                  Package Price:
+                </td>
+                <td>{`$${packageDetails?.packagePrice}`}</td>
+              </tr>
+              <tr>
+                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
+                  Payment Id:
+                </td>
+                <td>{`${packageDetails?.paymentId}`}</td>
+              </tr>
+              <tr>
+                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
+                  Payment Status:
+                </td>{" "}
+                <td>
+                  {packageDetails?.paymentStatus === "completed" && "Completed"}
+                </td>
+              </tr>
+            </table>
+          )}
         </div>
-        <Row className="g-3">
-          <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-1">
-            <Button variant="primary" href="/messages" className="w-100">
-              Back to Home
-            </Button>
-          </Col>
-          <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-1">
-            <Button variant="outline-primary" href="/orders" className="w-100">
-              Order Details
-            </Button>
-          </Col>
-        </Row>
+        {orderDetails && (
+          <Row className="g-3">
+            <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-1">
+              <Button variant="primary" href="/messages" className="w-100">
+                Back to Messages
+              </Button>
+            </Col>
+            <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-1">
+              <Button
+                variant="outline-primary"
+                href="/orders"
+                className="w-100"
+              >
+                Order Details
+              </Button>
+            </Col>
+          </Row>
+        )}
+        {packageDetails && (
+          <Row className="g-3">
+            <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-1">
+              <Button variant="primary" href="/packages" className="w-100">
+                Back to Packages
+              </Button>
+            </Col>
+            <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-1">
+              <Button
+                variant="outline-primary"
+                href="/package-details"
+                className="w-100"
+              >
+                View Packages
+              </Button>
+            </Col>
+          </Row>
+        )}
       </Card>
     </Container>
   );

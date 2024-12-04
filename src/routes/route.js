@@ -66,10 +66,7 @@ const createRoute = createBrowserRouter(
           <Route path="/messages" element={<Messages />} />
           <Route path="/PaymentSuccess" element={<PaymentSuccess />} />
           <Route path="/PaymentCancelled" element={<PaymentCancelled />} />
-          <Route
-            path="/PaymentSuccessfully"
-            element={<StripePaymentSuccess />}
-          />
+          <Route path="/payment-success" element={<StripePaymentSuccess />} />
         </Route>
       </Route>
       <Route path="/welcome" element={<Welcome />} />

@@ -100,3 +100,25 @@ export const createStripeCharge = createAsyncThunk(
     }
   }
 );
+
+export const stripeCheckOutForPackages = createAsyncThunk(
+  "stripe/StripeCheckOutForPackages",
+  async (orderDto, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const jwtToken = getToken(getState);
+      const response = await api.post(
+        `StripePayment/StripeCheckOutForPackages`,
+        orderDto,
+        {
+          headers: {
+            Authorization: `${jwtToken}`, // Token included in the request headers
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch);
+    }
+  }
+);

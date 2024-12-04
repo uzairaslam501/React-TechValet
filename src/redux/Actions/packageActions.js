@@ -13,7 +13,7 @@ const api = axios.create({
 });
 
 export const getUserPackageByUserId = createAsyncThunk(
-  "stripe/getUserPackageByUserId",
+  "package/getUserPackageByUserId",
   async (_, { rejectWithValue, getState, dispatch }) => {
     try {
       const jwtToken = getToken(getState);
@@ -26,6 +26,24 @@ export const getUserPackageByUserId = createAsyncThunk(
           },
         }
       );
+      const { data, message } = processApiResponse(response, dispatch);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch);
+    }
+  }
+);
+
+export const getPackageById = createAsyncThunk(
+  "pakcage/gePackageById",
+  async (id, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const jwtToken = getToken(getState);
+      const response = await api.get(`Customer/GetPackageById/${id}`, {
+        headers: {
+          Authorization: `${jwtToken}`,
+        },
+      });
       const { data, message } = processApiResponse(response, dispatch);
       return data;
     } catch (error) {
