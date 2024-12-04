@@ -149,6 +149,26 @@ export const requestGetUserPackages = createAsyncThunk(
 );
 //#endregion
 
+//#region Order
+export const getOrderById = createAsyncThunk(
+  "user/getOrderById",
+  async (orderId, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const jwtToken = getToken(getState);
+      const response = await api.get(`/Customer/GetOrderById/${orderId}`, {
+        headers: {
+          Authorization: `${jwtToken}`,
+        },
+      });
+      const { data, message } = processApiResponse(response, dispatch);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch);
+    }
+  }
+);
+//#endregion
+
 //#region Tables
 
 export const getRecords = createAsyncThunk(

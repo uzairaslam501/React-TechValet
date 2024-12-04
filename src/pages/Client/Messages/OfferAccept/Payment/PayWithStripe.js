@@ -3,16 +3,14 @@ import { Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import StripeCheckout from "react-stripe-checkout";
 import { createStripeCharge } from "../../../../../redux/Actions/stripeActions";
+import { useNavigate } from "react-router";
 import "./style.css";
 
-const PayWithStripe = ({
-  selectedOfferValues,
-  fetchMessages,
-  setShowAcceptOrderDialogue,
-}) => {
-  const { userAuth } = useSelector((state) => state?.authentication);
+const PayWithStripe = ({ selectedOfferValues }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const { userAuth } = useSelector((state) => state?.authentication);
 
   const initialValues = {
     CustomerId: String(userAuth?.id),
@@ -48,7 +46,11 @@ const PayWithStripe = ({
   const handleSubmitPayment = (values) => {
     try {
       dispatch(createStripeCharge(values)).then((response) => {
-        console.log("responseBack", response?.payload);
+        const values = {
+          id: response?.payload,
+          type: "Order",
+        };
+        navigate("/payment-success", { state: values });
       });
     } catch (error) {
       console.log("handle Submit Payment", error);

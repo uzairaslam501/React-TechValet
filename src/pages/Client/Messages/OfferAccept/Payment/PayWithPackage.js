@@ -14,6 +14,7 @@ import { getUserPackageByUserId } from "../../../../../redux/Actions/packageActi
 import { convertToISO } from "../../../../../utils/_helpers";
 import { createStripeCharge } from "../../../../../redux/Actions/stripeActions";
 import { chargeByPackage } from "../../../../../redux/Actions/paypalActions";
+import { useNavigate } from "react-router";
 
 const PayWithPackage = ({
   selectedOfferValues,
@@ -21,6 +22,7 @@ const PayWithPackage = ({
   setShowAcceptOrderDialogue,
 }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [calculatedValues, setCalculatedValues] = useState({});
@@ -29,7 +31,6 @@ const PayWithPackage = ({
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const calculateDetails = () => {
-    console.log("selectedOfferValues", selectedOfferValues);
     const numericOfferPrice = parseFloat(selectedOfferValues?.offerPrice) || 0;
     const stripeChargePercentage = 4; // 4% Stripe fee
     const stripeAmount = numericOfferPrice * (stripeChargePercentage / 100);
@@ -95,10 +96,11 @@ const PayWithPackage = ({
       console.log(values);
       dispatch(createStripeCharge(values))
         .then((response) => {
-          console.log("Package Paid", response?.payload);
-          handleCloseModal();
-          fetchMessages(selectedOfferValues?.senderId);
-          setShowAcceptOrderDialogue(false);
+          const values = {
+            id: response?.payload,
+            type: "Order-Package",
+          };
+          navigate("/payment-success", { state: values });
         })
         .catch(() => {
           handleCloseModal();

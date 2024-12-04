@@ -4,12 +4,15 @@ import { useDispatch } from "react-redux";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useLocation } from "react-router";
 import { getPackageById } from "../../../../redux/Actions/packageActions";
+import { getOrderById } from "../../../../redux/Actions/customerActions";
+import { formatDateTimeWithAmPm } from "../../../../utils/_helpers";
 
 const StripePaymentSuccess = () => {
   const dispatch = useDispatch();
   const { state } = useLocation();
   const [orderDetails, setOrderDetails] = useState();
   const [packageDetails, setPackageDetails] = useState();
+  const [boughtBy, setBoughtBy] = useState();
   const record = state;
 
   const fetchPackageDetails = (packageId) => {
@@ -21,9 +24,26 @@ const StripePaymentSuccess = () => {
     } catch (error) {}
   };
 
+  const fetchOrderDetails = (orderId) => {
+    try {
+      dispatch(getOrderById(orderId)).then((response) => {
+        console.log(response);
+        setOrderDetails(response?.payload);
+      });
+    } catch (error) {}
+  };
+
   useEffect(() => {
     if (record?.type === "Package") {
       fetchPackageDetails(record?.id);
+    } else {
+      if (record.type === "Order-Package") {
+        setBoughtBy("Package");
+      }
+      if (record.type === "Order") {
+        setBoughtBy("Stripe");
+      }
+      fetchOrderDetails(record.id);
     }
   }, [record]);
 
@@ -47,27 +67,40 @@ const StripePaymentSuccess = () => {
             <table className="table">
               <tr>
                 <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Order ID:
+                  Order Title:
                 </td>{" "}
-                <td>{orderDetails?.encOrderId}</td>
+                <td>{orderDetails?.orderTitle}</td>
               </tr>
               <tr>
                 <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
                   Order Price:
                 </td>
-                <td>{`$${orderDetails?.totalPayment}`}</td>
+                <td>{`$${
+                  orderDetails?.orderPrice +
+                  orderDetails?.totalAmountIncludedFee
+                }`}</td>
               </tr>
               <tr>
                 <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-                  Transaction Fee:
+                  Order Start From:
                 </td>
-                <td>{`$${orderDetails?.transactionFee}`}</td>
+                <td>{`${formatDateTimeWithAmPm(
+                  orderDetails?.startDateTime
+                )}`}</td>
+              </tr>
+              <tr>
+                <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
+                  Order End To:
+                </td>
+                <td>{`${formatDateTimeWithAmPm(
+                  orderDetails?.endDateTime
+                )}`}</td>
               </tr>
               <tr>
                 <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
                   Payment Method:
                 </td>{" "}
-                <td>{orderDetails?.paymentMethod}</td>
+                <td>{boughtBy && boughtBy}</td>
               </tr>
             </table>
           )}
