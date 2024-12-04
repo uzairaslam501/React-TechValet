@@ -84,7 +84,7 @@ const ClientNavbar = () => {
                         </NavDropdown.Item>
                       ))}
                     </NavDropdown>
-                  ) : link.label === "Share Your Referral" ? (
+                  ) : link.label === "Share Your Referal" ? (
                     <Button
                       onClick={handleCopyReferral}
                       className={link.className}

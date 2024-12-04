@@ -13,6 +13,7 @@ import Dialogue from "../../../../../components/Custom/Modal/modal";
 import { getUserPackageByUserId } from "../../../../../redux/Actions/packageActions";
 import { convertToISO } from "../../../../../utils/_helpers";
 import { createStripeCharge } from "../../../../../redux/Actions/stripeActions";
+import { chargeByPackage } from "../../../../../redux/Actions/paypalActions";
 
 const PayWithPackage = ({
   selectedOfferValues,
@@ -103,6 +104,15 @@ const PayWithPackage = ({
           handleCloseModal();
         });
     } else {
+      dispatch(chargeByPackage(values))
+        .then((response) => {
+          handleCloseModal();
+          fetchMessages(selectedOfferValues?.senderId);
+          setShowAcceptOrderDialogue(false);
+        })
+        .catch(() => {
+          handleCloseModal();
+        });
     }
   };
 

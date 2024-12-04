@@ -3,7 +3,10 @@ import React from "react";
 const RenderOfferDetails = (message, userAuth) => {
   return (
     <div>
-      <div className="p-3 border-bottom text-dark">
+      <div
+        className="p-3 border-bottom text-dark"
+        style={{ maxWidth: "295px" }}
+      >
         <h6>
           <span
             style={{ wordBreak: "break-all" }}

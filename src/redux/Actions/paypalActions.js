@@ -54,3 +54,25 @@ export const checkPaymentStatusForOrder = createAsyncThunk(
     }
   }
 );
+
+export const chargeByPackage = createAsyncThunk(
+  "paypal/chargeByPackage",
+  async (checkoutDto, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const jwtToken = getToken(getState);
+      const response = await api.post(
+        `PayPalGateWay/CreateOrderBySession/`,
+        checkoutDto,
+        {
+          headers: {
+            Authorization: `${jwtToken}`, // Token included in the request headers
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch);
+    }
+  }
+);
