@@ -27,7 +27,7 @@ import RequestService from "../pages/Client/Manage/Request/requestService";
 import RequestedService from "../pages/Client/Manage/Request/requestedService";
 import Index from "../pages/Client/ClientAuth/Profile/index";
 import Messages from "../pages/Client/Messages/Messages";
-import PaymentSuccess from "../pages/Client/PaymentVerification/PaymentSuccess";
+import PaymentSuccess from "../pages/Client/PaymentVerification/PayPal/PaymentSuccess";
 import PaymentCancelled from "../pages/Client/PaymentVerification/PaymentCancelled";
 import StripePaymentSuccess from "../pages/Client/PaymentVerification/Stripe/PaymentSuccess";
 

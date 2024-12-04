@@ -63,51 +63,10 @@ const StripePaymentSuccess = () => {
           Thank you for your purchase. Your transaction was completed
           successfully.
         </Card.Text>
-        <div className="text-start mb-4">
-          <p className="fw-bold text-center">Order Summary:</p>
-          {orderDetails && (
-            <OrderComponent orderDetails={orderDetails} boughtBy={"STRIPE"} />
-          )}
-          {packageDetails && (
-            <PackageComponent packageDetails={packageDetails} />
-          )}
-        </div>
         {orderDetails && (
-          <Row className="g-3">
-            <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-1">
-              <Button variant="primary" href="/messages" className="w-100">
-                Back to Messages
-              </Button>
-            </Col>
-            <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-1">
-              <Button
-                variant="outline-primary"
-                href="/orders"
-                className="w-100"
-              >
-                Order Details
-              </Button>
-            </Col>
-          </Row>
+          <OrderComponent orderDetails={orderDetails} boughtBy={"STRIPE"} />
         )}
-        {packageDetails && (
-          <Row className="g-3">
-            <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-1">
-              <Button variant="primary" href="/packages" className="w-100">
-                Back to Packages
-              </Button>
-            </Col>
-            <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-1">
-              <Button
-                variant="outline-primary"
-                href="/package-details"
-                className="w-100"
-              >
-                View Packages
-              </Button>
-            </Col>
-          </Row>
-        )}
+        {packageDetails && <PackageComponent packageDetails={packageDetails} />}
       </Card>
     </Container>
   );
