@@ -17,8 +17,8 @@ const Index = () => {
     try {
       dispatch(getRecordById(`/Admin/GetUserById?id=${userAuth.id}`)).then(
         (response) => {
+          console.log(response?.payload);
           setUserRecords(response.payload);
-          console.log(response.payload);
         }
       );
     } catch (e) {
@@ -37,7 +37,7 @@ const Index = () => {
 
   return (
     <>
-      <Container>
+      <Container className="py-5">
         <Row>
           <Col md={4} sm={12}>
             <Row>

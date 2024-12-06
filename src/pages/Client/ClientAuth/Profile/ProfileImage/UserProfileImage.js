@@ -11,17 +11,17 @@ import {
 import { useDispatch } from "react-redux";
 import { logout } from "../../../../../redux/Reducers/authSlice";
 import "./profileImage.css";
+import { postUserAvailable } from "../../../../../redux/Actions/authActions";
 
 const UserProfileImage = ({ userRecord }) => {
   const dispatch = useDispatch();
+  console.log("userRecord", userRecord);
   const [profileImage, setProfileImage] = useState(
     userRecord?.ProfilePicture ||
       "https://usman78056-001-site7.gtempurl.com/profiles/download-(1)_638646395157341553.png"
   );
-  const [status, setStatus] = useState(userRecord?.Status === "1");
-  const [availability, setAvailability] = useState(
-    userRecord?.Availability === "1"
-  );
+  const [status, setStatus] = useState(userRecord?.status);
+  const [availability, setAvailability] = useState(userRecord?.availability);
   const [imagePreview, setImagePreview] = useState(null);
 
   const handleImageChange = (event) => {
@@ -42,11 +42,27 @@ const UserProfileImage = ({ userRecord }) => {
   };
 
   const handleStatusChange = () => {
-    setStatus(!status);
+    dispatch(
+      postUserAvailable({ id: userRecord?.userEncId, activityStatus: !status })
+    ).then((response) => {
+      if (response?.payload === "1") {
+        setStatus(true);
+      } else {
+        setStatus(false);
+      }
+    });
   };
 
   const handleAvailabilityChange = () => {
-    setAvailability(!availability);
+    dispatch(
+      postUserAvailable({ id: userRecord?.userEncId, available: !availability })
+    ).then((response) => {
+      if (response?.payload === "1") {
+        setAvailability(true);
+      } else {
+        setAvailability(false);
+      }
+    });
   };
 
   const handleLogout = () => {
@@ -118,15 +134,13 @@ const UserProfileImage = ({ userRecord }) => {
       <Row>
         <Col>
           <div className="custom-control custom-switch my-2">
-            <Form.Check // prettier-ignore
+            <Form.Check
               type="switch"
               id="custom-switch-button"
               label={status ? "Online" : "Offline"}
               checked={status}
               onChange={handleStatusChange}
             />
-
-            {/* Availability Toggle */}
             <Form.Check
               type="switch"
               id="custom-switch-button"

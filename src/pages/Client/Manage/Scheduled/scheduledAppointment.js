@@ -24,10 +24,9 @@ const ScheduledAppointment = () => {
   // Fetch events and update state
   const fetchEventsAndGenerateCalendar = async () => {
     try {
-      const response = await dispatch(getOrderEventsByUserId(userAuth?.id));
-      if (response?.payload?.status && response?.payload?.data) {
+      dispatch(getOrderEventsByUserId(userAuth?.id)).then((response) => {
         let colorIndex = 0;
-        const fetchedEvents = response?.payload?.data.map((eventData) => {
+        const fetchedEvents = response?.payload?.map((eventData) => {
           const eventColor = eventColors[colorIndex % eventColors.length];
           colorIndex++;
           return {
@@ -45,9 +44,7 @@ const ScheduledAppointment = () => {
           };
         });
         setEvents(fetchedEvents);
-      } else {
-        console.error("Error:", response?.payload?.message);
-      }
+      });
     } catch (error) {
       console.error("Error fetching events:", error);
     }
