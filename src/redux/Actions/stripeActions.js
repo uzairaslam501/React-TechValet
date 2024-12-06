@@ -15,22 +15,22 @@ const api = axios.create({
 export const createCheckoutSession = createAsyncThunk(
   "stripe/createCheckoutSession",
   async (checkoutDto, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const userId = getAuthUserId(getState);
       const response = await api.post(
         `StripePayment/create-checkout-session/${userId}`,
         checkoutDto,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -38,22 +38,22 @@ export const createCheckoutSession = createAsyncThunk(
 export const createPaymentIntent = createAsyncThunk(
   "stripe/createPaymentIntent",
   async (checkoutDto, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const userId = getAuthUserId(getState);
       const response = await api.post(
         `StripePayment/payment-intent/${userId}`,
         checkoutDto,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -61,20 +61,20 @@ export const createPaymentIntent = createAsyncThunk(
 export const paymentSuccess = createAsyncThunk(
   "stripe/paymentSuccess",
   async (session_id, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.get(
         `StripePayment/payment-success/${session_id}`,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -82,21 +82,21 @@ export const paymentSuccess = createAsyncThunk(
 export const createStripeCharge = createAsyncThunk(
   "stripe/createStripeCharge",
   async (checkoutDto, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.post(
         `StripePayment/CreateStripeCharge/`,
         checkoutDto,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -104,21 +104,21 @@ export const createStripeCharge = createAsyncThunk(
 export const stripeCheckOutForPackages = createAsyncThunk(
   "stripe/StripeCheckOutForPackages",
   async (orderDto, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.post(
         `StripePayment/StripeCheckOutForPackages`,
         orderDto,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );

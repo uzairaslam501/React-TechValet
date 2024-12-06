@@ -6,7 +6,6 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { toast } from "react-toastify";
-import { getAuthConfig } from "../../utils/_apiConfig";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -25,7 +24,6 @@ export const postLogin = createAsyncThunk(
     try {
       const response = await api.post("/auth/login", userData);
       const responseBack = processApiResponse(response, dispatch);
-      //const responseBack = response;
       localStorage.setItem("userInfo", JSON.stringify(responseBack?.data));
       return responseBack?.data;
     } catch (error) {

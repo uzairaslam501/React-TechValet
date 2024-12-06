@@ -6,7 +6,7 @@ import {
   getUsersMessages,
   handleOrderOffer,
   sendUsersMessages,
-} from "../../../redux/Actions/messagesAction";
+} from "../../../redux/Actions/messagesActions";
 import HandleImages from "../../../components/Custom/Avatars/HandleImages";
 import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import { truncateCharacters } from "../../../utils/_helpers";

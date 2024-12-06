@@ -15,21 +15,21 @@ const api = axios.create({
 export const getUserPackageByUserId = createAsyncThunk(
   "package/getUserPackageByUserId",
   async (_, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const userId = getAuthUserId(getState);
       const response = await api.get(
         `Customer/GetUserPackageByUserId/${userId}`,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -37,17 +37,17 @@ export const getUserPackageByUserId = createAsyncThunk(
 export const getPackageById = createAsyncThunk(
   "pakcage/gePackageById",
   async (id, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.get(`Customer/GetPackageById/${id}`, {
         headers: {
-          Authorization: `${jwtToken}`,
+          Authorization: `${token}`,
         },
       });
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );

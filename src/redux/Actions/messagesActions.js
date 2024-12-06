@@ -15,21 +15,21 @@ const api = axios.create({
 export const getMessagesSidebar = createAsyncThunk(
   "messages/getMessagesSidebar",
   async (findUser, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
-      const userId = getAuthUserId(getState);
+      const getStateUserId = getAuthUserId(getState);
       const response = await api.get(
-        `Message/GetMessageSideBarLists?loggedInUserId=${userId}&Name=${findUser}`,
+        `Message/GetMessageSideBarLists?loggedInUserId=${getStateUserId}&Name=${findUser}`,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data } = processApiResponse(response, dispatch);
+      const { data } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -37,17 +37,17 @@ export const getMessagesSidebar = createAsyncThunk(
 export const getUserStatus = createAsyncThunk(
   "messages/getUserStatus",
   async (userId, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.get(`Message/GetReceiverStatuses/${userId}`, {
         headers: {
-          Authorization: `${jwtToken}`, // Token included in the request headers
+          Authorization: `${token}`,
         },
       });
-      const { data } = processApiResponse(response, dispatch);
+      const { data } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -55,21 +55,21 @@ export const getUserStatus = createAsyncThunk(
 export const getUsersMessages = createAsyncThunk(
   "messages/getUsersMessages",
   async (userId, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const loggedInUser = getAuthUserId(getState);
-      const jwtToken = getToken(getState);
+      const getStateUserId = getAuthUserId(getState);
       const response = await api.get(
-        `Message/GetMessagesForUsers?loggedInUserId=${loggedInUser}&userId=${userId}`,
+        `Message/GetMessagesForUsers?loggedInUserId=${getStateUserId}&userId=${userId}`,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data } = processApiResponse(response, dispatch);
+      const { data } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -77,20 +77,20 @@ export const getUsersMessages = createAsyncThunk(
 export const sendUsersMessages = createAsyncThunk(
   "messages/sendUsersMessages",
   async (records, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.post("/Message/PostAddMessages", records, {
         headers: {
-          Authorization: `${jwtToken}`, // Token included in the request headers
+          Authorization: `${token}`,
         },
       });
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       if (data) {
         toast.success(message);
       }
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -98,24 +98,24 @@ export const sendUsersMessages = createAsyncThunk(
 export const handleOrderOffer = createAsyncThunk(
   "messages/handleOrderOffer",
   async (records, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.put(
         "/Message/UpdateOrderOfferStatus",
         records,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       if (data) {
         toast.success(message);
       }
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );

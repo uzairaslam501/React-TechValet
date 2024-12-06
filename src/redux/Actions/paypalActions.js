@@ -15,21 +15,21 @@ const api = axios.create({
 export const postCheckoutForOrder = createAsyncThunk(
   "paypal/PayPalCheckoutForOrder",
   async (orderDto, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.post(
         `PayPalGateWay/PayPalCheckoutForOrder`,
         orderDto,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -37,21 +37,21 @@ export const postCheckoutForOrder = createAsyncThunk(
 export const postCheckoutForPackage = createAsyncThunk(
   "paypal/PayPalCheckoutForPackage",
   async (orderDto, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.post(
         `PayPalGateWay/PayPalCheckoutForPackage`,
         orderDto,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -59,20 +59,20 @@ export const postCheckoutForPackage = createAsyncThunk(
 export const checkPaymentStatusForOrder = createAsyncThunk(
   "paypal/checkPaymentStatusForOrder",
   async (model, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.get(
         `PayPalGateWay/CheckPaymentStatusForOrder?paymentId=${model.paymentId}&token=${model.token}&payerID=${model.payerId}`,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -80,20 +80,20 @@ export const checkPaymentStatusForOrder = createAsyncThunk(
 export const checkPaymentStatusForPackage = createAsyncThunk(
   "paypal/checkPaymentStatusForPackage",
   async (model, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.get(
         `PayPalGateWay/CheckPaymentStatusForPackage?paymentId=${model.paymentId}&token=${model.token}&payerID=${model.payerId}`,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -101,21 +101,21 @@ export const checkPaymentStatusForPackage = createAsyncThunk(
 export const chargeByPackage = createAsyncThunk(
   "paypal/chargeByPackage",
   async (checkoutDto, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.post(
         `PayPalGateWay/CreateOrderBySession/`,
         checkoutDto,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
