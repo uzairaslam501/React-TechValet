@@ -24,10 +24,7 @@ export const getOrderEventsByUserId = createAsyncThunk(
         },
       });
 
-      const { data, message } = processApiResponse(response, dispatch, expired);
-      if (message) {
-        toast.success(message);
-      }
+      const { data } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);

@@ -5,17 +5,10 @@ import {
   processApiResponse,
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
-import { toast } from "react-toastify";
 
 const api = axios.create({
   baseURL: baseUrl,
 });
-
-const initialState = {
-  userAuth: null,
-  loading: false,
-  error: null,
-};
 
 // Async thunk for login
 export const postLogin = createAsyncThunk(

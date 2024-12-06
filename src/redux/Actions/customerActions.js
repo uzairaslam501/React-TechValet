@@ -12,11 +12,6 @@ const api = axios.create({
   baseURL: baseUrl,
 });
 
-const initialState = {
-  loading: false,
-  error: null,
-};
-
 export const getKeywords = createAsyncThunk(
   "user/getKeywords",
   async (_, { rejectWithValue, getState, dispatch }) => {
