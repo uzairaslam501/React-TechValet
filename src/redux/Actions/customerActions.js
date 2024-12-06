@@ -6,7 +6,7 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { toast } from "react-toastify";
-import { getAuthConfig, getAuthUserId, getToken } from "../../utils/_apiConfig";
+import { getAuthUserId, getToken } from "../../utils/_apiConfig";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -20,18 +20,17 @@ const initialState = {
 export const getKeywords = createAsyncThunk(
   "user/getKeywords",
   async (_, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.get("/User/GetHighSearchedKeys", {
         headers: {
-          Authorization: `${jwtToken}`, // Token included in the request headers
+          Authorization: `${token}`, // Token included in the request headers
         },
       });
-      const responseBack = processApiResponse(response, dispatch);
-      console.log(responseBack.data);
+      const responseBack = processApiResponse(response, dispatch, expired);
       return responseBack?.data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -39,18 +38,17 @@ export const getKeywords = createAsyncThunk(
 export const getValetsList = createAsyncThunk(
   "user/getValetsList",
   async (_, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.get("/User/GetUserListAsync", {
         headers: {
-          Authorization: `${jwtToken}`, // Token included in the request headers
+          Authorization: `${token}`, // Token included in the request headers
         },
       });
-      const responseBack = processApiResponse(response, dispatch);
-      console.log(responseBack.data);
+      const responseBack = processApiResponse(response, dispatch, expired);
       return responseBack?.data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -58,18 +56,17 @@ export const getValetsList = createAsyncThunk(
 export const getValetsBySearch = createAsyncThunk(
   "user/getValetsBySearch",
   async (keyword, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.get(`/User/SearchValet?keyword=${keyword}`, {
         headers: {
-          Authorization: `${jwtToken}`, // Token included in the request headers
+          Authorization: `${token}`, // Token included in the request headers
         },
       });
-      const responseBack = processApiResponse(response, dispatch);
-      console.log(responseBack.data);
+      const responseBack = processApiResponse(response, dispatch, expired);
       return responseBack?.data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -78,21 +75,21 @@ export const getValetsBySearch = createAsyncThunk(
 export const requestService = createAsyncThunk(
   "user/requestService",
   async (record, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.post(
         "/Customer/PostAddRequestService",
         record,
         {
           headers: {
-            Authorization: `${jwtToken}`,
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -100,20 +97,20 @@ export const requestService = createAsyncThunk(
 export const getUserForSkills = createAsyncThunk(
   "user/getUserForSkills",
   async (skills, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.get(
         `/User/GetItValetsByRequestSkills?RequestSkills=${skills}`,
         {
           headers: {
-            Authorization: `${jwtToken}`,
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -123,18 +120,18 @@ export const getUserForSkills = createAsyncThunk(
 export const requestGetUserPackages = createAsyncThunk(
   "packages/requestGetUserPackages",
   async (_, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const userId = getAuthUserId(getState);
       const response = await api.get(
         `/User/GetUserSessionStatus?customerId=${userId}`,
         {
           headers: {
-            Authorization: `${jwtToken}`,
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
       if (data > 0) {
         toast.success(
           `Your package is activated. You have ${data} remaining session(s).`
@@ -143,7 +140,27 @@ export const requestGetUserPackages = createAsyncThunk(
 
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+//#endregion
+
+//#region Order
+export const getOrderById = createAsyncThunk(
+  "user/getOrderById",
+  async (orderId, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.get(`/Customer/GetOrderById/${orderId}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -157,17 +174,21 @@ export const getRecords = createAsyncThunk(
     { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
     { rejectWithValue, getState, dispatch }
   ) => {
+    const { token, expired } = getToken(getState);
     try {
-      const config = getAuthConfig(getState);
-      const response = await axios.get(
+      const response = await api.get(
         `${baseUrl}/Datatable/GetRequestServicesDatatableByUserIdAsync?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}`,
-        config
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
       );
       const responseBack = response;
       return responseBack;
     } catch (error) {
-      handleApiError(error, dispatch, getState().authentication?.userAuth);
+      handleApiError(error, dispatch, expired);
       rejectWithValue(error);
     }
   }
@@ -179,17 +200,21 @@ export const getOrderRecords = createAsyncThunk(
     { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
     { rejectWithValue, getState, dispatch }
   ) => {
+    const { token, expired } = getToken(getState);
     try {
-      const config = getAuthConfig(getState);
-      const response = await axios.get(
+      const response = await api.get(
         `${baseUrl}/Datatable/GetOrdersDatatableByUserId?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}`,
-        config
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
       );
       const responseBack = response?.data;
       return responseBack;
     } catch (error) {
-      handleApiError(error, dispatch, getState().authentication?.userAuth);
+      handleApiError(error, dispatch, expired);
       rejectWithValue(error);
     }
   }
@@ -201,17 +226,21 @@ export const getUserPackagesRecords = createAsyncThunk(
     { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
     { rejectWithValue, getState, dispatch }
   ) => {
+    const { token, expired } = getToken(getState);
     try {
-      const config = getAuthConfig(getState);
-      const response = await axios.get(
+      const response = await api.get(
         `${baseUrl}/Datatable/GetUserPackageDatatableAsync?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}`,
-        config
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
       );
       const responseBack = response?.data;
       return responseBack;
     } catch (error) {
-      handleApiError(error, dispatch, getState().authentication?.userAuth);
+      handleApiError(error, dispatch, expired);
       rejectWithValue(error);
     }
   }
@@ -230,17 +259,21 @@ export const getUserPackagesConsumptionRecords = createAsyncThunk(
     },
     { rejectWithValue, getState, dispatch }
   ) => {
+    const { token, expired } = getToken(getState);
     try {
-      const config = getAuthConfig(getState);
-      const response = await axios.get(
+      const response = await api.get(
         `${baseUrl}/Datatable/GetOrdersDatatableByPackageId?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}&packageId=${packageId}`,
-        config
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
       );
       const responseBack = response?.data;
       return responseBack;
     } catch (error) {
-      handleApiError(error, dispatch, getState().authentication?.userAuth);
+      handleApiError(error, dispatch, expired);
       rejectWithValue(error);
     }
   }

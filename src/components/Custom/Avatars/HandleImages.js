@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const HandleImages = ({ imagePath, imageAlt, imageStyle }) => {
+const HandleImages = ({ imagePath, imageAlt, imageStyle, className = "" }) => {
   const [imageSrc, setImageSrc] = useState(
     imagePath || "https://bootdey.com/img/Content/avatar/avatar2.png"
   );
@@ -21,6 +21,7 @@ const HandleImages = ({ imagePath, imageAlt, imageStyle }) => {
       src={imageSrc}
       alt={imageAlt}
       style={imageStyle}
+      className={className}
     />
   );
 };

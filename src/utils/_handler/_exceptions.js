@@ -1,4 +1,6 @@
 import { toast } from "react-toastify";
+import { logout } from "../../redux/Reducers/authSlice";
+import { convertToISO } from "../_helpers";
 
 // Main API Error Handler
 export const handleApiError = (error, dispatch, tokenExpiryTime) => {
@@ -8,7 +10,7 @@ export const handleApiError = (error, dispatch, tokenExpiryTime) => {
 
     switch (statusCode) {
       case 401:
-        handleUnauthorizedError(error, tokenExpiryTime);
+        handleUnauthorizedError(error, dispatch, tokenExpiryTime);
         break;
       default:
         logAndToastError(statusCode, errorMessage);
@@ -22,17 +24,13 @@ export const handleApiError = (error, dispatch, tokenExpiryTime) => {
 };
 
 // Unauthorized Error Handler
-const handleUnauthorizedError = (error, tokenExpiryTime) => {
+const handleUnauthorizedError = (error, dispatch, tokenExpiryTime) => {
   const currentTimeInSeconds = Date.now() / 1000;
-  const tokenExpiryInSeconds =
-    new Date(parseInt(tokenExpiryTime)).getTime() / 1000;
+  const tokenExpiryInSeconds = new Date(tokenExpiryTime).getTime() / 1000;
 
   if (tokenExpiryInSeconds && tokenExpiryInSeconds < currentTimeInSeconds) {
     toast.error("Session has expired. Please log in again.");
-  } else {
-    toast.error(
-      "Unauthorized access. You don't have the required permissions."
-    );
+    dispatch(logout());
   }
 };
 
@@ -49,9 +47,13 @@ export const processApiResponse = (response, dispatch, tokenExpiryTime) => {
   if (!response?.data?.status) {
     handleApiError(response?.data, dispatch, tokenExpiryTime);
   } else {
+    if (tokenExpiryTime) {
+      tokenExpiryTime = convertToISO(tokenExpiryTime);
+      handleUnauthorizedError("", dispatch, tokenExpiryTime);
+    }
     return {
       data: response?.data?.data,
-      //message: response?.data?.message,
+      message: response?.data?.message,
     };
   }
 };

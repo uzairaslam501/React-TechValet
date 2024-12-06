@@ -4,7 +4,7 @@ import { Col, Container, Row, Form, Card, CardBody } from "react-bootstrap";
 import logo from "../../../../assets/images/logo-for-white-bg.svg";
 import RadioCheck from "../../../../components/Custom/RadioChecks/radioChecks";
 import { options } from "../../../../utils/client/data/requestedData";
-import { convertToFormattedDateTimeWithAMPM } from "../../../../utils/_helpers";
+import { formatDateTimeWithAmPm } from "../../../../utils/_helpers";
 import LabeledDisplay from "../../../../components/Custom/LabeledDisplay/LabeledDisplay";
 import BadgeDisplay from "../../../../components/Custom/BadgeDisplay/BadgeDisplay";
 import RequestedUsers from "./requestedUsers";
@@ -90,7 +90,7 @@ const RequestedService = () => {
                             </Form.Label>
                             <Form.Control
                               type="text"
-                              value={convertToFormattedDateTimeWithAMPM(
+                              value={formatDateTimeWithAmPm(
                                 recordForUpdate.fromDateTime
                               )}
                               readOnly
@@ -104,7 +104,7 @@ const RequestedService = () => {
                             </Form.Label>
                             <Form.Control
                               type="text"
-                              value={convertToFormattedDateTimeWithAMPM(
+                              value={formatDateTimeWithAmPm(
                                 recordForUpdate.toDateTime
                               )}
                               readOnly

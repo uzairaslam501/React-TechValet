@@ -14,14 +14,14 @@ export const getAuthConfig = (getState) => {
   };
 };
 
-export const getAuthToken = (getState) => {
+export const getTokenTime = (getState) => {
   const user = getState()?.authentication?.userAuth;
 
-  if (!user?.tokenExpiry) {
+  if (!user?.tokenExpire) {
     throw new Error("Authorization token is missing. Please log in again.");
   }
 
-  return `${user.tokenExpiry}`;
+  return `${user.tokenExpire}`;
 };
 
 export const getAuthUserId = (getState) => {
@@ -31,7 +31,10 @@ export const getAuthUserId = (getState) => {
 };
 
 export const getToken = (getState) => {
-  const { userAuth } = getState()?.authentication;
-
-  return `${userAuth?.token}`;
+  const user = getState()?.authentication?.userAuth;
+  const tokenValues = {
+    token: user?.token,
+    expired: user?.tokenExpire,
+  };
+  return tokenValues;
 };

@@ -3,7 +3,10 @@ import React from "react";
 const RenderOfferDetails = (message, userAuth) => {
   return (
     <div>
-      <div className="p-3 border-bottom text-dark">
+      <div
+        className="p-3 border-bottom text-dark"
+        style={{ maxWidth: "310px" }}
+      >
         <h6>
           <span
             style={{ wordBreak: "break-all" }}
@@ -38,7 +41,7 @@ const RenderOfferDetails = (message, userAuth) => {
         )}
         <p className="mb-1">
           <span className="fw-bold">Started From:</span>{" "}
-          <i className="bi bi-clock"></i>
+          <i className="bi bi-clock"></i>{" "}
           <span id={`startedDateTime${message.offerTitleId}`}>
             {message.startedDateTime}
           </span>

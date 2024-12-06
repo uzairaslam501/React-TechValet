@@ -11,12 +11,26 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authSlice from "./Reducers/authSlice";
+import calendarSlice from "./Reducers/calenderSlice";
 import customerSlice from "./Reducers/customerSlice";
+import globalSlice from "./Reducers/globalSlice";
+import messagesSlice from "./Reducers/messagesSlice";
+import notificationSlice from "./Reducers/notificationSlice";
+import packageSlice from "./Reducers/packageSlice";
+import paypalSlice from "./Reducers/paypalSlice";
+import stripeSlice from "./Reducers/stripeSlice";
 
 // Combine your reducers here
 const rootReducer = combineReducers({
   authentication: authSlice,
+  calender: calendarSlice,
   customer: customerSlice,
+  global: globalSlice,
+  message: messagesSlice,
+  notification: notificationSlice,
+  package: packageSlice,
+  paypal: paypalSlice,
+  stripe: stripeSlice,
 });
 
 const persistConfig = {

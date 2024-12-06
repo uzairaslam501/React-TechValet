@@ -2,8 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getMessagesSidebar,
+  getUserStatus,
+  getUsersMessages,
+  handleOrderOffer,
   sendUsersMessages,
-} from "../../../redux/Actions/messagesAction";
+} from "../../../redux/Actions/messagesActions";
 import HandleImages from "../../../components/Custom/Avatars/HandleImages";
 import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import { truncateCharacters } from "../../../utils/_helpers";
@@ -13,6 +16,7 @@ import OfferDialogue from "./OfferDialogue/OfferDialogue";
 import signalRService from "../../../services/SignalR";
 import { notificationURL } from "../../../utils/_envConfig";
 import { debounce } from "lodash";
+import OfferAccept from "./OfferAccept/OfferAccept";
 
 const Messages = () => {
   const dispatch = useDispatch();
@@ -26,33 +30,29 @@ const Messages = () => {
   const [messageLoader, setMessagesLoader] = useState(true);
   const [userOnlineStatus, setUserOnlineStatus] = useState(-1);
   const [userSideBarLoader, setUserSideBarLoader] = useState(true);
-  const [isMessageSidebarOpen, setMessageSidebarOpen] = useState(false);
   const [showOrderDialogue, setShowOrderDialogue] = useState(false);
+  const [isMessageSidebarOpen, setMessageSidebarOpen] = useState(false);
+
+  const [showAcceptOrderDialogue, setShowAcceptOrderDialogue] = useState(false);
+  const [selectedOfferValues, setSelectedOfferValues] = useState(null);
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const fetchSideBar = (findUser = "") => {
     try {
       setUserSideBarLoader(true);
-      dispatch(
-        getMessagesSidebar(
-          `Message/GetMessageSideBarLists?loggedInUserId=${userAuth?.id}&Name=${findUser}`
-        )
-      ).then((response) => {
+      dispatch(getMessagesSidebar(findUser)).then((response) => {
         setDefaultMessage(response?.payload[0]);
         setUsersList(response?.payload);
         setUserSideBarLoader(false);
       });
     } catch (error) {
       console.error("Error fetching sidebar:", error);
-    } finally {
     }
   };
 
   const fetchUserStatus = (userId) => {
     try {
-      dispatch(
-        getMessagesSidebar(`Message/GetReceiverStatuses/${userId}`)
-      ).then((response) => {
+      dispatch(getUserStatus(userId)).then((response) => {
         setUserOnlineStatus(response?.payload);
       });
     } catch (error) {
@@ -64,12 +64,7 @@ const Messages = () => {
 
   const fetchMessages = (userId) => {
     try {
-      dispatch(
-        getMessagesSidebar(
-          `Message/GetMessagesForUsers?loggedInUserId=${userAuth?.id}&userId=${userId}`
-        )
-      ).then((response) => {
-        console.log("messages", response?.payload);
+      dispatch(getUsersMessages(userId)).then((response) => {
         setMessages(response?.payload);
         setMessagesLoader(false);
       });
@@ -99,6 +94,15 @@ const Messages = () => {
     setMessageTyped(value);
   };
 
+  const handleCreateOrder = async () => {
+    setShowOrderDialogue(true);
+  };
+
+  const handleOrderClose = () => {
+    setShowOrderDialogue(false);
+    setShowAcceptOrderDialogue(false);
+  };
+
   const handleSendMessage = (receiverId) => {
     if (messageTyped) {
       setSendLoader(true);
@@ -107,35 +111,86 @@ const Messages = () => {
         ReceiverId: receiverId,
         MessageDescription: messageTyped,
       };
-      dispatch(sendUsersMessages(data)).then((response) => {
-        if (response?.payload) {
-          const newMessage = response.payload;
-          // Send the message via SignalR
-          const messageForSignalR = {
-            senderId: newMessage.senderId,
-            receiverId: newMessage.receiverId,
-            message: newMessage?.messageDescription,
-          };
-          setMessages((prev) => [...prev, newMessage]);
-          if (userAuth?.id === newMessage.senderId) {
-            signalRService.sendMessage(messageForSignalR);
-          }
-          setMessageTyped("");
-          setSendLoader(false);
-        } else {
-          console.error("Invalid response payload:", response);
-          setSendLoader(false);
-        }
-      });
+      handleResponse(data);
     }
   };
 
-  const handleCreateOrder = async () => {
-    setShowOrderDialogue(true);
+  const handleSendOffer = (values) => {
+    if (values) {
+      setSendLoader(true);
+      const data = {
+        SenderId: String(userAuth?.id),
+        CustomerId: String(userAuth?.id),
+        valetId: String(values?.valetId),
+        ReceiverId: values.receiverId,
+        MessageDescription: "Offer Send",
+        OfferTitle: values.offerTitle,
+        StartedDateTime: values.startedDateTime,
+        EndedDateTime: values.endedDateTime,
+        OfferDescription: values.offerDescription,
+      };
+      handleResponse(data);
+    }
   };
 
-  const handleOrderClose = () => {
-    setShowOrderDialogue(false);
+  const handleResponse = (data) => {
+    try {
+      dispatch(sendUsersMessages(data)).then((response) => {
+        if (response?.payload) {
+          const newMessage = response.payload;
+          setMessages((prev) => [...prev, newMessage?.model]);
+          if (userAuth?.id === newMessage.senderId) {
+            handleSignalRCall(newMessage);
+          }
+        }
+
+        setShowOrderDialogue(false);
+        setMessageTyped("");
+        setSendLoader(false);
+      });
+    } catch (error) {
+      console.error("Invalid response payload:", error);
+      setShowOrderDialogue(false);
+      setMessageTyped("");
+      setSendLoader(false);
+    }
+  };
+
+  const handleOfferStatus = (data) => {
+    try {
+      dispatch(handleOrderOffer(data)).then((response) => {
+        if (response?.payload) {
+          const newMessage = response.payload;
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.offerTitleId === newMessage?.model?.offerTitleId
+                ? { ...msg, ...newMessage?.model }
+                : msg
+            )
+          );
+          if (userAuth?.id !== newMessage.senderId) {
+            handleSignalRCall(newMessage);
+          }
+        }
+      });
+    } catch (error) {
+      console.error("Invalid response payload:", error);
+    }
+  };
+
+  const handlePaymentModal = (data) => {
+    console.log("data", data);
+    setSelectedOfferValues(data);
+    setShowAcceptOrderDialogue(true);
+  };
+
+  const handleSignalRCall = (newMessage) => {
+    const data = {
+      senderId: newMessage.senderId,
+      receiverId: newMessage.receiverId,
+      message: newMessage?.model,
+    };
+    signalRService.sendOfferObject(data);
   };
 
   useEffect(() => {
@@ -161,36 +216,39 @@ const Messages = () => {
   useEffect(() => {
     signalRService.initializeConnection(notificationURL, userAuth?.id);
 
-    // Subscribe to incoming messages
-    const handleIncomingMessage = (
-      senderId,
-      receiverId,
-      username,
-      profile,
-      messageDescription,
-      msgTime
-    ) => {
-      const setSignalRMessageObject = {
-        senderId: senderId,
-        receiverId: receiverId,
-        name: username,
-        profileImage: profile,
-        messageDescription: messageDescription,
-        messageTime: msgTime,
-      };
-      setMessages((prev) => [...prev, setSignalRMessageObject]);
+    const handleIncomingData = (senderId, receiverId, model) => {
+      if (model.messageDescription === "Reject") {
+        if (userAuth?.id !== receiverId) {
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.offerTitleId === model?.offerTitleId
+                ? { ...msg, ...model }
+                : msg
+            )
+          );
+        }
+      } else {
+        if (userAuth?.id === receiverId) {
+          setMessages((prev) => {
+            if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
+              return [...prev, model]; // Add the new message if it's not already in the list
+            }
+            return prev; // Otherwise, keep the previous state
+          });
+        }
+      }
     };
 
-    signalRService.subscribe(handleIncomingMessage);
+    signalRService.subscribe(handleIncomingData);
 
     return () => {
+      signalRService.unsubscribe(handleIncomingData);
       signalRService.disconnect();
-      signalRService.unsubscribe(handleIncomingMessage);
     };
   }, [userAuth?.id]);
 
   return (
-    <>
+    <div>
       <Container className="py-5">
         <Row className="clearfix">
           <Col md={12}>
@@ -215,60 +273,56 @@ const Messages = () => {
                 <ul className="list-unstyled chat-list mt-2 mb-0">
                   {userSideBarLoader ? (
                     <div className="text-center">
-                      <Spinner animation="grow" />
+                      <Spinner animation="grow" size="sm" />
                     </div>
                   ) : (
-                    <>
+                    <div>
                       {usersList && usersList.length > 0 ? (
                         usersList.map((user, index) => {
                           return (
-                            <>
-                              <li
-                                className={`${
-                                  activeChat?.userDecId === user?.userDecId &&
-                                  "active"
-                                } clearfix`}
-                                key={`${index}-${user.username}`}
-                                onClick={() => handleSelectedChat(user)}
-                              >
-                                <HandleImages
-                                  imagePath={user?.userImage}
-                                  imageAlt={user?.username}
-                                />
+                            <li
+                              className={`${
+                                activeChat?.userDecId === user?.userDecId &&
+                                "active"
+                              } clearfix`}
+                              key={`${index}-${user?.userDecId}`}
+                              onClick={() => handleSelectedChat(user)}
+                            >
+                              <HandleImages
+                                imagePath={user?.userImage}
+                                imageAlt={user?.username}
+                              />
 
-                                <div className="about">
-                                  <div className="name">
-                                    {truncateCharacters(user?.username, 15)}
-                                  </div>
-                                  <div className="status">
-                                    {`${
-                                      user?.lastMessageUsername != ""
-                                        ? user?.lastMessageUsername
-                                        : "You"
-                                    }: ${truncateCharacters(
-                                      user?.messageDescription,
-                                      12
-                                    )}`}
-                                  </div>
+                              <div className="about">
+                                <div className="name">
+                                  {truncateCharacters(user?.username, 15)}
                                 </div>
-                              </li>
-                            </>
+                                <div className="status">
+                                  {`${
+                                    user?.lastMessageUsername !== ""
+                                      ? user?.lastMessageUsername
+                                      : "You"
+                                  }: ${truncateCharacters(
+                                    user?.messageDescription,
+                                    12
+                                  )}`}
+                                </div>
+                              </div>
+                            </li>
                           );
                         })
                       ) : (
-                        <>
-                          <li
-                            style={{
-                              backgroundColor: "#fff",
-                              cursor: "auto",
-                              textAlign: "center",
-                            }}
-                          >
-                            <p>No Results</p>
-                          </li>
-                        </>
+                        <li
+                          style={{
+                            backgroundColor: "#fff",
+                            cursor: "auto",
+                            textAlign: "center",
+                          }}
+                        >
+                          <p>No Results</p>
+                        </li>
                       )}
-                    </>
+                    </div>
                   )}
                 </ul>
               </div>
@@ -278,7 +332,7 @@ const Messages = () => {
                     <div className="col-sm-10">
                       <div>
                         {activeChat && (
-                          <>
+                          <div>
                             <HandleImages
                               imagePath={activeChat?.userImage}
                               imageAlt={activeChat?.username}
@@ -286,34 +340,28 @@ const Messages = () => {
                             <div className="chat-about">
                               <h6 className="mb-0">{activeChat?.username}</h6>
                               <div>
-                                {userOnlineStatus === -1 ? (
-                                  <></>
-                                ) : (
-                                  <>
+                                {userOnlineStatus !== -1 && (
+                                  <div>
                                     {userOnlineStatus === 1 ? (
-                                      <>
-                                        <small>
-                                          Online
-                                          <sup>
-                                            <i className="bi bi-circle-fill online mx-1"></i>
-                                          </sup>
-                                        </small>
-                                      </>
+                                      <small>
+                                        Online
+                                        <sup>
+                                          <i className="bi bi-circle-fill online mx-1"></i>
+                                        </sup>
+                                      </small>
                                     ) : (
-                                      <>
-                                        <small>
-                                          Offline
-                                          <sup>
-                                            <i className="bi bi-circle-fill offline mx-1"></i>
-                                          </sup>
-                                        </small>
-                                      </>
+                                      <small>
+                                        Offline
+                                        <sup>
+                                          <i className="bi bi-circle-fill offline mx-1"></i>
+                                        </sup>
+                                      </small>
                                     )}
-                                  </>
+                                  </div>
                                 )}
                               </div>
                             </div>
-                          </>
+                          </div>
                         )}
                       </div>
                       <div className="text-end">
@@ -330,11 +378,9 @@ const Messages = () => {
                 </div>
                 <div className="chatbox-container" ref={chatContainerRef}>
                   {messageLoader ? (
-                    <>
-                      <div className="text-center">
-                        <Spinner animation="grow" />
-                      </div>
-                    </>
+                    <div className="text-center">
+                      <Spinner animation="grow" />
+                    </div>
                   ) : (
                     <ul className="chatbox-list">
                       {messages &&
@@ -358,19 +404,21 @@ const Messages = () => {
                             <div className="message-content">
                               <div className="sender-name">{message.name}</div>
                               {message.offerTitle ? (
-                                <>
+                                <div>
                                   {RenderOfferStatus(
                                     message.offerStatus,
                                     message,
-                                    userAuth
+                                    userAuth,
+                                    handleOfferStatus,
+                                    handlePaymentModal
                                   )}
-                                </>
+                                </div>
                               ) : (
-                                <>
+                                <div>
                                   <div className="message-text">
                                     {message.messageDescription}
                                   </div>
-                                </>
+                                </div>
                               )}
 
                               <div className="message-time">
@@ -442,9 +490,21 @@ const Messages = () => {
           handleOrderClose={handleOrderClose}
           messageObject={defaultMessage}
           showOrderDialogue={showOrderDialogue}
+          handleSendOffer={handleSendOffer}
+          loader={sendLoader}
         />
       )}
-    </>
+
+      {showAcceptOrderDialogue && (
+        <OfferAccept
+          showAcceptOrderDialogue={showAcceptOrderDialogue}
+          handleOrderClose={handleOrderClose}
+          selectedOfferValues={selectedOfferValues}
+          fetchMessages={fetchMessages}
+          setShowAcceptOrderDialogue={setShowAcceptOrderDialogue}
+        />
+      )}
+    </div>
   );
 };
 

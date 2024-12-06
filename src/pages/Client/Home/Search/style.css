@@ -1,0 +1,25 @@
+.custom-card {
+  transition: transform 0.3s ease-in-out;
+  border-radius: 20px !important;
+}
+
+.custom-card:hover {
+  transform: scale(1.05, 1.05) !important;
+}
+
+.primary {
+  background: #fcd609 !important;
+  border: 1px solid #000 !important;
+  border-bottom: 8px solid #000 !important;
+}
+
+.dark {
+  background: #000 !important;
+  border: 1px solid #fcd609 !important;
+  border-bottom: 8px solid #fcd609 !important;
+}
+
+.custom-card img {
+  width: 100px;
+  height: 100px;
+}

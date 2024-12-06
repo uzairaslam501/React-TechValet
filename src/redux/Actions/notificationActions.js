@@ -15,20 +15,23 @@ const api = axios.create({
 export const getNotificationsCount = createAsyncThunk(
   "notifications/getNotificationsCount",
   async (id, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.get(
         `Notification/GetNotificationsCount?UserId=${id}`,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -36,20 +39,23 @@ export const getNotificationsCount = createAsyncThunk(
 export const getNotifications = createAsyncThunk(
   "notifications/getNotifications",
   async (id, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.get(
         `Notification/GetNotifications?UserId=${id}&isRead=-1`,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -57,17 +63,20 @@ export const getNotifications = createAsyncThunk(
 export const markNotifications = createAsyncThunk(
   "notifications/MarkNotifications",
   async (id, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.patch(`Notification/MarkNotifications/${id}`, {
         headers: {
-          Authorization: `${jwtToken}`, // Token included in the request headers
+          Authorization: `${token}`,
         },
       });
-      const { data, message } = processApiResponse(response, dispatch);
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
@@ -75,21 +84,22 @@ export const markNotifications = createAsyncThunk(
 export const deleteNotification = createAsyncThunk(
   "notifications/deleteNotification",
   async (id, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
     try {
-      const jwtToken = getToken(getState);
       const response = await api.delete(
         `Notification/DeleteNotification?NotificationId=${id}`,
         {
           headers: {
-            Authorization: `${jwtToken}`, // Token included in the request headers
+            Authorization: `${token}`,
           },
         }
       );
-      if (response?.data?.status) {
-        toast.success(response?.data?.message);
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
       }
     } catch (error) {
-      handleApiError(error, dispatch);
+      handleApiError(error, dispatch, expired);
     }
   }
 );
