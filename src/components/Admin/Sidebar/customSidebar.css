@@ -1,0 +1,17 @@
+.sidebarMenu-sub-collapse {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 15px;
+  line-height: 30px;
+}
+
+.sidebar-menu-border-styling {
+  padding: 5px;
+  border-bottom: 1px solid #fbf2f2;
+  line-height: 30px;
+}
+
+.sidebar-menu-dropdown-icon {
+  position: absolute;
+  right: 20px;
+}

@@ -2,7 +2,7 @@
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { postLogin } from "../../../redux/Actions/authActions";
+import { postLogin } from "../../../../redux/Actions/authActions";
 import { NavLink, Navigate } from "react-router-dom";
 import { Button, Form, Row, Col, Spinner } from "react-bootstrap";
 
