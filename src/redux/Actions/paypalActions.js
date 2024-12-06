@@ -27,6 +27,9 @@ export const postCheckoutForOrder = createAsyncThunk(
         }
       );
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
@@ -49,6 +52,9 @@ export const postCheckoutForPackage = createAsyncThunk(
         }
       );
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
@@ -70,6 +76,9 @@ export const checkPaymentStatusForOrder = createAsyncThunk(
         }
       );
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
@@ -91,6 +100,9 @@ export const checkPaymentStatusForPackage = createAsyncThunk(
         }
       );
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
@@ -113,6 +125,9 @@ export const chargeByPackage = createAsyncThunk(
         }
       );
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);

@@ -24,7 +24,9 @@ export const getRecordById = createAsyncThunk(
       });
       const { data, message } = processApiResponse(response, dispatch, expired);
       if (message) {
-        toast.success(message);
+        if (message) {
+          toast.success(message);
+        }
       }
       return data;
     } catch (error) {
@@ -44,6 +46,9 @@ export const deleteRecords = createAsyncThunk(
         },
       });
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);

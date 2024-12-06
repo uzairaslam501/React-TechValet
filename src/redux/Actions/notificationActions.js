@@ -26,6 +26,9 @@ export const getNotificationsCount = createAsyncThunk(
         }
       );
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
@@ -47,6 +50,9 @@ export const getNotifications = createAsyncThunk(
         }
       );
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
@@ -65,6 +71,9 @@ export const markNotifications = createAsyncThunk(
         },
       });
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);

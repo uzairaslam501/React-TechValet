@@ -6,6 +6,7 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { getToken } from "../../utils/_apiConfig";
+import { toast } from "react-toastify";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -24,9 +25,11 @@ export const getOrderEventsByUserId = createAsyncThunk(
       });
 
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
-      // Handle errors and propagate them
       handleApiError(error, dispatch, expired);
       return rejectWithValue(error.response?.data || error.message);
     }

@@ -27,6 +27,9 @@ export const getUserPackageByUserId = createAsyncThunk(
         }
       );
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
@@ -45,6 +48,9 @@ export const getPackageById = createAsyncThunk(
         },
       });
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);

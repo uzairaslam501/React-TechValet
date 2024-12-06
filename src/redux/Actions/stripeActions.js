@@ -28,6 +28,9 @@ export const createCheckoutSession = createAsyncThunk(
         }
       );
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
@@ -51,6 +54,9 @@ export const createPaymentIntent = createAsyncThunk(
         }
       );
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
@@ -72,6 +78,9 @@ export const paymentSuccess = createAsyncThunk(
         }
       );
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
@@ -94,6 +103,9 @@ export const createStripeCharge = createAsyncThunk(
         }
       );
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
@@ -116,6 +128,9 @@ export const stripeCheckOutForPackages = createAsyncThunk(
         }
       );
       const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
