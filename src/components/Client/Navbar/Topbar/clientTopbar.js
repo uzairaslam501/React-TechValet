@@ -79,7 +79,7 @@ const ClientTopbar = () => {
                   id="profile-dropdown"
                   className="custom-dropdown"
                 >
-                  <NavDropdown.Item as={NavLink} to="/profile">
+                  <NavDropdown.Item as={NavLink} to="/account">
                     Profile
                   </NavDropdown.Item>
                   <NavDropdown.Item as={NavLink} to="/update-password">

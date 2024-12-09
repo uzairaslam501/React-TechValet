@@ -41,7 +41,7 @@ const ClientLogin = () => {
     return userAuth.role === "0" ? (
       <Navigate to="/dashboard" />
     ) : (
-      <Navigate to="/" />
+      <Navigate to="/account" />
     );
   }
 

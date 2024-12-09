@@ -6,7 +6,7 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { toast } from "react-toastify";
-import { getToken } from "../../utils/_apiConfig";
+import { getAuthUserId, getToken } from "../../utils/_apiConfig";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -118,3 +118,32 @@ export const postUserAvailable = createAsyncThunk(
   }
 );
 //#endregion
+
+export const UpdateProfileImage = createAsyncThunk(
+  "user/UpdateProfileImage",
+  async (file, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    const id = getAuthUserId(getState);
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const response = await api.put(
+        `/Auth/update-profile-image/${String(id)}`,
+        formData,
+        {
+          headers: {
+            "content-type": "multipart/form-data",
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
