@@ -91,7 +91,10 @@ const SkillsAndEndorsements = ({ userRecord }) => {
         <h6 className="m-0">Skills &amp; Endorsements</h6>
       </Card.Header>
       <Card.Body>
-        <div className="py-3 border-bottom">
+        <div
+          className="py-3 border-bottom"
+          style={{ maxHeight: "75px", overflowY: "scroll" }}
+        >
           {userSkills.length > 0 ? (
             <div className="d-flex flex-wrap">
               {userSkills.map((skill, index) => (

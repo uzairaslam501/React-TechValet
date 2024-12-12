@@ -134,3 +134,28 @@ export const chargeByPackage = createAsyncThunk(
     }
   }
 );
+
+export const addPayPalAccount = createAsyncThunk(
+  "paypal/addPayPalAccount",
+  async ({ userId, paypal }, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.post(
+        `PayPalGateWay/AddAccount/${userId}`,
+        paypal,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);

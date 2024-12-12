@@ -6,6 +6,8 @@ import { getRecordById } from "../../../../redux/Actions/globalActions";
 import { useNavigate } from "react-router";
 import UserProfileImage from "./ProfileImage/UserProfileImage";
 import SkillsAndEndorsements from "./ValetProfile/Skills/SkillsAndEndorsements";
+import Services from "./ValetProfile/Services/Services";
+import PayPalAccount from "./ValetProfile/PayPal/PayPalAccount";
 
 const Index = () => {
   const dispatch = useDispatch();
@@ -72,12 +74,39 @@ const Index = () => {
                     >
                       <SkillsAndEndorsements userRecord={userRecords} />
                     </Col>
+
+                    <Col
+                      xl={12}
+                      lg={12}
+                      md={12}
+                      sm={12}
+                      xs={12}
+                      className="mt-4"
+                    >
+                      <Services userRecord={userRecords} />
+                    </Col>
                   </>
                 )}
               </Row>
             </Col>
             <Col xl={8} lg={8} md={8} sm={12} xs={12}>
-              {userRecords && <Account userRecord={userRecords} />}
+              <Row>
+                <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                  {userRecords && <Account userRecord={userRecords} />}
+                </Col>
+
+                <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
+                  <Row>
+                    <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                      {<PayPalAccount userRecord={userRecords} />}
+                    </Col>
+
+                    <Col xl={6} lg={6} md={4} sm={12} xs={12}>
+                      <Services userRecord={userRecords} />
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
             </Col>
           </Row>
         ) : (
