@@ -252,7 +252,7 @@ const Messages = () => {
       <Container className="py-5">
         <Row className="clearfix">
           <Col md={12}>
-            <div className="card chat-app shadow">
+            <div className="chat-card chat-app shadow">
               <div
                 id="plist"
                 className={`people-list ${isMessageSidebarOpen ? "open" : ""}`}
@@ -291,6 +291,7 @@ const Messages = () => {
                               <HandleImages
                                 imagePath={user?.userImage}
                                 imageAlt={user?.username}
+                                imageStyle={{ height: "42px" }}
                               />
 
                               <div className="about">
@@ -398,7 +399,7 @@ const Messages = () => {
                               <HandleImages
                                 imagePath={message.profileImage}
                                 imageAlt={message.name}
-                                imageStyle={{ width: "100%" }}
+                                imageStyle={{ width: "100%", height: "100%" }}
                               />
                             </div>
                             <div className="message-content">

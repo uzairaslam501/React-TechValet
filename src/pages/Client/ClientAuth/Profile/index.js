@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Container, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Row, Spinner } from "react-bootstrap";
 import Account from "./Account/account";
 import { useDispatch, useSelector } from "react-redux";
 import { getRecordById } from "../../../../redux/Actions/globalActions";
@@ -38,40 +38,62 @@ const Index = () => {
   return (
     <>
       <Container className="py-5">
-        <Row>
-          <Col md={4} sm={12}>
-            <Row>
-              <Col sm={12}>
-                <UserProfileImage userRecord={userRecords} />
-              </Col>
+        {userRecords ? (
+          <Row>
+            <Col xl={4} lg={4} md={4} sm={12} xs={12}>
+              <Row>
+                <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                  <UserProfileImage userRecord={userRecords} />
+                </Col>
 
-              <Col sm={12} className="mt-4">
-                <Card>
-                  <Card.Header>Scheduled Customer Appointments</Card.Header>
-                  <Card.Body>
-                    <Button
-                      onClick={handleSchedule}
-                      className="btn btn-success w-100"
+                <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
+                  <Card className="shadow">
+                    <Card.Header>Scheduled Customer Appointments</Card.Header>
+                    <Card.Body>
+                      <Button
+                        onClick={handleSchedule}
+                        className="btn btn-success w-100"
+                      >
+                        View Scheduling
+                      </Button>
+                    </Card.Body>
+                  </Card>
+                </Col>
+
+                {userRecords?.role === "Valet" && (
+                  <>
+                    <Col
+                      xl={12}
+                      lg={12}
+                      md={12}
+                      sm={12}
+                      xs={12}
+                      className="mt-4"
                     >
-                      View Scheduling
-                    </Button>
-                  </Card.Body>
-                </Card>
-              </Col>
-
-              {userRecords?.role === "Valet" && (
-                <>
-                  <Col sm={12} className="mt-4">
-                    <SkillsAndEndorsements userRecord={userRecords} />
-                  </Col>
-                </>
-              )}
-            </Row>
-          </Col>
-          <Col md={8} sm={12}>
-            {userRecords && <Account userRecord={userRecords} />}
-          </Col>
-        </Row>
+                      <SkillsAndEndorsements userRecord={userRecords} />
+                    </Col>
+                  </>
+                )}
+              </Row>
+            </Col>
+            <Col xl={8} lg={8} md={8} sm={12} xs={12}>
+              {userRecords && <Account userRecord={userRecords} />}
+            </Col>
+          </Row>
+        ) : (
+          <Row>
+            <Col
+              xl={12}
+              lg={12}
+              md={12}
+              sm={12}
+              xs={12}
+              className="text-center"
+            >
+              <Spinner animation="grow" />
+            </Col>
+          </Row>
+        )}
       </Container>
     </>
   );

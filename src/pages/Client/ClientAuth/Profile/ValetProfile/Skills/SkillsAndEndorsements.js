@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button, Card, Badge } from "react-bootstrap";
+import { Form, Button, Card, Badge, Col, Row } from "react-bootstrap";
 import { skillsOptions } from "../../../../../../utils/client/data/requestedData";
 import { useDispatch } from "react-redux";
 import CustomDropdown from "../../../../../../components/Custom/Dropdown/Dropdown";
@@ -15,6 +15,7 @@ const SkillsAndEndorsements = ({ userRecord }) => {
   const [userSkills, setUserSkills] = useState([]);
   const [selectedUserSkills, setSelectedUserSkills] = useState([]);
   const [displayDeleteButton, setDisplayDeleteButton] = useState(false);
+  const [skillsUpdated, setSkillsUpdated] = useState(false);
 
   // Filter out already selected skills from dropdown options
   const availableSkills = skillsOptions.filter(
@@ -43,7 +44,7 @@ const SkillsAndEndorsements = ({ userRecord }) => {
     )
       .then(() => {
         setSelectedUserSkills([]);
-        fetchUserSkills();
+        setSkillsUpdated(true);
       })
       .catch((error) => console.log("PostAddUserSkill Error", error));
   };
@@ -53,6 +54,8 @@ const SkillsAndEndorsements = ({ userRecord }) => {
       .then((response) => {
         if (response?.payload.length <= 1) {
           setDisplayDeleteButton(true);
+        } else {
+          setDisplayDeleteButton(false);
         }
         setUserSkills(response.payload);
       })
@@ -60,15 +63,18 @@ const SkillsAndEndorsements = ({ userRecord }) => {
   };
 
   const handleDeleteSkills = (skillId) => {
+    console.log(skillId);
     const endpoint = skillId && `/User/Delete/${encodeURIComponent(skillId)}`;
 
     dispatch(deleteRecords(endpoint))
-      .then(() => {
-        setUserSkills((prev) =>
-          prev.filter((skill) => skill.userSkillEncId !== skillId)
-        );
-        if (userSkills.length - 1 <= 1) {
-          setDisplayDeleteButton(true);
+      .then((response) => {
+        if (response?.payload) {
+          setUserSkills((prev) =>
+            prev.filter((skill) => skill.userSkillEncId !== skillId)
+          );
+          if (userSkills.length - 1 <= 1) {
+            setDisplayDeleteButton(true);
+          }
         }
       })
       .catch((error) => console.log("Delete Skills Error", error));
@@ -76,16 +82,16 @@ const SkillsAndEndorsements = ({ userRecord }) => {
 
   useEffect(() => {
     fetchUserSkills();
-  }, [userRecord?.userName]);
+    setSkillsUpdated(false);
+  }, [skillsUpdated]);
 
   return (
-    <Card className="shadow-sm rounded bg-white mb-3">
-      <Card.Header className="border-bottom p-3 d-flex justify-content-between align-items-center">
+    <Card className="shadow rounded bg-white mb-3">
+      <Card.Header className="p-3">
         <h6 className="m-0">Skills &amp; Endorsements</h6>
       </Card.Header>
       <Card.Body>
-        <div className="p-3 border-bottom align-items-left">
-          {/* Display selected skills */}
+        <div className="py-3 border-bottom">
           {userSkills.length > 0 ? (
             <div className="d-flex flex-wrap">
               {userSkills.map((skill, index) => (
@@ -116,30 +122,34 @@ const SkillsAndEndorsements = ({ userRecord }) => {
           )}
         </div>
 
-        <div className="align-items-center osahan-post-header p-3 border-bottom people-list">
-          <Form.Group>
-            <Form.Label>Add your Skills</Form.Label>
-            <CustomDropdown
-              optionsList={availableSkills} // Use filtered available skills
-              selectedOptions={selectedUserSkills}
-              handleChange={handleSkillChange}
-              isMultiSelect
-              isSearchable
-              fieldName="Skill"
-            />
-          </Form.Group>
-          {alertMessage && <span className="text-danger">{alertMessage}</span>}
-          <div className="text-right mt-3">
+        <Row className="py-2">
+          <Form.Label>Add your Skills</Form.Label>
+          <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mb-2">
+            <Form.Group>
+              <CustomDropdown
+                optionsList={availableSkills} // Use filtered available skills
+                selectedOptions={selectedUserSkills}
+                handleChange={handleSkillChange}
+                isMultiSelect
+                isSearchable
+                fieldName="Skill"
+              />
+            </Form.Group>
+            {alertMessage && (
+              <span className="text-danger">{alertMessage}</span>
+            )}
+          </Col>
+          <Col xl={12} lg={12} md={12} sm={12} xs={12}>
             <Button
-              variant="outline-warning"
-              size="sm"
+              variant="primary"
               id="updateSkillsBtn"
+              className="w-100"
               onClick={handleAddSkills}
             >
-              Update Skills
+              Add Skills
             </Button>
-          </div>
-        </div>
+          </Col>
+        </Row>
       </Card.Body>
     </Card>
   );

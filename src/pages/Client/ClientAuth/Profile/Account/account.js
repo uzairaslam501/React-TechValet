@@ -126,7 +126,7 @@ const Account = ({ userRecord }) => {
   return (
     <>
       <Form onSubmit={handleSubmit}>
-        <div className="shadow-sm rounded bg-white mb-3 p-3">
+        <div className="shadow rounded bg-white mb-3 p-3">
           <div className="border-bottom mb-3">
             <Row>
               <Col xl={6} lg={6} md={6} sm={12} xs={12}>

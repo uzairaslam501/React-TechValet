@@ -1,4 +1,4 @@
-.card {
+.chat-card {
   background: #fff;
   transition: 0.5s;
   border: 0;
@@ -77,6 +77,7 @@
   float: left;
   border-radius: 40px;
   width: 40px;
+  height: 40px;
 }
 
 .chat .chat-header .chat-about {

@@ -96,7 +96,7 @@ const UserProfileImage = ({ userRecord }) => {
   ]);
 
   return (
-    <div className="mb-3 shadow-sm rounded bg-white profile-box text-center">
+    <div className="mb-2 shadow rounded bg-white profile-box text-center">
       <div className="py-4 px-3">
         <Image
           src={imagePreview || profileImage}
