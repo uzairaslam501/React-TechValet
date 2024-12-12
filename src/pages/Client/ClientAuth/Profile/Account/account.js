@@ -105,11 +105,11 @@ const Account = ({ userRecord }) => {
     onSubmit: (values) => {
       try {
         setUpdateProfileLoader(true);
-        dispatch(postUserUpdate({ id: userRecord.id, userData: values })).then(
-          (response) => {
-            setUpdateProfileLoader(false);
-          }
-        );
+        dispatch(
+          postUserUpdate({ userId: userRecord.userEncId, userData: values })
+        ).then((response) => {
+          setUpdateProfileLoader(false);
+        });
       } catch (error) {
         console.log("error", error);
         setUpdateProfileLoader(false);

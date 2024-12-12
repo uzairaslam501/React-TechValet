@@ -31,7 +31,9 @@ const UserProfileImage = ({ userRecord }) => {
 
   const handleUpdateImage = () => {
     if (imageEvent) {
-      dispatch(UpdateProfileImage(imageEvent)).then((response) => {
+      dispatch(
+        UpdateProfileImage({ userId: userRecord?.userEncId, file: imageEvent })
+      ).then((response) => {
         console.log("response", response?.payload);
       });
     }
@@ -54,7 +56,7 @@ const UserProfileImage = ({ userRecord }) => {
       value = "false";
     }
     dispatch(
-      postUserActivity({ id: userRecord?.userEncId, activityStatus: value })
+      postUserActivity({ userId: userRecord?.userEncId, activityStatus: value })
     ).then((response) => {
       if (response?.payload === "1") {
         setStatus(true);
@@ -66,7 +68,10 @@ const UserProfileImage = ({ userRecord }) => {
 
   const handleAvailabilityChange = () => {
     dispatch(
-      postUserAvailable({ id: userRecord?.userEncId, available: !availability })
+      postUserAvailable({
+        userId: userRecord?.userEncId,
+        available: !availability,
+      })
     ).then((response) => {
       if (response?.payload === "1") {
         setAvailability(true);

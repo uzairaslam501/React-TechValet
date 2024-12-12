@@ -41,17 +41,21 @@ export const postRegister = createAsyncThunk(
   }
 );
 
-//#region Profile
+//User Update Profile
 export const postUserUpdate = createAsyncThunk(
   "user/postUserUpdate",
-  async ({ id, userData }, { rejectWithValue, getState, dispatch }) => {
+  async ({ userId, userData }, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
-      const response = await api.put(`/Auth/UpdateProfile/${id}`, userData, {
-        headers: {
-          Authorization: `${token}`,
-        },
-      });
+      const response = await api.put(
+        `/Auth/UpdateProfile/${userId}`,
+        userData,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
       const { data, message } = processApiResponse(response, dispatch, expired);
       if (message) {
         toast.success(message);
@@ -64,13 +68,46 @@ export const postUserUpdate = createAsyncThunk(
   }
 );
 
+//User Update Profile Image
+export const UpdateProfileImage = createAsyncThunk(
+  "user/UpdateProfileImage",
+  async ({ userId, file }, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const response = await api.put(
+        `/Auth/update-profile-image/${userId}`,
+        formData,
+        {
+          headers: {
+            "content-type": "multipart/form-data",
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+//User Online or Offline Status
 export const postUserActivity = createAsyncThunk(
   "user/postUserActivity",
-  async ({ id, activityStatus }, { rejectWithValue, getState, dispatch }) => {
+  async (
+    { userId, activityStatus },
+    { rejectWithValue, getState, dispatch }
+  ) => {
     const { token, expired } = getToken(getState);
     try {
       const response = await api.put(
-        `/Auth/user-activity-status/${String(id)}?activityStatus=${String(
+        `/Auth/user-activity-status/${String(userId)}?activityStatus=${String(
           activityStatus
         )}`,
         null,
@@ -91,13 +128,14 @@ export const postUserActivity = createAsyncThunk(
   }
 );
 
+//User Avialable or Unavailable
 export const postUserAvailable = createAsyncThunk(
   "user/postUserAvailable",
-  async ({ id, available }, { rejectWithValue, getState, dispatch }) => {
+  async ({ userId, available }, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
       const response = await api.put(
-        `/Auth/user-availability/${String(id)}?availabilityOption=${String(
+        `/Auth/user-availability/${String(userId)}?availabilityOption=${String(
           available
         )}`,
         null,
@@ -117,22 +155,18 @@ export const postUserAvailable = createAsyncThunk(
     }
   }
 );
-//#endregion
 
-export const UpdateProfileImage = createAsyncThunk(
-  "user/UpdateProfileImage",
-  async (file, { rejectWithValue, getState, dispatch }) => {
+//Add User Skills
+export const postAddUserSkill = createAsyncThunk(
+  "user/postAddUserSkill",
+  async ({ userId, skillsName }, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
-    const id = getAuthUserId(getState);
-    const formData = new FormData();
-    formData.append("file", file);
     try {
-      const response = await api.put(
-        `/Auth/update-profile-image/${String(id)}`,
-        formData,
+      const response = await api.post(
+        `/User/postAddSkills/${userId}?skillsName=${skillsName}`,
+        null,
         {
           headers: {
-            "content-type": "multipart/form-data",
             Authorization: `${token}`,
           },
         }
@@ -141,6 +175,25 @@ export const UpdateProfileImage = createAsyncThunk(
       if (message) {
         toast.success(message);
       }
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+//Get User Skills
+export const getUserSkills = createAsyncThunk(
+  "user/getUserSkills",
+  async (userId, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.get(`/User/GetSkills/${userId}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      const { data } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
