@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Button, Form, InputGroup, ButtonGroup } from "react-bootstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
 import { addPayPalAccount } from "../../../../../../redux/Actions/paypalActions";
+import {
+  deleteRecords,
+  getRecordById,
+} from "../../../../../../redux/Actions/globalActions";
 
 const PayPalAccount = ({ userRecord }) => {
   const dispatch = useDispatch();
@@ -22,9 +26,20 @@ const PayPalAccount = ({ userRecord }) => {
       .required("PayPal email is required"),
   });
 
+  const getPayPalAccount = () => {
+    dispatch(
+      getRecordById(`/PayPalGateWay/GetPayPalAccount/${userRecord?.userEncId}`)
+    ).then((response) => {
+      setPayPalEmail(response?.payload?.payPalEmail);
+    });
+  };
+
   const deletePayPalAccount = () => {
-    // Add your logic to handle account deletion
-    console.log("PayPal account removed.");
+    dispatch(
+      deleteRecords(`/PayPalGateWay/Delete/${userRecord?.userEncId}`)
+    ).then(() => {
+      setPayPalEmail("");
+    });
   };
 
   const { values, touched, errors, handleSubmit, getFieldProps } = useFormik({
@@ -39,9 +54,8 @@ const PayPalAccount = ({ userRecord }) => {
           addPayPalAccount({ userId: userRecord?.userEncId, paypal: values })
         ).then((response) => {
           if (response?.payload) {
-            console.log("PayPal Account Added", response?.payload);
             setPayPalEmail(values.paypalEmail);
-            setAttachSectionVisible(false);
+            setAttachSectionVisible(true);
           }
         });
       } catch (error) {
@@ -49,6 +63,10 @@ const PayPalAccount = ({ userRecord }) => {
       }
     },
   });
+
+  useEffect(() => {
+    getPayPalAccount();
+  }, [isAttachSectionVisible]);
 
   return (
     <Card className="shadow-sm rounded bg-white mb-3">
@@ -67,25 +85,25 @@ const PayPalAccount = ({ userRecord }) => {
             <InputGroup className="mb-2">
               <InputGroup.Text>
                 <i
-                  className="fa fa-cc-paypal"
-                  style={{ fontSize: "34px", color: "#001C40" }}
+                  className="bi bi-paypal"
+                  style={{ fontSize: "20px", color: "#001C40" }}
                 ></i>
               </InputGroup.Text>
               <Form.Control
                 id="paypalAccount"
                 value={paypalEmail}
                 placeholder="PayPal Account"
-                readOnly
+                disabled
               />
             </InputGroup>
-            <p className="mt-3">
+            <p className="mt-1 text-end">
               <span
                 id="deletepaypalAccount"
                 className="text-danger"
                 onClick={deletePayPalAccount}
                 style={{ cursor: "pointer" }}
               >
-                Remove Existing Account!
+                Remove Account!
               </span>
             </p>
           </>
