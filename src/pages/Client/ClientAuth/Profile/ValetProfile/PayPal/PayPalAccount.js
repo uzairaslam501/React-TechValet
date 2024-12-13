@@ -11,7 +11,6 @@ import {
 
 const PayPalAccount = ({ userRecord }) => {
   const dispatch = useDispatch();
-  const [isAttachSectionVisible, setAttachSectionVisible] = useState(false);
   const [paypalEmail, setPayPalEmail] = useState("");
 
   const initialValues = {
@@ -23,7 +22,7 @@ const PayPalAccount = ({ userRecord }) => {
   const validationSchema = Yup.object().shape({
     paypalEmail: Yup.string()
       .email("Please enter a valid email address")
-      .required("PayPal email is required"),
+      .required("Email associated with paypal is required"),
   });
 
   const getPayPalAccount = () => {
@@ -42,31 +41,32 @@ const PayPalAccount = ({ userRecord }) => {
     });
   };
 
-  const { values, touched, errors, handleSubmit, getFieldProps } = useFormik({
-    initialValues,
-    validationSchema,
-    validateOnChange: false,
-    validateOnBlur: true,
-    onSubmit: (values) => {
-      try {
-        console.log("Submitting values:", values);
-        dispatch(
-          addPayPalAccount({ userId: userRecord?.userEncId, paypal: values })
-        ).then((response) => {
-          if (response?.payload) {
-            setPayPalEmail(values.paypalEmail);
-            setAttachSectionVisible(true);
-          }
-        });
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    },
-  });
+  const { values, touched, errors, handleBlur, handleChange, handleSubmit } =
+    useFormik({
+      initialValues,
+      validationSchema,
+      validateOnChange: false,
+      validateOnBlur: true,
+      enableReinitialize: true,
+      onSubmit: (values) => {
+        try {
+          dispatch(
+            addPayPalAccount({ userId: userRecord?.userEncId, paypal: values })
+          ).then((response) => {
+            console.log("response", response);
+            if (response?.payload) {
+              setPayPalEmail(response?.payload?.payPalEmail);
+            }
+          });
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      },
+    });
 
   useEffect(() => {
     getPayPalAccount();
-  }, [isAttachSectionVisible]);
+  }, [paypalEmail]);
 
   return (
     <Card className="shadow-sm rounded bg-white mb-3">
@@ -109,43 +109,33 @@ const PayPalAccount = ({ userRecord }) => {
           </>
         ) : (
           <>
-            {!isAttachSectionVisible && (
-              <div className="text-center p-3">
+            <Form id="paypalForm" onSubmit={handleSubmit}>
+              <Form.Group controlId="paypalEmail">
+                <Form.Control
+                  type="email"
+                  placeholder="Enter your PayPal email"
+                  value={values.paypalEmail}
+                  onBlur={handleBlur("paypalEmail")}
+                  onChange={handleChange("paypalEmail")}
+                  isInvalid={touched.paypalEmail && !!errors.paypalEmail}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.paypalEmail}
+                </Form.Control.Feedback>
+              </Form.Group>
+              <ButtonGroup className="w-100 mt-3">
                 <Button
-                  variant="success"
-                  onClick={() => setAttachSectionVisible(true)}
+                  type="button"
+                  variant="outline-secondary"
+                  onClick={() => setPayPalEmail("")}
                 >
-                  Attach
+                  Cancel
                 </Button>
-              </div>
-            )}
-            {isAttachSectionVisible && (
-              <Form id="paypalForm" onSubmit={handleSubmit}>
-                <Form.Group controlId="paypalEmail">
-                  <Form.Control
-                    type="email"
-                    placeholder="Enter your PayPal email"
-                    {...getFieldProps("paypalEmail")}
-                    isInvalid={touched.paypalEmail && !!errors.paypalEmail}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.paypalEmail}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <ButtonGroup className="w-100 mt-3">
-                  <Button
-                    type="button"
-                    variant="outline-secondary"
-                    onClick={() => setAttachSectionVisible(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button type="submit" variant="success">
-                    Add
-                  </Button>
-                </ButtonGroup>
-              </Form>
-            )}
+                <Button type="submit" variant="success">
+                  Add
+                </Button>
+              </ButtonGroup>
+            </Form>
           </>
         )}
       </Card.Body>
