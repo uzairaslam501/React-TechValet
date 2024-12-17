@@ -8,6 +8,7 @@ import UserProfileImage from "./ProfileImage/UserProfileImage";
 import SkillsAndEndorsements from "./ValetProfile/Skills/SkillsAndEndorsements";
 import Services from "./ValetProfile/Services/Services";
 import PayPalAccount from "./ValetProfile/PayPal/PayPalAccount";
+import StripeAccount from "./ValetProfile/Stripe/StripeAccount";
 
 const Index = () => {
   const dispatch = useDispatch();
@@ -102,7 +103,7 @@ const Index = () => {
                     </Col>
 
                     <Col xl={6} lg={6} md={4} sm={12} xs={12}>
-                      <Services userRecord={userRecords} />
+                      <StripeAccount userRecord={userRecords} />
                     </Col>
                   </Row>
                 </Col>

@@ -30,6 +30,8 @@ import Messages from "../pages/Client/Messages/Messages";
 import PaymentSuccess from "../pages/Client/PaymentVerification/PayPal/PaymentSuccess";
 import PaymentCancelled from "../pages/Client/PaymentVerification/PaymentCancelled";
 import StripePaymentSuccess from "../pages/Client/PaymentVerification/Stripe/PaymentSuccess";
+import VerificationFailed from "../pages/Client/AccountVerification/VerificationFailed";
+import AccountVerified from "../pages/Client/AccountVerification/AccountVerified";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -67,6 +69,8 @@ const createRoute = createBrowserRouter(
           <Route path="/PaymentSuccess" element={<PaymentSuccess />} />
           <Route path="/PaymentCancelled" element={<PaymentCancelled />} />
           <Route path="/payment-success" element={<StripePaymentSuccess />} />
+          <Route path="/verification-failed" element={<VerificationFailed />} />
+          <Route path="/account-Verified" element={<AccountVerified />} />
         </Route>
       </Route>
       <Route path="/welcome" element={<Welcome />} />

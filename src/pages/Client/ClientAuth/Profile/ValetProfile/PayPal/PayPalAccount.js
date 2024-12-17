@@ -72,7 +72,7 @@ const PayPalAccount = ({ userRecord }) => {
     <Card className="shadow-sm rounded bg-white mb-3">
       <Card.Header className="border-bottom">
         <div className="d-flex align-items-center justify-content-between">
-          <h6 className="m-0">Attach your PayPal account here</h6>
+          <h6 className="m-0">PayPal Account</h6>
           <i
             className="bi bi-paypal"
             style={{ fontSize: "28px", color: "#0070BA" }}
@@ -97,14 +97,13 @@ const PayPalAccount = ({ userRecord }) => {
               />
             </InputGroup>
             <p className="mt-1 text-end">
-              <span
-                id="deletepaypalAccount"
+              <Button
+                variant="link"
                 className="text-danger"
                 onClick={deletePayPalAccount}
-                style={{ cursor: "pointer" }}
               >
                 Remove Account!
-              </span>
+              </Button>
             </p>
           </>
         ) : (
