@@ -35,6 +35,14 @@ export const truncateCharacters = (text, limit) => {
   return text.length > limit ? text.slice(0, limit) + "..." : text;
 };
 
+//Count Characters
+export const CountCharactersWithLimit = (text, limit = null) => {
+  if (limit === null) {
+    return text; // If no limit is provided, return the full text.
+  }
+  return text.length > limit ? text.slice(0, limit) + "..." : text;
+};
+
 // Capitialize first character of the word
 export const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);

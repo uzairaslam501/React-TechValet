@@ -51,7 +51,7 @@ const BankDetails = ({ userRecord, stripeId }) => {
 
   return (
     <>
-      <Button variant="link ps-0" onClick={() => setShowBankModal(true)}>
+      <Button variant="link p-0" onClick={() => setShowBankModal(true)}>
         Add Bank Details
       </Button>
       <Dialogue

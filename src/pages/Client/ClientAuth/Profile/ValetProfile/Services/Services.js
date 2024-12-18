@@ -1,36 +1,118 @@
-import React, { useState } from "react";
-import { Card, Row, Col, Form, Button } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import {
+  Card,
+  Row,
+  Col,
+  Form,
+  Button,
+  Dropdown,
+  ButtonGroup,
+  Spinner,
+} from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import {
+  addServicesOrExperience,
+  getServicesRecord,
+  updateServicesOrExperience,
+} from "../../../../../../redux/Actions/serviceActions";
+import { deleteRecords } from "../../../../../../redux/Actions/globalActions";
 
 const Services = ({ userRecord }) => {
-  const [showAddExperienceSection, setShowAddExperienceSection] =
-    useState(false);
-  const [userExperience, setUserExperience] = useState("");
-  const [experienceError, setExperienceError] = useState("");
+  const dispatch = useDispatch();
+  const [userServices, setUserServices] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showAddServiceSection, setShowAddServiceSection] = useState(false);
 
-  const handleAddNewExperience = () => {
-    setShowAddExperienceSection(true);
+  const handleAddNewService = () => {
+    setShowAddServiceSection(true);
   };
 
-  const handleHideExperienceSection = () => {
-    setShowAddExperienceSection(false);
-    setUserExperience("");
-    setExperienceError("");
+  const handleHideServiceSection = () => {
+    setShowAddServiceSection(false);
+    setFieldValue("serviceId", "");
+    setFieldValue("description", "");
   };
 
-  const handleAddUpdateExperience = () => {
-    if (!userExperience.trim()) {
-      setExperienceError("Please enter your services offered.");
-    } else {
-      // Add logic to handle adding/updating the experience
-      console.log("Experience added/updated:", userExperience);
-      setShowAddExperienceSection(false);
-      setUserExperience("");
-      setExperienceError("");
-    }
+  const fetchServicesRecord = () => {
+    setIsLoading(true);
+    dispatch(getServicesRecord(userRecord?.userEncId)).then((response) => {
+      setUserServices(response?.payload);
+      setIsLoading(false);
+    });
   };
+
+  const deleteExperience = (serviceId) => {
+    dispatch(deleteRecords(`User/delete-service/${serviceId}`)).then(
+      (response) => {
+        if (response.payload === serviceId) {
+          setUserServices((prev) =>
+            prev.filter((service) => service.userExperienceEncId !== serviceId)
+          );
+        }
+      }
+    );
+  };
+
+  const updateExpereince = (service) => {
+    handleAddNewService();
+    setFieldValue("serviceId", service?.userExperienceEncId);
+    setFieldValue("description", service?.description);
+  };
+
+  const {
+    values,
+    touched,
+    errors,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    setFieldValue,
+  } = useFormik({
+    initialValues: {
+      userId: userRecord?.userEncId || "",
+      serviceId: "",
+      description: "",
+    },
+    validationSchema: Yup.object().shape({
+      description: Yup.string().required("Service Description is required"),
+    }),
+    validateOnChange: false,
+    validateOnBlur: true,
+    enableReinitialize: true,
+    onSubmit: (values) => {
+      try {
+        if (values.serviceId) {
+          // Handle Update
+          dispatch(updateServicesOrExperience(values)).then((response) => {
+            setUserServices((prev) => [
+              response.payload, // Place the updated record at the top
+              ...prev.filter(
+                (service) => service.userExperienceEncId !== values.serviceId // Exclude the old version of the updated record
+              ),
+            ]);
+            handleHideServiceSection();
+          });
+        } else {
+          // Handle Add
+          dispatch(addServicesOrExperience(values)).then((response) => {
+            setUserServices((prev) => [response.payload, ...prev]); // Prepend the new record to the top
+            handleHideServiceSection();
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    },
+  });
+
+  useEffect(() => {
+    fetchServicesRecord();
+  }, [userRecord]);
 
   return (
-    <Card className="shadow-sm rounded bg-white mb-3">
+    <Card className="shadow rounded mb-3">
       <Card.Header className="border-bottom p-3">
         <Row>
           <Col md={6} xs={6} className="d-flex justify-content-start">
@@ -39,7 +121,7 @@ const Services = ({ userRecord }) => {
           <Col md={6} xs={6} className="d-flex justify-content-end">
             <p className="m-0">
               <span
-                onClick={handleAddNewExperience}
+                onClick={handleAddNewService}
                 style={{ cursor: "pointer", color: "#fcd609" }}
               >
                 Add New
@@ -48,50 +130,109 @@ const Services = ({ userRecord }) => {
           </Col>
         </Row>
       </Card.Header>
-      <Card.Body>
-        <div className="box-body">
-          {showAddExperienceSection && (
-            <div className="py-3">
-              <Form.Group controlId="userExperience">
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  value={userExperience}
-                  onChange={(e) => setUserExperience(e.target.value)}
-                  placeholder="Enter Your services offered"
-                  aria-label="Enter Your services"
-                />
-              </Form.Group>
-              {experienceError && (
-                <span className="text-danger">{experienceError}</span>
-              )}
-              <Row className="mt-3">
-                <Col xs={6}>
-                  <Button
-                    variant="danger"
-                    className="w-100"
-                    onClick={handleHideExperienceSection}
-                  >
-                    Cancel
-                  </Button>
-                </Col>
-                <Col xs={6}>
-                  <Button
-                    variant="success"
-                    className="w-100"
-                    onClick={handleAddUpdateExperience}
-                  >
-                    Add
-                  </Button>
+      <Card.Body
+        style={{
+          height: "475px",
+          overflowY: "scroll",
+        }}
+      >
+        <>
+          <Form onSubmit={handleSubmit}>
+            {showAddServiceSection && (
+              <div className="py-3">
+                <Form.Group>
+                  <Form.Control
+                    as="textarea"
+                    value={values.description}
+                    name="description"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    placeholder="Services Description"
+                    rows={3}
+                    isInvalid={touched.description && !!errors.description}
+                  />
+
+                  <Form.Control.Feedback type="invalid">
+                    {errors.description}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Row className="mt-3">
+                  <Col xs={6}>
+                    <Button
+                      variant="danger"
+                      className="w-100"
+                      onClick={handleHideServiceSection}
+                    >
+                      Cancel
+                    </Button>
+                  </Col>
+                  <Col xs={6}>
+                    <Button type="submit" variant="success" className="w-100">
+                      Submit
+                    </Button>
+                  </Col>
+                </Row>
+              </div>
+            )}
+          </Form>
+
+          {isLoading ? (
+            <Row>
+              <Col className="text-center">
+                <Spinner animation="grow" size="sm" />
+              </Col>
+            </Row>
+          ) : userServices.length > 0 ? (
+            userServices.map((item) => (
+              <Row className="mb-3" key={item.id}>
+                <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                  <Row className="border-bottom">
+                    <Col xl={10} lg={10} md={10} sm={10} xs={10}>
+                      <p style={{ wordBreak: "break-word" }}>
+                        {item.description}
+                      </p>
+                    </Col>
+                    <Col xl={2} lg={2} md={2} sm={2} xs={2}>
+                      <Dropdown as={ButtonGroup}>
+                        <Dropdown.Toggle
+                          variant="primary"
+                          size="sm"
+                          className="rounded"
+                        >
+                          <i className="bi bi-three-dots-vertical"></i>
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu align="end" className="text-center">
+                          <Dropdown.Item
+                            onClick={() =>
+                              deleteExperience(item.userExperienceEncId)
+                            }
+                            className="w-100"
+                          >
+                            <i className="bi bi-trash me-2"></i>
+                            Delete
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                            onClick={() => updateExpereince(item)}
+                            className="w-100"
+                          >
+                            <i className="bi bi-x-circle me-2"></i>
+                            Update
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
-            </div>
+            ))
+          ) : (
+            <Row>
+              <Col>
+                <h5 className="text-center">No Record Found</h5>
+              </Col>
+            </Row>
           )}
-
-          <div className="py-3" id="myExperienceDisplaySection">
-            {/* Map and display experiences here */}
-          </div>
-        </div>
+        </>
       </Card.Body>
     </Card>
   );

@@ -147,29 +147,29 @@ const StripeAccount = ({ userRecord }) => {
         {stripeId ? (
           <Row>
             {!isVerified ? (
-              <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+              <Col xl={6} lg={6} md={6} sm={6} xs={6}>
                 <Button
-                  variant="link"
+                  variant="link p-0"
                   onClick={verifyStripeAccount}
                   className="text-success"
                 >
-                  Verify Stripe Account
+                  Verify Account
                 </Button>
               </Col>
             ) : !isBankAccountAdded ? (
-              <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+              <Col xl={6} lg={6} md={6} sm={6} xs={6}>
                 <BankDetails userRecord={userRecord} stripeId={stripeId} />
               </Col>
             ) : (
-              <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+              <Col xl={6} lg={6} md={6} sm={6} xs={6}>
                 <Button variant="link" className="text-success pl-0">
                   Verified!
                 </Button>
               </Col>
             )}
-            <Col xl={6} lg={6} md={6} sm={12} xs={12} className="text-end">
+            <Col xl={6} lg={6} md={6} sm={6} xs={6} className="text-end">
               <Button
-                variant="link"
+                variant="link p-0"
                 onClick={deleteStripeAccount}
                 className="text-danger"
               >

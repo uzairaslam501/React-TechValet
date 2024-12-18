@@ -39,7 +39,14 @@ const logAndToastError = (statusCode, errorMessage) => {
   console.error(
     `Server returned error with status ${statusCode}: ${errorMessage}`
   );
-  toast.error(errorMessage);
+  switch (statusCode) {
+    case 404:
+      toast.error("Not Found");
+      break;
+    default:
+      toast.error(errorMessage);
+      break;
+  }
 };
 
 // Response Handler

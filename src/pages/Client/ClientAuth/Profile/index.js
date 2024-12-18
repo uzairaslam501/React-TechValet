@@ -14,6 +14,7 @@ const Index = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [userRecords, setUserRecords] = useState(null);
+  const [columns, setColumns] = useState(false);
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const fetchUserRecord = () => {
@@ -35,6 +36,9 @@ const Index = () => {
   };
 
   useEffect(() => {
+    if (userRecords?.role === "Valet") {
+      setColumns(true);
+    }
     fetchUserRecord();
   }, [userRecords?.userName]);
 
@@ -43,7 +47,13 @@ const Index = () => {
       <Container className="py-5">
         {userRecords ? (
           <Row>
-            <Col xl={4} lg={4} md={4} sm={12} xs={12}>
+            <Col
+              xl={!columns ? 4 : 3}
+              lg={!columns ? 4 : 3}
+              md={!columns ? 4 : 3}
+              sm={12}
+              xs={12}
+            >
               <Row>
                 <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                   <UserProfileImage userRecord={userRecords} />
@@ -63,7 +73,7 @@ const Index = () => {
                   </Card>
                 </Col>
 
-                {userRecords?.role === "Valet" && (
+                {columns && (
                   <>
                     <Col
                       xl={12}
@@ -75,40 +85,44 @@ const Index = () => {
                     >
                       <SkillsAndEndorsements userRecord={userRecords} />
                     </Col>
-
-                    <Col
-                      xl={12}
-                      lg={12}
-                      md={12}
-                      sm={12}
-                      xs={12}
-                      className="mt-4"
-                    >
-                      <Services userRecord={userRecords} />
-                    </Col>
                   </>
                 )}
               </Row>
             </Col>
-            <Col xl={8} lg={8} md={8} sm={12} xs={12}>
+
+            <Col
+              xl={!columns ? 8 : 6}
+              lg={!columns ? 8 : 6}
+              md={!columns ? 8 : 6}
+              sm={12}
+              xs={12}
+            >
               <Row>
                 <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                   {userRecords && <Account userRecord={userRecords} />}
                 </Col>
+              </Row>
+            </Col>
 
-                <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
+            {columns && (
+              <>
+                <Col xl={3} lg={3} md={3} sm={12} xs={12} className="">
                   <Row>
-                    <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                    <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                       {<PayPalAccount userRecord={userRecords} />}
                     </Col>
 
-                    <Col xl={6} lg={6} md={4} sm={12} xs={12}>
+                    <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                       <StripeAccount userRecord={userRecords} />
+                    </Col>
+
+                    <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                      <Services userRecord={userRecords} />
                     </Col>
                   </Row>
                 </Col>
-              </Row>
-            </Col>
+              </>
+            )}
           </Row>
         ) : (
           <Row>
