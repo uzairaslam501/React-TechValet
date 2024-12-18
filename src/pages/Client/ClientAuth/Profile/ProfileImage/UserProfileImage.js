@@ -11,7 +11,6 @@ import {
 
 const UserProfileImage = ({ userRecord }) => {
   const dispatch = useDispatch();
-  console.log("userRecord", userRecord);
   const [profileImage, setProfileImage] = useState(
     userRecord?.profilePicture ||
       "https://usman78056-001-site7.gtempurl.com/profiles/download-(1)_638646395157341553.png"
@@ -33,9 +32,7 @@ const UserProfileImage = ({ userRecord }) => {
     if (imageEvent) {
       dispatch(
         UpdateProfileImage({ userId: userRecord?.userEncId, file: imageEvent })
-      ).then((response) => {
-        console.log("response", response?.payload);
-      });
+      ).then((response) => {});
     }
   };
 

@@ -39,7 +39,6 @@ const StripeAccount = ({ userRecord }) => {
       })
     )
       .then((response) => {
-        console.log("Verification successful:", response?.payload);
         if (response?.payload) {
           setIsVerified(
             response?.payload?.isVerify_StripeAccount === 1 && true
@@ -84,14 +83,12 @@ const StripeAccount = ({ userRecord }) => {
       enableReinitialize: true,
       onSubmit: (values) => {
         try {
-          console.log(values);
           dispatch(
             connectStripeAccount({
               userId: userRecord?.userEncId,
               email: values.stripeEmail,
             })
           ).then((response) => {
-            console.log("response", response);
             if (response?.payload) {
               window.open(response?.payload[0]);
             }

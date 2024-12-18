@@ -9,6 +9,7 @@ import SkillsAndEndorsements from "./ValetProfile/Skills/SkillsAndEndorsements";
 import Services from "./ValetProfile/Services/Services";
 import PayPalAccount from "./ValetProfile/PayPal/PayPalAccount";
 import StripeAccount from "./ValetProfile/Stripe/StripeAccount";
+import Education from "./ValetProfile/Education/Education";
 
 const Index = () => {
   const dispatch = useDispatch();
@@ -21,7 +22,6 @@ const Index = () => {
     try {
       dispatch(getRecordById(`/Admin/GetUserById?id=${userAuth.id}`)).then(
         (response) => {
-          console.log(response?.payload);
           setUserRecords(response.payload);
         }
       );
@@ -120,6 +120,17 @@ const Index = () => {
                       <Services userRecord={userRecords} />
                     </Col>
                   </Row>
+                </Col>
+
+                <Col
+                  xl={{ span: 9, offset: 3 }}
+                  lg={{ span: 9, offset: 3 }}
+                  md={{ span: 9, offset: 3 }}
+                  sm={12}
+                  xs={12}
+                  className=""
+                >
+                  <Education userRecord={userRecords} />
                 </Col>
               </>
             )}

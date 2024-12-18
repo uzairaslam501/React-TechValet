@@ -34,7 +34,6 @@ const BankDetails = ({ userRecord, stripeId }) => {
       onSubmit: (values) => {
         try {
           dispatch(addExternalBankAccount(values)).then((response) => {
-            console.log("response", response);
             if (response?.payload) {
               window.location.reload();
             }

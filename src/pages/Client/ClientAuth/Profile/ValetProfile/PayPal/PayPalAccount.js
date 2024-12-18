@@ -64,7 +64,6 @@ const PayPalAccount = ({ userRecord }) => {
           dispatch(
             addPayPalAccount({ userId: userRecord?.userEncId, paypal: values })
           ).then((response) => {
-            console.log("response", response);
             if (response?.payload) {
               setPayPalEmail(response?.payload?.payPalEmail);
             }
