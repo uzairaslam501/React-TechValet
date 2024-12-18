@@ -1,4 +1,8 @@
-import { postLogin, postRegister } from "../Actions/authActions";
+import {
+  postLogin,
+  postRegister,
+  postUserUpdate,
+} from "../Actions/authActions";
 import { createSlice } from "@reduxjs/toolkit";
 
 const userLoginFromStorage = localStorage.getItem("userInfo")
@@ -47,6 +51,20 @@ const authSlice = createSlice({
         // state.userAuth = action.payload;
       })
       .addCase(postRegister.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload; // Save error message
+      });
+    // Handle user update actions
+    builder
+      .addCase(postUserUpdate.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(postUserUpdate.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userAuth = action.payload;
+      })
+      .addCase(postUserUpdate.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload; // Save error message
       });

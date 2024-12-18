@@ -1,123 +1,180 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button, Card, Badge } from "react-bootstrap";
+import { Form, Button, Card, Badge, Col, Row } from "react-bootstrap";
 import { skillsOptions } from "../../../../../../utils/client/data/requestedData";
 import { useDispatch } from "react-redux";
-import {
-  getRecordById,
-  postUpdate,
-} from "../../../../../../redux/Actions/globalActions";
 import CustomDropdown from "../../../../../../components/Custom/Dropdown/Dropdown";
+import {
+  getUserSkills,
+  postAddUserSkill,
+} from "../../../../../../redux/Actions/authActions";
+import { deleteRecords } from "../../../../../../redux/Actions/globalActions";
+import DeleteComponent from "../../../../../../components/Custom/DeleteDialoge/DeleteDialoge";
 
 const SkillsAndEndorsements = ({ userRecord }) => {
   const dispatch = useDispatch();
+  const [userSkills, setUserSkills] = useState([]);
+  const [showDialog, setShowDialog] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
-  const [userSkills, setUserSkills] = useState("");
+  const [skillsUpdated, setSkillsUpdated] = useState(false);
+  const [recordToDelete, setRecordToDelete] = useState(null);
   const [selectedUserSkills, setSelectedUserSkills] = useState([]);
+  const [displayDeleteButton, setDisplayDeleteButton] = useState(false);
 
-  const handleSkillChange = (val) => {
-    setSelectedUserSkills(val);
-  };
+  // Filter out already selected skills from dropdown options
+  const availableSkills = skillsOptions.filter(
+    (skill) =>
+      !userSkills.some((userSkill) => userSkill.skillName === skill.value)
+  );
 
-  const handleUpdateSkills = () => {
+  const handleSkillChange = (val) => setSelectedUserSkills(val);
+
+  const handleAddSkills = () => {
     if (selectedUserSkills.length === 0) {
       setAlertMessage("Please select at least one skill to update.");
     } else {
       setAlertMessage("");
-      console.log("Updated Skills:", selectedUserSkills.join(","));
-      updateUserSkills();
+      addUpdateUserSkills();
     }
   };
 
-  const updateUserSkills = () => {
-    try {
-      const userSkillsCommaSeperated = selectedUserSkills.join(",");
-      dispatch(
-        postUpdate(
-          `/User/PostAddUserSkill?SkillName=${userSkillsCommaSeperated}&UserId=${userRecord?.id}`
-        )
-      ).then((response) => {
-        console.log("Update Skills", response?.payload);
-      });
-    } catch (error) {
-      console.log("PostAddUserSkill Error", error);
-    }
+  const addUpdateUserSkills = () => {
+    const userSkillsCommaSeparated = selectedUserSkills.join(",");
+    dispatch(
+      postAddUserSkill({
+        userId: userRecord?.userEncId,
+        skillsName: userSkillsCommaSeparated,
+      })
+    )
+      .then(() => {
+        setSelectedUserSkills([]);
+        setSkillsUpdated(true);
+      })
+      .catch((error) => console.log("PostAddUserSkill Error", error));
   };
 
   const fetchUserSkills = () => {
-    dispatch(
-      getRecordById(`/User/GetUserSkillByUserId?UserId=${userRecord?.id}`)
-    ).then((response) => {
-      setUserSkills(response.payload);
-      setSelectedUserSkills(response.payload.map((skill) => skill.skillName));
-    });
+    dispatch(getUserSkills(userRecord?.userEncId))
+      .then((response) => {
+        if (response?.payload.length <= 1) {
+          setDisplayDeleteButton(true);
+        } else {
+          setDisplayDeleteButton(false);
+        }
+        setUserSkills(response.payload);
+      })
+      .catch((error) => console.log("Fetch User Skills Error", error));
+  };
+
+  // Handle deleting a skills
+  const handleDeleteSkills = (skillId) => {
+    setRecordToDelete(skillId);
+    setShowDialog(true);
+  };
+
+  const confirmDelete = (skillId) => {
+    const endpoint = skillId && `/User/Delete/${encodeURIComponent(skillId)}`;
+
+    dispatch(deleteRecords(endpoint))
+      .then((response) => {
+        if (response?.payload) {
+          setUserSkills((prev) =>
+            prev.filter((skill) => skill.userSkillEncId !== skillId)
+          );
+          if (userSkills.length - 1 <= 1) {
+            setDisplayDeleteButton(true);
+          }
+        }
+        setShowDialog(false);
+      })
+      .catch((error) => console.log("Delete Skills Error", error));
   };
 
   useEffect(() => {
     fetchUserSkills();
-  }, [userRecord?.userName]);
+    setSkillsUpdated(false);
+  }, [skillsUpdated]);
 
   return (
-    <Card className="shadow-sm rounded bg-white mb-3">
-      <Card.Header className="border-bottom p-3">
-        <h6 className="m-0">Skills &amp; Endorsements</h6>
-      </Card.Header>
-      <Card.Body>
-        <div
-          className="p-3 border-bottom align-items-left"
-          id="mySelectedTagSkill"
-        >
-          {/* Display selected skills */}
-          {userSkills.length > 0 ? (
-            <span>
-              {userSkills.map((skill, index) => (
-                <Badge bg="success" className="fw-normal" key={index}>
-                  {skill.skillName}
-                </Badge>
-              ))}
-            </span>
-          ) : (
-            <p>No skills selected yet.</p>
-          )}
-        </div>
-        <div className="align-items-center osahan-post-header p-3 border-bottom people-list">
-          <Form.Group>
-            <Form.Label>Add/Update your Skills</Form.Label>
-            {/* <Form.Control
-              as="select"
-              multiple
-              value={selectedSkills}
-              onChange={handleSkillChange}
-              data-placeholder="Select your Skills"
-            >
-              {skillsOptions.map((skill, index) => (
-                <option key={index} value={skill}>
-                  {skill}
-                </option>
-              ))}
-            </Form.Control> */}
-            <CustomDropdown
-              optionsList={skillsOptions}
-              selectedOptions={selectedUserSkills || []}
-              handleChange={handleSkillChange}
-              isMultiSelect={true}
-              isSearchable={true}
-              fieldName="Skill"
-            />
-          </Form.Group>
-          {alertMessage && <span className="text-danger">{alertMessage}</span>}
-          <div className="text-right mt-3">
-            <Button
-              variant="outline-warning"
-              size="sm"
-              id="updateSkillsBtn"
-              onClick={handleUpdateSkills}
-            >
-              Update Skills
-            </Button>
+    <>
+      <Card className="shadow rounded mb-3">
+        <Card.Header className="p-3">
+          <h6 className="m-0">Skills &amp; Endorsements</h6>
+        </Card.Header>
+        <Card.Body>
+          <div
+            className="py-3 border-bottom"
+            style={{ maxHeight: "75px", overflowY: "scroll" }}
+          >
+            {userSkills.length > 0 ? (
+              <div className="d-flex flex-wrap">
+                {userSkills.map((skill, index) => (
+                  <div key={index} className="me-2 mb-2">
+                    {!displayDeleteButton ? (
+                      <Badge bg="success ps-2 p-0" className="fw-normal">
+                        {skill.skillName}
+                        <Button
+                          variant="danger"
+                          size="sm"
+                          className="ms-2 p-1"
+                          title="Delete"
+                          onClick={() =>
+                            handleDeleteSkills(skill.userSkillEncId)
+                          }
+                        >
+                          <i className="bi bi-x-circle"></i>
+                        </Button>
+                      </Badge>
+                    ) : (
+                      <Badge bg="success p-2" className="fw-normal">
+                        {skill.skillName}
+                      </Badge>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No skills selected yet.</p>
+            )}
           </div>
-        </div>
-      </Card.Body>
-    </Card>
+
+          <Row className="py-2">
+            <Form.Label>Add your Skills</Form.Label>
+            <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mb-2">
+              <Form.Group>
+                <CustomDropdown
+                  optionsList={availableSkills} // Use filtered available skills
+                  selectedOptions={selectedUserSkills}
+                  handleChange={handleSkillChange}
+                  isMultiSelect
+                  isSearchable
+                  fieldName="Skill"
+                />
+              </Form.Group>
+              {alertMessage && (
+                <span className="text-danger">{alertMessage}</span>
+              )}
+            </Col>
+            <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+              <Button
+                variant="primary"
+                id="updateSkillsBtn"
+                className="w-100"
+                onClick={handleAddSkills}
+              >
+                Add Skills
+              </Button>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
+
+      <DeleteComponent
+        showDialog={showDialog}
+        setShowDialog={setShowDialog}
+        onDelete={confirmDelete}
+        item={recordToDelete}
+      />
+    </>
   );
 };
 

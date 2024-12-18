@@ -12,11 +12,6 @@ const api = axios.create({
   baseURL: baseUrl,
 });
 
-const initialState = {
-  loading: false,
-  error: null,
-};
-
 export const getKeywords = createAsyncThunk(
   "user/getKeywords",
   async (_, { rejectWithValue, getState, dispatch }) => {
@@ -203,7 +198,7 @@ export const getOrderRecords = createAsyncThunk(
     const { token, expired } = getToken(getState);
     try {
       const response = await api.get(
-        `${baseUrl}/Datatable/GetOrdersDatatableByUserId?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        `${baseUrl}/Datatable/orders-by-userId?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}`,
         {
           headers: {

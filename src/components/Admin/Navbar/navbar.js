@@ -1,16 +1,9 @@
-import React, { useState, useEffect } from "react";
-import {
-  Navbar,
-  Nav,
-  NavDropdown,
-  Badge,
-  Button,
-  Container,
-} from "react-bootstrap";
+import React from "react";
+import { Navbar, NavDropdown, Button, Container } from "react-bootstrap";
 import { useThemeContext } from "../../../theme/themeSettings";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutAction } from "../../../redux/Actions/authActions";
 import { NavLink } from "react-router-dom";
+import { logout } from "../../../redux/Reducers/authSlice";
 import "./navbar.css";
 
 const CustomNavbar = ({ toggleSidebar }) => {
@@ -19,7 +12,7 @@ const CustomNavbar = ({ toggleSidebar }) => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    //dispatch(logoutAction());
+    dispatch(logout());
   };
 
   return (

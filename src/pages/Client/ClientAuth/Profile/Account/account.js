@@ -11,11 +11,14 @@ import {
   FormControl,
   FormGroup,
   FormLabel,
+  Spinner,
 } from "react-bootstrap";
 import { countries } from "../../../../../utils/client/data/countries";
 import CustomPhoneInput from "../../../../../components/Custom/PhoneInput/PhoneInput";
 import { languageOptions } from "../../../../../utils/client/data/requestedData";
 import CustomDropdown from "../../../../../components/Custom/Dropdown/Dropdown";
+import { calculateMaxDate } from "../../../../../utils/_helpers";
+import { postUserUpdate } from "../../../../../redux/Actions/authActions";
 
 const validation = Yup.object().shape({
   firstName: Yup.string()
@@ -40,14 +43,10 @@ const validation = Yup.object().shape({
   birthDate: Yup.date()
     .max(new Date(), "Birth Date cannot be in the future")
     .required("Please enter Birth Date"),
-  gender: Yup.string()
-    .oneOf(["male", "female", "other"], "Please select a valid gender")
-    .required("Please select Gender"),
+  gender: Yup.string().required("Please select Gender"),
   state: Yup.string().required("Please enter State"),
   city: Yup.string().required("Please enter City"),
-  zipCode: Yup.string()
-    .matches(/^\d{5}$/, "Zip Code must be 5 digits")
-    .required("Please enter Zip Code"),
+  zipCode: Yup.string().required("Please enter Zip Code"),
   country: Yup.string().required("Please select a Country"),
   language: Yup.string().required("Please select a Language"),
 });
@@ -55,6 +54,7 @@ const validation = Yup.object().shape({
 const Account = ({ userRecord }) => {
   const dispatch = useDispatch();
   const [timeZones, setTimeZones] = useState([]);
+  const [updateProfileLoader, setUpdateProfileLoader] = useState(false);
   const [selectedPreferredLanguage, setSelectedPreferredLanguage] = useState(
     []
   );
@@ -104,9 +104,15 @@ const Account = ({ userRecord }) => {
     validateOnBlur: true,
     onSubmit: (values) => {
       try {
-        console.log("savedValues", values);
+        setUpdateProfileLoader(true);
+        dispatch(
+          postUserUpdate({ userId: userRecord.userEncId, userData: values })
+        ).then((response) => {
+          setUpdateProfileLoader(false);
+        });
       } catch (error) {
         console.log("error", error);
+        setUpdateProfileLoader(false);
       } finally {
       }
     },
@@ -114,29 +120,27 @@ const Account = ({ userRecord }) => {
 
   useEffect(() => {
     fetchTimeZones();
-
     setSelectedPreferredLanguage(userRecord?.language?.split(","));
   }, [userRecord?.timezone]);
-
-  console.log(selectedPreferredLanguage);
 
   return (
     <>
       <Form onSubmit={handleSubmit}>
-        <div className="shadow-sm rounded bg-white mb-3 p-3">
+        <div className="shadow rounded bg-white mb-3 p-3">
           <div className="border-bottom mb-3">
             <Row>
-              <Col md={6}>
+              <Col xl={6} lg={6} md={6} sm={12} xs={12}>
                 <h4>
                   Welcome <b>{values?.userName || "User"}!</b>
                 </h4>
               </Col>
-              <Col md={6} className="text-right">
-                {/* Add conditional logic for role-based buttons */}
-                <Button variant="success" size="sm">
-                  Check Availability
-                </Button>
-              </Col>
+              {userRecord && userRecord?.role === "Valet" && (
+                <Col xl={6} lg={6} md={6} sm={12} xs={12} className="text-end">
+                  <Button variant="primary" size="sm">
+                    Check Availability
+                  </Button>
+                </Col>
+              )}
             </Row>
             <Row>
               <Col>
@@ -158,6 +162,9 @@ const Account = ({ userRecord }) => {
                   onBlur={handleBlur("firstName")}
                   isInvalid={!!errors.firstName && touched.firstName}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {touched.firstName && errors.firstName}
+                </Form.Control.Feedback>
               </FormGroup>
             </Col>
             <Col sm={6} className="mb-2">
@@ -173,6 +180,9 @@ const Account = ({ userRecord }) => {
                   onBlur={handleBlur("lastName")}
                   isInvalid={!!errors.lastName && touched.lastName}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {touched.lastName && errors.lastName}
+                </Form.Control.Feedback>
               </FormGroup>
             </Col>
           </Row>
@@ -191,6 +201,9 @@ const Account = ({ userRecord }) => {
                   onBlur={handleBlur("userName")}
                   isInvalid={!!errors.userName && touched.userName}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {touched.userName && errors.userName}
+                </Form.Control.Feedback>
               </FormGroup>
             </Col>
             <Col sm={6} className="mb-2">
@@ -207,6 +220,9 @@ const Account = ({ userRecord }) => {
                   onBlur={handleBlur("email")}
                   isInvalid={!!errors.email && touched.email}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {touched.email && errors.email}
+                </Form.Control.Feedback>
               </FormGroup>
             </Col>
           </Row>
@@ -223,6 +239,9 @@ const Account = ({ userRecord }) => {
                   onBlur={handleBlur("description")}
                   isInvalid={!!errors.description && touched.description}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {touched.description && errors.description}
+                </Form.Control.Feedback>
               </FormGroup>
             </Col>
           </Row>
@@ -239,6 +258,9 @@ const Account = ({ userRecord }) => {
                   onBlur={handleBlur("contact")}
                   countryFilter={["ca"]}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {touched.contact && errors.contact}
+                </Form.Control.Feedback>
               </FormGroup>
             </Col>
             <Col sm={6} className="mb-2">
@@ -253,7 +275,11 @@ const Account = ({ userRecord }) => {
                   onChange={handleChange("birthDate")}
                   onBlur={handleBlur("birthDate")}
                   isInvalid={!!errors.birthDate && touched.birthDate}
+                  max={calculateMaxDate(18).toISOString().split("T")[0]}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {touched.birthDate && errors.birthDate}
+                </Form.Control.Feedback>
               </FormGroup>
             </Col>
           </Row>
@@ -276,6 +302,9 @@ const Account = ({ userRecord }) => {
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </FormControl>
+                <Form.Control.Feedback type="invalid">
+                  {touched.gender && errors.gender}
+                </Form.Control.Feedback>
               </FormGroup>
             </Col>
           </Row>
@@ -294,6 +323,9 @@ const Account = ({ userRecord }) => {
                   onBlur={handleBlur("city")}
                   isInvalid={!!errors.city && touched.city}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {touched.city && errors.city}
+                </Form.Control.Feedback>
               </FormGroup>
             </Col>
 
@@ -311,6 +343,9 @@ const Account = ({ userRecord }) => {
                   onBlur={handleBlur("state")}
                   isInvalid={!!errors.state && touched.state}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {touched.state && errors.state}
+                </Form.Control.Feedback>
               </FormGroup>
             </Col>
 
@@ -328,6 +363,9 @@ const Account = ({ userRecord }) => {
                   onBlur={handleBlur("zipCode")}
                   isInvalid={!!errors.zipCode && touched.zipCode}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {touched.zipCode && errors.zipCode}
+                </Form.Control.Feedback>
               </FormGroup>
             </Col>
 
@@ -336,7 +374,14 @@ const Account = ({ userRecord }) => {
                 <FormLabel>
                   Country <span className="text-danger">*</span>
                 </FormLabel>
-                <select className="form-control">
+                <Form.Control
+                  as="select"
+                  value={userRecord?.country || ""}
+                  onChange={(e) => {
+                    const selectedCountry = e.target.value;
+                    setFieldValue("country", selectedCountry);
+                  }}
+                >
                   {countries.map((value, key) => {
                     return (
                       <option key={key} value={value.value}>
@@ -344,7 +389,7 @@ const Account = ({ userRecord }) => {
                       </option>
                     );
                   })}
-                </select>
+                </Form.Control>
               </FormGroup>
             </Col>
           </Row>
@@ -361,6 +406,9 @@ const Account = ({ userRecord }) => {
                   fieldName="Language"
                   isInvalid={!!errors.language && touched.language}
                 />
+                <Form.Control.Feedback type="invalid">
+                  {touched.language && errors.language}
+                </Form.Control.Feedback>
               </FormGroup>
             </Col>
           </Row>
@@ -388,12 +436,33 @@ const Account = ({ userRecord }) => {
                       </option>
                     ))}
                 </Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  {touched.timezone && errors.timezone}
+                </Form.Control.Feedback>
               </FormGroup>
             </Col>
           </Row>
-          <Row className="text-right">
-            <Col>
-              <Button variant="success">Update Profile</Button>
+          <Row className="py-2">
+            <Col
+              xl={{ span: 4, offset: 8 }}
+              lg={{ span: 4, offset: 8 }}
+              md={{ span: 4, offset: 8 }}
+              sm={{ span: 12 }}
+              xs={{ span: 12 }}
+              className="text-end"
+            >
+              <Button
+                type="submit"
+                variant="secondary-secondary w-100"
+                size="sm"
+                disabled={updateProfileLoader}
+              >
+                {updateProfileLoader ? (
+                  <Spinner animation="border" size="sm" className="me-1" />
+                ) : (
+                  "Update Profile"
+                )}
+              </Button>
             </Col>
           </Row>
         </div>
