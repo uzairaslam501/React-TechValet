@@ -68,7 +68,7 @@ export const getServicesRecord = createAsyncThunk(
           Authorization: `${token}`,
         },
       });
-      const { data, message } = processApiResponse(response, dispatch, expired);
+      const { data } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);

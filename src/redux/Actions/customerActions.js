@@ -198,7 +198,7 @@ export const getOrderRecords = createAsyncThunk(
     const { token, expired } = getToken(getState);
     try {
       const response = await api.get(
-        `${baseUrl}/Datatable/GetOrdersDatatableByUserId?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        `${baseUrl}/Datatable/orders-by-userId?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}`,
         {
           headers: {

@@ -13,7 +13,7 @@ export const handleApiError = (error, dispatch, tokenExpiryTime) => {
         handleUnauthorizedError(error, dispatch, tokenExpiryTime);
         break;
       default:
-        logAndToastError(statusCode, errorMessage);
+        logAndToastError(statusCode, errorMessage, error.response);
         break;
     }
   } else if (error.request) {
@@ -35,18 +35,62 @@ const handleUnauthorizedError = (error, dispatch, tokenExpiryTime) => {
 };
 
 // Utility function to log and display errors
-const logAndToastError = (statusCode, errorMessage) => {
+const logAndToastError = (statusCode, errorMessage, response) => {
   console.error(
-    `Server returned error with status ${statusCode}: ${errorMessage}`
+    `Server returned error with status ${statusCode}: ${errorMessage}`,
+    response
   );
+
+  let userFriendlyMessage;
+
   switch (statusCode) {
+    case 400:
+      userFriendlyMessage =
+        response?.data?.message || "Bad Request. Please check your input.";
+      break;
+    case 401:
+      userFriendlyMessage = "Unauthorized. Please log in to continue.";
+      break;
+    case 403:
+      userFriendlyMessage =
+        "Forbidden. You don't have permission to access this resource.";
+      break;
     case 404:
-      toast.error("Not Found");
+      userFriendlyMessage =
+        "The requested resource was not found. Please try again.";
+      break;
+    case 408:
+      userFriendlyMessage =
+        "The request timed out. Please check your connection and try again.";
+      break;
+    case 429:
+      userFriendlyMessage =
+        "Too many requests. Please slow down and try again later.";
+      break;
+    case 500:
+      userFriendlyMessage =
+        "Internal server error. Something went wrong on our side. Please try again later.";
+      break;
+    case 502:
+      userFriendlyMessage =
+        "Bad Gateway. The server received an invalid response. Please try again later.";
+      break;
+    case 503:
+      userFriendlyMessage =
+        "Service Unavailable. The server is temporarily overloaded or under maintenance.";
+      break;
+    case 504:
+      userFriendlyMessage =
+        "Gateway Timeout. The server took too long to respond. Please try again later.";
       break;
     default:
-      toast.error(errorMessage);
+      userFriendlyMessage =
+        "An unexpected error occurred. Please try again later.";
       break;
   }
+
+  // Display the error message to the user
+  toast.error(userFriendlyMessage);
 };
 
 // Response Handler

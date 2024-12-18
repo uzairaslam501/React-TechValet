@@ -18,23 +18,17 @@ import {
   updateServicesOrExperience,
 } from "../../../../../../redux/Actions/serviceActions";
 import { deleteRecords } from "../../../../../../redux/Actions/globalActions";
+import DeleteComponent from "../../../../../../components/Custom/DeleteDialoge/DeleteDialoge";
 
 const Services = ({ userRecord }) => {
   const dispatch = useDispatch();
-  const [userServices, setUserServices] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [showAddServiceSection, setShowAddServiceSection] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const [userServices, setUserServices] = useState([]);
+  const [serviceToDelete, setServiceToDelete] = useState(null);
+  const [isAddServiceVisible, setIsAddServiceVisible] = useState(false);
 
-  const handleAddNewService = () => {
-    setShowAddServiceSection(true);
-  };
-
-  const handleHideServiceSection = () => {
-    setShowAddServiceSection(false);
-    setFieldValue("serviceId", "");
-    setFieldValue("description", "");
-  };
-
+  // Fetch user services when the component is mounted
   const fetchServicesRecord = () => {
     setIsLoading(true);
     dispatch(getServicesRecord(userRecord?.userEncId)).then((response) => {
@@ -43,24 +37,53 @@ const Services = ({ userRecord }) => {
     });
   };
 
-  const deleteExperience = (serviceId) => {
-    dispatch(deleteRecords(`User/delete-service/${serviceId}`)).then(
-      (response) => {
-        if (response.payload === serviceId) {
-          setUserServices((prev) =>
-            prev.filter((service) => service.userExperienceEncId !== serviceId)
-          );
-        }
-      }
-    );
+  // Handle adding a new service
+  const handleAddNewService = () => {
+    setIsAddServiceVisible(true);
   };
 
-  const updateExpereince = (service) => {
+  // Hide the service form
+  const handleHideServiceForm = () => {
+    setIsAddServiceVisible(false);
+    resetFormValues();
+  };
+
+  const resetFormValues = () => {
+    setFieldValue("serviceId", "");
+    setFieldValue("description", "");
+  };
+
+  // Handle service update
+  const handleUpdateService = (service) => {
     handleAddNewService();
-    setFieldValue("serviceId", service?.userExperienceEncId);
+    setFieldValue(
+      "serviceId",
+      encodeURIComponent(service?.userExperienceEncId)
+    );
     setFieldValue("description", service?.description);
   };
 
+  // Handle deleting a service
+  const handleDeleteService = (serviceId) => {
+    setServiceToDelete(serviceId);
+    setShowDialog(true);
+  };
+
+  // Confirm deletion of a service
+  const confirmDelete = (serviceId) => {
+    dispatch(
+      deleteRecords(`User/delete-service/${encodeURIComponent(serviceId)}`)
+    ).then((response) => {
+      if (response.payload === serviceId) {
+        setUserServices((prev) =>
+          prev.filter((service) => service.userExperienceEncId !== serviceId)
+        );
+        setShowDialog(false); // Close the modal after successful deletion
+      }
+    });
+  };
+
+  // Formik setup
   const {
     values,
     touched,
@@ -71,34 +94,31 @@ const Services = ({ userRecord }) => {
     setFieldValue,
   } = useFormik({
     initialValues: {
-      userId: userRecord?.userEncId || "",
+      userId: encodeURIComponent(userRecord?.userEncId) || "",
       serviceId: "",
       description: "",
     },
     validationSchema: Yup.object().shape({
       description: Yup.string().required("Service Description is required"),
     }),
-    validateOnChange: false,
-    validateOnBlur: true,
-    enableReinitialize: true,
     onSubmit: (values) => {
       try {
         if (values.serviceId) {
-          // Handle Update
+          // Update existing service
           dispatch(updateServicesOrExperience(values)).then((response) => {
             setUserServices((prev) => [
-              response.payload, // Place the updated record at the top
+              response.payload, // Update record
               ...prev.filter(
-                (service) => service.userExperienceEncId !== values.serviceId // Exclude the old version of the updated record
+                (service) => service.userExperienceEncId !== values.serviceId
               ),
             ]);
-            handleHideServiceSection();
+            handleHideServiceForm();
           });
         } else {
-          // Handle Add
+          // Add new service
           dispatch(addServicesOrExperience(values)).then((response) => {
-            setUserServices((prev) => [response.payload, ...prev]); // Prepend the new record to the top
-            handleHideServiceSection();
+            setUserServices((prev) => [response.payload, ...prev]); // Prepend new service
+            handleHideServiceForm();
           });
         }
       } catch (error) {
@@ -112,33 +132,27 @@ const Services = ({ userRecord }) => {
   }, [userRecord]);
 
   return (
-    <Card className="shadow rounded mb-3">
-      <Card.Header className="border-bottom p-3">
-        <Row>
-          <Col md={6} xs={6} className="d-flex justify-content-start">
-            <h6 className="m-0">Services Offered</h6>
-          </Col>
-          <Col md={6} xs={6} className="d-flex justify-content-end">
-            <p className="m-0">
-              <span
-                onClick={handleAddNewService}
+    <>
+      <Card className="shadow rounded mb-3">
+        <Card.Header className="border-bottom p-3">
+          <Row>
+            <Col md={6} xs={6} className="d-flex justify-content-start">
+              <h6 className="m-0">Services Offered</h6>
+            </Col>
+            <Col md={6} xs={6} className="d-flex justify-content-end">
+              <p
+                className="m-0"
                 style={{ cursor: "pointer", color: "#fcd609" }}
+                onClick={handleAddNewService}
               >
                 Add New
-              </span>
-            </p>
-          </Col>
-        </Row>
-      </Card.Header>
-      <Card.Body
-        style={{
-          height: "475px",
-          overflowY: "scroll",
-        }}
-      >
-        <>
+              </p>
+            </Col>
+          </Row>
+        </Card.Header>
+        <Card.Body style={{ height: "475px", overflowY: "scroll" }}>
           <Form onSubmit={handleSubmit}>
-            {showAddServiceSection && (
+            {isAddServiceVisible && (
               <div className="py-3">
                 <Form.Group>
                   <Form.Control
@@ -147,11 +161,10 @@ const Services = ({ userRecord }) => {
                     name="description"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="Services Description"
+                    placeholder="Service Description"
                     rows={3}
                     isInvalid={touched.description && !!errors.description}
                   />
-
                   <Form.Control.Feedback type="invalid">
                     {errors.description}
                   </Form.Control.Feedback>
@@ -161,7 +174,7 @@ const Services = ({ userRecord }) => {
                     <Button
                       variant="danger"
                       className="w-100"
-                      onClick={handleHideServiceSection}
+                      onClick={handleHideServiceForm}
                     >
                       Cancel
                     </Button>
@@ -183,16 +196,16 @@ const Services = ({ userRecord }) => {
               </Col>
             </Row>
           ) : userServices.length > 0 ? (
-            userServices.map((item) => (
-              <Row className="mb-3" key={item.id}>
-                <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+            userServices.map((service) => (
+              <Row className="mb-3" key={service.userExperienceEncId}>
+                <Col>
                   <Row className="border-bottom">
-                    <Col xl={10} lg={10} md={10} sm={10} xs={10}>
+                    <Col xl={10}>
                       <p style={{ wordBreak: "break-word" }}>
-                        {item.description}
+                        {service.description}
                       </p>
                     </Col>
-                    <Col xl={2} lg={2} md={2} sm={2} xs={2}>
+                    <Col xl={2}>
                       <Dropdown as={ButtonGroup}>
                         <Dropdown.Toggle
                           variant="primary"
@@ -204,19 +217,23 @@ const Services = ({ userRecord }) => {
                         <Dropdown.Menu align="end" className="text-center">
                           <Dropdown.Item
                             onClick={() =>
-                              deleteExperience(item.userExperienceEncId)
+                              handleDeleteService(service.userExperienceEncId)
                             }
-                            className="w-100"
                           >
-                            <i className="bi bi-trash me-2"></i>
-                            Delete
+                            <i
+                              className="bi bi-trash me-2"
+                              style={{ fontSize: "14px" }}
+                            ></i>
+                            Delete Service
                           </Dropdown.Item>
                           <Dropdown.Item
-                            onClick={() => updateExpereince(item)}
-                            className="w-100"
+                            onClick={() => handleUpdateService(service)}
                           >
-                            <i className="bi bi-x-circle me-2"></i>
-                            Update
+                            <i
+                              className="bi bi-pencil me-2"
+                              style={{ fontSize: "14px" }}
+                            ></i>
+                            Update Service
                           </Dropdown.Item>
                         </Dropdown.Menu>
                       </Dropdown>
@@ -232,9 +249,16 @@ const Services = ({ userRecord }) => {
               </Col>
             </Row>
           )}
-        </>
-      </Card.Body>
-    </Card>
+        </Card.Body>
+      </Card>
+
+      <DeleteComponent
+        showDialog={showDialog}
+        setShowDialog={setShowDialog}
+        onDelete={confirmDelete}
+        item={serviceToDelete}
+      />
+    </>
   );
 };
 
