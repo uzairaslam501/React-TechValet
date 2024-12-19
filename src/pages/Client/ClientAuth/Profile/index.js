@@ -10,6 +10,7 @@ import Services from "./ValetProfile/Services/Services";
 import PayPalAccount from "./ValetProfile/PayPal/PayPalAccount";
 import StripeAccount from "./ValetProfile/Stripe/StripeAccount";
 import Education from "./ValetProfile/Education/Education";
+import Slots from "./ValetProfile/Slots/Slots";
 
 const Index = () => {
   const dispatch = useDispatch();
@@ -99,6 +100,7 @@ const Index = () => {
             >
               <Row>
                 <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                  <Slots userRecord={userRecords} />
                   {userRecords && <Account userRecord={userRecords} />}
                 </Col>
               </Row>

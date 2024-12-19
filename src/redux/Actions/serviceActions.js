@@ -75,3 +75,21 @@ export const getServicesRecord = createAsyncThunk(
     }
   }
 );
+
+export const getAvailability = createAsyncThunk(
+  "servicesOrExperience/getAvailability",
+  async (userId, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.get(`User/user-availability/${userId}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
