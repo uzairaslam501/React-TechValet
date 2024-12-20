@@ -46,14 +46,12 @@ const UserProfileImage = ({ userRecord }) => {
     document.getElementById("imageLoadSection").style.display = "block";
   };
 
-  const handleStatusChange = (value) => {
-    if (value === "on") {
-      value = "true";
-    } else {
-      value = "false";
-    }
+  const handleStatusChange = () => {
     dispatch(
-      postUserActivity({ userId: userRecord?.userEncId, activityStatus: value })
+      postUserActivity({
+        userId: userRecord?.userEncId,
+        activityStatus: !status,
+      })
     ).then((response) => {
       if (response?.payload === "1") {
         setStatus(true);
@@ -164,7 +162,7 @@ const UserProfileImage = ({ userRecord }) => {
           id="custom-switch-button"
           label={status ? "Online" : "Offline"}
           checked={status}
-          onChange={(e) => handleStatusChange(e.target.value)}
+          onChange={handleStatusChange}
         />
         <Form.Check
           type="switch"

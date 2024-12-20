@@ -17,142 +17,143 @@ const Index = () => {
   const navigate = useNavigate();
   const [userRecords, setUserRecords] = useState(null);
   const [columns, setColumns] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { userAuth } = useSelector((state) => state?.authentication);
 
-  const fetchUserRecord = () => {
+  const fetchUserRecord = async () => {
     try {
-      dispatch(getRecordById(`/Admin/GetUserById?id=${userAuth.id}`)).then(
-        (response) => {
-          setUserRecords(response.payload);
-        }
+      const response = await dispatch(
+        getRecordById(`/Admin/GetUserById?id=${userAuth.id}`)
       );
+      setUserRecords(response.payload);
+      return response.payload;
     } catch (e) {
-      console.log("error on Fetching Get USer on Account Index Page", e);
-    } finally {
+      console.error("Error fetching user record", e);
     }
   };
+
+  const sequentialApiCalls = async () => {
+    try {
+      const userRecord = await fetchUserRecord();
+
+      // Exit early if userRecord is null
+      if (!userRecord) return;
+
+      setColumns(userRecord.role === "Valet");
+
+      const fetchFunctions = [
+        () => <UserProfileImage userRecord={userRecord} />,
+        () => <Slots userRecord={userRecord} />,
+        () => <Account userRecord={userRecord} />,
+        () => <SkillsAndEndorsements userRecord={userRecord} />,
+        () => <PayPalAccount userRecord={userRecord} />,
+        () => <StripeAccount userRecord={userRecord} />,
+        () => <Services userRecord={userRecord} />,
+        () => <Education userRecord={userRecord} />,
+      ];
+
+      for (const fetchFunction of fetchFunctions) {
+        // Render or call next component
+        await fetchFunction();
+      }
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error in sequential API calls", error);
+    }
+  };
+
+  useEffect(() => {
+    sequentialApiCalls();
+  }, []);
 
   const handleSchedule = () => {
     navigate("/scheduled-appointment");
   };
 
-  useEffect(() => {
-    if (userRecords?.role === "Valet") {
-      setColumns(true);
-    }
-    fetchUserRecord();
-  }, [userRecords?.userName]);
-
   return (
-    <>
-      <Container className="py-5">
-        {userRecords ? (
-          <Row>
-            <Col
-              xl={!columns ? 4 : 3}
-              lg={!columns ? 4 : 3}
-              md={!columns ? 4 : 3}
-              sm={12}
-              xs={12}
-            >
-              <Row>
-                <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                  <UserProfileImage userRecord={userRecords} />
-                </Col>
-
-                <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
-                  <Card className="shadow">
-                    <Card.Header>Scheduled Customer Appointments</Card.Header>
-                    <Card.Body>
-                      <Button
-                        onClick={handleSchedule}
-                        className="btn btn-success w-100"
-                      >
-                        View Scheduling
-                      </Button>
-                    </Card.Body>
-                  </Card>
-                </Col>
-
-                {columns && (
-                  <>
-                    <Col
-                      xl={12}
-                      lg={12}
-                      md={12}
-                      sm={12}
-                      xs={12}
-                      className="mt-4"
+    <Container className="py-5">
+      {loading ? (
+        <Row>
+          <Col xl={12} lg={12} md={12} sm={12} xs={12} className="text-center">
+            <Spinner animation="grow" />
+          </Col>
+        </Row>
+      ) : (
+        <Row>
+          <Col
+            xl={!columns ? 4 : 3}
+            lg={!columns ? 4 : 3}
+            md={!columns ? 4 : 3}
+            sm={12}
+            xs={12}
+          >
+            <Row>
+              <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                <UserProfileImage userRecord={userRecords} />
+              </Col>
+              <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
+                <Card className="shadow">
+                  <Card.Header>Scheduled Customer Appointments</Card.Header>
+                  <Card.Body>
+                    <Button
+                      onClick={handleSchedule}
+                      className="btn btn-success w-100"
                     >
-                      <SkillsAndEndorsements userRecord={userRecords} />
-                    </Col>
-                  </>
-                )}
-              </Row>
-            </Col>
-
-            <Col
-              xl={!columns ? 8 : 6}
-              lg={!columns ? 8 : 6}
-              md={!columns ? 8 : 6}
-              sm={12}
-              xs={12}
-            >
-              <Row>
-                <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                  <Slots userRecord={userRecords} />
-                  {userRecords && <Account userRecord={userRecords} />}
+                      View Scheduling
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </Col>
+              {columns && (
+                <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
+                  <SkillsAndEndorsements userRecord={userRecords} />
                 </Col>
-              </Row>
-            </Col>
-
-            {columns && (
-              <>
-                <Col xl={3} lg={3} md={3} sm={12} xs={12} className="">
-                  <Row>
-                    <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                      {<PayPalAccount userRecord={userRecords} />}
-                    </Col>
-
-                    <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                      <StripeAccount userRecord={userRecords} />
-                    </Col>
-
-                    <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                      <Services userRecord={userRecords} />
-                    </Col>
-                  </Row>
-                </Col>
-
-                <Col
-                  xl={{ span: 9, offset: 3 }}
-                  lg={{ span: 9, offset: 3 }}
-                  md={{ span: 9, offset: 3 }}
-                  sm={12}
-                  xs={12}
-                  className=""
-                >
-                  <Education userRecord={userRecords} />
-                </Col>
-              </>
-            )}
-          </Row>
-        ) : (
-          <Row>
-            <Col
-              xl={12}
-              lg={12}
-              md={12}
-              sm={12}
-              xs={12}
-              className="text-center"
-            >
-              <Spinner animation="grow" />
-            </Col>
-          </Row>
-        )}
-      </Container>
-    </>
+              )}
+            </Row>
+          </Col>
+          <Col
+            xl={!columns ? 8 : 6}
+            lg={!columns ? 8 : 6}
+            md={!columns ? 8 : 6}
+            sm={12}
+            xs={12}
+          >
+            <Row>
+              <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                <Account userRecord={userRecords} />
+              </Col>
+            </Row>
+          </Col>
+          {columns && (
+            <>
+              <Col xl={3} lg={3} md={3} sm={12} xs={12}>
+                <Row>
+                  <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                    <PayPalAccount userRecord={userRecords} />
+                  </Col>
+                  <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                    <StripeAccount userRecord={userRecords} />
+                  </Col>
+                  <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                    <Services userRecord={userRecords} />
+                  </Col>
+                </Row>
+              </Col>
+              <Col
+                xl={{ span: 9, offset: 3 }}
+                lg={{ span: 9, offset: 3 }}
+                md={{ span: 9, offset: 3 }}
+                sm={12}
+                xs={12}
+              >
+                <Education userRecord={userRecords} />
+              </Col>
+            </>
+          )}
+        </Row>
+      )}
+    </Container>
   );
 };
 

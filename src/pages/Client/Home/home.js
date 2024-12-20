@@ -21,7 +21,7 @@ const Home = () => {
         <Row>
           <Col md={{ span: 10, offset: 1 }}>
             <Card
-              className="shadow p-2"
+              className="shadow p-2 mb-3"
               style={{ background: "#fcd609", width: "fit-content" }}
             >
               <h3 className="fw-bold mb-0">Popular Professional Services</h3>

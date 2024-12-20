@@ -19,20 +19,38 @@ const Slots = ({ userRecord }) => {
     setShowModal(true);
   };
 
+  const updateSlotTime = (id, slotUpdates) => {
+    // Replace this with your API call logic
+    console.log("Updating slot time for ID:", id, "with updates:", slotUpdates);
+  };
+
   const toggleAllSlots = (id) => {
     setAvailabilityData((prevData) =>
+      prevData.map((row) => {
+        if (row.id === id) {
+          const updatedSlots = {
+            slot1: row.slot1 === "1" ? "0" : "1",
+            slot2: row.slot2 === "2" ? "0" : "2",
+            slot3: row.slot3 === "3" ? "0" : "3",
+            slot4: row.slot4 === "4" ? "0" : "4",
+          };
+          updateSlotTime(id, updatedSlots); // Call updateSlotTime with all slot updates
+          return { ...row, ...updatedSlots };
+        }
+        return row;
+      })
+    );
+  };
+
+  const handleSlotChange = (id, slotNumber, currentValue) => {
+    const newValue =
+      currentValue === slotNumber.toString() ? "0" : slotNumber.toString();
+    setAvailabilityData((prevData) =>
       prevData.map((row) =>
-        row.id === id
-          ? {
-              ...row,
-              slot1: row.slot1 === "1" ? "0" : "1",
-              slot2: row.slot2 === "2" ? "0" : "2",
-              slot3: row.slot3 === "3" ? "0" : "3",
-              slot4: row.slot4 === "4" ? "0" : "4",
-            }
-          : row
+        row.id === id ? { ...row, [`slot${slotNumber}`]: newValue } : row
       )
     );
+    updateSlotTime(id, { [`slot${slotNumber}`]: newValue }); // Call updateSlotTime for the specific slot
   };
 
   const determineSelectAllState = (data) => {
@@ -49,21 +67,8 @@ const Slots = ({ userRecord }) => {
       type="switch"
       id={`customSwitchesForSlots${slotNumber}${id}`}
       checked={slot === slotNumber.toString()}
-      onChange={() =>
-        setAvailabilityData((prevData) =>
-          prevData.map((row) =>
-            row.id === id
-              ? {
-                  ...row,
-                  [`slot${slotNumber}`]:
-                    slot === slotNumber.toString()
-                      ? "0"
-                      : slotNumber.toString(),
-                }
-              : row
-          )
-        )
-      }
+      onChange={() => handleSlotChange(id, slotNumber, slot)}
+      disabled={userRecord?.role === "Valet" ? false : true}
     />
   );
 
@@ -78,6 +83,7 @@ const Slots = ({ userRecord }) => {
         ref={(el) => {
           if (el) el.indeterminate = selectAllState === "indeterminate";
         }}
+        disabled={userRecord?.role === "Valet" ? false : true}
         onChange={() => toggleAllSlots(data.id)}
       />
     );
@@ -85,7 +91,9 @@ const Slots = ({ userRecord }) => {
 
   return (
     <>
-      <Button onClick={() => callAPI()}>Check Availability</Button>
+      <Button size="sm" variant="primary" onClick={() => callAPI()}>
+        Check Availability
+      </Button>
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>User Availability</Modal.Title>

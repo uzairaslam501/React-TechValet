@@ -16,7 +16,7 @@ const SearchSection = () => {
         }}
       >
         <Container>
-          <Row className="d-flex align-items-center justify-content-center">
+          <Row className="d-flex justify-content-center">
             {/* Text Section */}
             <Col xl={6} className="text-center text-xl-start">
               <Card
@@ -54,13 +54,7 @@ const SearchSection = () => {
               </Card>
             </Col>
 
-            <Col
-              xl={3}
-              className="text-center"
-              style={{
-                padding: "20px",
-              }}
-            >
+            <Col xl={3} className="text-center">
               <CustomCard
                 imageSrc="https://techvalet.ca/frontAssets/images/CustomImages/1.png"
                 cardTitle="Need Service?"
@@ -90,13 +84,7 @@ const SearchSection = () => {
               </CustomCard>
             </Col>
 
-            <Col
-              xl={3}
-              className="text-center"
-              style={{
-                padding: "20px",
-              }}
-            >
+            <Col xl={3} className="text-center">
               <CustomCard
                 imageSrc="https://techvalet.ca/frontAssets/images/CustomImages/2 (1).png"
                 cardTitle="Need Service?"
