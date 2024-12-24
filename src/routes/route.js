@@ -18,6 +18,7 @@ import Welcome from "../pages/Client/Welcome/welcome";
 import About from "../pages/Client/About/about";
 import Contact from "../pages/Client/Contact/contact";
 import Search from "../pages/Client/Search/filteredData";
+import Earnings from "../pages/Client/Manage/Earnings/Earnings";
 import ClientLogin from "../pages/Client/ClientAuth/ClientLogin/ClientLogin";
 import ManageAppointment from "../pages/Client/Manage/ManageAppointmentOrders/index";
 import PackageSelection from "../pages/Client/Manage/Packages/packageSelection";
@@ -54,7 +55,7 @@ const createRoute = createBrowserRouter(
         <Route path="/login" element={<ClientLogin />} />
         <Route element={<ProtectedClient />}>
           <Route path="/account" element={<Index />} />
-
+          <Route path="/earning" element={<Earnings />} />
           <Route path="/search/:value?" element={<Search />} />
           <Route path="/appointment" element={<ManageAppointment />} />
           <Route path="/packages" element={<PackageSelection />} />

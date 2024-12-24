@@ -6,7 +6,7 @@ export const valetMenu = [
     label: "Manage Appointments",
   },
   {
-    href: "#earning",
+    href: "/earnings",
     iconClass: "bi bi-cash-coin",
     className: "",
     label: "Manage Earnings",

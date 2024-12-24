@@ -121,3 +121,26 @@ export const getAvailability = createAsyncThunk(
   }
 );
 //#endregion
+
+//#region Earnings
+export const getEarnings = createAsyncThunk(
+  "servicesOrExperience/getEarnings",
+  async (userId, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.get(
+        `User/get-earnings/${encodeURIComponent(userId)}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+//#endregion
