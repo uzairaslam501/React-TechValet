@@ -74,6 +74,8 @@ const Education = ({ userRecord }) => {
 
   // Confirm deletion of a service
   const confirmDelete = (educationId) => {
+    setEditItem(false);
+    resetForm();
     dispatch(
       deleteRecords(`User/delete-education/${encodeURIComponent(educationId)}`)
     ).then((response) => {

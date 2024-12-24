@@ -76,6 +76,7 @@ const Services = ({ userRecord }) => {
 
   // Confirm deletion of a service
   const confirmDelete = (serviceId) => {
+    handleHideServiceForm();
     dispatch(
       deleteRecords(`User/delete-service/${encodeURIComponent(serviceId)}`)
     ).then((response) => {
@@ -208,7 +209,7 @@ const Services = ({ userRecord }) => {
                 <Spinner animation="grow" size="sm" />
               </Col>
             </Row>
-          ) : userServices.length > 0 ? (
+          ) : userServices?.length > 0 ? (
             userServices.map((service) => (
               <Row className="mb-3" key={service.userExperienceEncId}>
                 <Col>

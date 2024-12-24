@@ -76,16 +76,43 @@ export const getServicesRecord = createAsyncThunk(
   }
 );
 
+//#region Slots
+export const updateSlotTimes = createAsyncThunk(
+  "servicesOrExperience/updateSlotTime",
+  async ({ userId, slots }, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.put(
+        `User/user-available-slots/${encodeURIComponent(userId)}`,
+        slots,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      toast.success(message);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
 export const getAvailability = createAsyncThunk(
   "servicesOrExperience/getAvailability",
   async (userId, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
-      const response = await api.get(`User/user-availability/${userId}`, {
-        headers: {
-          Authorization: `${token}`,
-        },
-      });
+      const response = await api.get(
+        `User/user-availability/${encodeURIComponent(userId)}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
       const { data } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
@@ -93,3 +120,4 @@ export const getAvailability = createAsyncThunk(
     }
   }
 );
+//#endregion

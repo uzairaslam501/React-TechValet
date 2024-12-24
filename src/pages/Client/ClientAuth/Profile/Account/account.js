@@ -29,7 +29,7 @@ const validation = Yup.object().shape({
     .min(3, "Last Name must be at least 3 characters")
     .required("Please enter Last Name"),
   userName: Yup.string()
-    .min(5, "Username must be at least 5 characters")
+    .min(3, "Username must be at least 5 characters")
     .required("Please enter a Username"),
   email: Yup.string()
     .email("Invalid email format")

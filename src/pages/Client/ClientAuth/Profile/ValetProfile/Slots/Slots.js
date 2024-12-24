@@ -1,16 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Table, Modal, Form, Button } from "react-bootstrap";
+import { Table, Modal, Form, Button, Row, Col, Spinner } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { getAvailability } from "../../../../../../redux/Actions/serviceActions";
+import {
+  getAvailability,
+  updateSlotTimes,
+} from "../../../../../../redux/Actions/serviceActions";
 
 const Slots = ({ userRecord }) => {
   const dispatch = useDispatch();
-  const [availabilityData, setAvailabilityData] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [slotUpdates, setSlotUpdates] = useState([]);
+  const [callLoader, setCallLoader] = useState(false);
+  const [slotsLoader, setSlotsLoader] = useState(false);
+  const [availabilityData, setAvailabilityData] = useState([]);
 
   const fetchAvailability = () => {
+    setCallLoader(true);
     dispatch(getAvailability(userRecord?.userEncId)).then((response) => {
       setAvailabilityData(response?.payload || []);
+      setCallLoader(false);
     });
   };
 
@@ -19,22 +27,49 @@ const Slots = ({ userRecord }) => {
     setShowModal(true);
   };
 
-  const updateSlotTime = (id, slotUpdates) => {
-    // Replace this with your API call logic
-    console.log("Updating slot time for ID:", id, "with updates:", slotUpdates);
+  const updateSlotTime = (slotUpdates) => {
+    setSlotsLoader(true);
+    dispatch(
+      updateSlotTimes({ userId: userRecord?.userEncId, slots: slotUpdates })
+    ).then((response) => {
+      setSlotsLoader(false);
+    });
   };
 
   const toggleAllSlots = (id) => {
     setAvailabilityData((prevData) =>
       prevData.map((row) => {
         if (row.id === id) {
-          const updatedSlots = {
-            slot1: row.slot1 === "1" ? "0" : "1",
-            slot2: row.slot2 === "2" ? "0" : "2",
-            slot3: row.slot3 === "3" ? "0" : "3",
-            slot4: row.slot4 === "4" ? "0" : "4",
-          };
-          updateSlotTime(id, updatedSlots); // Call updateSlotTime with all slot updates
+          const areAllSelected =
+            row.slot1 === "1" &&
+            row.slot2 === "2" &&
+            row.slot3 === "3" &&
+            row.slot4 === "4";
+
+          // If all slots are selected, deselect all; otherwise, select all
+          const updatedSlots = areAllSelected
+            ? { slot1: "0", slot2: "0", slot3: "0", slot4: "0" }
+            : { slot1: "1", slot2: "2", slot3: "3", slot4: "4" };
+
+          // Add the update to the slotUpdates list
+          setSlotUpdates((prevUpdates) => {
+            const existingUpdateIndex = prevUpdates.findIndex(
+              (update) => update.id === id
+            );
+            if (existingUpdateIndex !== -1) {
+              // Merge changes with existing entry
+              const newUpdates = [...prevUpdates];
+              newUpdates[existingUpdateIndex] = {
+                ...newUpdates[existingUpdateIndex],
+                ...updatedSlots,
+              };
+              return newUpdates;
+            } else {
+              // Add a new entry
+              return [...prevUpdates, { id, ...updatedSlots }];
+            }
+          });
+
           return { ...row, ...updatedSlots };
         }
         return row;
@@ -45,12 +80,34 @@ const Slots = ({ userRecord }) => {
   const handleSlotChange = (id, slotNumber, currentValue) => {
     const newValue =
       currentValue === slotNumber.toString() ? "0" : slotNumber.toString();
+
+    // Update the availability data
     setAvailabilityData((prevData) =>
       prevData.map((row) =>
         row.id === id ? { ...row, [`slot${slotNumber}`]: newValue } : row
       )
     );
-    updateSlotTime(id, { [`slot${slotNumber}`]: newValue }); // Call updateSlotTime for the specific slot
+
+    // Add the update to the slotUpdates list
+    setSlotUpdates((prevUpdates) => {
+      const existingUpdateIndex = prevUpdates.findIndex(
+        (update) => update.id === id
+      );
+
+      if (existingUpdateIndex !== -1) {
+        // Merge changes with existing entry for the same ID
+        const updatedEntry = {
+          ...prevUpdates[existingUpdateIndex],
+          [`slot${slotNumber}`]: newValue,
+        };
+        const newUpdates = [...prevUpdates];
+        newUpdates[existingUpdateIndex] = updatedEntry;
+        return newUpdates;
+      } else {
+        // Add a new entry for this ID
+        return [...prevUpdates, { id, [`slot${slotNumber}`]: newValue }];
+      }
+    });
   };
 
   const determineSelectAllState = (data) => {
@@ -62,19 +119,22 @@ const Slots = ({ userRecord }) => {
     return allSelected ? true : noneSelected ? false : "indeterminate";
   };
 
-  const renderSwitch = (slot, id, slotNumber) => (
-    <Form.Check
-      type="switch"
-      id={`customSwitchesForSlots${slotNumber}${id}`}
-      checked={slot === slotNumber.toString()}
-      onChange={() => handleSlotChange(id, slotNumber, slot)}
-      disabled={userRecord?.role === "Valet" ? false : true}
-    />
-  );
+  const renderSwitch = (slot, id, slotNumber, dateTimeOfDay) => {
+    const isPastDate = new Date(dateTimeOfDay) < new Date();
+    return (
+      <Form.Check
+        type="switch"
+        id={`customSwitchesForSlots${slotNumber}${id}`}
+        checked={slot === slotNumber.toString()}
+        onChange={() => handleSlotChange(id, slotNumber, slot)}
+        disabled={isPastDate || userRecord?.role !== "Valet"}
+      />
+    );
+  };
 
   const renderSelectAll = (data) => {
     const selectAllState = determineSelectAllState(data);
-
+    const isPastDate = new Date(data.dateTimeOfDay) < new Date();
     return (
       <Form.Check
         type="switch"
@@ -83,10 +143,14 @@ const Slots = ({ userRecord }) => {
         ref={(el) => {
           if (el) el.indeterminate = selectAllState === "indeterminate";
         }}
-        disabled={userRecord?.role === "Valet" ? false : true}
+        disabled={isPastDate || userRecord?.role !== "Valet"}
         onChange={() => toggleAllSlots(data.id)}
       />
     );
+  };
+
+  const saveUpdates = () => {
+    updateSlotTime(slotUpdates); // Call your backend API
   };
 
   return (
@@ -99,6 +163,23 @@ const Slots = ({ userRecord }) => {
           <Modal.Title>User Availability</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <Row className="mb-3">
+            <Col className="text-end">
+              <Button
+                size="sm"
+                variant="primary"
+                onClick={saveUpdates}
+                disabled={slotsLoader}
+              >
+                {slotsLoader ? (
+                  <Spinner animation="border" size="sm" />
+                ) : (
+                  "Save Changes"
+                )}
+              </Button>
+            </Col>
+          </Row>
+
           <Table bordered hover responsive className="text-center">
             <thead>
               <tr>
@@ -123,18 +204,39 @@ const Slots = ({ userRecord }) => {
               </tr>
             </thead>
             <tbody>
-              {availabilityData.map((data) => (
-                <tr key={data.id}>
-                  <td>
-                    {data.dayName} ({data.dateTimeOfDay})
+              {callLoader ? (
+                <tr>
+                  <td colSpan={6}>
+                    <Spinner
+                      animation="grow"
+                      size="sm"
+                      className="text-center"
+                    />
                   </td>
-                  <td>{renderSelectAll(data)}</td>
-                  <td>{renderSwitch(data.slot1, data.id, 1)}</td>
-                  <td>{renderSwitch(data.slot2, data.id, 2)}</td>
-                  <td>{renderSwitch(data.slot3, data.id, 3)}</td>
-                  <td>{renderSwitch(data.slot4, data.id, 4)}</td>
                 </tr>
-              ))}
+              ) : (
+                availabilityData &&
+                availabilityData.map((data) => (
+                  <tr key={data.id}>
+                    <td>
+                      {data.dayName} ({data.dateTimeOfDay})
+                    </td>
+                    <td>{renderSelectAll(data)}</td>
+                    <td>
+                      {renderSwitch(data.slot1, data.id, 1, data.dateTimeOfDay)}
+                    </td>
+                    <td>
+                      {renderSwitch(data.slot2, data.id, 2, data.dateTimeOfDay)}
+                    </td>
+                    <td>
+                      {renderSwitch(data.slot3, data.id, 3, data.dateTimeOfDay)}
+                    </td>
+                    <td>
+                      {renderSwitch(data.slot4, data.id, 4, data.dateTimeOfDay)}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </Table>
         </Modal.Body>
