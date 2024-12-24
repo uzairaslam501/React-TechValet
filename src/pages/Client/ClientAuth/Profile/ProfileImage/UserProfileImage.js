@@ -8,13 +8,11 @@ import {
   postUserAvailable,
   UpdateProfileImage,
 } from "../../../../../redux/Actions/authActions";
+import HandleImages from "../../../../../components/Custom/Avatars/HandleImages";
 
 const UserProfileImage = ({ userRecord }) => {
   const dispatch = useDispatch();
-  const [profileImage, setProfileImage] = useState(
-    userRecord?.profilePicture ||
-      "https://usman78056-001-site7.gtempurl.com/profiles/download-(1)_638646395157341553.png"
-  );
+  const [profileImage, setProfileImage] = useState(userRecord?.profilePicture);
   const [status, setStatus] = useState(userRecord?.status);
   const [availability, setAvailability] = useState(userRecord?.availability);
   const [imagePreview, setImagePreview] = useState(null);
@@ -93,13 +91,11 @@ const UserProfileImage = ({ userRecord }) => {
   return (
     <div className="mb-2 shadow rounded bg-white profile-box text-center">
       <div className="py-4 px-3">
-        <Image
-          src={imagePreview || profileImage}
-          id="previewImg"
-          roundedCircle
-          alt="Profile"
-          className="mb-3"
-          style={{ width: "250px", height: "250px" }}
+        <HandleImages
+          imagePath={imagePreview || profileImage}
+          imageAlt={`${userRecord?.FirstName} ${userRecord?.LastName}`}
+          imageStyle={{ width: "250px", height: "250px" }}
+          className="mb-3 rounded-circle"
         />
         <h5 className="font-weight-bold text-dark mb-1">
           {userRecord?.FirstName} {userRecord?.LastName}

@@ -31,10 +31,15 @@ const Services = ({ userRecord }) => {
   // Fetch user services when the component is mounted
   const fetchServicesRecord = () => {
     setIsLoading(true);
-    dispatch(getServicesRecord(userRecord?.userEncId)).then((response) => {
-      setUserServices(response?.payload);
-      setIsLoading(false);
-    });
+    dispatch(getServicesRecord(userRecord?.userEncId))
+      .then((response) => {
+        console.log("services", response?.payload);
+        setUserServices(response?.payload);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   // Handle adding a new service
@@ -105,15 +110,23 @@ const Services = ({ userRecord }) => {
       try {
         if (values.serviceId) {
           // Update existing service
-          dispatch(updateServicesOrExperience(values)).then((response) => {
-            setUserServices((prev) => [
-              response.payload, // Update record
-              ...prev.filter(
-                (service) => service.userExperienceEncId !== values.serviceId
-              ),
-            ]);
-            handleHideServiceForm();
-          });
+          dispatch(updateServicesOrExperience(values))
+            .then((response) => {
+              if (response.payload) {
+                setUserServices((prev) =>
+                  prev.map((service) => {
+                    return service.userExperienceEncId ===
+                      response.payload.userExperienceEncId
+                      ? { ...service, ...response.payload } // Update the specific record
+                      : service; // Keep the rest unchanged
+                  })
+                );
+                handleHideServiceForm();
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
         } else {
           // Add new service
           dispatch(addServicesOrExperience(values)).then((response) => {
