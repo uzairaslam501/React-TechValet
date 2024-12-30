@@ -17,6 +17,28 @@ import SkillsAndEndorsements from "../ClientAuth/Profile/ValetProfile/Skills/Ski
 import Services from "../ClientAuth/Profile/ValetProfile/Services/Services";
 import Education from "../ClientAuth/Profile/ValetProfile/Education/Education";
 import Slots from "../ClientAuth/Profile/ValetProfile/Slots/Slots";
+import ReviewList from "../../../components/Custom/Reviews/ReviewList";
+
+const reviewsData = [
+  {
+    customer: {
+      profilePic: "https://via.placeholder.com/50",
+      name: "John Doe",
+    },
+    stars: 5,
+    reviews: "Excellent service!",
+    publishDate: "2024-12-30",
+  },
+  {
+    customer: {
+      profilePic: "https://via.placeholder.com/50",
+      name: "Jane Smith",
+    },
+    stars: 4,
+    reviews: "Very good, but can improve.",
+    publishDate: "2024-12-29",
+  },
+];
 
 const UserProfile = () => {
   const { id } = useParams();
@@ -24,9 +46,9 @@ const UserProfile = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [userRecords, setUserRecords] = useState(null);
-  const [columns, setColumns] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [userRecords, setUserRecords] = useState(null);
+  const [ratingRecords, setRatingRecords] = useState(null);
 
   const fetchUserRecord = async () => {
     try {
@@ -34,7 +56,21 @@ const UserProfile = () => {
         getRecordById(`/User/user-by-id/${encodeURIComponent(id)}`)
       );
       setUserRecords(response.payload);
+      fetchUserRating();
       return response.payload;
+    } catch (e) {
+      console.error("Error fetching user record", e);
+    }
+  };
+
+  const fetchUserRating = async () => {
+    try {
+      const response = await dispatch(
+        getRecordById(`/User/users-rating/${encodeURIComponent(id)}`)
+      );
+      console.log("ratings", response.payload);
+      setRatingRecords(response.payload);
+      // return response.payload;
     } catch (e) {
       console.error("Error fetching user record", e);
     }
@@ -46,8 +82,6 @@ const UserProfile = () => {
 
       // Exit early if userRecord is null
       if (!userRecord) return;
-
-      setColumns(userRecord.role === "Valet");
 
       const fetchFunctions = [
         () => <UserProfileImage userRecord={userRecord} preview={true} />,
@@ -71,10 +105,6 @@ const UserProfile = () => {
   useEffect(() => {
     sequentialApiCalls();
   }, []);
-
-  const handleSchedule = () => {
-    navigate("/scheduled-appointment");
-  };
 
   return (
     <Container className="py-5">
@@ -104,6 +134,7 @@ const UserProfile = () => {
               </Col>
             </Row>
           </Col>
+
           <Col xl={6} lg={6} md={6} sm={12} xs={12}>
             <Row>
               <Col xl={12} lg={12} md={12} sm={12} xs={12}>
@@ -131,71 +162,77 @@ const UserProfile = () => {
                   </CardBody>
                 </Card>
               </Col>
+
+              <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
+                <Card className="shadow">
+                  <CardHeader>
+                    <h4 className="mb-0">Reviews</h4>
+                  </CardHeader>
+                  <CardBody>
+                    <ReviewList reviews={ratingRecords} />
+                  </CardBody>
+                </Card>
+              </Col>
             </Row>
           </Col>
-          {columns && (
-            <>
-              <Col xl={3} lg={3} md={3} sm={12} xs={12}>
-                <Row>
-                  <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                    <Card className="shadow">
-                      <CardHeader>Details</CardHeader>
-                      <CardBody>
-                        <ul className="list">
-                          <li>
-                            <span className="fw-bold me-1">From:</span>
-                            <span>{userRecords?.country}</span>
-                          </li>
-                          <li className="my-2">
-                            <span className="fw-bold"> Languages: </span>
-                            <div>
-                              {userRecords?.language
-                                ?.split(",")
-                                .map((lang, index) => (
-                                  <Badge
-                                    className="bg-secondary"
-                                    style={{
-                                      padding: "4px 8px",
-                                      fontSize: "12px",
-                                    }}
-                                  >
-                                    <span className="fw-normal">
-                                      {lang.trim()}
-                                    </span>
-                                  </Badge>
-                                ))}
-                            </div>
-                          </li>
-                          <li>
-                            <span className="fw-bold me-1">
-                              Valet's Current Time:
-                            </span>
 
-                            <div>
-                              <span class="text-success">
-                                {userRecords?.currentTime}
-                              </span>
-                            </div>
-                          </li>
-                        </ul>
-                      </CardBody>
-                    </Card>
-                  </Col>
+          <Col xl={3} lg={3} md={3} sm={12} xs={12}>
+            <Row>
+              <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                <Card className="shadow">
+                  <CardHeader>Details</CardHeader>
+                  <CardBody>
+                    <ul className="list">
+                      <li>
+                        <span className="fw-bold me-1">From:</span>
+                        <span>{userRecords?.country}</span>
+                      </li>
+                      <li className="my-2">
+                        <span className="fw-bold"> Languages: </span>
+                        <div>
+                          {userRecords?.language
+                            ?.split(",")
+                            .map((lang, index) => (
+                              <Badge
+                                className="bg-secondary"
+                                style={{
+                                  padding: "4px 8px",
+                                  fontSize: "12px",
+                                }}
+                              >
+                                <span className="fw-normal">{lang.trim()}</span>
+                              </Badge>
+                            ))}
+                        </div>
+                      </li>
+                      <li>
+                        <span className="fw-bold me-1">
+                          Valet's Current Time:
+                        </span>
 
-                  <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
-                    <SkillsAndEndorsements
-                      userRecord={userRecords}
-                      preview={true}
-                    />
-                  </Col>
-
-                  <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                    <Services userRecord={userRecords} preview={true} />
-                  </Col>
-                </Row>
+                        <div>
+                          <span class="text-success">
+                            {userRecords?.currentTime}
+                          </span>
+                        </div>
+                      </li>
+                    </ul>
+                  </CardBody>
+                </Card>
               </Col>
-            </>
-          )}
+
+              <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
+                <SkillsAndEndorsements
+                  userRecord={userRecords}
+                  preview={true}
+                />
+              </Col>
+
+              <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                <Services userRecord={userRecords} preview={true} />
+              </Col>
+            </Row>
+          </Col>
         </Row>
       )}
     </Container>
