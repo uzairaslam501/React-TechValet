@@ -7,10 +7,7 @@ const ReviewList = ({ reviews }) => {
   }
 
   return (
-    <div
-      className="review-list bg-light rounded p-3"
-      style={{ maxHeight: "300px", overflowY: "auto" }}
-    >
+    <div className="review-list bg-light rounded p-3">
       <ul className="list-unstyled">
         {reviews &&
           reviews.rating.length > 0 &&

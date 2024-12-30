@@ -183,11 +183,18 @@ const Education = ({ userRecord, preview = false }) => {
               md={preview === false ? 6 : 12}
               sm={preview === false ? 12 : 12}
               xs={preview === false ? 12 : 12}
-              style={
-                educationList && educationList.length >= 3
-                  ? { height: "270px", overflowY: "scroll" }
-                  : { height: "auto" }
-              }
+              style={{
+                height:
+                  preview === true
+                    ? "155px"
+                    : educationList && educationList.length >= 3
+                    ? "270px"
+                    : "auto",
+                overflowY:
+                  preview === true
+                    ? "scroll"
+                    : educationList && educationList.length >= 3 && "scroll",
+              }}
             >
               <Row>
                 {isLoading ? (

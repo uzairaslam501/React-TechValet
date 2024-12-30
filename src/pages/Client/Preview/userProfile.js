@@ -19,27 +19,6 @@ import Education from "../ClientAuth/Profile/ValetProfile/Education/Education";
 import Slots from "../ClientAuth/Profile/ValetProfile/Slots/Slots";
 import ReviewList from "../../../components/Custom/Reviews/ReviewList";
 
-const reviewsData = [
-  {
-    customer: {
-      profilePic: "https://via.placeholder.com/50",
-      name: "John Doe",
-    },
-    stars: 5,
-    reviews: "Excellent service!",
-    publishDate: "2024-12-30",
-  },
-  {
-    customer: {
-      profilePic: "https://via.placeholder.com/50",
-      name: "Jane Smith",
-    },
-    stars: 4,
-    reviews: "Very good, but can improve.",
-    publishDate: "2024-12-29",
-  },
-];
-
 const UserProfile = () => {
   const { id } = useParams();
   console.log("userEncId", id);
@@ -57,7 +36,6 @@ const UserProfile = () => {
       );
       setUserRecords(response.payload);
       fetchUserRating();
-      return response.payload;
     } catch (e) {
       console.error("Error fetching user record", e);
     }
@@ -68,9 +46,7 @@ const UserProfile = () => {
       const response = await dispatch(
         getRecordById(`/User/users-rating/${encodeURIComponent(id)}`)
       );
-      console.log("ratings", response.payload);
       setRatingRecords(response.payload);
-      // return response.payload;
     } catch (e) {
       console.error("Error fetching user record", e);
     }
@@ -85,14 +61,13 @@ const UserProfile = () => {
 
       const fetchFunctions = [
         () => <UserProfileImage userRecord={userRecord} preview={true} />,
-        () => <Slots userRecord={userRecord} />,
-        () => <SkillsAndEndorsements userRecord={userRecord} />,
-        () => <Services userRecord={userRecord} />,
-        () => <Education userRecord={userRecord} />,
+        () => <Slots userRecord={userRecord} preview={true} />,
+        () => <SkillsAndEndorsements userRecord={userRecord} preview={true} />,
+        () => <Services userRecord={userRecord} preview={true} />,
+        () => <Education userRecord={userRecord} preview={true} />,
       ];
 
       for (const fetchFunction of fetchFunctions) {
-        // Render or call next component
         await fetchFunction();
       }
 
@@ -125,7 +100,14 @@ const UserProfile = () => {
               <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
                 <Card className="shadow">
                   <CardHeader>Description</CardHeader>
-                  <CardBody>{userRecords?.description}</CardBody>
+                  <CardBody
+                    style={{
+                      height: "150px",
+                      overflowY: "scroll",
+                    }}
+                  >
+                    {userRecords?.description}
+                  </CardBody>
                 </Card>
               </Col>
 
@@ -139,7 +121,14 @@ const UserProfile = () => {
             <Row>
               <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                 <Card className="shadow">
-                  <CardBody>
+                  <CardHeader>
+                    <h4 className="mb-0">Appointment Booking Scheduler</h4>
+                  </CardHeader>
+                  <CardBody
+                    style={{
+                      height: "500px",
+                    }}
+                  >
                     <Row>
                       <Col xl={6} lg={6} md={6} sm={12} xs={12}>
                         <h6>From: </h6>
@@ -168,7 +157,7 @@ const UserProfile = () => {
                   <CardHeader>
                     <h4 className="mb-0">Reviews</h4>
                   </CardHeader>
-                  <CardBody>
+                  <CardBody style={{ maxHeight: "300px", overflowY: "auto" }}>
                     <ReviewList reviews={ratingRecords} />
                   </CardBody>
                 </Card>
@@ -181,7 +170,11 @@ const UserProfile = () => {
               <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                 <Card className="shadow">
                   <CardHeader>Details</CardHeader>
-                  <CardBody>
+                  <CardBody
+                    style={{
+                      height: "245px",
+                    }}
+                  >
                     <ul className="list">
                       <li>
                         <span className="fw-bold me-1">From:</span>

@@ -168,7 +168,7 @@ const Services = ({ userRecord, preview = false }) => {
         </Card.Header>
         <Card.Body
           style={{
-            height: preview === false ? "475px" : "auto",
+            height: preview === false ? "475px" : "250px",
             overflowY: "scroll",
           }}
         >
