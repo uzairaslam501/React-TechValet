@@ -11,18 +11,25 @@ import {
 } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { getUserEarnings } from "../../../../redux/Actions/serviceActions";
 
 const Earnings = () => {
-  const { userAuth } = useSelector((state) => state?.authentication);
   const dispatch = useDispatch();
   const [earnings, setEarnings] = useState([]);
+  const { userAuth } = useSelector((state) => state?.authentication);
 
   const getEarnings = async () => {
-    dispatch(getEarnings(userAuth?.userEncId)).then((response) => {});
+    dispatch(getUserEarnings(userAuth?.userEncId)).then((response) => {
+      setEarnings(response?.payload);
+    });
+  };
+
+  const stripeAmountWithDraw = async (amount) => {
+    console.log("Amount With Draw", amount);
   };
 
   useEffect(() => {
-    getEarnings();
+    //getEarnings();
   }, []);
 
   return (
@@ -36,7 +43,7 @@ const Earnings = () => {
             <p className="d-flex justify-content-end mb-0 mt-1 p-0 withdrawal-price">
               Available For Stripe Withdrawal:{" "}
               <span className="font-weight-bold text-success">
-                $ {earnings.balanceAvailable}
+                $ {earnings?.balanceAvailable}
               </span>
             </p>
           </Col>
@@ -84,45 +91,39 @@ const Earnings = () => {
                     <Col md={4} xs={4} className="text-center border-box">
                       <p>Total Earning</p>
                       <h1 className="font-weight-bold m-0">
-                        $ {earnings.payPalEarning.StripeTotalBalance}
+                        $ {earnings?.payPalEarning?.stripeTotalBalance}
                       </h1>
                     </Col>
                     <Col md={4} xs={4} className="text-center border-box">
                       <p>Completed Order Balance</p>
                       <h1 className="font-weight-bold m-0">
-                        $ {earnings.payPalEarning.StripeCompletedOrderBalance}
+                        $ {earnings?.payPalEarning?.stripeCompletedOrderBalance}
                       </h1>
                     </Col>
                     <Col md={4} xs={4} className="text-center border-box">
                       <p>Available Income For WithDraw</p>
                       <h1 className="font-weight-bold m-0">
-                        $ {earnings.balanceAvailable}
+                        $ {earnings?.balanceAvailable}.00
                       </h1>
                     </Col>
                   </Row>
                 </Card.Body>
-                <Card.Footer className="d-flex align-items-center">
-                  <p className="pull-left my-2 mr-2">Withdraw To:</p>
-                  {earnings.balanceAvailable !== "0" ? (
-                    <Button
-                      title={`Withdraw $${earnings.balanceAvailable}`}
-                      id="withdrawToBankButton"
-                      className="btn-success ml-2"
-                      //   onClick={() =>
-                      //     StripeAmountWithDraw(earnings.balanceAvailable)
-                      //   }
-                    >
-                      <i className="fa fa-university"></i> Bank Account
-                    </Button>
-                  ) : (
-                    <Button
-                      title="Balance not available to withdraw"
-                      className="btn-success ml-2"
-                      disabled
-                    >
-                      <i className="fa fa-university"></i> Bank Account
-                    </Button>
-                  )}
+                <Card.Footer className="text-end">
+                  <Button
+                    variant="primary-secondary"
+                    size="sm"
+                    disabled={earnings?.balanceAvailable === "0" && true}
+                    onClick={() =>
+                      stripeAmountWithDraw(earnings?.balanceAvailable)
+                    }
+                  >
+                    <i className="bi bi-coin me-1"></i>
+                    {earnings?.balanceAvailable === "0" ? (
+                      <span>Not Enough Payment</span>
+                    ) : (
+                      <span>Withdraw your payment</span>
+                    )}
+                  </Button>
                 </Card.Footer>
               </Card>
             </Tab.Pane>
@@ -144,19 +145,19 @@ const Earnings = () => {
                     <Col md={4} xs={4} className="text-center border-box">
                       <p>Total Earning</p>
                       <h1 className="font-weight-bold m-0">
-                        $ {earnings.payPalEarning.AvailableIncomeForWithDrawl}
+                        $ {earnings?.payPalEarning?.availableIncomeForWithDrawl}
                       </h1>
                     </Col>
                     <Col md={4} xs={4} className="text-center border-box">
                       <p>Completed Order Balance</p>
                       <h1 className="font-weight-bold m-0">
-                        $ {earnings.payPalEarning.TotalEarnedAmount}
+                        $ {earnings?.payPalEarning?.totalEarnedAmount}
                       </h1>
                     </Col>
                     <Col md={4} xs={4} className="text-center border-box">
                       <p>Pending Clearance</p>
                       <h1 className="font-weight-bold m-0">
-                        $ {earnings.payPalEarning.PendingClearance}
+                        $ {earnings?.payPalEarning?.pendingClearance}
                       </h1>
                     </Col>
                   </Row>
@@ -170,7 +171,7 @@ const Earnings = () => {
           <Table bordered className="m-0" id="userTable">
             <thead>
               <tr>
-                <th hidden>...</th>
+                <th>#</th>
                 <th>OrderTitle</th>
                 <th>OrderPrice</th>
                 <th>EarnedAmount</th>

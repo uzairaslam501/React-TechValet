@@ -3,6 +3,7 @@ import {
   addServicesOrExperience,
   updateServicesOrExperience,
   getServicesRecord,
+  getUserEarnings,
 } from "../Actions/serviceActions";
 
 const initialState = {
@@ -59,6 +60,21 @@ const serviceSlice = createSlice({
       .addCase(getServicesRecord.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      });
+
+    // getUserEarnings
+    builder
+      .addCase(getUserEarnings.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserEarnings.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(getUserEarnings.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.message;
       });
   },
 });

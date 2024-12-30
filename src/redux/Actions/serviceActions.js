@@ -123,8 +123,8 @@ export const getAvailability = createAsyncThunk(
 //#endregion
 
 //#region Earnings
-export const getEarnings = createAsyncThunk(
-  "servicesOrExperience/getEarnings",
+export const getUserEarnings = createAsyncThunk(
+  "servicesOrExperience/getUserEarnings",
   async (userId, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {

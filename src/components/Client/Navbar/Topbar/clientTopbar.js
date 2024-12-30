@@ -6,6 +6,7 @@ import { NavLink } from "react-router-dom";
 import "./topbar.css";
 import { logout } from "../../../../redux/Reducers/authSlice";
 import NotificationCard from "../../../Custom/Notification/NotificationCard";
+import HandleImages from "../../../Custom/Avatars/HandleImages";
 
 const ClientTopbar = () => {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ const ClientTopbar = () => {
               <NotificationCard />
               <Nav
                 as={NavLink}
-                to="/appointment"
+                to="/orders"
                 className="border border-secondary mx-1"
                 style={{
                   borderRadius: "50px",
@@ -63,13 +64,10 @@ const ClientTopbar = () => {
               <Nav className="mx-2">
                 <NavDropdown
                   title={
-                    <img
-                      src={
-                        userAuth.profile ||
-                        "https://wallpapersmug.com/download/1920x1080/abfc00/vector-design-retro-4k.jpg"
-                      }
-                      alt={userAuth.firstName}
-                      style={{
+                    <HandleImages
+                      imagePath={userAuth?.profile}
+                      imageAlt={userAuth?.userName}
+                      imageStyle={{
                         width: "30px",
                         height: "30px",
                         borderRadius: "50%",

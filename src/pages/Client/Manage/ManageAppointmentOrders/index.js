@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Appointment from "./Appointments/appointment";
-import Order from "./Orders/order";
+import Order from "../ManageOrders/Orders/order";
 
 const ManageAppointment = () => {
   const [isAppointmentComplete, setIsAppointmentComplete] = useState(false);

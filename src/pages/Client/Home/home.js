@@ -19,7 +19,13 @@ const Home = () => {
 
       <section>
         <Row>
-          <Col md={{ span: 10, offset: 1 }}>
+          <Col
+            xl={{ span: 10, offset: 1 }}
+            lg={{ span: 10, offset: 1 }}
+            md={{ span: 10, offset: 1 }}
+            sm={12}
+            xs={12}
+          >
             <Card
               className="shadow p-2 mb-3"
               style={{ background: "#fcd609", width: "fit-content" }}

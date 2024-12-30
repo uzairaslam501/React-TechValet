@@ -33,6 +33,7 @@ import PaymentCancelled from "../pages/Client/PaymentVerification/PaymentCancell
 import StripePaymentSuccess from "../pages/Client/PaymentVerification/Stripe/PaymentSuccess";
 import VerificationFailed from "../pages/Client/AccountVerification/VerificationFailed";
 import AccountVerified from "../pages/Client/AccountVerification/AccountVerified";
+import ManageOrders from "../pages/Client/Manage/ManageOrders";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -72,6 +73,8 @@ const createRoute = createBrowserRouter(
           <Route path="/payment-success" element={<StripePaymentSuccess />} />
           <Route path="/verification-failed" element={<VerificationFailed />} />
           <Route path="/account-Verified" element={<AccountVerified />} />
+          <Route path="/earnings" element={<Earnings />} />
+          <Route path="/orders" element={<ManageOrders />} />
         </Route>
       </Route>
       <Route path="/welcome" element={<Welcome />} />
