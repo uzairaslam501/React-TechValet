@@ -12,7 +12,7 @@ export const valetMenu = [
     label: "Manage Earnings",
   },
   {
-    href: "/account",
+    href: "/preview-profile",
     iconClass: "bi bi-eye",
     className: "",
     label: "Preview Profile",

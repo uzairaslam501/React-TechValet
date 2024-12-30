@@ -20,7 +20,7 @@ import {
 import { deleteRecords } from "../../../../../../redux/Actions/globalActions";
 import DeleteComponent from "../../../../../../components/Custom/DeleteDialoge/DeleteDialoge";
 
-const Services = ({ userRecord }) => {
+const Services = ({ userRecord, preview = false }) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
@@ -153,18 +153,25 @@ const Services = ({ userRecord }) => {
             <Col md={6} xs={6} className="d-flex justify-content-start">
               <h6 className="m-0">Services Offered</h6>
             </Col>
-            <Col md={6} xs={6} className="d-flex justify-content-end">
-              <p
-                className="m-0"
-                style={{ cursor: "pointer", color: "#fcd609" }}
-                onClick={handleAddNewService}
-              >
-                Add New
-              </p>
-            </Col>
+            {!preview && (
+              <Col md={6} xs={6} className="d-flex justify-content-end">
+                <p
+                  className="m-0"
+                  style={{ cursor: "pointer", color: "#fcd609" }}
+                  onClick={handleAddNewService}
+                >
+                  Add New
+                </p>
+              </Col>
+            )}
           </Row>
         </Card.Header>
-        <Card.Body style={{ height: "475px", overflowY: "scroll" }}>
+        <Card.Body
+          style={{
+            height: preview === false ? "475px" : "auto",
+            overflowY: "scroll",
+          }}
+        >
           <Form onSubmit={handleSubmit}>
             {isAddServiceVisible && (
               <div className="py-3">
@@ -183,22 +190,24 @@ const Services = ({ userRecord }) => {
                     {errors.description}
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Row className="mt-3">
-                  <Col xs={6}>
-                    <Button
-                      variant="danger"
-                      className="w-100"
-                      onClick={handleHideServiceForm}
-                    >
-                      Cancel
-                    </Button>
-                  </Col>
-                  <Col xs={6}>
-                    <Button type="submit" variant="success" className="w-100">
-                      Submit
-                    </Button>
-                  </Col>
-                </Row>
+                {!preview && (
+                  <Row className="mt-3">
+                    <Col xs={6}>
+                      <Button
+                        variant="danger"
+                        className="w-100"
+                        onClick={handleHideServiceForm}
+                      >
+                        Cancel
+                      </Button>
+                    </Col>
+                    <Col xs={6}>
+                      <Button type="submit" variant="success" className="w-100">
+                        Submit
+                      </Button>
+                    </Col>
+                  </Row>
+                )}
               </div>
             )}
           </Form>
@@ -214,44 +223,46 @@ const Services = ({ userRecord }) => {
               <Row className="mb-3" key={service.userExperienceEncId}>
                 <Col>
                   <Row className="border-bottom">
-                    <Col xl={10}>
+                    <Col xl={!preview ? 10 : 12}>
                       <p style={{ wordBreak: "break-word" }}>
                         {service.description}
                       </p>
                     </Col>
-                    <Col xl={2}>
-                      <Dropdown as={ButtonGroup}>
-                        <Dropdown.Toggle
-                          variant="primary"
-                          size="sm"
-                          className="rounded"
-                        >
-                          <i className="bi bi-three-dots-vertical"></i>
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu align="end" className="text-center">
-                          <Dropdown.Item
-                            onClick={() =>
-                              handleDeleteService(service.userExperienceEncId)
-                            }
+                    {!preview && (
+                      <Col xl={2}>
+                        <Dropdown as={ButtonGroup}>
+                          <Dropdown.Toggle
+                            variant="primary"
+                            size="sm"
+                            className="rounded"
                           >
-                            <i
-                              className="bi bi-trash me-2"
-                              style={{ fontSize: "14px" }}
-                            ></i>
-                            Delete Service
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() => handleUpdateService(service)}
-                          >
-                            <i
-                              className="bi bi-pencil me-2"
-                              style={{ fontSize: "14px" }}
-                            ></i>
-                            Update Service
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </Col>
+                            <i className="bi bi-three-dots-vertical"></i>
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu align="end" className="text-center">
+                            <Dropdown.Item
+                              onClick={() =>
+                                handleDeleteService(service.userExperienceEncId)
+                              }
+                            >
+                              <i
+                                className="bi bi-trash me-2"
+                                style={{ fontSize: "14px" }}
+                              ></i>
+                              Delete Service
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => handleUpdateService(service)}
+                            >
+                              <i
+                                className="bi bi-pencil me-2"
+                                style={{ fontSize: "14px" }}
+                              ></i>
+                              Update Service
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </Col>
+                    )}
                   </Row>
                 </Col>
               </Row>

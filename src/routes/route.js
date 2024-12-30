@@ -20,7 +20,7 @@ import Contact from "../pages/Client/Contact/contact";
 import Search from "../pages/Client/Search/filteredData";
 import Earnings from "../pages/Client/Manage/Earnings/Earnings";
 import ClientLogin from "../pages/Client/ClientAuth/ClientLogin/ClientLogin";
-import ManageAppointment from "../pages/Client/Manage/ManageAppointmentOrders/index";
+import ManageAppointment from "../pages/Client/Manage/ManageAppointment/index";
 import PackageSelection from "../pages/Client/Manage/Packages/packageSelection";
 import ViewPackages from "../pages/Client/Manage/Packages/viewPackages";
 import ScheduledAppointment from "../pages/Client/Manage/Scheduled/scheduledAppointment";
@@ -34,6 +34,7 @@ import StripePaymentSuccess from "../pages/Client/PaymentVerification/Stripe/Pay
 import VerificationFailed from "../pages/Client/AccountVerification/VerificationFailed";
 import AccountVerified from "../pages/Client/AccountVerification/AccountVerified";
 import ManageOrders from "../pages/Client/Manage/ManageOrders";
+import UserProfile from "../pages/Client/Preview/userProfile";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -75,6 +76,7 @@ const createRoute = createBrowserRouter(
           <Route path="/account-Verified" element={<AccountVerified />} />
           <Route path="/earnings" element={<Earnings />} />
           <Route path="/orders" element={<ManageOrders />} />
+          <Route path="/preview-profile/:id" element={<UserProfile />} />
         </Route>
       </Route>
       <Route path="/welcome" element={<Welcome />} />

@@ -7,6 +7,7 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "./topImageCarousal.css";
 import { truncateCharacters } from "../../../utils/_helpers";
 import HandleImages from "../Avatars/HandleImages";
+import { NavLink } from "react-router-dom";
 
 const TopImageCarousal = ({ label, users = [] }) => {
   return (
@@ -41,8 +42,8 @@ const TopImageCarousal = ({ label, users = [] }) => {
         users.map((user) => (
           <SwiperSlide key={user.userEncId}>
             <div className="user-card-top">
-              <a
-                href={`../User/ViewUserProfile?Id=${user.userEncId}`}
+              <NavLink
+                to={`/preview-profile/${encodeURIComponent(user.userEncId)}`}
                 className="user-card-top__link"
               >
                 <div className="user-card-top__image-wrapper">
@@ -52,17 +53,19 @@ const TopImageCarousal = ({ label, users = [] }) => {
                     className="user-card-top__image"
                   />
                 </div>
-              </a>
+              </NavLink>
 
               <div className="user-card-top__details">
                 <div className="user-card-top__header">
                   <h4 className="user-card-top__name">
-                    <a
-                      href={`../User/ViewUserProfile?Id=${user.userEncId}`}
+                    <NavLink
+                      to={`/preview-profile/${encodeURIComponent(
+                        user.userEncId
+                      )}`}
                       className="user-card-top__name-link"
                     >
                       {user.userName}
-                    </a>
+                    </NavLink>
                   </h4>
                   <span className="user-card-top__location">{user.city}</span>
                 </div>

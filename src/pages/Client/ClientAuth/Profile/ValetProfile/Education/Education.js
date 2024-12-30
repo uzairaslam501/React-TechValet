@@ -11,7 +11,7 @@ import {
 import { deleteRecords } from "../../../../../../redux/Actions/globalActions";
 import DeleteComponent from "../../../../../../components/Custom/DeleteDialoge/DeleteDialoge";
 
-const Education = ({ userRecord }) => {
+const Education = ({ userRecord, preview = false }) => {
   const dispatch = useDispatch();
   const [editItem, setEditItem] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -178,11 +178,11 @@ const Education = ({ userRecord }) => {
         <Card.Body>
           <Row>
             <Col
-              xl={6}
-              lg={6}
-              md={6}
-              sm={12}
-              xs={12}
+              xl={preview === false ? 6 : 12}
+              lg={preview === false ? 6 : 12}
+              md={preview === false ? 6 : 12}
+              sm={preview === false ? 12 : 12}
+              xs={preview === false ? 12 : 12}
               style={
                 educationList && educationList.length >= 3
                   ? { height: "270px", overflowY: "scroll" }
@@ -200,7 +200,13 @@ const Education = ({ userRecord }) => {
                           key={item.id}
                           className="d-flex mb-3 border-bottom py-2"
                         >
-                          <Col xl={8} lg={8} md={8} sm={8} xs={8}>
+                          <Col
+                            xl={preview === false ? 8 : 12}
+                            lg={preview === false ? 8 : 12}
+                            md={preview === false ? 8 : 12}
+                            sm={preview === false ? 8 : 12}
+                            xs={preview === false ? 8 : 12}
+                          >
                             <h5 className="mb-0 fw-bold">
                               {item.instituteName}
                             </h5>
@@ -209,30 +215,32 @@ const Education = ({ userRecord }) => {
                               {item.startDate} - {item.endDate}
                             </p>
                           </Col>
-                          <Col
-                            xl={4}
-                            lg={4}
-                            md={4}
-                            sm={4}
-                            xs={4}
-                            className="text-end"
-                          >
-                            <Button
-                              variant="outline-primary"
-                              size="sm"
-                              onClick={() => handleUpdateService(item)}
-                              className="me-2"
+                          {preview === false && (
+                            <Col
+                              xl={4}
+                              lg={4}
+                              md={4}
+                              sm={4}
+                              xs={4}
+                              className="text-end"
                             >
-                              Edit
-                            </Button>
-                            <Button
-                              variant="outline-danger"
-                              size="sm"
-                              onClick={() => handleDelete(item.educationId)}
-                            >
-                              Delete
-                            </Button>
-                          </Col>
+                              <Button
+                                variant="outline-primary"
+                                size="sm"
+                                onClick={() => handleUpdateService(item)}
+                                className="me-2"
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                variant="outline-danger"
+                                size="sm"
+                                onClick={() => handleDelete(item.educationId)}
+                              >
+                                Delete
+                              </Button>
+                            </Col>
+                          )}
                         </div>
                       ))
                     ) : (
@@ -246,111 +254,113 @@ const Education = ({ userRecord }) => {
                 )}
               </Row>
             </Col>
-            <Col xl={6} lg={6} md={6} sm={12} xs={12}>
-              <Form className="mb-3 row" onSubmit={handleSubmit}>
-                <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                  <Form.Group>
-                    <Form.Label>
-                      Institute Name <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      onBlur={handleBlur}
-                      name="instituteName"
-                      onChange={handleChange}
-                      value={values.instituteName}
-                      placeholder="College/University Name"
-                      isInvalid={
-                        touched.instituteName && !!errors.instituteName
-                      }
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.instituteName}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
+            {preview === false && (
+              <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                <Form className="mb-3 row" onSubmit={handleSubmit}>
+                  <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                    <Form.Group>
+                      <Form.Label>
+                        Institute Name <span className="text-danger">*</span>
+                      </Form.Label>
+                      <Form.Control
+                        onBlur={handleBlur}
+                        name="instituteName"
+                        onChange={handleChange}
+                        value={values.instituteName}
+                        placeholder="College/University Name"
+                        isInvalid={
+                          touched.instituteName && !!errors.instituteName
+                        }
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.instituteName}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
 
-                <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                  <Form.Group>
-                    <Form.Label>
-                      Degree Name <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      name="degreeName"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.degreeName}
-                      placeholder="Degree Name"
-                      isInvalid={touched.degreeName && !!errors.degreeName}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.degreeName}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col xl={6} lg={6} md={6} sm={12} xs={12}>
-                  <Form.Group>
-                    <Form.Label>
-                      Start Date <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="date"
-                      name="startDate"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.startDate}
-                      placeholder="Degree Name"
-                      isInvalid={touched.startDate && !!errors.startDate}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.startDate}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col xl={6} lg={6} md={6} sm={12} xs={12}>
-                  <Form.Group>
-                    <Form.Label>End Date</Form.Label>
-                    <Form.Control
-                      type="date"
-                      name="endDate"
-                      onBlur={handleBlur}
-                      onChange={(e) => {
-                        handleChange("endDate");
-                        handleEndTime(e.target.value);
+                  <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                    <Form.Group>
+                      <Form.Label>
+                        Degree Name <span className="text-danger">*</span>
+                      </Form.Label>
+                      <Form.Control
+                        name="degreeName"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.degreeName}
+                        placeholder="Degree Name"
+                        isInvalid={touched.degreeName && !!errors.degreeName}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.degreeName}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                    <Form.Group>
+                      <Form.Label>
+                        Start Date <span className="text-danger">*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="date"
+                        name="startDate"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.startDate}
+                        placeholder="Degree Name"
+                        isInvalid={touched.startDate && !!errors.startDate}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.startDate}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                    <Form.Group>
+                      <Form.Label>End Date</Form.Label>
+                      <Form.Control
+                        type="date"
+                        name="endDate"
+                        onBlur={handleBlur}
+                        onChange={(e) => {
+                          handleChange("endDate");
+                          handleEndTime(e.target.value);
+                        }}
+                        value={values.endDate}
+                        placeholder="End Name"
+                        isInvalid={touched.endDate && !!errors.endDate}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.endDate}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+
+                  <Col className="mt-2" xl={6} lg={6} md={6} sm={12} xs={12}>
+                    <Button
+                      variant="danger"
+                      className="w-100"
+                      onClick={() => {
+                        resetForm();
                       }}
-                      value={values.endDate}
-                      placeholder="End Name"
-                      isInvalid={touched.endDate && !!errors.endDate}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.endDate}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-
-                <Col className="mt-2" xl={6} lg={6} md={6} sm={12} xs={12}>
-                  <Button
-                    variant="danger"
-                    className="w-100"
-                    onClick={() => {
-                      resetForm();
-                    }}
-                    disabled={buttonDisabled}
-                  >
-                    Reset
-                  </Button>
-                </Col>
-                <Col className="mt-2" xl={6} lg={6} md={6} sm={12} xs={12}>
-                  <Button
-                    type="submit"
-                    variant="success"
-                    className="w-100"
-                    disabled={buttonDisabled}
-                  >
-                    {editItem ? "Update" : "Add"}
-                  </Button>
-                </Col>
-              </Form>
-            </Col>
+                      disabled={buttonDisabled}
+                    >
+                      Reset
+                    </Button>
+                  </Col>
+                  <Col className="mt-2" xl={6} lg={6} md={6} sm={12} xs={12}>
+                    <Button
+                      type="submit"
+                      variant="success"
+                      className="w-100"
+                      disabled={buttonDisabled}
+                    >
+                      {editItem ? "Update" : "Add"}
+                    </Button>
+                  </Col>
+                </Form>
+              </Col>
+            )}
           </Row>
         </Card.Body>
       </Card>
