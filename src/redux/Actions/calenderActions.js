@@ -14,11 +14,11 @@ const api = axios.create({
 
 export const getOrderEventsByUserId = createAsyncThunk(
   "calendar/getOrderEventsByUserId",
-  async (Id, { rejectWithValue, getState, dispatch }) => {
+  async (userId, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
 
     try {
-      const response = await api.get(`/User/GetOrderEventsByUserId?Id=${Id}`, {
+      const response = await api.get(`/User/GetOrderEventsByUserId/${userId}`, {
         headers: {
           Authorization: `${token}`,
         },

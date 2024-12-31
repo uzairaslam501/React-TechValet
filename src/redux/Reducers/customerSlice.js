@@ -2,7 +2,7 @@ import {
   getValetsList,
   getKeywords,
   getValetsBySearch,
-  getRecords,
+  getAppointments,
   getOrderRecords,
   getUserPackagesRecords,
   getUserPackagesConsumptionRecords,

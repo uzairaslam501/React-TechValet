@@ -163,8 +163,8 @@ export const getOrderById = createAsyncThunk(
 
 //#region Tables
 
-export const getRecords = createAsyncThunk(
-  "customer/getRecords",
+export const getAppointments = createAsyncThunk(
+  "customer/getAppointments",
   async (
     { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
     { rejectWithValue, getState, dispatch }
@@ -180,8 +180,9 @@ export const getRecords = createAsyncThunk(
           },
         }
       );
-      const responseBack = response;
-      return responseBack;
+
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
       rejectWithValue(error);
@@ -206,8 +207,8 @@ export const getOrderRecords = createAsyncThunk(
           },
         }
       );
-      const responseBack = response?.data;
-      return responseBack;
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
       rejectWithValue(error);
@@ -232,8 +233,8 @@ export const getUserPackagesRecords = createAsyncThunk(
           },
         }
       );
-      const responseBack = response?.data;
-      return responseBack;
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
       rejectWithValue(error);
@@ -265,8 +266,8 @@ export const getUserPackagesConsumptionRecords = createAsyncThunk(
           },
         }
       );
-      const responseBack = response?.data;
-      return responseBack;
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
       rejectWithValue(error);

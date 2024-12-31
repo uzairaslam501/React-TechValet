@@ -19,25 +19,7 @@ const Order = ({ isLoading }) => {
   const [showOderModal, setOrderShowModal] = useState(false);
   const [orderIsDelete, setOrdersIsDelete] = useState();
 
-  const buttons = [
-    {
-      id: 1,
-      title: "Delete",
-      onClick: (row) => handleOrderShowModal(row.id),
-      variant: "outline-danger",
-      icon: "bi bi-trash",
-    },
-    {
-      id: 2,
-      title: "Update",
-      onClick: (row) => handleOrderUpdate(row),
-      variant: "outline-success",
-      icon: "bi bi-pencil",
-    },
-  ];
-
   const headers = [
-    { id: "0", label: "Action", column: "Action" },
     { id: "0", label: "Order Title", column: "orderTitle" },
     {
       id: "0",
@@ -114,14 +96,15 @@ const Order = ({ isLoading }) => {
 
     try {
       setOrdersLoader(true);
-      const ordersList = await dispatch(getOrderRecords(params));
-      if (ordersList.payload.data?.length > 0) {
-        setOrderRecords(ordersList.payload?.data);
-        setOrdersTotalRecords(ordersList.payload?.recordsTotal);
-      } else {
-        setOrderRecords([]);
-        setOrdersTotalRecords(0);
-      }
+      dispatch(getOrderRecords(params))
+        .then((response) => {
+          setOrderRecords(response.payload?.data);
+          setOrdersTotalRecords(response.payload?.recordsTotal);
+        })
+        .catch((error) => {
+          setOrderRecords([]);
+          setOrdersTotalRecords(0);
+        });
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
@@ -149,7 +132,6 @@ const Order = ({ isLoading }) => {
                     records={orderRecords}
                     totalRecords={orderTotalRecord}
                     pageLength={orderPageLength}
-                    buttons={buttons}
                     onPageChange={fetchUsers}
                     onPageLengthChange={setOrdersPageLength}
                     loader={orderLoader}

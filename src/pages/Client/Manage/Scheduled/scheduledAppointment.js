@@ -24,7 +24,7 @@ const ScheduledAppointment = () => {
   // Fetch events and update state
   const fetchEventsAndGenerateCalendar = async () => {
     try {
-      dispatch(getOrderEventsByUserId(userAuth?.id)).then((response) => {
+      dispatch(getOrderEventsByUserId(userAuth?.userEncId)).then((response) => {
         let colorIndex = 0;
         const fetchedEvents = response?.payload?.map((eventData) => {
           const eventColor = eventColors[colorIndex % eventColors.length];
