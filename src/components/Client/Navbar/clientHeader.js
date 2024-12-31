@@ -23,7 +23,16 @@ const ClientNavbar = () => {
 
   useEffect(() => {
     if (userAuth?.role === "Valet") {
-      setMenuBar(valetMenu);
+      const updatedValetMenu = valetMenu.map((item) => {
+        if (item.label === "Preview Profile") {
+          return {
+            ...item,
+            href: `/preview-profile/${userAuth?.userEncId}`, // Update the href dynamically
+          };
+        }
+        return item; // Return other items as is
+      });
+      setMenuBar(updatedValetMenu);
     } else if (userAuth?.role === "Customer") {
       setMenuBar(customerMenu);
     }

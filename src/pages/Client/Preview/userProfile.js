@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { getRecordById } from "../../../redux/Actions/globalActions";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import UserProfileImage from "../ClientAuth/Profile/ProfileImage/UserProfileImage";
 import SkillsAndEndorsements from "../ClientAuth/Profile/ValetProfile/Skills/SkillsAndEndorsements";
 import Services from "../ClientAuth/Profile/ValetProfile/Services/Services";
@@ -24,7 +24,6 @@ const UserProfile = () => {
   console.log("userEncId", id);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [userRecords, setUserRecords] = useState(null);
   const [ratingRecords, setRatingRecords] = useState(null);
@@ -34,6 +33,7 @@ const UserProfile = () => {
       const response = await dispatch(
         getRecordById(`/User/user-by-id/${encodeURIComponent(id)}`)
       );
+      console.log("Fetch User", response.payload);
       setUserRecords(response.payload);
       fetchUserRating();
     } catch (e) {
@@ -46,7 +46,9 @@ const UserProfile = () => {
       const response = await dispatch(
         getRecordById(`/User/users-rating/${encodeURIComponent(id)}`)
       );
+      console.log("ratings", response.payload);
       setRatingRecords(response.payload);
+      setLoading(false);
     } catch (e) {
       console.error("Error fetching user record", e);
     }
@@ -130,22 +132,8 @@ const UserProfile = () => {
                     }}
                   >
                     <Row>
-                      <Col xl={6} lg={6} md={6} sm={12} xs={12}>
-                        <h6>From: </h6>
-                      </Col>
-                      <Col xl={6} lg={6} md={6} sm={12} xs={12}>
-                        <div className="d-flex">
-                          <h6>Description: </h6>
-                          <span
-                            className="px-2"
-                            style={{ wordBreak: "break-all" }}
-                          >
-                            {userRecords?.description}
-                          </span>
-                        </div>
-                      </Col>
-                      <Col xl={6} lg={6} md={6} sm={12} xs={12}>
-                        <h6>From: </h6>
+                      <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                        <h1>Calender</h1>
                       </Col>
                     </Row>
                   </CardBody>
@@ -157,7 +145,7 @@ const UserProfile = () => {
                   <CardHeader>
                     <h4 className="mb-0">Reviews</h4>
                   </CardHeader>
-                  <CardBody style={{ maxHeight: "300px", overflowY: "auto" }}>
+                  <CardBody style={{ height: "300px", overflowY: "auto" }}>
                     <ReviewList reviews={ratingRecords} />
                   </CardBody>
                 </Card>
