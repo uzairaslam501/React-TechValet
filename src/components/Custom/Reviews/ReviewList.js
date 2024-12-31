@@ -9,8 +9,7 @@ const ReviewList = ({ reviews }) => {
   return (
     <div className="review-list bg-light rounded p-3">
       <ul className="list-unstyled">
-        {reviews &&
-          reviews.rating.length > 0 &&
+        {reviews && reviews.rating.length > 0 ? (
           reviews.rating.map((review, index) => (
             <li
               className="d-flex mb-4 p-3 bg-white rounded shadow-sm align-items-center"
@@ -54,7 +53,10 @@ const ReviewList = ({ reviews }) => {
                 <p className="mb-0">{review.reviews}</p>
               </div>
             </li>
-          ))}
+          ))
+        ) : (
+          <span>No Reviews</span>
+        )}
       </ul>
     </div>
   );

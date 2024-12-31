@@ -18,38 +18,36 @@ const Home = () => {
       <SearchSection />
 
       <section>
-        <Row>
-          <Col
-            xl={{ span: 10, offset: 1 }}
-            lg={{ span: 10, offset: 1 }}
-            md={{ span: 10, offset: 1 }}
-            sm={12}
-            xs={12}
-          >
-            <Card
-              className="shadow p-2 mb-3"
-              style={{ background: "#fcd609", width: "fit-content" }}
-            >
-              <h3 className="fw-bold mb-0">Popular Professional Services</h3>
-            </Card>
-            <CustomCarousel data={homeCarousalData} />
-          </Col>
-        </Row>
+        <Container>
+          <Row>
+            <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+              <Card
+                className="shadow p-2 mb-3"
+                style={{ background: "#fcd609", width: "fit-content" }}
+              >
+                <h3 className="fw-bold mb-0">Popular Professional Services</h3>
+              </Card>
+              <CustomCarousel data={homeCarousalData} />
+            </Col>
+          </Row>
+        </Container>
       </section>
 
       {userAuth && userAuth?.role === "Customer" && (
-        <section className="py-5 bg-white">
-          <Row>
-            <Col md={{ span: 10, offset: 1 }}>
-              <Card
-                className="shadow p-2"
-                style={{ background: "#fcd609", width: "fit-content" }}
-              >
-                <h3 className="fw-bold mb-0">Recently Viewed & More</h3>
-              </Card>
-              <ValetSlider />
-            </Col>
-          </Row>
+        <section className="bg-white">
+          <Container>
+            <Row>
+              <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                <Card
+                  className="shadow p-2"
+                  style={{ background: "#fcd609", width: "fit-content" }}
+                >
+                  <h3 className="fw-bold mb-0">Recently Viewed & More</h3>
+                </Card>
+                <ValetSlider />
+              </Col>
+            </Row>
+          </Container>
         </section>
       )}
 
