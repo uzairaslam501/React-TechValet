@@ -40,6 +40,22 @@
   cursor: pointer;
 }
 
+/* Highlight for new message area */
+.people-list .chat-list li.new-message {
+  background: #d1f4d1; /* Light green for highlight */
+}
+
+.people-list .chat-list li.new-message .new-message-icon {
+  position: relative;
+  left: 18px;
+  float: right;
+}
+
+/* Animation for attention-grabbing */
+.people-list .chat-list li.new-message {
+  animation: highlight-fade 2s ease-in-out;
+}
+
 .people-list .chat-list li.active {
   background: #efefef;
 }
@@ -153,6 +169,7 @@
 
 .message-text {
   font-size: 14px;
+  word-break: break-all;
 }
 
 .message-time {
@@ -244,5 +261,14 @@
   .chat-app .chat-history {
     height: calc(100vh - 350px);
     overflow-x: auto;
+  }
+}
+
+@keyframes highlight-fade {
+  0% {
+    background-color: #d1f4d1;
+  }
+  100% {
+    background-color: #ffffff;
   }
 }

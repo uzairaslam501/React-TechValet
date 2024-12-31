@@ -1,12 +1,33 @@
-import React, { useState } from "react";
-import { Button, Card, Row, Col } from "react-bootstrap";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import React, { useEffect, useState } from "react";
+import { Button, Card, Row, Col, Form, Spinner } from "react-bootstrap";
+import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useDispatch } from "react-redux";
+import {
+  addEducation,
+  getEducations,
+  updateEducation,
+} from "../../../../../../redux/Actions/educationActions";
+import { deleteRecords } from "../../../../../../redux/Actions/globalActions";
+import DeleteComponent from "../../../../../../components/Custom/DeleteDialoge/DeleteDialoge";
 
-const Education = ({ userRecord }) => {
-  const [showForm, setShowForm] = useState(true);
+const Education = ({ userRecord, preview = false }) => {
+  const dispatch = useDispatch();
+  const [editItem, setEditItem] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
   const [educationList, setEducationList] = useState([]);
-  const [editItem, setEditItem] = useState(null);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [recordToDelete, setRecordToDelete] = useState(null);
+
+  const initialValues = {
+    userId: userRecord?.userEncId || "",
+    educationId: "",
+    instituteName: "",
+    degreeName: "",
+    startDate: "",
+    endDate: "",
+  };
 
   // Validation schema for Formik
   const validationSchema = Yup.object({
@@ -17,195 +38,347 @@ const Education = ({ userRecord }) => {
       .max(50, "Must be 50 characters or less")
       .required("Required"),
     startDate: Yup.date().required("Required"),
-    endDate: Yup.date()
-      .min(Yup.ref("startDate"), "End date cannot be before start date")
-      .required("Required"),
+    endDate: Yup.date().nullable("Required"),
   });
 
-  const handleSubmit = (values, { resetForm }) => {
-    if (editItem) {
-      setEducationList(
-        educationList.map((item) =>
-          item.id === editItem.id ? { ...values, id: editItem.id } : item
-        )
-      );
-    } else {
-      setEducationList([...educationList, { ...values, id: Date.now() }]);
+  // Fetch user services when the component is mounted
+  const fetchRecords = () => {
+    setIsLoading(true);
+    dispatch(getEducations(userRecord?.userEncId)).then((response) => {
+      if (response?.payload) {
+        setEducationList(response?.payload);
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+      }
+    });
+  };
+
+  // Handle service update
+  const handleUpdateService = (education) => {
+    setEditItem(true);
+    setFieldValue("educationId", encodeURIComponent(education?.educationId));
+    setFieldValue("degreeName", education?.degreeName);
+    setFieldValue("instituteName", education?.instituteName);
+    setFieldValue("startDate", education?.startDate);
+    if (education?.endDate !== "") {
+      setFieldValue("endDate", education?.endDate);
     }
-    setShowForm(false);
-    setEditItem(null);
   };
 
-  const handleEdit = (id) => {
-    const selectedItem = educationList.find((item) => item.id === id);
-    setEditItem(selectedItem);
-    setShowForm(true);
+  // Handle deleting
+  const handleDelete = (educationId) => {
+    setRecordToDelete(educationId);
+    setShowDialog(true);
   };
 
-  const handleDelete = (id) => {
-    setEducationList(educationList.filter((item) => item.id !== id));
+  // Confirm deletion of a service
+  const confirmDelete = (educationId) => {
+    setEditItem(false);
+    resetForm();
+    dispatch(
+      deleteRecords(`User/delete-education/${encodeURIComponent(educationId)}`)
+    ).then((response) => {
+      if (response.payload === educationId) {
+        setEducationList((prev) =>
+          prev.filter((item) => item.educationId !== educationId)
+        );
+        setShowDialog(false); // Close the modal after successful deletion
+      }
+    });
   };
+
+  const {
+    values,
+    touched,
+    errors,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    setFieldValue,
+    setFieldError,
+  } = useFormik({
+    initialValues,
+    validationSchema,
+    validateOnChange: false,
+    validateOnBlur: true,
+    enableReinitialize: true,
+    onSubmit: (values) => {
+      try {
+        setButtonDisabled(true);
+        if (values.educationId) {
+          dispatch(updateEducation(values))
+            .then((response) => {
+              setEducationList((prev) =>
+                prev.map((education) => {
+                  return education.educationId === response.payload.educationId
+                    ? { ...education, ...response.payload }
+                    : education;
+                })
+              );
+
+              setButtonDisabled(false);
+              setEditItem(false);
+              resetForm();
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        } else {
+          dispatch(addEducation(values))
+            .then((response) => {
+              setEducationList((prev) => [response.payload, ...prev]);
+
+              setButtonDisabled(false);
+              setEditItem(false);
+              resetForm();
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    },
+  });
+
+  const resetForm = () => {
+    setEditItem(false);
+    setFieldValue("educationId", "");
+    setFieldValue("degreeName", "");
+    setFieldValue("instituteName", "");
+    setFieldValue("startDate", "");
+    setFieldValue("endDate", "");
+  };
+
+  const handleEndTime = (dateTime) => {
+    const startDateValues = values.startDate;
+    const startDate = new Date(startDateValues);
+    const endDate = new Date(dateTime);
+    if (startDate >= endDate) {
+      setFieldValue("endDate", "");
+      setFieldError("endDate", "End date must be greater than start date"); // Use Formik's setFieldError
+    } else {
+      setFieldValue("endDate", dateTime);
+      setFieldError("endDate", "");
+    }
+  };
+
+  useEffect(() => {
+    fetchRecords();
+  }, [userRecord]);
 
   return (
-    <Card className="shadow rounded mb-3">
-      <Card.Header className="d-flex justify-content-between align-items-center">
-        <h6 className="m-0">Education</h6>
-        <Button
-          variant="link"
-          onClick={() => {
-            setShowForm(!showForm);
-            setEditItem(null);
-          }}
-          style={{ color: "#fcd609", textDecoration: "none" }}
-        >
-          Add New
-        </Button>
-      </Card.Header>
-      <Card.Body>
-        <Row>
-          <Col xl={8} lg={8} md={8} sm={12} xs={12}>
-            <div>
-              {educationList.length === 0 && !showForm && (
-                <p className="text-muted">No education records available.</p>
-              )}
-              {educationList.map((item) => (
-                <div
-                  key={item.id}
-                  className="d-flex justify-content-between align-items-center mb-3"
-                >
-                  <div>
-                    <h6 className="mb-0">{item.instituteName}</h6>
-                    <p className="mb-0 text-muted">
-                      {item.degreeName} ({item.startDate} - {item.endDate})
-                    </p>
-                  </div>
-                  <div>
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      onClick={() => handleEdit(item.id)}
-                      className="me-2"
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="outline-danger"
-                      size="sm"
-                      onClick={() => handleDelete(item.id)}
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Col>
-          <Col xl={4} lg={4} md={4} sm={12} xs={12}>
-            <Formik
-              initialValues={
-                editItem || {
-                  instituteName: "",
-                  degreeName: "",
-                  startDate: "",
-                  endDate: "",
-                }
-              }
-              validationSchema={validationSchema}
-              onSubmit={handleSubmit}
+    <>
+      <Card className="shadow rounded mb-3">
+        <Card.Header className="py-3">
+          <h6 className="m-0">Education</h6>
+        </Card.Header>
+        <Card.Body>
+          <Row>
+            <Col
+              xl={preview === false ? 6 : 12}
+              lg={preview === false ? 6 : 12}
+              md={preview === false ? 6 : 12}
+              sm={preview === false ? 12 : 12}
+              xs={preview === false ? 12 : 12}
+              style={{
+                height:
+                  preview === true
+                    ? "155px"
+                    : educationList && educationList.length >= 3
+                    ? "270px"
+                    : "auto",
+                overflowY:
+                  preview === true
+                    ? "scroll"
+                    : educationList && educationList.length >= 3 && "scroll",
+              }}
             >
-              {({ resetForm }) => (
-                <Form className="mb-3">
-                  <div className="mb-2">
-                    <label htmlFor="instituteName">
-                      College/University Name
-                    </label>
-                    <Field
-                      id="instituteName"
-                      name="instituteName"
-                      className="form-control"
-                      placeholder="College/University Name"
-                    />
-                    <ErrorMessage
-                      name="instituteName"
-                      component="div"
-                      className="text-danger"
-                    />
-                  </div>
-                  <div className="mb-2">
-                    <label htmlFor="degreeName">Degree Name</label>
-                    <Field
-                      id="degreeName"
-                      name="degreeName"
-                      className="form-control"
-                      placeholder="Degree Name"
-                    />
-                    <ErrorMessage
-                      name="degreeName"
-                      component="div"
-                      className="text-danger"
-                    />
-                  </div>
-                  <Row>
-                    <Col>
-                      <div className="mb-2">
-                        <label htmlFor="startDate">Start Date</label>
-                        <Field
-                          id="startDate"
-                          name="startDate"
-                          type="date"
-                          className="form-control"
-                        />
-                        <ErrorMessage
-                          name="startDate"
-                          component="div"
-                          className="text-danger"
-                        />
-                      </div>
-                    </Col>
-                    <Col>
-                      <div className="mb-2">
-                        <label htmlFor="endDate">End Date</label>
-                        <Field
-                          id="endDate"
-                          name="endDate"
-                          type="date"
-                          className="form-control"
-                        />
-                        <ErrorMessage
-                          name="endDate"
-                          component="div"
-                          className="text-danger"
-                        />
-                      </div>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <Button
-                        variant="danger"
-                        className="w-100"
-                        onClick={() => {
-                          setShowForm(false);
-                          setEditItem(null);
-                          resetForm();
+              <Row>
+                {isLoading ? (
+                  <Spinner animation="grow" />
+                ) : (
+                  <>
+                    {educationList.length > 0 ? (
+                      educationList.map((item) => (
+                        <div
+                          key={item.id}
+                          className="d-flex mb-3 border-bottom py-2"
+                        >
+                          <Col
+                            xl={preview === false ? 8 : 12}
+                            lg={preview === false ? 8 : 12}
+                            md={preview === false ? 8 : 12}
+                            sm={preview === false ? 8 : 12}
+                            xs={preview === false ? 8 : 12}
+                          >
+                            <h5 className="mb-0 fw-bold">
+                              {item.instituteName}
+                            </h5>
+                            <p className="mb-0 text-muted">{item.degreeName}</p>
+                            <p className="mb-0 text-muted">
+                              {item.startDate} - {item.endDate}
+                            </p>
+                          </Col>
+                          {preview === false && (
+                            <Col
+                              xl={4}
+                              lg={4}
+                              md={4}
+                              sm={4}
+                              xs={4}
+                              className="text-end"
+                            >
+                              <Button
+                                variant="outline-primary"
+                                size="sm"
+                                onClick={() => handleUpdateService(item)}
+                                className="me-2"
+                              >
+                                Edit
+                              </Button>
+                              <Button
+                                variant="outline-danger"
+                                size="sm"
+                                onClick={() => handleDelete(item.educationId)}
+                              >
+                                Delete
+                              </Button>
+                            </Col>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                        <h5 className="text-center text-muted">
+                          No education found
+                        </h5>
+                      </Col>
+                    )}
+                  </>
+                )}
+              </Row>
+            </Col>
+            {preview === false && (
+              <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                <Form className="mb-3 row" onSubmit={handleSubmit}>
+                  <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                    <Form.Group>
+                      <Form.Label>
+                        Institute Name <span className="text-danger">*</span>
+                      </Form.Label>
+                      <Form.Control
+                        onBlur={handleBlur}
+                        name="instituteName"
+                        onChange={handleChange}
+                        value={values.instituteName}
+                        placeholder="College/University Name"
+                        isInvalid={
+                          touched.instituteName && !!errors.instituteName
+                        }
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.instituteName}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+
+                  <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                    <Form.Group>
+                      <Form.Label>
+                        Degree Name <span className="text-danger">*</span>
+                      </Form.Label>
+                      <Form.Control
+                        name="degreeName"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.degreeName}
+                        placeholder="Degree Name"
+                        isInvalid={touched.degreeName && !!errors.degreeName}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.degreeName}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                    <Form.Group>
+                      <Form.Label>
+                        Start Date <span className="text-danger">*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="date"
+                        name="startDate"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.startDate}
+                        placeholder="Degree Name"
+                        isInvalid={touched.startDate && !!errors.startDate}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.startDate}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                    <Form.Group>
+                      <Form.Label>End Date</Form.Label>
+                      <Form.Control
+                        type="date"
+                        name="endDate"
+                        onBlur={handleBlur}
+                        onChange={(e) => {
+                          handleChange("endDate");
+                          handleEndTime(e.target.value);
                         }}
-                      >
-                        Cancel
-                      </Button>
-                    </Col>
-                    <Col>
-                      <Button type="submit" variant="success" className="w-100">
-                        {editItem ? "Update" : "Add"}
-                      </Button>
-                    </Col>
-                  </Row>
+                        value={values.endDate}
+                        placeholder="End Name"
+                        isInvalid={touched.endDate && !!errors.endDate}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.endDate}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+
+                  <Col className="mt-2" xl={6} lg={6} md={6} sm={12} xs={12}>
+                    <Button
+                      variant="danger"
+                      className="w-100"
+                      onClick={() => {
+                        resetForm();
+                      }}
+                      disabled={buttonDisabled}
+                    >
+                      Reset
+                    </Button>
+                  </Col>
+                  <Col className="mt-2" xl={6} lg={6} md={6} sm={12} xs={12}>
+                    <Button
+                      type="submit"
+                      variant="success"
+                      className="w-100"
+                      disabled={buttonDisabled}
+                    >
+                      {editItem ? "Update" : "Add"}
+                    </Button>
+                  </Col>
                 </Form>
-              )}
-            </Formik>
-          </Col>
-        </Row>
-      </Card.Body>
-    </Card>
+              </Col>
+            )}
+          </Row>
+        </Card.Body>
+      </Card>
+
+      <DeleteComponent
+        showDialog={showDialog}
+        setShowDialog={setShowDialog}
+        onDelete={confirmDelete}
+        item={recordToDelete}
+      />
+    </>
   );
 };
 

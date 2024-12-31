@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button, Image, Tooltip, OverlayTrigger } from "react-bootstrap";
+import { Form, Button, Tooltip, OverlayTrigger } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../../../redux/Reducers/authSlice";
 import "./profileImage.css";
@@ -8,13 +8,13 @@ import {
   postUserAvailable,
   UpdateProfileImage,
 } from "../../../../../redux/Actions/authActions";
+import HandleImages from "../../../../../components/Custom/Avatars/HandleImages";
+import { toast } from "react-toastify";
 
-const UserProfileImage = ({ userRecord }) => {
+const UserProfileImage = ({ userRecord, preview = false }) => {
+  console.log("preview", preview);
   const dispatch = useDispatch();
-  const [profileImage, setProfileImage] = useState(
-    userRecord?.profilePicture ||
-      "https://usman78056-001-site7.gtempurl.com/profiles/download-(1)_638646395157341553.png"
-  );
+  const [profileImage, setProfileImage] = useState(userRecord?.profilePicture);
   const [status, setStatus] = useState(userRecord?.status);
   const [availability, setAvailability] = useState(userRecord?.availability);
   const [imagePreview, setImagePreview] = useState(null);
@@ -46,14 +46,12 @@ const UserProfileImage = ({ userRecord }) => {
     document.getElementById("imageLoadSection").style.display = "block";
   };
 
-  const handleStatusChange = (value) => {
-    if (value === "on") {
-      value = "true";
-    } else {
-      value = "false";
-    }
+  const handleStatusChange = () => {
     dispatch(
-      postUserActivity({ userId: userRecord?.userEncId, activityStatus: value })
+      postUserActivity({
+        userId: userRecord?.userEncId,
+        activityStatus: !status,
+      })
     ).then((response) => {
       if (response?.payload === "1") {
         setStatus(true);
@@ -82,6 +80,18 @@ const UserProfileImage = ({ userRecord }) => {
     dispatch(logout());
   };
 
+  const handleCopyReferral = async () => {
+    const systemUrl = `${window.location.origin}`;
+    const textToCopy = `${systemUrl}?referredBy=${userRecord?.userName}`;
+
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      toast.success("Copied to clipboard");
+    } catch (err) {
+      toast.error("Failed to copy referral link");
+    }
+  };
+
   useEffect(() => {
     setStatus(userRecord?.status === "1" && true);
     setAvailability(userRecord?.availability === "1" && true);
@@ -93,97 +103,142 @@ const UserProfileImage = ({ userRecord }) => {
   ]);
 
   return (
-    <div className="mb-2 shadow rounded bg-white profile-box text-center">
-      <div className="py-4 px-3">
-        <Image
-          src={imagePreview || profileImage}
-          id="previewImg"
-          roundedCircle
-          alt="Profile"
-          className="mb-3"
-          style={{ width: "250px", height: "250px" }}
+    <div className="mb-2 shadow rounded bg-white profile-box text-center py-4 px-3">
+      <div className="">
+        <HandleImages
+          imagePath={
+            preview !== true
+              ? imagePreview || profileImage
+              : userRecord?.profileImage
+          }
+          imageAlt={`${userRecord?.firstName} ${userRecord?.lastName}`}
+          imageStyle={{ width: "250px", height: "250px" }}
+          className="mb-3 rounded-circle"
         />
-        <h5 className="font-weight-bold text-dark mb-1">
-          {userRecord?.FirstName} {userRecord?.LastName}
-        </h5>
+
+        {preview === true && (
+          <>
+            <h5 className="font-weight-bold text-dark mb-1">
+              {userRecord?.firstName} {userRecord?.lastName}
+            </h5>
+            {status ? (
+              <p className="mb-0 text-success">Online</p>
+            ) : (
+              <p className="mb-0 text-danger">Offline</p>
+            )}
+            {availability ? (
+              <p className="mb-0 text-success">Available</p>
+            ) : (
+              <p className="mb-0 text-danger">Unavailable</p>
+            )}
+          </>
+        )}
       </div>
 
-      {/* Image Upload Form */}
-      <Form
-        action="/User/UploadProfileImage"
-        id="uploadProfileImageForm"
-        method="post"
-        encType="multipart/form-data"
-      >
-        <div className="pb-3" id="imageLoadSection">
-          <OverlayTrigger
-            placement="top"
-            overlay={<Tooltip>Upload New Picture</Tooltip>}
-          >
-            <label className="btn btn-success m-0" htmlFor="fileAttachmentBtn">
-              <i className="mdi mdi-image"></i> Upload Photo
-              <input
-                id="fileAttachmentBtn"
-                name="ImagePath"
-                type="file"
-                className="d-none"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </label>
-          </OverlayTrigger>
+      {preview === true ? (
+        <div className="d-flex">
+          <div className="mx-2 w-100">
+            <Button
+              variant="primary"
+              className="w-100"
+              onClick={handleImageReset}
+            >
+              Contact Me
+            </Button>
+          </div>
+          <div>
+            <Button
+              variant="outline-danger"
+              onClick={handleCopyReferral}
+              className="w-100"
+            >
+              <i class="bi bi-solid bi-gift" title="Share User Refferal"></i>
+            </Button>
+          </div>
         </div>
-
-        {/* Update Image Section */}
-        <div
-          className="pb-3"
-          id="uploadImageBtnSection"
-          style={{ display: "none" }}
-        >
-          <Button
-            onClick={handleUpdateImage}
-            className="btn btn-success"
-            id="saveImage"
+      ) : (
+        <>
+          {/* Image Upload Form */}
+          <Form
+            action="/User/UploadProfileImage"
+            id="uploadProfileImageForm"
+            method="post"
+            encType="multipart/form-data"
           >
-            Update Image
-          </Button>
+            <div className="pb-3" id="imageLoadSection">
+              <OverlayTrigger
+                placement="top"
+                overlay={<Tooltip>Upload New Picture</Tooltip>}
+              >
+                <label
+                  className="btn btn-success m-0"
+                  htmlFor="fileAttachmentBtn"
+                >
+                  <i className="mdi mdi-image"></i> Upload Photo
+                  <input
+                    id="fileAttachmentBtn"
+                    name="ImagePath"
+                    type="file"
+                    className="d-none"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </label>
+              </OverlayTrigger>
+            </div>
+
+            {/* Update Image Section */}
+            <div
+              className="pb-3"
+              id="uploadImageBtnSection"
+              style={{ display: "none" }}
+            >
+              <Button
+                onClick={handleUpdateImage}
+                className="btn btn-success"
+                id="saveImage"
+              >
+                Update Image
+              </Button>
+              <Button
+                variant="danger"
+                className="text-white mx-2"
+                onClick={handleImageReset}
+                id="imgReset"
+              >
+                Reset
+              </Button>
+            </div>
+          </Form>
+
+          <div className="custom-control custom-switch my-2">
+            <Form.Check
+              type="switch"
+              id="custom-switch-button"
+              label={status ? "Online" : "Offline"}
+              checked={status}
+              onChange={handleStatusChange}
+            />
+            <Form.Check
+              type="switch"
+              id="custom-switch-button"
+              label={availability ? "Available" : "Unavailable"}
+              checked={availability}
+              onChange={handleAvailabilityChange}
+            />
+          </div>
+
+          {/* Logout Link */}
           <Button
-            variant="danger"
-            className="text-white mx-2"
-            onClick={handleImageReset}
-            id="imgReset"
+            type="button"
+            variant="link"
+            onClick={() => handleLogout()}
+            className="text-dark w-100 border-top my-2"
           >
-            Reset
+            Log Out
           </Button>
-        </div>
-      </Form>
-
-      <div className="custom-control custom-switch my-2">
-        <Form.Check
-          type="switch"
-          id="custom-switch-button"
-          label={status ? "Online" : "Offline"}
-          checked={status}
-          onChange={(e) => handleStatusChange(e.target.value)}
-        />
-        <Form.Check
-          type="switch"
-          id="custom-switch-button"
-          label={availability ? "Available" : "Unavailable"}
-          checked={availability}
-          onChange={handleAvailabilityChange}
-        />
-      </div>
-
-      {/* Logout Link */}
-      <Button
-        type="button"
-        variant="link"
-        onClick={() => handleLogout()}
-        className="text-dark w-100 border-top my-2"
-      >
-        Log Out
-      </Button>
+        </>
+      )}
     </div>
   );
 };

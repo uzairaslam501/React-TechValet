@@ -6,13 +6,13 @@ export const valetMenu = [
     label: "Manage Appointments",
   },
   {
-    href: "#earning",
+    href: "/earnings",
     iconClass: "bi bi-cash-coin",
     className: "",
     label: "Manage Earnings",
   },
   {
-    href: "#account",
+    href: "/preview-profile",
     iconClass: "bi bi-eye",
     className: "",
     label: "Preview Profile",

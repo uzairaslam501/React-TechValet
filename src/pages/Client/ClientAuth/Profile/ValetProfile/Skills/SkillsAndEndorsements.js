@@ -10,7 +10,7 @@ import {
 import { deleteRecords } from "../../../../../../redux/Actions/globalActions";
 import DeleteComponent from "../../../../../../components/Custom/DeleteDialoge/DeleteDialoge";
 
-const SkillsAndEndorsements = ({ userRecord }) => {
+const SkillsAndEndorsements = ({ userRecord, preview = false }) => {
   const dispatch = useDispatch();
   const [userSkills, setUserSkills] = useState([]);
   const [showDialog, setShowDialog] = useState(false);
@@ -58,7 +58,11 @@ const SkillsAndEndorsements = ({ userRecord }) => {
         if (response?.payload.length <= 1) {
           setDisplayDeleteButton(true);
         } else {
-          setDisplayDeleteButton(false);
+          if (preview === false) {
+            setDisplayDeleteButton(false);
+          } else {
+            setDisplayDeleteButton(true);
+          }
         }
         setUserSkills(response.payload);
       })
@@ -103,7 +107,11 @@ const SkillsAndEndorsements = ({ userRecord }) => {
         <Card.Body>
           <div
             className="py-3 border-bottom"
-            style={{ maxHeight: "75px", overflowY: "scroll" }}
+            style={{
+              maxHeight: preview === false ? "75px" : "200px",
+              height: preview === true && "200px",
+              overflowY: "scroll",
+            }}
           >
             {userSkills.length > 0 ? (
               <div className="d-flex flex-wrap">
@@ -137,34 +145,36 @@ const SkillsAndEndorsements = ({ userRecord }) => {
             )}
           </div>
 
-          <Row className="py-2">
-            <Form.Label>Add your Skills</Form.Label>
-            <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mb-2">
-              <Form.Group>
-                <CustomDropdown
-                  optionsList={availableSkills} // Use filtered available skills
-                  selectedOptions={selectedUserSkills}
-                  handleChange={handleSkillChange}
-                  isMultiSelect
-                  isSearchable
-                  fieldName="Skill"
-                />
-              </Form.Group>
-              {alertMessage && (
-                <span className="text-danger">{alertMessage}</span>
-              )}
-            </Col>
-            <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-              <Button
-                variant="primary"
-                id="updateSkillsBtn"
-                className="w-100"
-                onClick={handleAddSkills}
-              >
-                Add Skills
-              </Button>
-            </Col>
-          </Row>
+          {!preview && (
+            <Row className="py-2">
+              <Form.Label>Add your Skills</Form.Label>
+              <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mb-2">
+                <Form.Group>
+                  <CustomDropdown
+                    optionsList={availableSkills} // Use filtered available skills
+                    selectedOptions={selectedUserSkills}
+                    handleChange={handleSkillChange}
+                    isMultiSelect
+                    isSearchable
+                    fieldName="Skill"
+                  />
+                </Form.Group>
+                {alertMessage && (
+                  <span className="text-danger">{alertMessage}</span>
+                )}
+              </Col>
+              <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                <Button
+                  variant="primary"
+                  id="updateSkillsBtn"
+                  className="w-100"
+                  onClick={handleAddSkills}
+                >
+                  Add Skills
+                </Button>
+              </Col>
+            </Row>
+          )}
         </Card.Body>
       </Card>
 

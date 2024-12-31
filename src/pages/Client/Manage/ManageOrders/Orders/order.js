@@ -7,6 +7,7 @@ import { Card, CardBody, Col, Row, Spinner } from "react-bootstrap";
 import Dialogue from "../../../../../components/Custom/Modal/modal";
 
 const Order = ({ isLoading }) => {
+  console.log("isLoading", isLoading);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

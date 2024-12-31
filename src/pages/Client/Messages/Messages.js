@@ -15,12 +15,13 @@ import "./style.css";
 import OfferDialogue from "./OfferDialogue/OfferDialogue";
 import signalRService from "../../../services/SignalR";
 import { notificationURL } from "../../../utils/_envConfig";
-import { debounce } from "lodash";
+import { debounce, set } from "lodash";
 import OfferAccept from "./OfferAccept/OfferAccept";
 
 const Messages = () => {
   const dispatch = useDispatch();
   const chatContainerRef = useRef(null);
+
   const [messages, setMessages] = useState();
   const [usersList, setUsersList] = useState();
   const [activeChat, setActiveChat] = useState();
@@ -37,13 +38,19 @@ const Messages = () => {
   const [selectedOfferValues, setSelectedOfferValues] = useState(null);
   const { userAuth } = useSelector((state) => state?.authentication);
 
+  const activeChatRef = useRef(activeChat);
+
   const fetchSideBar = (findUser = "") => {
     try {
       setUserSideBarLoader(true);
       dispatch(getMessagesSidebar(findUser)).then((response) => {
-        setDefaultMessage(response?.payload[0]);
-        setUsersList(response?.payload);
-        setUserSideBarLoader(false);
+        if (response?.payload) {
+          setDefaultMessage(response?.payload[0]);
+          setUsersList(response?.payload);
+          setUserSideBarLoader(false);
+        } else {
+          console.error("No payload received");
+        }
       });
     } catch (error) {
       console.error("Error fetching sidebar:", error);
@@ -53,20 +60,25 @@ const Messages = () => {
   const fetchUserStatus = (userId) => {
     try {
       dispatch(getUserStatus(userId)).then((response) => {
-        setUserOnlineStatus(response?.payload);
+        if (response?.payload) {
+          setUserOnlineStatus(response?.payload);
+          fetchMessages(userId);
+        } else {
+          console.error("No payload received");
+        }
       });
     } catch (error) {
       console.error("Error fetching sidebar:", error);
-    } finally {
-      fetchMessages(userId);
     }
   };
 
   const fetchMessages = (userId) => {
     try {
       dispatch(getUsersMessages(userId)).then((response) => {
-        setMessages(response?.payload);
-        setMessagesLoader(false);
+        if (response?.payload) {
+          setMessages(response?.payload);
+          setMessagesLoader(false);
+        }
       });
     } catch (error) {
       console.error("Error fetching messages:", error);
@@ -83,6 +95,12 @@ const Messages = () => {
       setMessagesLoader(true);
       setActiveChat(user);
       fetchUserStatus(user?.userDecId);
+
+      setUsersList((prev) =>
+        prev.map((u) =>
+          u.userDecId === user.userDecId ? { ...u, hasNewMessage: false } : u
+        )
+      );
     }
   };
 
@@ -112,6 +130,8 @@ const Messages = () => {
         MessageDescription: messageTyped,
       };
       handleResponse(data);
+    } else {
+      console.log("No active chat or message text.");
     }
   };
 
@@ -139,9 +159,8 @@ const Messages = () => {
         if (response?.payload) {
           const newMessage = response.payload;
           setMessages((prev) => [...prev, newMessage?.model]);
-          if (userAuth?.id === newMessage.senderId) {
-            handleSignalRCall(newMessage);
-          }
+
+          handleSignalRCall(newMessage);
         }
 
         setShowOrderDialogue(false);
@@ -194,6 +213,10 @@ const Messages = () => {
   };
 
   useEffect(() => {
+    activeChatRef.current = activeChat;
+  }, [activeChat]);
+
+  useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
@@ -214,6 +237,8 @@ const Messages = () => {
   }, [userAuth?.id]);
 
   useEffect(() => {
+    if (!userAuth?.id) return;
+
     signalRService.initializeConnection(notificationURL, userAuth?.id);
 
     const handleIncomingData = (senderId, receiverId, model) => {
@@ -229,12 +254,41 @@ const Messages = () => {
         }
       } else {
         if (userAuth?.id === receiverId) {
-          setMessages((prev) => {
-            if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
-              return [...prev, model]; // Add the new message if it's not already in the list
-            }
-            return prev; // Otherwise, keep the previous state
-          });
+          console.log("activeChat", activeChat);
+          console.log("senderId", senderId);
+          console.log("receiverId", receiverId);
+          if (activeChatRef.current?.userDecId === String(senderId)) {
+            setMessages((prev) => {
+              if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
+                return [...prev, model];
+              }
+              return prev;
+            });
+
+            setUsersList((prev) =>
+              prev.map((u) => {
+                return u.userDecId === String(senderId)
+                  ? {
+                      ...u,
+                      messageDescription: model.messageDescription,
+                      hasNewMessage: false,
+                    }
+                  : u;
+              })
+            );
+          } else {
+            setUsersList((prev) =>
+              prev.map((u) => {
+                return u.userDecId === String(senderId)
+                  ? {
+                      ...u,
+                      messageDescription: model.messageDescription,
+                      hasNewMessage: true,
+                    }
+                  : u;
+              })
+            );
+          }
         }
       }
     };
@@ -282,31 +336,42 @@ const Messages = () => {
                           return (
                             <li
                               className={`${
-                                activeChat?.userDecId === user?.userDecId &&
-                                "active"
+                                activeChat?.userDecId === user?.userDecId
+                                  ? "active"
+                                  : ""
+                              } ${
+                                user?.hasNewMessage ? "new-message" : ""
                               } clearfix`}
                               key={`${index}-${user?.userDecId}`}
                               onClick={() => handleSelectedChat(user)}
                             >
+                              {user?.hasNewMessage && (
+                                <i className="bi bi-circle-fill btn text-success border-0 btn-sm new-message-icon"></i>
+                              )}
                               <HandleImages
                                 imagePath={user?.userImage}
                                 imageAlt={user?.username}
                                 imageStyle={{ height: "42px" }}
                               />
-
                               <div className="about">
                                 <div className="name">
                                   {truncateCharacters(user?.username, 15)}
                                 </div>
                                 <div className="status">
-                                  {`${
-                                    user?.lastMessageUsername !== ""
-                                      ? user?.lastMessageUsername
-                                      : "You"
-                                  }: ${truncateCharacters(
-                                    user?.messageDescription,
-                                    12
-                                  )}`}
+                                  {user?.hasNewMessage ? (
+                                    <span className="text-success">
+                                      New Message....
+                                    </span>
+                                  ) : (
+                                    `${
+                                      user?.lastMessageUsername !== ""
+                                        ? user?.lastMessageUsername
+                                        : "You"
+                                    }: ${truncateCharacters(
+                                      user?.messageDescription,
+                                      12
+                                    )}`
+                                  )}
                                 </div>
                               </div>
                             </li>
@@ -385,7 +450,6 @@ const Messages = () => {
                   ) : (
                     <ul className="chatbox-list">
                       {messages &&
-                        messages.length > 0 &&
                         messages.map((message) => (
                           <li
                             key={message.id}
@@ -421,7 +485,6 @@ const Messages = () => {
                                   </div>
                                 </div>
                               )}
-
                               <div className="message-time">
                                 {message.messageTime}
                               </div>

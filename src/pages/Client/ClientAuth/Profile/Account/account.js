@@ -19,6 +19,7 @@ import { languageOptions } from "../../../../../utils/client/data/requestedData"
 import CustomDropdown from "../../../../../components/Custom/Dropdown/Dropdown";
 import { calculateMaxDate } from "../../../../../utils/_helpers";
 import { postUserUpdate } from "../../../../../redux/Actions/authActions";
+import Slots from "../ValetProfile/Slots/Slots";
 
 const validation = Yup.object().shape({
   firstName: Yup.string()
@@ -28,7 +29,7 @@ const validation = Yup.object().shape({
     .min(3, "Last Name must be at least 3 characters")
     .required("Please enter Last Name"),
   userName: Yup.string()
-    .min(5, "Username must be at least 5 characters")
+    .min(3, "Username must be at least 5 characters")
     .required("Please enter a Username"),
   email: Yup.string()
     .email("Invalid email format")
@@ -136,9 +137,7 @@ const Account = ({ userRecord }) => {
               </Col>
               {userRecord && userRecord?.role === "Valet" && (
                 <Col xl={6} lg={6} md={6} sm={12} xs={12} className="text-end">
-                  <Button variant="primary" size="sm">
-                    Check Availability
-                  </Button>
+                  <Slots userRecord={userRecord} />
                 </Col>
               )}
             </Row>

@@ -25,6 +25,7 @@ const StripeAccount = ({ userRecord }) => {
   const [isVerified, setIsVerified] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState(null);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const [isBankAccountAdded, setIsBankAccountAdded] = useState(false);
 
   const validateStripeAccount = (value) => {
@@ -72,32 +73,42 @@ const StripeAccount = ({ userRecord }) => {
 
   const hideModal = () => {
     setShowModal(false);
+    resetForm();
   };
 
-  const { values, touched, errors, handleBlur, handleChange, handleSubmit } =
-    useFormik({
-      initialValues: { stripeEmail: "" },
-      validationSchema,
-      validateOnChange: false,
-      validateOnBlur: true,
-      enableReinitialize: true,
-      onSubmit: (values) => {
-        try {
-          dispatch(
-            connectStripeAccount({
-              userId: userRecord?.userEncId,
-              email: values.stripeEmail,
-            })
-          ).then((response) => {
-            if (response?.payload) {
-              window.open(response?.payload[0]);
-            }
-          });
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      },
-    });
+  const {
+    values,
+    touched,
+    errors,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    resetForm,
+  } = useFormik({
+    initialValues: { stripeEmail: "" },
+    validationSchema,
+    validateOnChange: false,
+    validateOnBlur: true,
+    enableReinitialize: true,
+    onSubmit: (values) => {
+      try {
+        setButtonDisabled(true);
+        dispatch(
+          connectStripeAccount({
+            userId: userRecord?.userEncId,
+            email: values.stripeEmail,
+          })
+        ).then((response) => {
+          if (response?.payload) {
+            window.open(response?.payload[0], "_self");
+          }
+        });
+      } catch (error) {
+        console.error("Error:", error);
+        setButtonDisabled(false);
+      }
+    },
+  });
 
   useEffect(() => {
     if (stripeId) {
@@ -109,6 +120,7 @@ const StripeAccount = ({ userRecord }) => {
     setIsBankAccountAdded(userRecord?.isBankAccountAdded === 1 && true);
   }, [userRecord, stripeId]);
 
+  console.log(buttonDisabled);
   return (
     <>
       <Card className="shadow-sm rounded bg-white mb-3">
@@ -190,7 +202,7 @@ const StripeAccount = ({ userRecord }) => {
           ) : (
             <p>
               Don't have a Connect Account?
-              <Button variant="link" onClick={() => setShowModal(true)}>
+              <Button variant="link p-0" onClick={() => setShowModal(true)}>
                 Create New Account
               </Button>
             </p>
@@ -207,7 +219,7 @@ const StripeAccount = ({ userRecord }) => {
           title="Create Stripe Account"
           bodyContent={
             <Form onSubmit={handleSubmit}>
-              <Form.Group>
+              <Form.Group className="text-end">
                 <InputGroup>
                   <InputGroup.Text>
                     <i
@@ -227,7 +239,7 @@ const StripeAccount = ({ userRecord }) => {
                 <Form.Control.Feedback type="invalid">
                   {errors.stripeEmail}
                 </Form.Control.Feedback>
-                <Form.Text className="text-muted">
+                <Form.Text className="text-danger">
                   We would not share this email with anyone.
                 </Form.Text>
               </Form.Group>
@@ -239,11 +251,13 @@ const StripeAccount = ({ userRecord }) => {
               text: "Cancel",
               className: "btn-secondary-secondary",
               onClick: hideModal,
+              loader: buttonDisabled,
             },
             {
               text: "Connect",
               variant: "primary",
               onClick: handleSubmit,
+              loader: buttonDisabled,
             },
           ]}
         />

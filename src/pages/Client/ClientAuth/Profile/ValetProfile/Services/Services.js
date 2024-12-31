@@ -20,7 +20,7 @@ import {
 import { deleteRecords } from "../../../../../../redux/Actions/globalActions";
 import DeleteComponent from "../../../../../../components/Custom/DeleteDialoge/DeleteDialoge";
 
-const Services = ({ userRecord }) => {
+const Services = ({ userRecord, preview = false }) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
@@ -31,10 +31,15 @@ const Services = ({ userRecord }) => {
   // Fetch user services when the component is mounted
   const fetchServicesRecord = () => {
     setIsLoading(true);
-    dispatch(getServicesRecord(userRecord?.userEncId)).then((response) => {
-      setUserServices(response?.payload);
-      setIsLoading(false);
-    });
+    dispatch(getServicesRecord(userRecord?.userEncId))
+      .then((response) => {
+        console.log("services", response?.payload);
+        setUserServices(response?.payload);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   // Handle adding a new service
@@ -71,6 +76,7 @@ const Services = ({ userRecord }) => {
 
   // Confirm deletion of a service
   const confirmDelete = (serviceId) => {
+    handleHideServiceForm();
     dispatch(
       deleteRecords(`User/delete-service/${encodeURIComponent(serviceId)}`)
     ).then((response) => {
@@ -105,15 +111,23 @@ const Services = ({ userRecord }) => {
       try {
         if (values.serviceId) {
           // Update existing service
-          dispatch(updateServicesOrExperience(values)).then((response) => {
-            setUserServices((prev) => [
-              response.payload, // Update record
-              ...prev.filter(
-                (service) => service.userExperienceEncId !== values.serviceId
-              ),
-            ]);
-            handleHideServiceForm();
-          });
+          dispatch(updateServicesOrExperience(values))
+            .then((response) => {
+              if (response.payload) {
+                setUserServices((prev) =>
+                  prev.map((service) => {
+                    return service.userExperienceEncId ===
+                      response.payload.userExperienceEncId
+                      ? { ...service, ...response.payload } // Update the specific record
+                      : service; // Keep the rest unchanged
+                  })
+                );
+                handleHideServiceForm();
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
         } else {
           // Add new service
           dispatch(addServicesOrExperience(values)).then((response) => {
@@ -139,18 +153,25 @@ const Services = ({ userRecord }) => {
             <Col md={6} xs={6} className="d-flex justify-content-start">
               <h6 className="m-0">Services Offered</h6>
             </Col>
-            <Col md={6} xs={6} className="d-flex justify-content-end">
-              <p
-                className="m-0"
-                style={{ cursor: "pointer", color: "#fcd609" }}
-                onClick={handleAddNewService}
-              >
-                Add New
-              </p>
-            </Col>
+            {!preview && (
+              <Col md={6} xs={6} className="d-flex justify-content-end">
+                <p
+                  className="m-0"
+                  style={{ cursor: "pointer", color: "#fcd609" }}
+                  onClick={handleAddNewService}
+                >
+                  Add New
+                </p>
+              </Col>
+            )}
           </Row>
         </Card.Header>
-        <Card.Body style={{ height: "475px", overflowY: "scroll" }}>
+        <Card.Body
+          style={{
+            height: preview === false ? "475px" : "250px",
+            overflowY: "scroll",
+          }}
+        >
           <Form onSubmit={handleSubmit}>
             {isAddServiceVisible && (
               <div className="py-3">
@@ -169,22 +190,24 @@ const Services = ({ userRecord }) => {
                     {errors.description}
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Row className="mt-3">
-                  <Col xs={6}>
-                    <Button
-                      variant="danger"
-                      className="w-100"
-                      onClick={handleHideServiceForm}
-                    >
-                      Cancel
-                    </Button>
-                  </Col>
-                  <Col xs={6}>
-                    <Button type="submit" variant="success" className="w-100">
-                      Submit
-                    </Button>
-                  </Col>
-                </Row>
+                {!preview && (
+                  <Row className="mt-3">
+                    <Col xs={6}>
+                      <Button
+                        variant="danger"
+                        className="w-100"
+                        onClick={handleHideServiceForm}
+                      >
+                        Cancel
+                      </Button>
+                    </Col>
+                    <Col xs={6}>
+                      <Button type="submit" variant="success" className="w-100">
+                        Submit
+                      </Button>
+                    </Col>
+                  </Row>
+                )}
               </div>
             )}
           </Form>
@@ -195,49 +218,51 @@ const Services = ({ userRecord }) => {
                 <Spinner animation="grow" size="sm" />
               </Col>
             </Row>
-          ) : userServices.length > 0 ? (
+          ) : userServices?.length > 0 ? (
             userServices.map((service) => (
               <Row className="mb-3" key={service.userExperienceEncId}>
                 <Col>
                   <Row className="border-bottom">
-                    <Col xl={10}>
+                    <Col xl={!preview ? 10 : 12}>
                       <p style={{ wordBreak: "break-word" }}>
                         {service.description}
                       </p>
                     </Col>
-                    <Col xl={2}>
-                      <Dropdown as={ButtonGroup}>
-                        <Dropdown.Toggle
-                          variant="primary"
-                          size="sm"
-                          className="rounded"
-                        >
-                          <i className="bi bi-three-dots-vertical"></i>
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu align="end" className="text-center">
-                          <Dropdown.Item
-                            onClick={() =>
-                              handleDeleteService(service.userExperienceEncId)
-                            }
+                    {!preview && (
+                      <Col xl={2}>
+                        <Dropdown as={ButtonGroup}>
+                          <Dropdown.Toggle
+                            variant="primary"
+                            size="sm"
+                            className="rounded"
                           >
-                            <i
-                              className="bi bi-trash me-2"
-                              style={{ fontSize: "14px" }}
-                            ></i>
-                            Delete Service
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() => handleUpdateService(service)}
-                          >
-                            <i
-                              className="bi bi-pencil me-2"
-                              style={{ fontSize: "14px" }}
-                            ></i>
-                            Update Service
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </Col>
+                            <i className="bi bi-three-dots-vertical"></i>
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu align="end" className="text-center">
+                            <Dropdown.Item
+                              onClick={() =>
+                                handleDeleteService(service.userExperienceEncId)
+                              }
+                            >
+                              <i
+                                className="bi bi-trash me-2"
+                                style={{ fontSize: "14px" }}
+                              ></i>
+                              Delete Service
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => handleUpdateService(service)}
+                            >
+                              <i
+                                className="bi bi-pencil me-2"
+                                style={{ fontSize: "14px" }}
+                              ></i>
+                              Update Service
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </Col>
+                    )}
                   </Row>
                 </Col>
               </Row>

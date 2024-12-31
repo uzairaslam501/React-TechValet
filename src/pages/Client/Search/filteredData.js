@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { getValetsBySearch } from "../../../redux/Actions/customerActions";
 import { useDispatch } from "react-redux";
 import { Row, Col, Card, Container, Spinner } from "react-bootstrap";
@@ -44,8 +44,8 @@ const Search = () => {
             searchedUserList.map((user) => (
               <Col md={3} key={user.encUserId} className="mb-3">
                 <Card className="user-card">
-                  <a
-                    href={`../User/ViewUserProfile?Id=${user.encUserId}`}
+                  <NavLink
+                    to={`/preview-profile/${user.encUserId}`}
                     className="user-card__link"
                   >
                     <div className="user-card__image-wrapper">
@@ -60,16 +60,16 @@ const Search = () => {
                         }}
                       />
                     </div>
-                  </a>
+                  </NavLink>
                   <Card.Body className="user-card__details">
                     <div className="user-card__header">
                       <span className="user-card__name">
-                        <a
+                        <NavLink
+                          to={`/preview-profile/${user.encUserId}`}
                           className="user-card__name-link stretched-link"
-                          href={`../User/ViewUserProfile?Id=${user.encUserId}`}
                         >
                           {user.firstName} {user.lastName}
-                        </a>
+                        </NavLink>
                       </span>
                       <span className="seller-card ms-auto">
                         {user.status === 1 ? (
