@@ -1,0 +1,27 @@
+.header-navbar {
+  background-color: #000 !important;
+}
+
+.header-navbar-nav {
+  text-transform: uppercase !important;
+}
+
+.header-navbar-nav .nav-link {
+  color: #fff;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+.package-dropdown div {
+  padding: 10px;
+}
+
+.package-dropdown div .dropdown-item {
+  padding: 10px;
+}
+
+@media (max-width: 1024px) {
+  .header-navbar-nav {
+    text-transform: capitalize !important;
+  }
+}
