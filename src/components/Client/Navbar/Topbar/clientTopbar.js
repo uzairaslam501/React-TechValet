@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
+import "./topbar.css";
+import { NavLink } from "react-router-dom";
 import logo from "../../../../assets/images/logo.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
-import "./topbar.css";
+import React, { useEffect, useRef, useState } from "react";
 import { logout } from "../../../../redux/Reducers/authSlice";
-import NotificationCard from "../../../Custom/Notification/NotificationCard";
 import HandleImages from "../../../Custom/Avatars/HandleImages";
+import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
+import NotificationCard from "../../../Custom/Notification/NotificationCard";
 import SearchBar from "../../../../pages/Client/Home/Search/SearchBar/SearchBar";
 
 const ClientTopbar = () => {
   const dispatch = useDispatch();
-  const { userAuth } = useSelector((state) => state.authentication);
-
+  const searchRef = useRef(null);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const { userAuth } = useSelector((state) => state.authentication);
 
   const toggleSearch = () => {
     setIsSearchVisible(!isSearchVisible);
@@ -24,8 +24,50 @@ const ClientTopbar = () => {
     localStorage.removeItem("userInfo");
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setIsSearchVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Disable scrolling when the search bar is open
+  useEffect(() => {
+    if (isSearchVisible) {
+      document.body.style.overflow = "hidden"; // Prevent scrolling
+    } else {
+      document.body.style.overflow = ""; // Re-enable scrolling
+    }
+
+    return () => {
+      document.body.style.overflow = ""; // Cleanup on component unmount
+    };
+  }, [isSearchVisible]);
+
   return (
     <>
+      {isSearchVisible && (
+        <div
+          className="backdrop"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            backdropFilter: "blur(8px)", // Blurring effect
+            zIndex: 9997, // Behind the search bar but above other content
+          }}
+        />
+      )}
+
       <Navbar expand="md" className="top-navbar">
         <Container className="flex-column flex-md-row">
           <div className="d-flex align-items-center w-md-auto">
@@ -44,7 +86,10 @@ const ClientTopbar = () => {
           {userAuth && (
             <>
               <Navbar className="justify-content-end">
-                <div className="d-flex w-100 justify-content-center d-md-none">
+                <div
+                  className="d-flex w-100 justify-content-center d-md-none"
+                  ref={searchRef}
+                >
                   <i
                     className="bi bi-search border border-secondary mx-1"
                     style={{
@@ -110,21 +155,22 @@ const ClientTopbar = () => {
                   </div>
                 </Nav.Link>
 
-                <Nav className="mx-2">
+                <Nav className="mx-1">
                   <NavDropdown
                     title={
                       <HandleImages
                         imagePath={userAuth?.profile}
                         imageAlt={userAuth?.userName}
                         imageStyle={{
-                          width: "30px",
-                          height: "30px",
+                          width: "40px",
+                          height: "40px",
                           borderRadius: "50%",
+                          border: "1px solid #fff",
                         }}
                       />
                     }
                     id="profile-dropdown"
-                    className="custom-dropdown"
+                    className="user-profile-dropdown"
                   >
                     <NavDropdown.Item as={NavLink} to="/account">
                       Profile
