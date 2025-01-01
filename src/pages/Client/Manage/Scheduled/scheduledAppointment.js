@@ -69,6 +69,7 @@ const ScheduledAppointment = () => {
                     canEditEvents: false,
                     canNavigate: true,
                     canChangeView: true,
+                    canDateClick: false,
                   }}
                 />
               </CardBody>

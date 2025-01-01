@@ -1,5 +1,11 @@
 export const valetMenu = [
   {
+    href: "/",
+    iconClass: "bi bi-house-check",
+    className: "",
+    label: "Home",
+  },
+  {
     href: "/appointment",
     iconClass: "bi bi-envelope",
     className: "",
@@ -27,11 +33,17 @@ export const valetMenu = [
     href: "#referal",
     iconClass: "",
     className: "btn ms-3 py-1 px-3 bg-white border-0 text-black",
-    label: "Share Your Referal",
+    label: "Referal",
   },
 ];
 
 export const customerMenu = [
+  {
+    href: "/",
+    iconClass: "bi bi-house-check",
+    className: "",
+    label: "Home",
+  },
   {
     href: "/request-service",
     iconClass: "bi bi-list-task",
@@ -80,6 +92,6 @@ export const customerMenu = [
     href: "#referal",
     iconClass: "",
     className: "btn ms-3 py-1 px-3 bg-white text-black",
-    label: "Share Your Referal",
+    label: "Referal",
   },
 ];
