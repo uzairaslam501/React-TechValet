@@ -23,3 +23,33 @@
   width: 100px;
   height: 100px;
 }
+
+.headline {
+  font-size: 56px;
+}
+
+@media (max-width: 1024px) {
+  .headline {
+    font-size: 44px;
+  }
+  .custom-header-cards {
+    padding: 1px !important;
+  }
+  .custom-header-cards p {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .headline {
+    font-size: 36px;
+  }
+
+  .custom-header-cards {
+    padding: 5px !important;
+  }
+
+  .custom-header-cards p {
+    font-size: 17px;
+  }
+}
