@@ -56,10 +56,11 @@ const SearchSection = () => {
                     <Container className="p-0">
                       <SearchBar
                         parentClass=""
-                        boxClass="py-2 me-3"
+                        boxClass="me-3"
                         boxStyle={{
                           boxShadow: "5px 5px 15px #999",
-                          fontSize: "22px",
+                          fontSize: "18px",
+                          padding: "14px",
                         }}
                         buttonClass=""
                         buttonStyle={{

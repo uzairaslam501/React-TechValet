@@ -115,7 +115,7 @@
   --bs-btn-color: #fff;
   --bs-btn-bg: #000000;
   --bs-btn-border-color: #000000;
-  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-color: #000;
   --bs-btn-hover-bg: #fcd609;
   --bs-btn-hover-border-color: #fcd609;
   --bs-btn-focus-shadow-rgb: 0, 0, 0; /* Focus shadow adjusted for black */
