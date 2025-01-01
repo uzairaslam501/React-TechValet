@@ -1,9 +1,10 @@
+import "./style.css";
 import React from "react";
-import { Container, Row, Col, Card } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import SearchBar from "./SearchBar/SearchBar";
+import { Container, Row, Col, Card } from "react-bootstrap";
 import CustomCard from "../../../../components/Custom/Cards/CustomCard";
-import "./style.css";
+import Keywords from "./SearchBar/Keywords";
 
 const SearchSection = () => {
   const { userAuth } = useSelector((state) => state.authentication);
@@ -50,7 +51,14 @@ const SearchSection = () => {
                   Millions of individuals utilize IT Valet to help them with all
                   they need to make their ideas a reality.
                 </p>
-                {userAuth && userAuth.role === "Customer" && <SearchBar />}
+                {userAuth && userAuth.role === "Customer" && (
+                  <>
+                    <Container className="p-0">
+                      <SearchBar />
+                      <Keywords />
+                    </Container>
+                  </>
+                )}
               </Card>
             </Col>
 

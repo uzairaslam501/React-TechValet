@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Navbar,
-  Container,
-  Nav,
-  NavDropdown,
-  Form,
-  Button,
-} from "react-bootstrap";
+import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import logo from "../../../../assets/images/logo.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
@@ -14,6 +7,7 @@ import "./topbar.css";
 import { logout } from "../../../../redux/Reducers/authSlice";
 import NotificationCard from "../../../Custom/Notification/NotificationCard";
 import HandleImages from "../../../Custom/Avatars/HandleImages";
+import SearchBar from "../../../../pages/Client/Home/Search/SearchBar/SearchBar";
 
 const ClientTopbar = () => {
   const dispatch = useDispatch();
@@ -34,24 +28,21 @@ const ClientTopbar = () => {
     <>
       <Navbar expand="md" className="top-navbar">
         <Container className="flex-column flex-md-row">
-          <NavLink to="/" className="text-center mx-auto mx-md-0">
-            <img src={logo} alt="Logo" style={{ width: "120px" }} />
-          </NavLink>
+          <div className="d-flex align-items-center w-md-auto">
+            <NavLink to="/" className="text-center mx-auto mx-md-0">
+              <img src={logo} alt="Logo" style={{ width: "120px" }} />
+            </NavLink>
+
+            {/* Search Bar (Visible on medium and larger screens) */}
+            {userAuth && (
+              <div className="d-none d-md-flex ms-3 flex-grow-1">
+                <SearchBar />
+              </div>
+            )}
+          </div>
 
           {userAuth && (
             <>
-              <div className="mt-3 mt-md-0 d-md-flex justify-content-center">
-                <Form className="d-none d-md-flex">
-                  <Form.Control
-                    type="search"
-                    placeholder="Search"
-                    className="me-2"
-                    aria-label="Search"
-                  />
-                  <Button variant="outline-success">Search</Button>
-                </Form>
-              </div>
-
               <Navbar className="justify-content-end">
                 <div className="d-flex w-100 justify-content-center d-md-none">
                   <i
@@ -68,8 +59,9 @@ const ClientTopbar = () => {
 
                   {isSearchVisible && (
                     <div
-                      className="bg-white p-3"
+                      className="p-3"
                       style={{
+                        backgroundColor: "transparent",
                         position: "absolute", // Positions the search bar below the icon
                         width: "320px", // Fixed width for the search bar
                         top: "100%", // Make sure the search bar appears right below the icon
@@ -79,23 +71,7 @@ const ClientTopbar = () => {
                         boxSizing: "border-box", // Make sure padding doesn't cause overflow
                       }}
                     >
-                      <Form className="d-flex w-100">
-                        <Form.Control
-                          type="search"
-                          placeholder="Search"
-                          className="me-2"
-                          aria-label="Search"
-                          style={{
-                            width: "calc(100% - 60px)", // Adjust for button space if necessary
-                          }}
-                        />
-                        <Button
-                          variant="outline-success"
-                          style={{ width: "60px" }}
-                        >
-                          Search
-                        </Button>
-                      </Form>
+                      <SearchBar />
                     </div>
                   )}
                 </div>
