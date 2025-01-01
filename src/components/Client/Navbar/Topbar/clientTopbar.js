@@ -78,7 +78,21 @@ const ClientTopbar = () => {
             {/* Search Bar (Visible on medium and larger screens) */}
             {userAuth && (
               <div className="d-none d-md-flex ms-3 flex-grow-1">
-                <SearchBar />
+                <SearchBar
+                  boxClass="py-2"
+                  boxStyle={{
+                    width: "calc(100% - 60px)", // Adjust for button space if necessary
+                    borderRadius: "0",
+                    backgroundColor: "#f9f9f9",
+                    borderColor: "#999",
+                  }}
+                  buttonClass=""
+                  buttonStyle={{
+                    borderRadius: "0",
+                    width: "60px",
+                    borderColor: "#999",
+                  }}
+                />
               </div>
             )}
           </div>
@@ -116,7 +130,21 @@ const ClientTopbar = () => {
                         boxSizing: "border-box", // Make sure padding doesn't cause overflow
                       }}
                     >
-                      <SearchBar />
+                      <SearchBar
+                        boxClass="py-2"
+                        boxStyle={{
+                          width: "calc(100% - 60px)", // Adjust for button space if necessary
+                          borderRadius: "0",
+                          backgroundColor: "#f9f9f9",
+                          borderColor: "#999",
+                        }}
+                        buttonClass=""
+                        buttonStyle={{
+                          borderRadius: "0",
+                          width: "60px",
+                          borderColor: "#999",
+                        }}
+                      />
                     </div>
                   )}
                 </div>

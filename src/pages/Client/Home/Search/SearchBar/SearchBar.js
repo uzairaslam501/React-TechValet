@@ -3,7 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 
-const SearchBar = () => {
+const SearchBar = ({
+  parentClass = "",
+  boxClass = "",
+  buttonClass = "",
+  parentStyle = {},
+  boxStyle = {},
+  buttonStyle = {},
+}) => {
   const navigate = useNavigate();
   const [searchKeyword, setSearchKeyword] = useState("");
 
@@ -21,30 +28,26 @@ const SearchBar = () => {
 
   return (
     <>
-      <Form onSubmit={handleSubmit} className="d-flex w-100">
+      <Form
+        onSubmit={handleSubmit}
+        className={`d-flex w-100 ${parentClass}`}
+        style={parentStyle}
+      >
         <Form.Control
           type="search"
           name="searchKeyword"
           placeholder="Find Services..."
-          className="py-2"
+          className={`${boxClass}`}
           aria-label="Search"
-          style={{
-            width: "calc(100% - 60px)", // Adjust for button space if necessary
-            borderRadius: "0",
-            backgroundColor: "#f9f9f9",
-            borderColor: "#999",
-          }}
+          style={boxStyle}
           value={searchKeyword}
           onChange={(e) => setSearchKeyword(e.target.value)}
         />
         <Button
           type="submit"
           variant="primary"
-          style={{
-            borderRadius: "0",
-            width: "60px",
-            borderColor: "#999",
-          }}
+          style={buttonStyle}
+          className={buttonClass}
         >
           <i className="bi bi-search"></i>
         </Button>

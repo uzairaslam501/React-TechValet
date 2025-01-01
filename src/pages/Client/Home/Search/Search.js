@@ -54,7 +54,20 @@ const SearchSection = () => {
                 {userAuth && userAuth.role === "Customer" && (
                   <>
                     <Container className="p-0">
-                      <SearchBar />
+                      <SearchBar
+                        parentClass=""
+                        boxClass="py-2 me-3"
+                        boxStyle={{
+                          boxShadow: "5px 5px 15px #999",
+                          fontSize: "22px",
+                        }}
+                        buttonClass=""
+                        buttonStyle={{
+                          boxShadow: "5px 5px 15px #999",
+                          width: "100px",
+                          borderColor: "#999",
+                        }}
+                      />
                       <Keywords />
                     </Container>
                   </>
