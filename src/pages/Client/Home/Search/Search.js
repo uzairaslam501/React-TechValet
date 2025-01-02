@@ -120,7 +120,7 @@ const SearchSection = () => {
                     in real-time. Tech Valet team handles all the details of
                     each job.
                   </Card.Text>
-                  <NavLink to={"/register"}>
+                  <NavLink to={"/register/customer"}>
                     <Button className="btn-secondary-secondary">Join Us</Button>
                   </NavLink>
                   {!userAuth && (

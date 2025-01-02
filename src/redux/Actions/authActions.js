@@ -3,10 +3,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   handleApiError,
   processApiResponse,
+  rejectWithError,
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { toast } from "react-toastify";
-import { getAuthUserId, getToken } from "../../utils/_apiConfig";
+import { getToken } from "../../utils/_apiConfig";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -18,9 +19,9 @@ export const postLogin = createAsyncThunk(
   async (userData, { rejectWithValue, getState, dispatch }) => {
     try {
       const response = await api.post("/auth/login", userData);
-      const responseBack = processApiResponse(response, dispatch);
-      localStorage.setItem("userInfo", JSON.stringify(responseBack?.data));
-      return responseBack?.data;
+      const { data } = processApiResponse(response, dispatch);
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      return data;
     } catch (error) {
       handleApiError(error, dispatch);
     }
@@ -33,10 +34,13 @@ export const postRegister = createAsyncThunk(
   async (userData, { rejectWithValue, getState, dispatch }) => {
     try {
       const response = await api.post("/auth/register", userData);
-      const responseBack = response;
-      return responseBack?.data; // Return registration response data
+      const { data, message } = processApiResponse(response, dispatch);
+      if (message) {
+        toast.success(message);
+      }
+      return data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      rejectWithError(error, dispatch);
     }
   }
 );
@@ -48,7 +52,7 @@ export const postUserUpdate = createAsyncThunk(
     const { token, expired } = getToken(getState);
     try {
       const response = await api.put(
-        `/Auth/UpdateProfile/${userId}`,
+        `/Auth/UpdateProfile/${encodeURIComponent(userId)}`,
         userData,
         {
           headers: {
@@ -77,7 +81,7 @@ export const UpdateProfileImage = createAsyncThunk(
     formData.append("file", file);
     try {
       const response = await api.put(
-        `/Auth/update-profile-image/${userId}`,
+        `/Auth/update-profile-image/${encodeURIComponent(userId)}`,
         formData,
         {
           headers: {
@@ -107,9 +111,9 @@ export const postUserActivity = createAsyncThunk(
     const { token, expired } = getToken(getState);
     try {
       const response = await api.put(
-        `/Auth/user-activity-status/${String(userId)}?activityStatus=${String(
-          activityStatus
-        )}`,
+        `/Auth/user-activity-status/${String(
+          encodeURIComponent(userId)
+        )}?activityStatus=${String(activityStatus)}`,
         null,
         {
           headers: {
@@ -135,9 +139,9 @@ export const postUserAvailable = createAsyncThunk(
     const { token, expired } = getToken(getState);
     try {
       const response = await api.put(
-        `/Auth/user-availability/${String(userId)}?availabilityOption=${String(
-          available
-        )}`,
+        `/Auth/user-availability/${String(
+          encodeURIComponent(userId)
+        )}?availabilityOption=${String(available)}`,
         null,
         {
           headers: {
@@ -163,7 +167,9 @@ export const postAddUserSkill = createAsyncThunk(
     const { token, expired } = getToken(getState);
     try {
       const response = await api.post(
-        `/User/postAddSkills/${userId}?skillsName=${skillsName}`,
+        `/User/postAddSkills/${encodeURIComponent(
+          userId
+        )}?skillsName=${skillsName}`,
         null,
         {
           headers: {
@@ -188,11 +194,14 @@ export const getUserSkills = createAsyncThunk(
   async (userId, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
-      const response = await api.get(`/User/GetSkills/${userId}`, {
-        headers: {
-          Authorization: `${token}`,
-        },
-      });
+      const response = await api.get(
+        `/User/GetSkills/${encodeURIComponent(userId)}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
       const { data } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {

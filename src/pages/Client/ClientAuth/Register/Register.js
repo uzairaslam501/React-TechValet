@@ -1,69 +1,69 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { postLogin } from "../../../../redux/Actions/authActions";
-import { NavLink, Navigate } from "react-router-dom";
-import {
-  Button,
-  Col,
-  Container,
-  Form,
-  InputGroup,
-  Row,
-  Spinner,
-} from "react-bootstrap";
+import { postRegister } from "../../../../redux/Actions/authActions";
+import { Navigate, useParams } from "react-router-dom";
+import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import loginPage from "../../../../assets/images/login-page.png";
 import background from "../../../../assets/images/Background.svg";
 import HandleImages from "../../../../components/Custom/Avatars/HandleImages";
-
-const initialValues = {
-  firstname: "",
-  lastname: "",
-  username: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-  state: "",
-  city: "",
-  postalCode: "",
-  country: "",
-  timezone: "",
-};
-
-const validateLogin = Yup.object().shape({
-  firstName: Yup.string().required("Please enter First Name"),
-  lastName: Yup.string().required("Please enter Last Name"),
-  username: Yup.string()
-    .min(3, "Username must be at least 3 characters")
-    .required("Please enter Username"),
-  email: Yup.string()
-    .email("Invalid email format")
-    .required("Please enter Email"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Please enter Password"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Please confirm your Password"),
-  state: Yup.string().required("Please enter State"),
-  city: Yup.string().required("Please enter City"),
-  postalCode: Yup.string()
-    .matches(/^\d{4,10}$/, "Zip Code must be 4-10 digits")
-    .required("Please enter Zip Code"),
-  country: Yup.string().required("Please enter Country"),
-  timezone: Yup.string().required("Please enter Timezone"),
-});
+import PasswordField from "../../../../components/Custom/PasswordInput/PasswordInput";
 
 const Register = () => {
+  const { value } = useParams();
   const dispatch = useDispatch();
   const { userAuth, loading, error } = useSelector(
     (state) => state.authentication
   );
 
+  const initialValues = {
+    firstname: "",
+    lastname: "",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: value || "",
+    state: "",
+    city: "",
+    postalCode: "",
+    country: "",
+    timezone: "",
+  };
+
+  const validateLogin = Yup.object().shape({
+    firstName: Yup.string().required("Please enter First Name"),
+    lastName: Yup.string().required("Please enter Last Name"),
+    username: Yup.string()
+      .min(3, "Username must be at least 3 characters")
+      .required("Please enter Username"),
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Please enter Email"),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Please enter Password"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password"), null], "Passwords must match")
+      .required("Please confirm your Password"),
+    state: Yup.string().required("Please enter State"),
+    city: Yup.string().required("Please enter City"),
+    postalCode: Yup.string()
+      .matches(/^\d{4,10}$/, "Zip Code must be 4-10 digits")
+      .required("Please enter Zip Code"),
+    country: Yup.string().required("Please enter Country"),
+    timezone: Yup.string().required("Please enter Timezone"),
+  });
+
   const handleSubmit = useCallback(
     (values) => {
-      dispatch(postLogin(values));
+      if (value) {
+        setFieldValue("role", value);
+      } else {
+        console.error("Role is missing from URL parameters");
+      }
+      dispatch(postRegister(values));
     },
     [dispatch]
   );
@@ -74,6 +74,7 @@ const Register = () => {
     errors,
     handleBlur,
     handleChange,
+    setFieldValue,
     handleSubmit: formikSubmit,
   } = useFormik({
     initialValues,
@@ -83,14 +84,11 @@ const Register = () => {
     onSubmit: handleSubmit,
   });
 
-  // Check if user is authenticated
-  if (userAuth && userAuth.id) {
-    return userAuth.role === "0" ? (
-      <Navigate to="/dashboard" />
-    ) : (
-      <Navigate to="/account" />
-    );
-  }
+  useEffect(() => {
+    if (userAuth?.role === "Customer") {
+      <Navigate to="/" />;
+    }
+  }, []);
 
   return (
     <Container fluid>
@@ -226,47 +224,41 @@ const Register = () => {
                 {/* Password */}
                 <Col xl={6} lg={6} md={6} sm={12} xs={12}>
                   <Form.Group className="mb-2">
-                    <Form.Label>
-                      Password <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="password"
+                    <PasswordField
+                      label="Password"
                       name="password"
-                      required
-                      placeholder="Enter Password"
+                      placeholder="Enter your password"
                       value={values.password}
                       onBlur={handleBlur("password")}
                       onChange={handleChange("password")}
+                      required={true}
                       isInvalid={touched.password && !!errors.password}
+                      touched={touched.password}
+                      errors={errors.password}
                     />
-                    <Form.Control.Feedback type="invalid">
-                      {touched.password && errors.password}
-                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
+
                 {/* Confirm Password */}
                 <Col xl={6} lg={6} md={6} sm={12} xs={12}>
                   <Form.Group className="mb-2">
-                    <Form.Label>
-                      Confirm Password <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="password"
+                    <PasswordField
+                      label="Confirm Password"
                       name="confirmPassword"
-                      required
-                      placeholder="Re-enter Password"
+                      placeholder="Re-enter password"
                       value={values.confirmPassword}
                       onBlur={handleBlur("confirmPassword")}
                       onChange={handleChange("confirmPassword")}
+                      required={true}
                       isInvalid={
                         touched.confirmPassword && !!errors.confirmPassword
                       }
+                      touched={touched.confirmPassword}
+                      errors={errors.confirmPassword}
                     />
-                    <Form.Control.Feedback type="invalid">
-                      {touched.confirmPassword && errors.confirmPassword}
-                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
+
                 {/* State */}
                 <Col xl={4} lg={4} md={4} sm={12} xs={12}>
                   <Form.Group className="mb-2">

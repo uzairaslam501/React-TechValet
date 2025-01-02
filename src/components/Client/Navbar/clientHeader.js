@@ -156,7 +156,7 @@ const ClientNavbar = () => {
                 </Nav.Link>
                 <Nav.Link
                   as={NavLink}
-                  to="/register"
+                  to="/register/customer"
                   className="btn bg-white text-black ms-3"
                   style={{
                     border: "1px solid black",

@@ -17,6 +17,7 @@ import logo from "../../../../assets/images/logo-for-white-bg.svg";
 import HandleImages from "../../../../components/Custom/Avatars/HandleImages";
 import loginPage from "../../../../assets/images/login-page.png";
 import background from "../../../../assets/images/Background.svg";
+import PasswordField from "../../../../components/Custom/PasswordInput/PasswordInput";
 
 const initialValues = {
   email: "",
@@ -138,12 +139,9 @@ const Login = () => {
             </p>
             <Form onSubmit={formikSubmit}>
               <input type="hidden" name="way" value="user" />
-              <Form.Group className="mb-3">
+              <Form.Group className="mb-2">
                 <Form.Label>Email / Username</Form.Label>
                 <InputGroup>
-                  <InputGroup.Text>
-                    <i className="bi bi-person"></i>
-                  </InputGroup.Text>
                   <Form.Control
                     type="text"
                     name="Email"
@@ -154,32 +152,27 @@ const Login = () => {
                     onChange={handleChange("email")}
                     isInvalid={touched.email && !!errors.email}
                   />
+                  <InputGroup.Text>
+                    <i className="bi bi-person"></i>
+                  </InputGroup.Text>
+                  <Form.Control.Feedback type="invalid">
+                    {touched.email && errors.email}
+                  </Form.Control.Feedback>
                 </InputGroup>
-                <Form.Control.Feedback type="invalid">
-                  {touched.email && errors.email}
-                </Form.Control.Feedback>
               </Form.Group>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Password</Form.Label>
-                <InputGroup>
-                  <InputGroup.Text>
-                    <i className="bi bi-key-fill"></i>
-                  </InputGroup.Text>
-                  <Form.Control
-                    type="password"
-                    name="Password"
-                    required
-                    placeholder="********"
-                    value={values.password}
-                    onBlur={handleBlur("password")}
-                    onChange={handleChange("password")}
-                    isInvalid={touched.password && !!errors.password}
-                  />
-                </InputGroup>
-                <Form.Control.Feedback type="invalid">
-                  {touched.password && errors.password}
-                </Form.Control.Feedback>
+              <Form.Group className="mb-2">
+                <PasswordField
+                  label="Password"
+                  placeholder="********"
+                  value={values.password}
+                  onBlur={handleBlur("password")}
+                  onChange={handleChange("password")}
+                  required={true}
+                  isInvalid={touched.password && !!errors.password}
+                  touched={touched.password}
+                  errors={errors.password}
+                />
               </Form.Group>
 
               <div className="d-flex justify-content-between">
@@ -211,7 +204,10 @@ const Login = () => {
 
                   <div>
                     <span className="text-secondary">Not Registered Yet?</span>
-                    <NavLink to={"/register"} className="text-dark ms-1">
+                    <NavLink
+                      to={"/register/customer"}
+                      className="text-dark ms-1"
+                    >
                       Create an account
                     </NavLink>
                   </div>

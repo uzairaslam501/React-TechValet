@@ -90,7 +90,7 @@ const Footer = () => {
                 <NavLink to={"/login"}>Login</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink to={"/register"}>Register</NavLink>
+                <NavLink to={"/register/customer"}>Register</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
                 <NavLink to={"/forgot-password"}>Forgot Password</NavLink>

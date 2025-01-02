@@ -96,7 +96,7 @@ export const customerMenu = [
     title: "Manage Appointments",
   },
   {
-    href: "/register",
+    href: "/register/valet",
     iconClass: "bi bi-tropical-storm me-2",
     className: "",
     label: "Switch to Valet",
