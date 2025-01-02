@@ -1,32 +1,24 @@
-import React from "react";
-import {
-  Row,
-  Col,
-  Form,
-  Container,
-  Button,
-  InputGroup,
-  ListGroup,
-} from "react-bootstrap";
-import "../css/main.css";
-import HandleImages from "../../Custom/Avatars/HandleImages";
-import logo from "../../../assets/images/logo.svg";
 import "./style.css";
+import "../css/main.css";
+import React from "react";
 import { NavLink } from "react-router-dom";
+import logo from "../../../assets/images/welcome-logo.png";
+import HandleImages from "../../Custom/Avatars/HandleImages";
+import { Container, Row, Col, ListGroup } from "react-bootstrap";
 const Footer = () => {
   return (
     <>
       <Container
-        className=" px-5"
+        className="px-5"
         style={{
           background: "#000",
           borderRadius: "20px",
         }}
       >
         {/*Footer Top*/}
-        <Row className="py-4 border-1 border-bottom border-light">
+        <Row className="border-1 border-bottom border-light">
           {/*1st Column*/}
-          <Col xl={4} lg={4} md={12} sm={12} xs={12} className="py-3">
+          <Col xl={4} lg={4} md={12} sm={12} xs={12} className="pb-5">
             <HandleImages
               imagePath={logo}
               imageStyle={{
@@ -53,7 +45,7 @@ const Footer = () => {
           </Col>
 
           {/*2nd Column*/}
-          <Col xl={3} lg={3} md={4} sm={6} xs={6} className="py-3">
+          <Col xl={3} lg={3} md={4} sm={6} xs={6} className="py-5">
             <h4 className="text-white">Pages</h4>
             <ListGroup className="footer-pages-list">
               <ListGroup.Item>
@@ -75,7 +67,7 @@ const Footer = () => {
           </Col>
 
           {/*3rd Column*/}
-          <Col xl={3} lg={3} md={4} sm={6} xs={6} className="py-3">
+          <Col xl={3} lg={3} md={4} sm={6} xs={6} className="py-5">
             <h4 className="text-white">Company</h4>
             <ListGroup className="footer-pages-list">
               <ListGroup.Item>
@@ -91,7 +83,7 @@ const Footer = () => {
           </Col>
 
           {/*4th Column*/}
-          <Col xl={2} lg={2} md={4} sm={12} xs={12} className="py-3">
+          <Col xl={2} lg={2} md={4} sm={12} xs={12} className="py-5">
             <h4 className="text-white">Contact</h4>
             <ListGroup className="footer-pages-list">
               <ListGroup.Item>

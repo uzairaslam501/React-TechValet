@@ -50,11 +50,11 @@ const createRoute = createBrowserRouter(
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Route>
+      <Route path="/login" element={<ClientLogin />} />
       <Route element={<ClientRoot />}>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/login" element={<ClientLogin />} />
         <Route element={<ProtectedClient />}>
           <Route path="/account" element={<Index />} />
           <Route path="/earning" element={<Earnings />} />

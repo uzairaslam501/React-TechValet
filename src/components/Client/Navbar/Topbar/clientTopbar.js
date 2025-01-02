@@ -76,7 +76,7 @@ const ClientTopbar = () => {
             </NavLink>
 
             {/* Search Bar (Visible on medium and larger screens) */}
-            {userAuth && (
+            {userAuth && userAuth.role === "Customer" && (
               <div className="d-none d-md-flex ms-3 flex-grow-1">
                 <SearchBar
                   boxClass="py-2"

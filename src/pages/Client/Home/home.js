@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 
 const Home = () => {
   const { userAuth } = useSelector((state) => state?.authentication);
+  console.log(userAuth);
   return (
     <>
       <SearchSection />
@@ -52,9 +53,9 @@ const Home = () => {
       )}
 
       <section
-        className=""
+        id="testimonials"
         style={{
-          backgroundColor: "#f3f3f3",
+          background: userAuth?.role === "Valet" && "#fff",
         }}
       >
         <Container>
@@ -66,7 +67,12 @@ const Home = () => {
         </Container>
       </section>
 
-      <section id="marketplace">
+      <section
+        id="marketplace"
+        style={{
+          background: userAuth?.role !== "Valet" && "#fff",
+        }}
+      >
         <Container>
           <Row>
             {CategoriesList.map((category, index) => (
