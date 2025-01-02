@@ -13,9 +13,10 @@ import {
   Row,
   Spinner,
 } from "react-bootstrap";
-import loginPage from "../../../../assets/images/login-page.png";
 import logo from "../../../../assets/images/logo-for-white-bg.svg";
 import HandleImages from "../../../../components/Custom/Avatars/HandleImages";
+import loginPage from "../../../../assets/images/login-page.png";
+import background from "../../../../assets/images/Background.svg";
 
 const initialValues = {
   email: "",
@@ -29,7 +30,7 @@ const validateLogin = Yup.object().shape({
   password: Yup.string().required("Please enter password"),
 });
 
-const ClientLogin = () => {
+const Login = () => {
   const dispatch = useDispatch();
   const { userAuth, loading, error } = useSelector(
     (state) => state.authentication
@@ -78,20 +79,13 @@ const ClientLogin = () => {
           xs={12}
           className="d-none d-md-flex justify-content-center align-items-center p-5"
           style={{
-            backgroundColor: "#fcd609",
+            backgroundImage: `url(${background})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
           }}
         >
           <div className="text-center">
-            <div
-              className="position-relative mx-auto w-75"
-              style={{
-                width: "100%",
-                height: "100%",
-                backgroundColor: "#ffc107",
-                borderRadius: "50%",
-                overflow: "visible",
-              }}
-            >
+            <div className="position-relative mx-auto w-50">
               <HandleImages
                 imagePath={loginPage}
                 imageAlt="login"
@@ -231,4 +225,4 @@ const ClientLogin = () => {
   );
 };
 
-export default ClientLogin;
+export default Login;

@@ -1,9 +1,10 @@
 import "./style.css";
 import React from "react";
 import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
 import Keywords from "./SearchBar/Keywords";
 import SearchBar from "./SearchBar/SearchBar";
-import { Container, Row, Col, Card, Button, NavLink } from "react-bootstrap";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import HandleImages from "../../../../components/Custom/Avatars/HandleImages";
 
 const SearchSection = () => {
@@ -119,12 +120,9 @@ const SearchSection = () => {
                     in real-time. Tech Valet team handles all the details of
                     each job.
                   </Card.Text>
-                  <Button
-                    href={"/Auth/Register?value=Customer"}
-                    className="btn-secondary-secondary"
-                  >
-                    Join Us
-                  </Button>
+                  <NavLink to={"/register"}>
+                    <Button className="btn-secondary-secondary">Join Us</Button>
+                  </NavLink>
                   {!userAuth && (
                     <div className="mb-0 mt-3 text-black d-flex justify-content-center">
                       Already a member?
