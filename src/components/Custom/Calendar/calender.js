@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { toast } from "react-toastify";
-import EventToast from "../EventToaster/EventToast";
+import * as bootstrap from "bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const MyCalendar = ({
   events,
@@ -13,49 +13,87 @@ const MyCalendar = ({
     canEditEvents: false,
     canNavigate: true,
     canChangeView: true,
+    canDateClick: true,
   },
 }) => {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
+
+  const updateWindowSize = () => {
+    setIsMobile(window.innerWidth <= 600);
+  };
   const clickEventCalendar = (url) => {
     console.log("Event URL:", url);
   };
+
+  const headerToolbar = permissions.canChangeView
+    ? {
+        left: permissions.canNavigate ? "prev,next today" : "",
+        center: isMobile ? "" : "title",
+        right: "dayGridMonth,timeGridDay",
+      }
+    : { center: "title" };
+
+  useEffect(() => {
+    window.addEventListener("resize", updateWindowSize);
+    // Remove event listener when the component unmounts
+    return () => {
+      window.removeEventListener("resize", updateWindowSize);
+    };
+  }, []);
 
   return (
     <div>
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
-        headerToolbar={
-          permissions.canChangeView
-            ? {
-                left: permissions.canNavigate ? "prev,next today" : "",
-                center: "title",
-                right: "dayGridMonth,timeGridWeek,timeGridDay",
-              }
-            : { center: "title" }
-        }
+        headerToolbar={headerToolbar}
         events={events}
         navLinks={permissions.canNavigate}
         selectable={permissions.canEditEvents}
         dateClick={(info) => {
-          if (permissions.canNavigate) {
+          if (permissions.canDateClick) {
             info.view.calendar.gotoDate(info.date);
             info.view.calendar.changeView("timeGridDay");
           }
         }}
         eventMouseEnter={(info) => {
           if (permissions.canViewDetails) {
-            let currentToastId = null;
-            const el = info.el;
-            const event = info.event;
-
-            if (currentToastId !== null) {
-              toast.dismiss(currentToastId);
+            // Dispose of any existing popover to prevent duplicate tooltips
+            if (window.bootstrap && info.el._popover) {
+              info.el._popover.dispose();
             }
 
-            currentToastId = toast.success(<EventToast event={event} />);
-            el.onmouseleave = () => {
-              toast.dismiss(currentToastId);
-              currentToastId = null;
+            // Extracting event details
+            const { description } = info.event.extendedProps;
+
+            // Create a new tooltip
+            info.el._popover = new bootstrap.Popover(info.el, {
+              title: `<strong>Title:</strong> ${info.event.title}`,
+              content: `
+                <div>
+                  <span><strong>Status:</strong> ${
+                    description || "N/A"
+                  }</span><br />
+                  <span><strong>Start:</strong> ${info.event.start.toLocaleString()}</span><br />
+                  <span><strong>End:</strong> ${
+                    info.event.end.toLocaleString() || "N/A"
+                  }</span>
+                </div>
+              `,
+              html: true,
+              trigger: "hover focus",
+              placement: "top",
+            });
+
+            // Show the tooltip
+            info.el._popover.show();
+
+            // Clean up tooltip when mouse leaves
+            info.el.onmouseleave = () => {
+              if (info.el._popover) {
+                info.el._popover.dispose();
+                info.el._popover = null;
+              }
             };
           }
         }}
@@ -64,6 +102,9 @@ const MyCalendar = ({
             info.jsEvent.preventDefault();
             clickEventCalendar(info.event.url);
           }
+        }}
+        eventDidMount={(info) => {
+          console.log("info ::", info);
         }}
       />
     </div>

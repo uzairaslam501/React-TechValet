@@ -91,14 +91,15 @@ const ViewPackages = () => {
 
     try {
       setLoader(true);
-      const response = await dispatch(getUserPackagesRecords(params));
-      if (response.payload.data?.length > 0) {
-        setRecords(response.payload?.data);
-        setTotalRecords(response.payload?.recordsTotal);
-      } else {
-        setRecords([]);
-        setTotalRecords(0);
-      }
+      dispatch(getUserPackagesRecords(params))
+        .then((response) => {
+          setRecords(response.payload?.data);
+          setTotalRecords(response.payload?.recordsTotal);
+        })
+        .catch((error) => {
+          setRecords([]);
+          setTotalRecords(0);
+        });
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {

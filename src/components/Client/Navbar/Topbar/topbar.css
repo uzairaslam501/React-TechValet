@@ -3,12 +3,36 @@
   border-bottom: 2px solid #fcd609;
 }
 
-.custom-dropdown .dropdown-menu {
+.navbar-logo {
+  width: 120px;
+}
+
+.navbar-nav .user-profile-dropdown #profile-dropdown {
+  padding: 0px !important;
+}
+
+.user-profile-dropdown .dropdown-menu {
   z-index: 9999;
   left: -125px;
 }
 
-/* Customized */
-.custom-dropdown .dropdown-toggle::after {
-  display: none; /* Hide the caret icon */
+.user-profile-dropdown .nav-link {
+  padding: 0px;
+}
+
+/* Hide the dropdown toggle caret */
+.user-profile-dropdown .dropdown-toggle::after {
+  display: none;
+}
+
+/* Mobile-specific changes */
+@media (max-width: 767.98px) {
+  .navbar-logo {
+    display: block;
+    margin: 0 auto;
+  }
+
+  .toggle-align {
+    text-align: end;
+  }
 }

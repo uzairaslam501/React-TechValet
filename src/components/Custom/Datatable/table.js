@@ -242,6 +242,7 @@ function CustomTable({
                           {row.orderReasonType === "3" &&
                           row.orderReasonIsActive === "1" ? (
                             <Button
+                              size="sm"
                               href={`/order-details?id=${row.encId}`}
                               variant="danger"
                             >
@@ -249,6 +250,7 @@ function CustomTable({
                             </Button>
                           ) : row.isDelivered === "0" ? (
                             <Button
+                              size="sm"
                               href={`/order-details?id=${row.encId}`}
                               className="btn-secondary-secondary"
                             >
@@ -256,6 +258,7 @@ function CustomTable({
                             </Button>
                           ) : row.isDelivered === "1" ? (
                             <Button
+                              size="sm"
                               href={`/order-details?id=${row.encId}`}
                               variant="success"
                             >
@@ -263,6 +266,7 @@ function CustomTable({
                             </Button>
                           ) : (
                             <Button
+                              size="sm"
                               href={`/order-details?id=${row.encId}`}
                               className="btn-primary-secondary"
                             >

@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 
 import Login from "../pages/Admin/Auth/Login/Login";
-import Register from "../pages/Admin/Auth/Register/Register";
+import Register from "../pages/Client/ClientAuth/Register/Register";
 import AuthLayout from "../components/Admin/Layouts/authLayout";
 import ProtectedLayout from "../components/Admin/Layouts/protected";
 import Dashboard from "../pages/Admin/Dashboard/Dashboard";
@@ -19,7 +19,7 @@ import About from "../pages/Client/About/about";
 import Contact from "../pages/Client/Contact/contact";
 import Search from "../pages/Client/Search/filteredData";
 import Earnings from "../pages/Client/Manage/Earnings/Earnings";
-import ClientLogin from "../pages/Client/ClientAuth/ClientLogin/ClientLogin";
+import ClientLogin from "../pages/Client/ClientAuth/Login/Login";
 import ManageAppointment from "../pages/Client/Manage/ManageAppointment/index";
 import PackageSelection from "../pages/Client/Manage/Packages/packageSelection";
 import ViewPackages from "../pages/Client/Manage/Packages/viewPackages";
@@ -50,11 +50,12 @@ const createRoute = createBrowserRouter(
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Route>
+      <Route path="/login" element={<ClientLogin />} />
+      <Route path="/register/:value" element={<Register />} />
       <Route element={<ClientRoot />}>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/login" element={<ClientLogin />} />
         <Route element={<ProtectedClient />}>
           <Route path="/account" element={<Index />} />
           <Route path="/earning" element={<Earnings />} />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CustomTable from "../../../../../components/Custom/Datatable/table";
-import { getRecords } from "../../../../../redux/Actions/customerActions";
+import { getAppointments } from "../../../../../redux/Actions/customerActions";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { Card, CardBody, Col, Row } from "react-bootstrap";
@@ -108,14 +108,15 @@ const Appointment = ({ onComplete }) => {
 
     try {
       setLoader(true);
-      const response = await dispatch(getRecords(params));
-      if (response.payload.data?.data?.length > 0) {
-        setRecords(response.payload?.data?.data);
-        setTotalRecords(response.payload?.data?.recordsTotal);
-      } else {
-        setRecords([]);
-        setTotalRecords(0);
-      }
+      dispatch(getAppointments(params))
+        .then((response) => {
+          setRecords(response.payload?.data);
+          setTotalRecords(response.payload?.recordsTotal);
+        })
+        .catch((error) => {
+          setRecords([]);
+          setTotalRecords(0);
+        });
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {

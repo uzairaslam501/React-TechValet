@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Navbar, Nav, NavDropdown, Button } from "react-bootstrap";
+import { Navbar, Nav, NavDropdown, Button, Container } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { valetMenu, customerMenu } from "../../../utils/client/_menu";
 import { toast } from "react-toastify";
+import "./style.css";
 
 const ClientNavbar = () => {
   const { userAuth } = useSelector((state) => state.authentication);
@@ -39,105 +40,136 @@ const ClientNavbar = () => {
   }, [userAuth?.role]);
 
   return (
-    <header id="header" className="header">
-      <div className="container-fluid container-xl d-flex align-items-center justify-content-center text-uppercase">
-        <a
-          href="/"
-          className="logo d-flex align-items-center me-auto text-white"
-        >
-          <i className="bi bi-house-check me-2"></i> Home
-        </a>
-
-        {userAuth ? (
-          <Navbar expand="lg" className="navmenu text-white">
-            <Navbar.Toggle
-              aria-controls="basic-navbar-nav"
-              className="mobile-nav-toggle d-xl-none"
-            >
-              <i className="bi bi-list"></i>
-            </Navbar.Toggle>
-            <Navbar.Collapse id="basic-navbar-nav">
-              {menuBar &&
-                menuBar.map((link, index) => {
-                  return link.submenu ? (
-                    <NavDropdown
-                      title={
-                        <>
-                          {link.iconClass && (
-                            <i
-                              className={`${link.iconClass} me-2`}
-                              style={{ fontSize: "1rem" }}
-                            ></i>
-                          )}
-                          {link.label}
-                        </>
+    <>
+      <Navbar
+        className="header-navbar"
+        collapseOnSelect
+        expand="lg"
+        bg="dark"
+        variant="dark"
+      >
+        <Container className="justify-content-end">
+          {userAuth ? (
+            <>
+              <Navbar.Toggle aria-controls="responsive-header-navbar-nav" />
+              <Navbar.Collapse id="responsive-header-navbar-nav">
+                <Nav className="me-auto header-navbar-nav">
+                  {menuBar &&
+                    menuBar.map((link, index) => {
+                      return (
+                        link.label === "Home" && (
+                          <Nav className="me-auto">
+                            <Nav.Link
+                              as={NavLink}
+                              to={link.href}
+                              key={index}
+                              className={`${link.className}`}
+                            >
+                              {link.iconClass && (
+                                <i className={`${link.iconClass}`}></i>
+                              )}
+                              {link.label}
+                            </Nav.Link>
+                          </Nav>
+                        )
+                      );
+                    })}
+                </Nav>
+                <Nav className="header-navbar-nav">
+                  {menuBar &&
+                    menuBar.map((link, index) => {
+                      if (link.submenu) {
+                        // Handle links with submenus
+                        return (
+                          <NavDropdown
+                            title={
+                              <>
+                                {link.iconClass && (
+                                  <i className={`${link.iconClass} me-2`}></i>
+                                )}
+                                {link.label}
+                              </>
+                            }
+                            id={`nav-dropdown-${index}`}
+                            key={index}
+                            className={`${link.className}`}
+                          >
+                            {link.submenu.map((subLink, subIndex) => (
+                              <NavDropdown.Item
+                                as={NavLink}
+                                to={subLink.href}
+                                key={subIndex}
+                                className={`${subLink.className}`}
+                              >
+                                {subLink.iconClass && (
+                                  <i
+                                    className={`${subLink.iconClass} me-2`}
+                                  ></i>
+                                )}
+                                {subLink.label}
+                              </NavDropdown.Item>
+                            ))}
+                          </NavDropdown>
+                        );
                       }
-                      key={index}
-                      id={`nav-dropdown-${index}`}
-                      className={`${link.className}`}
-                    >
-                      {link.submenu.map((subLink, subIndex) => (
-                        <NavDropdown.Item
-                          as={NavLink}
-                          to={subLink.href}
-                          key={subIndex}
-                          className={`${subLink.className}`}
-                        >
-                          {subLink.iconClass && (
-                            <i
-                              className={`${subLink.iconClass} me-2`}
-                              style={{ fontSize: "1rem" }}
-                            ></i>
-                          )}
-                          {subLink.label}
-                        </NavDropdown.Item>
-                      ))}
-                    </NavDropdown>
-                  ) : link.label === "Share Your Referal" ? (
-                    <Button
-                      onClick={handleCopyReferral}
-                      className={link.className}
-                      key={index}
-                    >
-                      {link.label}
-                    </Button>
-                  ) : (
-                    <Nav.Link
-                      as={NavLink}
-                      to={link.href}
-                      key={index}
-                      className={`${link.className}`}
-                    >
-                      {link.iconClass && (
-                        <i
-                          className={`${link.iconClass} me-2`}
-                          style={{ fontSize: "1rem" }}
-                        ></i>
-                      )}
-                      {link.label}
-                    </Nav.Link>
-                  );
-                })}
-            </Navbar.Collapse>
-          </Navbar>
-        ) : (
-          <>
-            <Nav.Link as={NavLink} to="/login" className="ms-3 text-white">
-              <i className="bi bi-person-fill-lock"></i> Sign In
-            </Nav.Link>
 
-            <Nav.Link
-              as={NavLink}
-              to="/login"
-              className="btn ms-3 py-1 px-3"
-              style={{ background: "#fff", color: "#000" }}
-            >
-              Join
-            </Nav.Link>
-          </>
-        )}
-      </div>
-    </header>
+                      // Handle single-level links
+                      return link.label === "Referal" ? (
+                        <Button
+                          onClick={handleCopyReferral}
+                          className={link.className}
+                          key={index}
+                          title={link.title}
+                        >
+                          {link.label}
+                        </Button>
+                      ) : (
+                        link.label !== "Home" && (
+                          <Nav.Link
+                            as={NavLink}
+                            to={link.href}
+                            key={index}
+                            className={`${link.className}`}
+                            title={link.title}
+                          >
+                            {link.iconClass && (
+                              <i className={`${link.iconClass} me-2`}></i>
+                            )}
+                            {link.label}
+                          </Nav.Link>
+                        )
+                      );
+                    })}
+                </Nav>
+              </Navbar.Collapse>
+            </>
+          ) : (
+            <>
+              <Nav className="me-auto header-navbar-nav">
+                <Nav.Link as={NavLink} to="/" className="ms-3">
+                  <i className="bi bi-house-check"></i> Home
+                </Nav.Link>
+              </Nav>
+              <Nav className="header-navbar-nav">
+                <Nav.Link as={NavLink} to="/login" className="ms-3">
+                  <i className="bi bi-person-fill-lock"></i> Sign In
+                </Nav.Link>
+                <Nav.Link
+                  as={NavLink}
+                  to="/register/customer"
+                  className="btn bg-white text-black ms-3"
+                  style={{
+                    border: "1px solid black",
+                  }}
+                >
+                  Join
+                </Nav.Link>
+              </Nav>
+            </>
+          )}
+        </Container>
+      </Navbar>
+    </>
   );
 };
 

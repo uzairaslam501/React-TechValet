@@ -23,6 +23,10 @@ export const handleApiError = (error, dispatch, tokenExpiryTime) => {
   }
 };
 
+export const rejectWithError = (error, dispatch, tokenExpiryTime) => {
+  toast.error(error?.response?.data);
+};
+
 // Unauthorized Error Handler
 const handleUnauthorizedError = (error, dispatch, tokenExpiryTime) => {
   const currentTimeInSeconds = Date.now() / 1000;
