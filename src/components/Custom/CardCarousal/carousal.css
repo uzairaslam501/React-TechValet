@@ -1,5 +1,5 @@
 .swiper-container {
-  height: 350px;
+  height: 300px;
   border-radius: 15px;
 }
 
@@ -20,9 +20,9 @@
   cursor: pointer;
 }
 
-.swiper-container .swiper-slide:hover {
+/* .swiper-container .swiper-slide:hover {
   transform: scale(1.05);
-}
+} */
 
 .carousel-card-item {
   background-size: cover;
