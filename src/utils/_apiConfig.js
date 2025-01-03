@@ -30,6 +30,12 @@ export const getAuthUserId = (getState) => {
   return `${user.id}`;
 };
 
+export const getUserRole = (getState) => {
+  const { userAuth } = getState()?.authentication;
+
+  return `${userAuth.role}`;
+};
+
 export const getToken = (getState) => {
   const user = getState()?.authentication?.userAuth;
   const tokenValues = {

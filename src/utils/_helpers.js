@@ -161,4 +161,24 @@ export const formatDateTime = (timestamp) => {
   // Return in "YYYY-MM-DD HH:mm" format
   return `${year}-${month}-${day} ${hours}:${minutes}`;
 };
+
+export const getFirstAndLastDayOfMonth = () => {
+  var now = new Date(); // Get the current date
+  var monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  var monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  const firstAndLastDates = {
+    monthStart: monthStart.toISOString().slice(0, 10),
+    monthEnd: monthEnd.toISOString().slice(0, 10),
+    currentDay: now.toISOString().slice(0, 10),
+  };
+
+  return firstAndLastDates;
+};
+
+export const formatDateTimeForInput = (date) => {
+  const isoString = new Date(date).toISOString();
+  return isoString.slice(0, 16); // Extract the format yyyy-MM-ddTHH:mm
+};
+
 //#endregion

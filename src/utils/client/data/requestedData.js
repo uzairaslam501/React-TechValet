@@ -180,3 +180,14 @@ export const skillsOptions = [
   { id: "Bell", value: "Bell" },
   { id: "Rogers", value: "Rogers" },
 ];
+
+export const eventColors = [
+  "#2cdd9b",
+  "#3498db",
+  "#9b59b6",
+  "#ffc107",
+  "#56ccf2",
+  "#f39c12",
+  "#1abc9c",
+  "#ff6b81",
+];

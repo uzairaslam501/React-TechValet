@@ -33,6 +33,7 @@ const OfferDialogue = ({
   showOrderDialogue,
   handleSendOffer,
   loader,
+  selectedDateTime,
 }) => {
   const { userAuth } = useSelector((state) => state?.authentication);
 
@@ -43,7 +44,7 @@ const OfferDialogue = ({
     customerId: String(userAuth?.id),
     valetId: String(messageObject?.userDecId),
     offerTitle: "",
-    startedDateTime: "",
+    startedDateTime: selectedDateTime || "",
     endedDateTime: "",
     offerDescription: "",
   };
