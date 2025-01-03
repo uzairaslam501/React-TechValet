@@ -1,18 +1,21 @@
-import React, { useCallback, useEffect } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { postRegister } from "../../../../redux/Actions/authActions";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, NavLink, useNavigate, useParams } from "react-router-dom";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import loginPage from "../../../../assets/images/login-page.png";
 import background from "../../../../assets/images/Background.svg";
 import HandleImages from "../../../../components/Custom/Avatars/HandleImages";
 import PasswordField from "../../../../components/Custom/PasswordInput/PasswordInput";
+import { getTimezones } from "../../../../redux/Actions/globalActions";
 
 const Register = () => {
   const { value } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [timeZones, setTimeZones] = useState([]);
   const { userAuth, loading, error } = useSelector(
     (state) => state.authentication
   );
@@ -33,8 +36,8 @@ const Register = () => {
   };
 
   const validateLogin = Yup.object().shape({
-    firstName: Yup.string().required("Please enter First Name"),
-    lastName: Yup.string().required("Please enter Last Name"),
+    firstname: Yup.string().required("Please enter First Name"),
+    lastname: Yup.string().required("Please enter Last Name"),
     username: Yup.string()
       .min(3, "Username must be at least 3 characters")
       .required("Please enter Username"),
@@ -58,11 +61,6 @@ const Register = () => {
 
   const handleSubmit = useCallback(
     (values) => {
-      if (value) {
-        setFieldValue("role", value);
-      } else {
-        console.error("Role is missing from URL parameters");
-      }
       dispatch(postRegister(values));
     },
     [dispatch]
@@ -84,11 +82,28 @@ const Register = () => {
     onSubmit: handleSubmit,
   });
 
+  const fetchTimeZones = useCallback(() => {
+    dispatch(getTimezones())
+      .then((response) => {
+        console.log("timezones", response?.payload);
+        setTimeZones(Object.values(response?.payload));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  });
+
+  if (userAuth?.role === "Customer") {
+    <Navigate to="/" />;
+  }
+
   useEffect(() => {
-    if (userAuth?.role === "Customer") {
-      <Navigate to="/" />;
-    }
-  }, []);
+    fetchTimeZones();
+  }, [userAuth]);
+
+  useEffect(() => {
+    setFieldValue("role", value);
+  }, [value]);
 
   return (
     <Container fluid>
@@ -145,37 +160,39 @@ const Register = () => {
               <Row>
                 <Col xl={6} lg={6} md={6} sm={12} xs={12}>
                   <Form.Group className="mb-2">
-                    <Form.Label>First Name</Form.Label>
+                    <Form.Label>
+                      First Name <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Control
                       type="text"
-                      name="firstName"
-                      required
+                      name="firstname"
                       placeholder="Email / Username"
-                      value={values.firstName}
-                      onBlur={handleBlur("firstName")}
-                      onChange={handleChange("firstName")}
-                      isInvalid={touched.firstName && !!errors.firstName}
+                      value={values.firstname}
+                      onBlur={handleBlur("firstname")}
+                      onChange={handleChange("firstname")}
+                      isInvalid={touched.firstname && !!errors.firstname}
                     />
                     <Form.Control.Feedback type="invalid">
-                      {touched.firstName && errors.firstName}
+                      {touched.firstname && errors.firstname}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
                 <Col xl={6} lg={6} md={6} sm={12} xs={12}>
                   <Form.Group as={Col} className="mb-2">
-                    <Form.Label>Last Name</Form.Label>
+                    <Form.Label>
+                      Last Name <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Control
                       type="text"
-                      name="lastName"
-                      required
+                      name="lastname"
                       placeholder="Last Name"
-                      value={values.lastName}
-                      onBlur={handleBlur("lastName")}
-                      onChange={handleChange("lastName")}
-                      isInvalid={touched.lastName && !!errors.lastName}
+                      value={values.lastname}
+                      onBlur={handleBlur("lastname")}
+                      onChange={handleChange("lastname")}
+                      isInvalid={touched.lastname && !!errors.lastname}
                     />
                     <Form.Control.Feedback type="invalid">
-                      {touched.lastName && errors.lastName}
+                      {touched.lastname && errors.lastname}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -188,7 +205,6 @@ const Register = () => {
                     <Form.Control
                       type="text"
                       name="username"
-                      required
                       placeholder="Enter Username"
                       value={values.username}
                       onBlur={handleBlur("username")}
@@ -209,7 +225,6 @@ const Register = () => {
                     <Form.Control
                       type="email"
                       name="email"
-                      required
                       placeholder="Enter Email"
                       value={values.email}
                       onBlur={handleBlur("email")}
@@ -228,13 +243,14 @@ const Register = () => {
                       label="Password"
                       name="password"
                       placeholder="Enter your password"
+                      required={true}
                       value={values.password}
                       onBlur={handleBlur("password")}
                       onChange={handleChange("password")}
-                      required={true}
                       isInvalid={touched.password && !!errors.password}
                       touched={touched.password}
                       errors={errors.password}
+                      size="md"
                     />
                   </Form.Group>
                 </Col>
@@ -246,15 +262,16 @@ const Register = () => {
                       label="Confirm Password"
                       name="confirmPassword"
                       placeholder="Re-enter password"
+                      required={true}
                       value={values.confirmPassword}
                       onBlur={handleBlur("confirmPassword")}
                       onChange={handleChange("confirmPassword")}
-                      required={true}
                       isInvalid={
                         touched.confirmPassword && !!errors.confirmPassword
                       }
                       touched={touched.confirmPassword}
                       errors={errors.confirmPassword}
+                      size="md"
                     />
                   </Form.Group>
                 </Col>
@@ -268,7 +285,6 @@ const Register = () => {
                     <Form.Control
                       type="text"
                       name="state"
-                      required
                       placeholder="Enter State"
                       value={values.state}
                       onBlur={handleBlur("state")}
@@ -289,7 +305,6 @@ const Register = () => {
                     <Form.Control
                       type="text"
                       name="city"
-                      required
                       placeholder="Enter City"
                       value={values.city}
                       onBlur={handleBlur("city")}
@@ -311,7 +326,6 @@ const Register = () => {
                     <Form.Control
                       type="text"
                       name="postalCode"
-                      required
                       placeholder="Enter Zip Code"
                       value={values.postalCode}
                       onBlur={handleBlur("postalCode")}
@@ -330,15 +344,21 @@ const Register = () => {
                       Timezone <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
-                      type="text"
-                      name="timezone"
-                      required
-                      placeholder="Enter Timezone"
-                      value={values.timezone}
-                      onBlur={handleBlur("timezone")}
-                      onChange={handleChange("timezone")}
+                      as="select"
+                      value={values?.timezone || ""}
+                      onChange={(e) => {
+                        const selectedZone = e.target.value;
+                        setFieldValue("timezone", selectedZone);
+                      }}
                       isInvalid={touched.timezone && !!errors.timezone}
-                    />
+                    >
+                      {timeZones.length > 0 &&
+                        timeZones.map((zone) => (
+                          <option key={zone} value={zone}>
+                            {zone}
+                          </option>
+                        ))}
+                    </Form.Control>
                     <Form.Control.Feedback type="invalid">
                       {touched.timezone && errors.timezone}
                     </Form.Control.Feedback>
@@ -353,7 +373,6 @@ const Register = () => {
                     <Form.Control
                       type="text"
                       name="country"
-                      required
                       placeholder="Enter Country"
                       value={values.country}
                       onBlur={handleBlur("country")}
@@ -364,6 +383,22 @@ const Register = () => {
                       {touched.country && errors.country}
                     </Form.Control.Feedback>
                   </Form.Group>
+                </Col>
+
+                <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mb-3">
+                  <Form.Check
+                    type="switch"
+                    id="custom-switch"
+                    label="Register as Valet?"
+                    checked={value === "valet"}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        navigate("/register/valet");
+                      } else {
+                        navigate("/register/customer");
+                      }
+                    }}
+                  />
                 </Col>
 
                 <Col sm={12} className="text-center">
@@ -380,6 +415,16 @@ const Register = () => {
                   </Button>
                 </Col>
               </Row>
+              <div className="d-flex justify-content-center">
+                <span className="text-muted">
+                  Already have account?
+                  <span>
+                    <NavLink to="/login" className="text-dark ms-1">
+                      Login Here
+                    </NavLink>
+                  </span>
+                </span>
+              </div>
             </Form>
           </div>
         </Col>

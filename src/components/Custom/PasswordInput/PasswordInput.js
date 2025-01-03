@@ -12,6 +12,7 @@ const PasswordField = ({
   isInvalid,
   touched,
   errors,
+  size = "sm",
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -29,11 +30,10 @@ const PasswordField = ({
           type={showPassword ? "text" : "password"}
           name={name}
           placeholder={placeholder}
-          required={required}
           onChange={onChange}
           onBlur={onBlur}
           value={value}
-          size="sm"
+          size={size}
           isInvalid={isInvalid}
         />
         <Button
