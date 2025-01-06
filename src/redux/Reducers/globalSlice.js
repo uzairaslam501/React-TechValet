@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getRecordById, deleteRecords } from "../Actions/globalActions";
+import {
+  getRecordById,
+  deleteRecords,
+  getTimezones,
+} from "../Actions/globalActions";
 
 const initialState = {
   loading: false,
@@ -40,6 +44,21 @@ const globalSlice = createSlice({
       .addCase(deleteRecords.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to delete the record";
+      });
+
+    // getTimezones
+    builder
+      .addCase(getTimezones.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getTimezones.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload; // Update the state with the server response if needed
+      })
+      .addCase(getTimezones.rejected, (state, action) => {
+        state.loading = false;
+        state.error = "Failed to delete the record";
       });
   },
 });

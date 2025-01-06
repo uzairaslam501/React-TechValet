@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getOrderEventsByUserId } from "../Actions/calenderActions"; // adjust path if needed
+import {
+  getOrderEventsByUserId,
+  profileOrdersPreview,
+} from "../Actions/calenderActions"; // adjust path if needed
 
 const initialState = {
   events: [],
@@ -28,6 +31,21 @@ const calendarSlice = createSlice({
         state.events = action.payload;
       })
       .addCase(getOrderEventsByUserId.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.payload || "An error occurred while fetching events.";
+      });
+
+    builder
+      .addCase(profileOrdersPreview.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(profileOrdersPreview.fulfilled, (state, action) => {
+        state.loading = false;
+        state.events = action.payload;
+      })
+      .addCase(profileOrdersPreview.rejected, (state, action) => {
         state.loading = false;
         state.error =
           action.payload || "An error occurred while fetching events.";

@@ -25,25 +25,18 @@ const ScheduledAppointment = () => {
   const fetchEventsAndGenerateCalendar = async () => {
     try {
       dispatch(getOrderEventsByUserId(userAuth?.userEncId)).then((response) => {
-        let colorIndex = 0;
-        const fetchedEvents = response?.payload?.map((eventData) => {
-          const eventColor = eventColors[colorIndex % eventColors.length];
-          colorIndex++;
-          return {
-            id: eventData.orderEncId,
-            title: eventData.orderTitle,
-            start: moment(eventData.startDateTime).toISOString(),
-            end: eventData.endDateTime
-              ? moment(eventData.endDateTime).toISOString()
-              : null,
-            color: eventColor,
-            url: eventData.orderDetailUrl,
-            extendedProps: {
-              description: eventData.orderStatusDescription,
-            },
-          };
-        });
-        setEvents(fetchedEvents);
+        const events = response?.payload?.data?.map((eventData, index) => ({
+          id: eventData.orderEncId,
+          title: eventData.orderTitle,
+          start: moment(eventData.startDateTime).toISOString(),
+          end: eventData.endDateTime
+            ? moment(eventData.endDateTime).toISOString()
+            : null,
+          color: eventColors[index % eventColors.length],
+          url: eventData.orderDetailUrl,
+          extendedProps: { description: eventData.orderStatusDescription },
+        }));
+        setEvents(events);
       });
     } catch (error) {
       console.error("Error fetching events:", error);

@@ -18,10 +18,10 @@ import Services from "../ClientAuth/Profile/ValetProfile/Services/Services";
 import Education from "../ClientAuth/Profile/ValetProfile/Education/Education";
 import Slots from "../ClientAuth/Profile/ValetProfile/Slots/Slots";
 import ReviewList from "../../../components/Custom/Reviews/ReviewList";
+import CalenderOrders from "./calender/calenderOrders";
 
 const UserProfile = () => {
   const { id } = useParams();
-  console.log("userEncId", id);
 
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
@@ -131,9 +131,12 @@ const UserProfile = () => {
                       height: "500px",
                     }}
                   >
-                    <Row>
+                    <Row
+                      className=""
+                      style={{ overflowY: "hidden", height: "100%" }}
+                    >
                       <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                        <h1>Calender</h1>
+                        <CalenderOrders id={id} />
                       </Col>
                     </Row>
                   </CardBody>

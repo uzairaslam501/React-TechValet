@@ -68,3 +68,16 @@ export const postUpdate = createAsyncThunk(
     }
   }
 );
+
+export const getTimezones = createAsyncThunk(
+  "global/getTimezones",
+  async (_, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const response = await api.get("/admin/GetTimeZones");
+      const { data } = processApiResponse(response, dispatch);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch);
+    }
+  }
+);
