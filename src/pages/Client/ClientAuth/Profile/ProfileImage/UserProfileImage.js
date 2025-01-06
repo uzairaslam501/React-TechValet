@@ -152,7 +152,10 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
               onClick={handleCopyReferral}
               className="w-100"
             >
-              <i class="bi bi-solid bi-gift" title="Share User Refferal"></i>
+              <i
+                className="bi bi-solid bi-gift"
+                title="Share User Refferal"
+              ></i>
             </Button>
           </div>
         </div>

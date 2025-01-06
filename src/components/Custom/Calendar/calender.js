@@ -15,6 +15,8 @@ const MyCalendar = ({
     canChangeView: true,
     canDateClick: true,
   },
+  validRange,
+  handleDateClick,
 }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
 
@@ -50,11 +52,20 @@ const MyCalendar = ({
         events={events}
         navLinks={permissions.canNavigate}
         selectable={permissions.canEditEvents}
+        validRange={validRange}
         dateClick={(info) => {
           if (permissions.canDateClick) {
             info.view.calendar.gotoDate(info.date);
             info.view.calendar.changeView("timeGridDay");
           }
+        }}
+        views={{
+          timeGridDay: {
+            type: "timeGridDay", // Corrected from "day"
+            dateClick: function (info) {
+              handleDateClick(info.dateStr);
+            },
+          },
         }}
         eventMouseEnter={(info) => {
           if (permissions.canViewDetails) {

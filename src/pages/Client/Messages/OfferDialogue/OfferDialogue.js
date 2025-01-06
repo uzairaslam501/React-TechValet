@@ -34,15 +34,16 @@ const OfferDialogue = ({
   handleSendOffer,
   loader,
   selectedDateTime,
+  restrictions,
 }) => {
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const initialValues = {
     messageDescription: "Offer Send",
     senderId: String(userAuth?.id),
-    receiverId: String(messageObject?.userDecId),
+    receiverId: String(messageObject?.userDecId) || "",
     customerId: String(userAuth?.id),
-    valetId: String(messageObject?.userDecId),
+    valetId: String(messageObject?.userDecId) || "",
     offerTitle: "",
     startedDateTime: selectedDateTime || "",
     endedDateTime: "",
@@ -109,6 +110,7 @@ const OfferDialogue = ({
                   handleDateTimeMatch(e.target.value, "startedDateTime");
                 }}
                 min={disabledPreviousDateTime()}
+                max={restrictions}
                 isInvalid={touched.startedDateTime && !!errors.startedDateTime}
               />
               {touched.startedDateTime && !!errors.startedDateTime && (
@@ -129,6 +131,7 @@ const OfferDialogue = ({
                 }}
                 disabled={!values.startedDateTime}
                 min={disabledPreviousDateTime()}
+                max={restrictions}
                 isInvalid={touched.endedDateTime && !!errors.endedDateTime}
               />
               {touched.endedDateTime && !!errors.endedDateTime && (
