@@ -26,10 +26,7 @@ export const getUserPackageByUserId = createAsyncThunk(
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch, expired);
-      if (message) {
-        toast.success(message);
-      }
+      const { data } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
@@ -47,6 +44,31 @@ export const getPackageById = createAsyncThunk(
           Authorization: `${token}`,
         },
       });
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+export const paymentWithPackage = createAsyncThunk(
+  "package/paymentWithPackage",
+  async (checkoutDto, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.post(
+        `StripePayment/CreateStripeChargeForPackage/`,
+        checkoutDto,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
       const { data, message } = processApiResponse(response, dispatch, expired);
       if (message) {
         toast.success(message);

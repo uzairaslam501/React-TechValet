@@ -33,7 +33,6 @@ const PreviewProfile = () => {
       const response = await dispatch(
         getRecordById(`/User/user-by-id/${encodeURIComponent(id)}`)
       );
-      console.log("Fetch User", response.payload);
       setUserRecords(response.payload);
       fetchUserRating();
     } catch (e) {

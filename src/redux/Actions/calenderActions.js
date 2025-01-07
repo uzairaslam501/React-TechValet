@@ -48,7 +48,7 @@ export const profileOrdersPreview = createAsyncThunk(
       const response = await api.get(
         `/User/order-events/${encodeURIComponent(
           userId
-        )}?role=${role}&filterDate=${String(currentDate)}`,
+        )}?role=valet&filterDate=${String(currentDate)}`,
         {
           headers: {
             Authorization: `${token}`,

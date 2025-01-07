@@ -35,8 +35,6 @@ const CalenderOrders = ({ id, pricePerHour }) => {
   const [orderRecords, setOrderRecords] = useState([]);
   const [showOrderDialogue, setShowOrderDialogue] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState(null);
-  const [currentView, setCurrentView] = useState("dayGridMonth");
-  const [selectedOfferValues, setSelectedOfferValues] = useState(null);
   const [defaultMessage, setDefaultMessage] = useState({
     recieverId: encodeURIComponent(id),
     valetId: encodeURIComponent(id),
@@ -80,22 +78,19 @@ const CalenderOrders = ({ id, pricePerHour }) => {
   const handleSendOffer = (values) => {
     if (values) {
       const data = {
-        SenderId: String(userAuth?.userEncId),
-        CustomerId: String(userAuth?.userEncId),
-        ValetId: String(encodeURIComponent(id)),
-        ReceiverId: encodeURIComponent(id),
-        MessageDescription: "Offer Sent",
-        OfferTitle: values.offerTitle,
-        StartedDateTime: values.startedDateTime,
-        EndedDateTime: values.endedDateTime,
-        OfferDescription: values.offerDescription,
-        PricePerHour: pricePerHour,
+        senderId: String(encodeURIComponent(userAuth?.userEncId)),
+        customerId: String(encodeURIComponent(userAuth?.userEncId)),
+        valetId: String(encodeURIComponent(id)),
+        receiverId: encodeURIComponent(id),
+        title: values.offerTitle,
+        startedDateTime: values.startedDateTime,
+        endedDateTime: values.endedDateTime,
+        description: values.offerDescription,
+        pricePerHour: pricePerHour,
       };
-      console.log("data", data);
       navigate(`/preview-order`, {
         state: data,
       });
-      //dispatch(sendUsersMessages(data));
     }
   };
 
