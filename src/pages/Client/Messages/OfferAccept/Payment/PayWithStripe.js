@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import StripeCheckout from "react-stripe-checkout";
 import { createStripeCharge } from "../../../../../redux/Actions/stripeActions";
 import { useNavigate } from "react-router";
@@ -10,31 +10,31 @@ const PayWithStripe = ({ selectedOfferValues }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const { userAuth } = useSelector((state) => state?.authentication);
 
   const initialValues = {
-    CustomerId: String(userAuth?.id),
-    ValetId: String(selectedOfferValues.valetId),
-    OfferId: parseInt(selectedOfferValues.offerTitleId, 10),
-    PaymentTitle: selectedOfferValues.offerTitle || null,
-    PaymentDescription: selectedOfferValues.offerDescription || null,
-    ActualOrderPrice: String(selectedOfferValues.offerPrice),
-    TotalWorkCharges: String(
-      parseFloat(selectedOfferValues.offerPrice || 0) +
-        parseFloat(selectedOfferValues.transactionFee || 0)
-    ),
-    FromDateTime: selectedOfferValues.startedDateTime,
-    ToDateTime: selectedOfferValues.endedDateTime,
+    valetId: String(selectedOfferValues.valetId),
+    customerId: String(selectedOfferValues.customerId),
+    title: selectedOfferValues.title,
+    description: selectedOfferValues.description,
+    fromDateTime: selectedOfferValues.fromDateTime,
+    toDateTime: selectedOfferValues.toDateTime,
+    actualOrderPrice: String(selectedOfferValues.actualOrderPrice),
+    totalWorkCharges: String(selectedOfferValues.totalWorkCharges),
+    workingHours: String(selectedOfferValues.workingHours),
+    offerId: selectedOfferValues.offerId,
   };
 
   const onToken = (token) => {
     setLoading(true);
-    const numericOfferPrice = parseFloat(selectedOfferValues?.offerPrice) || 0;
+    const numericOfferPrice =
+      parseFloat(selectedOfferValues?.actualOrderPrice) || 0;
     const stripeChargePercentage = 4; // 4% Stripe fee
     const stripeAmount = numericOfferPrice * (stripeChargePercentage / 100);
     const actualOfferPrice = Math.ceil(numericOfferPrice - stripeAmount);
-    initialValues.TotalWorkCharges = String(stripeAmount);
-    initialValues.ActualOrderPrice = String(actualOfferPrice);
+    initialValues.totalWorkCharges =
+      initialValues.totalWorkCharges || String(stripeAmount);
+    initialValues.actualOrderPrice =
+      initialValues.actualOrderPrice || String(actualOfferPrice);
     const values = {
       ...initialValues,
       StripeEmail: token.email,
@@ -44,6 +44,7 @@ const PayWithStripe = ({ selectedOfferValues }) => {
   };
 
   const handleSubmitPayment = (values) => {
+    console.log("Payment", values);
     try {
       dispatch(createStripeCharge(values)).then((response) => {
         const values = {

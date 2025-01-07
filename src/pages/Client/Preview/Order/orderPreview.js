@@ -38,17 +38,16 @@ const OrderPreview = () => {
     setRemainingSessionsAfterOrderConfirm,
   ] = useState(0);
   const [insufficientSessions, setInsufficientSessions] = useState("");
-  const [initialValues, setInitialValues] = useState({});
   const [buttonClicked, setButtonClicked] = useState(false);
+  const [initialValues, setInitialValues] = useState({});
 
-  // Fetch user package (sessions data)
   const fetchPackages = useCallback(() => {
+    setLoading(true);
     dispatch(getUserPackageByUserId())
       .then((response) => {
-        console.log("Package Details", response?.payload);
         setUserPackageDetails(response?.payload);
       })
-      .catch(() => {
+      .finally(() => {
         setLoading(false);
       });
   });
@@ -97,50 +96,47 @@ const OrderPreview = () => {
     }
   };
 
-  // Fetch user packages when the component mounts
   useEffect(() => {
     fetchPackages();
   }, [dispatch]);
 
-  // Calculate various charges when state changes
   useEffect(() => {
     if (state && packageDetails?.remainingSessions) {
-      // Calculate working hours
       const fromDate = new Date(state.startedDateTime);
       const toDate = new Date(state.endedDateTime);
-      const diffInHours = Math.ceil((toDate - fromDate) / 36e5); // Difference in hours
+
+      // Calculate working hours
+      const diffInHours = Math.ceil((toDate - fromDate) / 36e5);
       setWorkingHours(diffInHours);
 
-      // Calculate work charges
+      // Calculate charges and fees
       const workChargesCalculated = state?.pricePerHour * diffInHours;
       setWorkCharges(workChargesCalculated);
 
-      // Calculate stripe fee (4% of work charges)
       const stripeFeeCalculated = workChargesCalculated * 0.04;
       setStripeFee(stripeFeeCalculated);
 
-      // Calculate total payable amount (work charges + stripe fee)
       const totalAmountCalculated = workChargesCalculated + stripeFeeCalculated;
       setTotalPayableAmount(totalAmountCalculated);
 
-      // Calculate platform fee (13% of total payable amount)
       const platformFeeCalculated = totalAmountCalculated * 0.13;
       setPlatformFee(platformFeeCalculated);
 
-      // Get remaining sessions after confirming order
-      if (
-        packageDetails?.remainingSessions &&
-        diffInHours <= packageDetails?.remainingSessions
-      ) {
+      // Handle remaining sessions
+      if (diffInHours <= packageDetails.remainingSessions) {
         setInsufficientSessions("");
         setRemainingSessionsAfterOrderConfirm(
-          packageDetails?.remainingSessions - diffInHours
+          packageDetails.remainingSessions - diffInHours
         );
       } else {
         setInsufficientSessions("You have insufficient Sessions");
         setRemainingSessionsAfterOrderConfirm(0);
       }
+    }
+  }, [state, packageDetails]);
 
+  useEffect(() => {
+    if (state && workCharges && totalPayableAmount && workingHours) {
       const values = {
         valetId: state?.valetId,
         customerId: state?.customerId,
@@ -155,8 +151,7 @@ const OrderPreview = () => {
       };
       setInitialValues(values);
     }
-    setLoading(false);
-  }, [state, packageDetails?.remainingSessions]);
+  }, [state, workCharges, totalPayableAmount, workingHours]);
 
   return (
     <Container className="py-5">
