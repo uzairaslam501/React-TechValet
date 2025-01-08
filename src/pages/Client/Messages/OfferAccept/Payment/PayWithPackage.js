@@ -11,7 +11,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Dialogue from "../../../../../components/Custom/Modal/modal";
 import { getUserPackageByUserId } from "../../../../../redux/Actions/packageActions";
-import { convertToISO } from "../../../../../utils/_helpers";
+import { convertToISO, toFixedTruncate } from "../../../../../utils/_helpers";
 import { createStripeCharge } from "../../../../../redux/Actions/stripeActions";
 import { chargeByPackage } from "../../../../../redux/Actions/paypalActions";
 import { useNavigate } from "react-router";
@@ -34,7 +34,7 @@ const PayWithPackage = ({
     const numericOfferPrice = parseFloat(selectedOfferValues?.offerPrice) || 0;
     const stripeChargePercentage = 4; // 4% Stripe fee
     const stripeAmount = numericOfferPrice * (stripeChargePercentage / 100);
-    const actualOfferPrice = Math.ceil(numericOfferPrice - stripeAmount);
+    const actualOfferPrice = selectedOfferValues?.offerPrice;
 
     const startDate = new Date(
       convertToISO(selectedOfferValues?.startedDateTime)
@@ -77,30 +77,43 @@ const PayWithPackage = ({
   };
 
   const handleSubmitPayment = () => {
+    console.log("selectedOfferValues", selectedOfferValues);
     setPackageSubmitButton(true);
     const values = {
-      CustomerId: String(userAuth?.id),
-      ValetId: String(selectedOfferValues.valetId),
-      OfferId: parseInt(selectedOfferValues.offerTitleId, 10),
-      PaymentTitle: selectedOfferValues.offerTitle || null,
-      PaymentDescription: selectedOfferValues.offerDescription || null,
-      ActualOrderPrice: String(calculatedValues.actualOfferPrice),
-      TotalWorkCharges: String(calculatedValues.stripeAmount),
-      FromDateTime: selectedOfferValues.startedDateTime,
-      ToDateTime: selectedOfferValues.endedDateTime,
-      PackagePaidBy: packageDetails?.packagePaidBy,
-      PackageId: packageDetails?.id,
-      MessageId: String(selectedOfferValues.id),
+      customerId:
+        userAuth?.role === "Customer"
+          ? encodeURIComponent(userAuth?.userEncId)
+          : String(encodeURIComponent(selectedOfferValues?.customerEncId)),
+      valetId: encodeURIComponent(selectedOfferValues?.senderEncId),
+      offerId: String(parseInt(selectedOfferValues.offerTitleId, 10)),
+      title: selectedOfferValues.offerTitle || null,
+      description: selectedOfferValues.offerDescription || null,
+      actualOrderPrice: String(calculatedValues.actualOfferPrice),
+      totalWorkCharges: String(
+        toFixedTruncate(
+          parseFloat(calculatedValues.actualOfferPrice) +
+            parseFloat(calculatedValues.stripeAmount),
+          2
+        )
+      ),
+      fromDateTime: selectedOfferValues.startedDateTime,
+      toDateTime: selectedOfferValues.endedDateTime,
+      packagePaidBy: packageDetails?.packagePaidBy,
+      packageId: String(packageDetails?.id),
+      messageId: String(selectedOfferValues.id),
     };
+
     if (packageDetails.packagePaidBy === "STRIPE") {
       console.log(values);
       dispatch(createStripeCharge(values))
         .then((response) => {
-          const values = {
-            id: response?.payload,
-            type: "Order-Package",
-          };
-          navigate("/payment-success", { state: values });
+          if (response?.payload) {
+            const values = {
+              id: response?.payload,
+              type: "Order-Package",
+            };
+            navigate("/payment-success", { state: values });
+          }
         })
         .catch(() => {
           handleCloseModal();
@@ -159,15 +172,6 @@ const PayWithPackage = ({
                         <tr>
                           <td>Total Working Hours =</td>
                           <td>{calculatedValues.timeDifference || 0}</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            Stripe Charges = <br />
-                            <sup className="mt-1 text-danger">
-                              Stripe Charges 4%
-                            </sup>
-                          </td>
-                          <td>{calculatedValues.stripeAmount || 0}</td>
                         </tr>
                         <tr>
                           <td>Actual Offer Price =</td>

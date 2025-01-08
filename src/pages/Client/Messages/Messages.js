@@ -9,7 +9,11 @@ import {
 } from "../../../redux/Actions/messagesActions";
 import HandleImages from "../../../components/Custom/Avatars/HandleImages";
 import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
-import { truncateCharacters } from "../../../utils/_helpers";
+import {
+  getFirstAndLastDayOfMonth,
+  setDateRestrictions,
+  truncateCharacters,
+} from "../../../utils/_helpers";
 import RenderOfferStatus from "./RendersCard/RenderOfferStatus";
 import "./style.css";
 import OfferDialogue from "./OfferDialogue/OfferDialogue";
@@ -94,7 +98,7 @@ const Messages = () => {
     if (user?.userDecId !== activeChat?.userDecId) {
       setMessagesLoader(true);
       setActiveChat(user);
-      fetchUserStatus(user?.userDecId);
+      fetchUserStatus(user?.userEncId);
 
       setUsersList((prev) =>
         prev.map((u) =>
@@ -140,8 +144,14 @@ const Messages = () => {
       setSendLoader(true);
       const data = {
         SenderId: String(userAuth?.id),
-        CustomerId: String(userAuth?.id),
-        valetId: String(values?.valetId),
+        CustomerId:
+          userAuth?.role === "Customer"
+            ? String(userAuth?.id)
+            : String(values?.CustomerId),
+        valetId:
+          userAuth?.role === "Valet"
+            ? String(userAuth?.id)
+            : String(values?.valetId),
         ReceiverId: values.receiverId,
         MessageDescription: "Offer Send",
         OfferTitle: values.offerTitle,
@@ -198,7 +208,6 @@ const Messages = () => {
   };
 
   const handlePaymentModal = (data) => {
-    console.log("data", data);
     setSelectedOfferValues(data);
     setShowAcceptOrderDialogue(true);
   };
@@ -210,6 +219,11 @@ const Messages = () => {
       message: newMessage?.model,
     };
     signalRService.sendOfferObject(data);
+  };
+
+  const validRange = {
+    start: getFirstAndLastDayOfMonth().currentDay,
+    end: getFirstAndLastDayOfMonth().monthEnd,
   };
 
   useEffect(() => {
@@ -225,7 +239,7 @@ const Messages = () => {
 
   useEffect(() => {
     if (defaultMessage && defaultMessage?.userDecId !== undefined) {
-      fetchUserStatus(defaultMessage?.userDecId);
+      fetchUserStatus(defaultMessage?.userEncId);
       setActiveChat(defaultMessage);
     }
   }, [defaultMessage]);

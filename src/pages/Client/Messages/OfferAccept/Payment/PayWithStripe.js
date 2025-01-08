@@ -21,7 +21,7 @@ const PayWithStripe = ({ selectedOfferValues }) => {
     actualOrderPrice: String(selectedOfferValues.actualOrderPrice),
     totalWorkCharges: String(selectedOfferValues.totalWorkCharges),
     workingHours: String(selectedOfferValues.workingHours),
-    offerId: selectedOfferValues.offerId,
+    offerId: String(selectedOfferValues.offerId) || "",
   };
 
   const onToken = (token) => {

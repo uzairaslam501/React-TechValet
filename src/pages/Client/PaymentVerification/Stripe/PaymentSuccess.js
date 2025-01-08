@@ -66,7 +66,12 @@ const StripePaymentSuccess = () => {
         {orderDetails && (
           <OrderComponent orderDetails={orderDetails} boughtBy={"STRIPE"} />
         )}
-        {packageDetails && <PackageComponent packageDetails={packageDetails} />}
+        {packageDetails && (
+          <PackageComponent
+            packageDetails={packageDetails}
+            boughtBy={boughtBy}
+          />
+        )}
       </Card>
     </Container>
   );

@@ -4,7 +4,11 @@ import { useFormik } from "formik";
 import { FloatingLabel, Form } from "react-bootstrap";
 import Dialogue from "../../../../components/Custom/Modal/modal";
 import { useSelector } from "react-redux";
-import { disabledPreviousDateTime } from "../../../../utils/_helpers";
+import {
+  disabledPreviousDateTime,
+  getFirstAndLastDayOfMonth,
+  setDateTimeRestrictions,
+} from "../../../../utils/_helpers";
 
 const validateLogin = Yup.object().shape({
   offerTitle: Yup.string().required("This Field is Required"),
@@ -74,6 +78,11 @@ const OfferDialogue = ({
     }
     setFieldValue(field, value);
   };
+
+  const validRange = {
+    start: getFirstAndLastDayOfMonth().currentDay,
+    end: getFirstAndLastDayOfMonth().monthEnd,
+  };
   return (
     <>
       <Dialogue
@@ -110,7 +119,9 @@ const OfferDialogue = ({
                   handleDateTimeMatch(e.target.value, "startedDateTime");
                 }}
                 min={disabledPreviousDateTime()}
-                max={restrictions}
+                max={
+                  restrictions || setDateTimeRestrictions("max", validRange.end)
+                }
                 isInvalid={touched.startedDateTime && !!errors.startedDateTime}
               />
               {touched.startedDateTime && !!errors.startedDateTime && (
@@ -131,7 +142,9 @@ const OfferDialogue = ({
                 }}
                 disabled={!values.startedDateTime}
                 min={disabledPreviousDateTime()}
-                max={restrictions}
+                max={
+                  restrictions || setDateTimeRestrictions("max", validRange.end)
+                }
                 isInvalid={touched.endedDateTime && !!errors.endedDateTime}
               />
               {touched.endedDateTime && !!errors.endedDateTime && (
