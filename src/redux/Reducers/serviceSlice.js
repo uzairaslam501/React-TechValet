@@ -79,4 +79,4 @@ const serviceSlice = createSlice({
   },
 });
 
-export default stripeSlice.reducer;
+export default serviceSlice.reducer;

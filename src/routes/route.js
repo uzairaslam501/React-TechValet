@@ -36,6 +36,7 @@ import AccountVerified from "../pages/Client/AccountVerification/AccountVerified
 import ManageOrders from "../pages/Client/Manage/ManageOrders";
 import PreviewProfile from "../pages/Client/Preview";
 import OrderPreview from "../pages/Client/Preview/Order/orderPreview";
+import OrderDetail from "../pages/Client/Order/OrderDetail";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -80,6 +81,7 @@ const createRoute = createBrowserRouter(
           <Route path="/orders" element={<ManageOrders />} />
           <Route path="/preview-profile/:id" element={<PreviewProfile />} />
           <Route path="/preview-order" element={<OrderPreview />} />
+          <Route path="/order-details/:id" element={<OrderDetail />} />
         </Route>
       </Route>
       <Route path="/welcome" element={<Welcome />} />

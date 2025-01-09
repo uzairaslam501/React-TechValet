@@ -16,9 +16,11 @@ import customerSlice from "./Reducers/customerSlice";
 import globalSlice from "./Reducers/globalSlice";
 import messagesSlice from "./Reducers/messagesSlice";
 import notificationSlice from "./Reducers/notificationSlice";
+import orderSlice from "./Reducers/orderSlice";
 import packageSlice from "./Reducers/packageSlice";
 import paypalSlice from "./Reducers/paypalSlice";
 import stripeSlice from "./Reducers/stripeSlice";
+import serviceSlice from "./Reducers/serviceSlice";
 
 // Combine your reducers here
 const rootReducer = combineReducers({
@@ -28,8 +30,10 @@ const rootReducer = combineReducers({
   global: globalSlice,
   message: messagesSlice,
   notification: notificationSlice,
+  order: orderSlice,
   package: packageSlice,
   paypal: paypalSlice,
+  service: serviceSlice,
   stripe: stripeSlice,
 });
 

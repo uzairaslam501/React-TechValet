@@ -7,6 +7,7 @@ import {
   InputGroup,
 } from "react-bootstrap";
 import CustomButtons from "../Button/buttons";
+import { NavLink } from "react-router-dom";
 
 function CustomTable({
   headers,
@@ -243,7 +244,8 @@ function CustomTable({
                           row.orderReasonIsActive === "1" ? (
                             <Button
                               size="sm"
-                              href={`/order-details?id=${row.encId}`}
+                              as={NavLink}
+                              to={`/order-details/${row.encId}`}
                               variant="danger"
                             >
                               Cancelled
@@ -251,7 +253,8 @@ function CustomTable({
                           ) : row.isDelivered === "0" ? (
                             <Button
                               size="sm"
-                              href={`/order-details?id=${row.encId}`}
+                              as={NavLink}
+                              to={`/order-details/${row.encId}`}
                               className="btn-secondary-secondary"
                             >
                               In Progress
@@ -259,7 +262,8 @@ function CustomTable({
                           ) : row.isDelivered === "1" ? (
                             <Button
                               size="sm"
-                              href={`/order-details?id=${row.encId}`}
+                              as={NavLink}
+                              to={`/order-details/${row.encId}`}
                               variant="success"
                             >
                               Delivered
@@ -267,7 +271,8 @@ function CustomTable({
                           ) : (
                             <Button
                               size="sm"
-                              href={`/order-details?id=${row.encId}`}
+                              as={NavLink}
+                              to={`/order-details/${row.encId}`}
                               className="btn-primary-secondary"
                             >
                               Completed
