@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { Row, Col, Card, Container, Spinner } from "react-bootstrap";
 import defaultImage from "../../../assets/images/no-user-image.jpg";
 import "./filteredData.css";
+import HandleImages from "../../../components/Custom/Avatars/HandleImages";
 
 const Search = () => {
   const { value } = useParams();
@@ -49,15 +50,10 @@ const Search = () => {
                     className="user-card__link"
                   >
                     <div className="user-card__image-wrapper">
-                      <Card.Img
-                        variant="top"
-                        src={user.UserProfile || defaultImage}
-                        className="user-card__image"
-                        alt={`${user.firstName} ${user.lastName}`}
-                        onError={(e) => {
-                          e.target.onerror = null; // Prevents infinite loop if default image fails
-                          e.target.src = defaultImage; // Set fallback image
-                        }}
+                      <HandleImages
+                        imagePath={user.UserProfile}
+                        imageAlt={`${user.firstName} ${user.lastName}`}
+                        className={"top user-card__image"}
                       />
                     </div>
                   </NavLink>

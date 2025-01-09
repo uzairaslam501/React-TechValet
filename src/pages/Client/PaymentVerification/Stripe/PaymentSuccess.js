@@ -20,7 +20,6 @@ const StripePaymentSuccess = () => {
   const fetchPackageDetails = (packageId) => {
     try {
       dispatch(getPackageById(packageId)).then((response) => {
-        console.log(response);
         setPackageDetails(response?.payload);
       });
     } catch (error) {}
@@ -29,7 +28,6 @@ const StripePaymentSuccess = () => {
   const fetchOrderDetails = (orderId) => {
     try {
       dispatch(getOrderById(orderId)).then((response) => {
-        console.log(response);
         setOrderDetails(response?.payload);
       });
     } catch (error) {}

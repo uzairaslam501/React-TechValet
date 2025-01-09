@@ -12,7 +12,7 @@ import HandleImages from "../../../../../components/Custom/Avatars/HandleImages"
 import { toast } from "react-toastify";
 
 const UserProfileImage = ({ userRecord, preview = false }) => {
-  console.log("preview", preview);
+  console.log("preview", userRecord?.role);
   const dispatch = useDispatch();
   const [profileImage, setProfileImage] = useState(userRecord?.profilePicture);
   const [status, setStatus] = useState(userRecord?.status);
@@ -139,9 +139,9 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
         <div className="d-flex">
           <div className="mx-2 w-100">
             <Button
-              variant="primary"
+              variant={userRecord?.role === "Valet" ? "secondary" : "primary"}
               className="w-100"
-              onClick={handleImageReset}
+              disabled={userRecord?.role === "Valet"}
             >
               Contact Me
             </Button>
@@ -151,11 +151,9 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
               variant="outline-danger"
               onClick={handleCopyReferral}
               className="w-100"
+              title="Share User Refferal"
             >
-              <i
-                className="bi bi-solid bi-gift"
-                title="Share User Refferal"
-              ></i>
+              <i className="bi bi-solid bi-gift"></i>
             </Button>
           </div>
         </div>

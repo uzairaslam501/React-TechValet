@@ -55,6 +55,7 @@ const CalenderOrders = ({ id, pricePerHour }) => {
     try {
       dispatch(profileOrdersPreview(encodeURIComponent(id))).then(
         (response) => {
+          console.log(response?.payload);
           const events = response?.payload?.data?.map((eventData, index) => ({
             id: eventData.orderEncId,
             title: "Event Booked",

@@ -49,9 +49,22 @@ const Messages = () => {
       setUserSideBarLoader(true);
       dispatch(getMessagesSidebar(findUser)).then((response) => {
         if (response?.payload) {
-          setDefaultMessage(response?.payload[0]);
           setUsersList(response?.payload);
-          setUserSideBarLoader(false);
+          if (findUser) {
+            setUserSideBarLoader(false);
+          } else {
+            if (activeChat) {
+              // Filter the payload based on userDecId and senderId
+              const filteredPayload = response?.payload?.filter(
+                (record) =>
+                  record.userDecId === activeChat.userDecId &&
+                  record.senderId === activeChat.senderId
+              );
+              setDefaultMessage(filteredPayload[0]);
+            } else {
+              setDefaultMessage(response?.payload[0]);
+            }
+          }
         } else {
           console.error("No payload received");
         }
@@ -81,6 +94,7 @@ const Messages = () => {
       dispatch(getUsersMessages(userId)).then((response) => {
         if (response?.payload) {
           setMessages(response?.payload);
+          setUserSideBarLoader(false);
           setMessagesLoader(false);
         }
       });
