@@ -89,6 +89,22 @@ class SignalRService {
       }
     });
 
+    this.connection.on("SendOrderMessage", (model, senderId, receiverId) => {
+      try {
+        if (receiverId === userId) {
+          this.broadcastOrderMessage(senderId, receiverId, model);
+        }
+        console.log(
+          "SendOrderMessage connection data :: ",
+          model,
+          senderId,
+          receiverId
+        );
+      } catch (error) {
+        console.error("Error processing received Offer:", error);
+      }
+    });
+
     this.connection
       .start()
       .then(() => {
@@ -158,6 +174,12 @@ class SignalRService {
     );
   }
 
+  broadcastOrderMessage(senderId, receiverId, mdoel) {
+    this.subscribers.forEach((callback) =>
+      callback(senderId, receiverId, mdoel)
+    );
+  }
+
   sendMessage(data) {
     if (!this.connection || this.connection.state !== "Connected") {
       console.error("SignalR connection not established");
@@ -178,6 +200,22 @@ class SignalRService {
     return this.connection
       .invoke(
         "SendOfferObject",
+        data?.senderId,
+        data?.receiverId,
+        data?.message
+      )
+      .catch((err) => console.error("Error sending message:", err));
+  }
+
+  sendOrderObject(data) {
+    if (!this.connection || this.connection.state !== "Connected") {
+      console.error("SignalR connection not established for 'sendOrderObject'");
+      return;
+    }
+
+    return this.connection
+      .invoke(
+        "SendOrderObject",
         data?.senderId,
         data?.receiverId,
         data?.message

@@ -57,3 +57,58 @@ export const getOrderMessages = createAsyncThunk(
     }
   }
 );
+
+export const sendMessages = createAsyncThunk(
+  "order/sendMessages",
+  async (message, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+
+    const formData = new FormData();
+    formData.append("senderId", message.senderId);
+    formData.append("receiverId", message.receiverId);
+    formData.append("messageDescription", message.messageDescription);
+    formData.append("orderId", message.orderId);
+    formData.append("way", message.way);
+
+    formData.append("iFilePath", message.file);
+
+    try {
+      const response = await api.post(
+        "/Message/PostAddOrderMessage",
+        formData,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+export const orderZoomMeeting = createAsyncThunk(
+  "order/orderZoomMeeting",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+
+    try {
+      const response = await api.post(
+        `/Message/CreateZoomMeeting?receiverId=${obj.receiverId}&senderId=${obj.senderId}&orderId=${obj.orderId}`,
+        null,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
