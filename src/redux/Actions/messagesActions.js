@@ -5,7 +5,7 @@ import {
   processApiResponse,
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
-import { getAuthUserId, getToken } from "../../utils/_apiConfig";
+import { getToken, getUserId } from "../../utils/_apiConfig";
 import { toast } from "react-toastify";
 
 const api = axios.create({
@@ -17,9 +17,9 @@ export const getMessagesSidebar = createAsyncThunk(
   async (findUser, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
-      const getStateUserId = getAuthUserId(getState);
+      const authId = getUserId(getState);
       const response = await api.get(
-        `Message/GetMessageSideBarLists?loggedInUserId=${getStateUserId}&Name=${findUser}`,
+        `Message/GetMessageSideBarLists/${authId}?Name=${findUser}`,
         {
           headers: {
             Authorization: `${token}`,
@@ -57,9 +57,9 @@ export const getUsersMessages = createAsyncThunk(
   async (userId, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
-      const getStateUserId = getAuthUserId(getState);
+      const authId = getUserId(getState);
       const response = await api.get(
-        `Message/GetMessagesForUsers?loggedInUserId=${getStateUserId}&userId=${userId}`,
+        `Message/GetMessagesForUsers/${authId}?messageUserId=${userId}`,
         {
           headers: {
             Authorization: `${token}`,

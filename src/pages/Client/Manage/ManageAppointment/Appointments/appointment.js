@@ -28,7 +28,7 @@ const Appointment = ({ onComplete }) => {
     },
     {
       id: 2,
-      title: "Update",
+      title: "View",
       onClick: (row) => onView(row),
       variant: "outline-success",
       icon: "bi bi-view-stacked",

@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container } from "react-bootstrap";
 import Dialogue from "../../../../components/Custom/Modal/modal";
 import PayWithPaypal from "./Payment/PayWithPaypal";
 import PayWithStripe from "./Payment/PayWithStripe";
 import PayWithPackage from "./Payment/PayWithPackage";
+import { useSelector } from "react-redux";
 
 const OfferAccept = ({
   showAcceptOrderDialogue,
@@ -12,6 +13,24 @@ const OfferAccept = ({
   fetchMessages,
   setShowAcceptOrderDialogue,
 }) => {
+  const { userAuth } = useSelector((state) => state?.authentication);
+
+  const initialStripeValues = {
+    customerId: encodeURIComponent(userAuth.userEncId),
+    valetId: encodeURIComponent(selectedOfferValues.senderEncId),
+    offerId: parseInt(selectedOfferValues.offerTitleId, 10),
+    title: String(selectedOfferValues.offerTitle),
+    description: selectedOfferValues.offerDescription,
+    actualOrderPrice: selectedOfferValues.offerPrice,
+    totalWorkCharges: String(
+      parseFloat(selectedOfferValues.offerPrice || 0) +
+        parseFloat(selectedOfferValues.transactionFee || 0)
+    ),
+    fromDateTime: selectedOfferValues.startedDateTime,
+    toDateTime: selectedOfferValues.endedDateTime,
+  };
+  console.log("initialStripeValues", initialStripeValues);
+
   return (
     <Dialogue
       show={showAcceptOrderDialogue}
@@ -26,7 +45,7 @@ const OfferAccept = ({
             setShowAcceptOrderDialogue={setShowAcceptOrderDialogue}
           />
           <PayWithStripe
-            selectedOfferValues={selectedOfferValues}
+            selectedOfferValues={initialStripeValues}
             fetchMessages={fetchMessages}
           />
           <PayWithPaypal

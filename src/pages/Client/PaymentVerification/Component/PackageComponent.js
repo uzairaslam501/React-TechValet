@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Col, Row, Tab, Table } from "react-bootstrap";
 
-const PackageComponent = ({ packageDetails }) => {
+const PackageComponent = ({ packageDetails, boughtBy }) => {
   return (
     <div>
       <div className="text-start mb-4">
@@ -43,7 +43,7 @@ const PackageComponent = ({ packageDetails }) => {
             <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
               Payment Method:
             </td>
-            <td>{"Package"}</td>
+            <td>{boughtBy}</td>
           </tr>
         </Table>
       </div>

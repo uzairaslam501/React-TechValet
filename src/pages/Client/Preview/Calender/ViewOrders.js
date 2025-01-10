@@ -3,13 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { Spinner } from "react-bootstrap";
 import moment from "moment";
 import { profileOrdersPreview } from "../../../../redux/Actions/calenderActions";
-import { sendUsersMessages } from "../../../../redux/Actions/messagesActions";
 import {
+  disabledPreviousDateTime,
   formatDateTimeForInput,
   getFirstAndLastDayOfMonth,
+  setDateRestrictions,
+  setDateTimeRestrictions,
 } from "../../../../utils/_helpers";
-import MyCalendar from "./Calenders";
 import OfferDialogue from "../../Messages/OfferDialogue/OfferDialogue";
+import { useNavigate } from "react-router";
+import MyCalendar from "../../../../components/Custom/Calendar/calender";
 
 const eventColors = [
   "#2cdd9b",
@@ -22,18 +25,19 @@ const eventColors = [
   "#ff6b81",
 ];
 
-const CalenderOrders = ({ id }) => {
+const CalenderOrders = ({ id, pricePerHour }) => {
   const dispatch = useDispatch();
   const { userAuth } = useSelector((state) => state.authentication);
+
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [orderRecords, setOrderRecords] = useState([]);
   const [showOrderDialogue, setShowOrderDialogue] = useState(false);
   const [selectedDateTime, setSelectedDateTime] = useState(null);
-  const [currentView, setCurrentView] = useState("dayGridMonth");
   const [defaultMessage, setDefaultMessage] = useState({
-    recieverId: id,
-    valetId: id,
+    recieverId: encodeURIComponent(id),
+    valetId: encodeURIComponent(id),
   });
 
   const validRange = {
@@ -51,15 +55,15 @@ const CalenderOrders = ({ id }) => {
     try {
       dispatch(profileOrdersPreview(encodeURIComponent(id))).then(
         (response) => {
+          console.log(response?.payload);
           const events = response?.payload?.data?.map((eventData, index) => ({
             id: eventData.orderEncId,
-            title: eventData.orderTitle,
+            title: "Event Booked",
             start: moment(eventData.startDateTime).toISOString(),
             end: eventData.endDateTime
               ? moment(eventData.endDateTime).toISOString()
               : null,
             color: eventColors[index % eventColors.length],
-            url: eventData.orderDetailUrl,
             extendedProps: { description: eventData.orderStatusDescription },
           }));
           setOrderRecords(events);
@@ -75,23 +79,31 @@ const CalenderOrders = ({ id }) => {
   const handleSendOffer = (values) => {
     if (values) {
       const data = {
-        SenderId: String(userAuth?.id),
-        CustomerId: String(userAuth?.id),
-        ValetId: String(values?.valetId),
-        ReceiverId: values.receiverId,
-        MessageDescription: "Offer Sent",
-        OfferTitle: values.offerTitle,
-        StartedDateTime: values.startedDateTime,
-        EndedDateTime: values.endedDateTime,
-        OfferDescription: values.offerDescription,
+        senderId: String(encodeURIComponent(userAuth?.userEncId)),
+        customerId: String(encodeURIComponent(userAuth?.userEncId)),
+        valetId: String(encodeURIComponent(id)),
+        receiverId: encodeURIComponent(id),
+        title: values.offerTitle,
+        startedDateTime: values.startedDateTime,
+        endedDateTime: values.endedDateTime,
+        description: values.offerDescription,
+        pricePerHour: pricePerHour,
       };
-      dispatch(sendUsersMessages(data));
+      navigate(`/preview-order`, {
+        state: data,
+      });
     }
   };
 
-  const handleOrderClose = () => setShowOrderDialogue(false);
+  const handleOrderClose = () => {
+    setShowOrderDialogue(false);
+  };
 
   useEffect(() => {
+    setDefaultMessage({
+      recieverId: encodeURIComponent(id),
+      valetId: encodeURIComponent(id),
+    });
     fetchOrders();
   }, [id]);
 
@@ -111,7 +123,6 @@ const CalenderOrders = ({ id }) => {
           canDateClick: true,
         }}
         validRange={validRange}
-        currentView={currentView} // Bind the current view
         handleDateClick={handleDateClick}
       />
       {showOrderDialogue && (
@@ -121,6 +132,7 @@ const CalenderOrders = ({ id }) => {
           showOrderDialogue={showOrderDialogue}
           handleSendOffer={handleSendOffer}
           selectedDateTime={selectedDateTime}
+          restrictions={setDateTimeRestrictions("max", validRange.end)}
         />
       )}
     </>

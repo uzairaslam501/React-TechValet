@@ -9,7 +9,11 @@ import {
 } from "../../../redux/Actions/messagesActions";
 import HandleImages from "../../../components/Custom/Avatars/HandleImages";
 import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
-import { truncateCharacters } from "../../../utils/_helpers";
+import {
+  getFirstAndLastDayOfMonth,
+  setDateRestrictions,
+  truncateCharacters,
+} from "../../../utils/_helpers";
 import RenderOfferStatus from "./RendersCard/RenderOfferStatus";
 import "./style.css";
 import OfferDialogue from "./OfferDialogue/OfferDialogue";
@@ -45,9 +49,22 @@ const Messages = () => {
       setUserSideBarLoader(true);
       dispatch(getMessagesSidebar(findUser)).then((response) => {
         if (response?.payload) {
-          setDefaultMessage(response?.payload[0]);
           setUsersList(response?.payload);
-          setUserSideBarLoader(false);
+          if (findUser) {
+            setUserSideBarLoader(false);
+          } else {
+            if (activeChat) {
+              // Filter the payload based on userDecId and senderId
+              const filteredPayload = response?.payload?.filter(
+                (record) =>
+                  record.userDecId === activeChat.userDecId &&
+                  record.senderId === activeChat.senderId
+              );
+              setDefaultMessage(filteredPayload[0]);
+            } else {
+              setDefaultMessage(response?.payload[0]);
+            }
+          }
         } else {
           console.error("No payload received");
         }
@@ -77,6 +94,7 @@ const Messages = () => {
       dispatch(getUsersMessages(userId)).then((response) => {
         if (response?.payload) {
           setMessages(response?.payload);
+          setUserSideBarLoader(false);
           setMessagesLoader(false);
         }
       });
@@ -94,7 +112,7 @@ const Messages = () => {
     if (user?.userDecId !== activeChat?.userDecId) {
       setMessagesLoader(true);
       setActiveChat(user);
-      fetchUserStatus(user?.userDecId);
+      fetchUserStatus(user?.userEncId);
 
       setUsersList((prev) =>
         prev.map((u) =>
@@ -140,8 +158,14 @@ const Messages = () => {
       setSendLoader(true);
       const data = {
         SenderId: String(userAuth?.id),
-        CustomerId: String(userAuth?.id),
-        valetId: String(values?.valetId),
+        CustomerId:
+          userAuth?.role === "Customer"
+            ? String(userAuth?.id)
+            : String(values?.CustomerId),
+        valetId:
+          userAuth?.role === "Valet"
+            ? String(userAuth?.id)
+            : String(values?.valetId),
         ReceiverId: values.receiverId,
         MessageDescription: "Offer Send",
         OfferTitle: values.offerTitle,
@@ -198,7 +222,6 @@ const Messages = () => {
   };
 
   const handlePaymentModal = (data) => {
-    console.log("data", data);
     setSelectedOfferValues(data);
     setShowAcceptOrderDialogue(true);
   };
@@ -210,6 +233,11 @@ const Messages = () => {
       message: newMessage?.model,
     };
     signalRService.sendOfferObject(data);
+  };
+
+  const validRange = {
+    start: getFirstAndLastDayOfMonth().currentDay,
+    end: getFirstAndLastDayOfMonth().monthEnd,
   };
 
   useEffect(() => {
@@ -225,7 +253,7 @@ const Messages = () => {
 
   useEffect(() => {
     if (defaultMessage && defaultMessage?.userDecId !== undefined) {
-      fetchUserStatus(defaultMessage?.userDecId);
+      fetchUserStatus(defaultMessage?.userEncId);
       setActiveChat(defaultMessage);
     }
   }, [defaultMessage]);

@@ -1,0 +1,24 @@
+.uppercase-word {
+  text-transform: uppercase;
+}
+
+.text-sm {
+  font-size: small;
+}
+.text-bold {
+  font-weight: bold;
+}
+
+.card-headers {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: medium;
+}
+
+.order-Info-detail-flex {
+  display: flex;
+  justify-content: space-between;
+}
+.card-headers .badge {
+  line-height: normal;
+}

@@ -18,9 +18,9 @@ import Services from "../ClientAuth/Profile/ValetProfile/Services/Services";
 import Education from "../ClientAuth/Profile/ValetProfile/Education/Education";
 import Slots from "../ClientAuth/Profile/ValetProfile/Slots/Slots";
 import ReviewList from "../../../components/Custom/Reviews/ReviewList";
-import CalenderOrders from "./calender/calenderOrders";
+import CalenderOrders from "./Calender/ViewOrders";
 
-const UserProfile = () => {
+const PreviewProfile = () => {
   const { id } = useParams();
 
   const dispatch = useDispatch();
@@ -33,7 +33,6 @@ const UserProfile = () => {
       const response = await dispatch(
         getRecordById(`/User/user-by-id/${encodeURIComponent(id)}`)
       );
-      console.log("Fetch User", response.payload);
       setUserRecords(response.payload);
       fetchUserRating();
     } catch (e) {
@@ -63,10 +62,13 @@ const UserProfile = () => {
 
       const fetchFunctions = [
         () => <UserProfileImage userRecord={userRecord} preview={true} />,
+        () => <Education userRecord={userRecord} preview={true} />,
+        () => (
+          <CalenderOrders id={id} pricePerHour={userRecords?.pricePerHour} />
+        ),
         () => <Slots userRecord={userRecord} preview={true} />,
         () => <SkillsAndEndorsements userRecord={userRecord} preview={true} />,
         () => <Services userRecord={userRecord} preview={true} />,
-        () => <Education userRecord={userRecord} preview={true} />,
       ];
 
       for (const fetchFunction of fetchFunctions) {
@@ -136,7 +138,10 @@ const UserProfile = () => {
                       style={{ overflowY: "hidden", height: "100%" }}
                     >
                       <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                        <CalenderOrders id={id} />
+                        <CalenderOrders
+                          id={id}
+                          pricePerHour={userRecords?.pricePerHour}
+                        />
                       </Col>
                     </Row>
                   </CardBody>
@@ -195,7 +200,7 @@ const UserProfile = () => {
                         </span>
 
                         <div>
-                          <span class="text-success">
+                          <span className="text-success">
                             {userRecords?.currentTime}
                           </span>
                         </div>
@@ -223,4 +228,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default PreviewProfile;

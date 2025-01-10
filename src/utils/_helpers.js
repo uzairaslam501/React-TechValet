@@ -181,4 +181,55 @@ export const formatDateTimeForInput = (date) => {
   return isoString.slice(0, 16); // Extract the format yyyy-MM-ddTHH:mm
 };
 
+export const setDateRestrictions = (mode, referenceDate) => {
+  if (!["min", "max"].includes(mode)) {
+    throw new Error(
+      "Invalid mode. Use 'min' to disable past dates or 'max' to disable future dates."
+    );
+  }
+  if (!(referenceDate instanceof Date) || isNaN(referenceDate)) {
+    throw new Error("Invalid referenceDate. Provide a valid Date object.");
+  }
+
+  // Format date as YYYY-MM-DD for use with input type="date"
+  const formattedDate = referenceDate.toISOString().split("T")[0];
+
+  // Get all date input fields
+  const dateInputs = document.querySelectorAll('input[type="date"]');
+
+  // Apply the restriction
+  dateInputs.forEach((input) => {
+    input.setAttribute(mode, formattedDate);
+  });
+
+  return formattedDate; // Return for verification/debugging if needed
+};
+
+export const setDateTimeRestrictions = (mode, referenceDate) => {
+  if (!["min", "max"].includes(mode)) {
+    throw new Error(
+      "Invalid mode. Use 'min' to disable past dates or 'max' to disable future dates."
+    );
+  }
+  if (!(referenceDate instanceof Date || typeof referenceDate === "string")) {
+    throw new Error(
+      "Invalid referenceDate. Provide a valid Date object or date string."
+    );
+  }
+
+  // Ensure referenceDate is a Date object
+  const dateObject =
+    typeof referenceDate === "string" ? new Date(referenceDate) : referenceDate;
+
+  // Format date as YYYY-MM-DDTHH:mm for datetime-local
+  const formattedDate = dateObject.toISOString().slice(0, 16);
+
+  return formattedDate; // Return the formatted value
+};
+
 //#endregion
+
+export const toFixedTruncate = (value, decimals) => {
+  const factor = Math.pow(10, decimals);
+  return Math.floor(value * factor) / factor;
+};

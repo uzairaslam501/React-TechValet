@@ -4,7 +4,11 @@ import { useFormik } from "formik";
 import { FloatingLabel, Form } from "react-bootstrap";
 import Dialogue from "../../../../components/Custom/Modal/modal";
 import { useSelector } from "react-redux";
-import { disabledPreviousDateTime } from "../../../../utils/_helpers";
+import {
+  disabledPreviousDateTime,
+  getFirstAndLastDayOfMonth,
+  setDateTimeRestrictions,
+} from "../../../../utils/_helpers";
 
 const validateLogin = Yup.object().shape({
   offerTitle: Yup.string().required("This Field is Required"),
@@ -34,15 +38,16 @@ const OfferDialogue = ({
   handleSendOffer,
   loader,
   selectedDateTime,
+  restrictions,
 }) => {
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const initialValues = {
     messageDescription: "Offer Send",
     senderId: String(userAuth?.id),
-    receiverId: String(messageObject?.userDecId),
+    receiverId: String(messageObject?.userDecId) || "",
     customerId: String(userAuth?.id),
-    valetId: String(messageObject?.userDecId),
+    valetId: String(messageObject?.userDecId) || "",
     offerTitle: "",
     startedDateTime: selectedDateTime || "",
     endedDateTime: "",
@@ -72,6 +77,11 @@ const OfferDialogue = ({
       setFieldValue("endedDateTime", "");
     }
     setFieldValue(field, value);
+  };
+
+  const validRange = {
+    start: getFirstAndLastDayOfMonth().currentDay,
+    end: getFirstAndLastDayOfMonth().monthEnd,
   };
   return (
     <>
@@ -109,6 +119,9 @@ const OfferDialogue = ({
                   handleDateTimeMatch(e.target.value, "startedDateTime");
                 }}
                 min={disabledPreviousDateTime()}
+                max={
+                  restrictions || setDateTimeRestrictions("max", validRange.end)
+                }
                 isInvalid={touched.startedDateTime && !!errors.startedDateTime}
               />
               {touched.startedDateTime && !!errors.startedDateTime && (
@@ -129,6 +142,9 @@ const OfferDialogue = ({
                 }}
                 disabled={!values.startedDateTime}
                 min={disabledPreviousDateTime()}
+                max={
+                  restrictions || setDateTimeRestrictions("max", validRange.end)
+                }
                 isInvalid={touched.endedDateTime && !!errors.endedDateTime}
               />
               {touched.endedDateTime && !!errors.endedDateTime && (
