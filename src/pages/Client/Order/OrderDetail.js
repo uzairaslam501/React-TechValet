@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Button,
   Card,
@@ -18,7 +18,11 @@ import "../Messages/style.css";
 import {
   getOrderDetails,
   getOrderMessages,
+  orderZoomMeeting,
+  sendMessages,
 } from "../../../redux/Actions/orderActions";
+import signalRService from "../../../services/SignalR";
+import FileUploadButton from "../../../components/Custom/Button/fileUploadButton";
 
 const OrderDetail = () => {
   const dispatch = useDispatch();
@@ -27,6 +31,7 @@ const OrderDetail = () => {
   const [orderDetails, setOrderDetails] = useState({});
   const [showSpinner, setShowSpinner] = useState(false);
   const [activeChats, setActiveChat] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
   const { userAuth } = useSelector((state) => state?.authentication);
   const params = useParams();
 
@@ -51,13 +56,15 @@ const OrderDetail = () => {
   };
 
   const handleSendMessage = (receiverId) => {
-    if (messageTyped) {
+    if (messageTyped || (selectedFile && selectedFile.size > 0)) {
       setSendLoader(true);
       const data = {
-        senderId: String(userAuth?.id),
-        receiverId: receiverId,
-        messageDescription: messageTyped,
-        orderId: params?.id,
+        senderId: encodeURIComponent(userAuth?.userEncId),
+        receiverId: encodeURIComponent(receiverId),
+        messageDescription: encodeURIComponent(messageTyped),
+        orderId: encodeURIComponent(params?.id),
+        way: "",
+        file: selectedFile ? selectedFile : null,
       };
       handleResponse(data);
     } else {
@@ -67,18 +74,93 @@ const OrderDetail = () => {
 
   const handleResponse = (data) => {
     try {
-      console.log("data", data);
-      setMessageTyped("");
-      setSendLoader(false);
+      dispatch(sendMessages(data)).then((response) => {
+        if (response?.payload) {
+          const newMessage = response.payload;
+          setActiveChat((prev) => [...prev, newMessage]);
+          handleSignalRCall(newMessage);
+        }
+
+        setMessageTyped("");
+        setSendLoader(false);
+      });
     } catch (error) {
       setMessageTyped("");
       setSendLoader(false);
+    } finally {
+      setMessageTyped("");
+      setSelectedFile(null);
+      setSendLoader(false);
     }
+  };
+
+  const handleSignalRCall = (newMessage) => {
+    const data = {
+      senderId: newMessage.senderId,
+      receiverId: newMessage.receiverId,
+      message: newMessage,
+    };
+    signalRService.sendOrderObject(data);
+  };
+
+  const handleFileUpload = (file) => {
+    setSelectedFile(file);
+  };
+
+  const handleZoomMeeting = () => {
+    const data = {
+      orderId: encodeURIComponent(orderDetails.encId),
+      senderId: encodeURIComponent(userAuth.userEncId),
+      receiverId:
+        userAuth?.role === "Valet"
+          ? encodeURIComponent(orderDetails?.customerEncId)
+          : encodeURIComponent(orderDetails?.valetEncId),
+    };
+
+    setSendLoader(true);
+    dispatch(orderZoomMeeting(data)).then((response) => {
+      if (response?.payload) {
+        const newMessage = response.payload;
+        setActiveChat((prev) => [...prev, newMessage]);
+
+        console.log("orderZoomMeeting newMessage ::: ", newMessage);
+        handleSignalRCall(newMessage);
+
+        if (String(userAuth.id) === newMessage.senderId) {
+          window.open(newMessage?.startUrl, "_blank");
+        } else if (String(userAuth.id) === newMessage.receiverId) {
+          window.open(newMessage?.joinUrl, "_blank");
+        }
+      }
+      setSendLoader(false);
+    });
   };
 
   useEffect(() => {
     fetchOrderDetails();
   }, [params.id]);
+
+  useEffect(() => {
+    if (!userAuth?.id) return;
+
+    const handleIncomingData = (senderId, receiverId, model) => {
+      if (userAuth?.id === receiverId) {
+        setActiveChat((prev) => {
+          if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
+            return [...prev, model];
+          }
+          return prev;
+        });
+      }
+    };
+
+    signalRService.subscribe(handleIncomingData);
+
+    return () => {
+      signalRService.unsubscribe(handleIncomingData);
+      signalRService.disconnect();
+    };
+  }, [params?.id]);
 
   if (!params || !params.id) {
     return <Navigate to="/" />;
@@ -143,24 +225,27 @@ const OrderDetail = () => {
                             />
                           </div>
                           <div className="row py-3">
-                            <div className="col-md-2 col-sm-12 mb-2">
-                              <Button
-                                variant="secondary-secondary"
-                                className="btn-sm w-100"
-                                // onClick={() => handleCreateOrder()}
-                              >
-                                <i className="bi bi-upload me-2"></i> Upload
-                              </Button>
+                            <div className="col-md-6 col-sm-12 mb-2">
+                              <FileUploadButton
+                                setSelectedFile={setSelectedFile}
+                                onFileUpload={handleFileUpload}
+                              />
+                              {selectedFile && (
+                                <div className="mt-2">
+                                  <strong>Selected File:</strong>{" "}
+                                  {selectedFile.name}
+                                </div>
+                              )}
                             </div>
-                            <div className="col-md-2 offset-md-8 col-sm-12 mb-2 text-end">
+                            <div className="col-md-6 col-sm-12 mb-2 text-end">
                               <Button
                                 variant="primary-secondary"
-                                className="btn-sm w-100"
+                                className="btn-sm w-50"
                                 onClick={() =>
                                   handleSendMessage(
                                     userAuth?.role === "Valet"
-                                      ? orderDetails?.customerId
-                                      : orderDetails?.valetId
+                                      ? orderDetails?.customerEncId
+                                      : orderDetails?.valetEncId
                                   )
                                 }
                                 disabled={sendLoader}
@@ -245,7 +330,12 @@ const OrderDetail = () => {
                 <CardBody>
                   <div className="card-headers mb-1">Zoom Meeting</div>
 
-                  <Button className="w-100 btn btn-sm">Zoom Meeting</Button>
+                  <Button
+                    onClick={() => handleZoomMeeting()}
+                    className="w-100 btn btn-sm"
+                  >
+                    Zoom Meeting
+                  </Button>
                 </CardBody>
               </Card>
               {/* Resolution Card */}

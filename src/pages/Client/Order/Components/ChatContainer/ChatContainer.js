@@ -12,7 +12,7 @@ const ChatContainer = ({
   console.log(userAuth);
   const getFileElement = (filePath) => {
     if (filePath) {
-      const fileUrl = `@ProjectVariables.BaseUrlForImages${filePath}`;
+      const fileUrl = filePath;
       const isImage = [".png", ".jpeg", ".jpg", ".svg", ".webp"].some((ext) =>
         filePath.includes(ext)
       );

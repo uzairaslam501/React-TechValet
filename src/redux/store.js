@@ -20,7 +20,7 @@ import orderSlice from "./Reducers/orderSlice";
 import packageSlice from "./Reducers/packageSlice";
 import paypalSlice from "./Reducers/paypalSlice";
 import stripeSlice from "./Reducers/stripeSlice";
-import serviceSlice from "./Reducers/serviceSlice";
+//import serviceSlice from "./Reducers/serviceSlice";
 
 // Combine your reducers here
 const rootReducer = combineReducers({
@@ -33,7 +33,7 @@ const rootReducer = combineReducers({
   order: orderSlice,
   package: packageSlice,
   paypal: paypalSlice,
-  service: serviceSlice,
+  //service: serviceSlice,
   stripe: stripeSlice,
 });
 
