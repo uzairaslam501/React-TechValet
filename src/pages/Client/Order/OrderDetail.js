@@ -6,6 +6,8 @@ import {
   CardHeader,
   Col,
   Container,
+  FloatingLabel,
+  Form,
   Row,
   Spinner,
 } from "react-bootstrap";
@@ -16,6 +18,8 @@ import { Navigate, useParams } from "react-router";
 import ChatContainer from "./Components/ChatContainer/ChatContainer";
 import ChatHeader from "./Components/ChatHeader/ChatHeader";
 import {
+  cancelOrder,
+  extendOrder,
   getOrderDetails,
   getOrderMessages,
   orderZoomMeeting,
@@ -23,6 +27,10 @@ import {
 } from "../../../redux/Actions/orderActions";
 import signalRService from "../../../services/SignalR";
 import FileUploadButton from "../../../components/Custom/Button/fileUploadButton";
+import Dialogue from "../../../components/Custom/Modal/modal";
+import { disabledPreviousDateTime, getFirstAndLastDayOfMonth, setDateTimeRestrictions } from "../../../utils/_helpers";
+import { scrollToBottom } from "../../../utils/_helpers";
+import OrderButton from "./Components/Buttons/OrderButtons";
 
 const OrderDetail = () => {
   const dispatch = useDispatch();
@@ -32,8 +40,11 @@ const OrderDetail = () => {
   const [showSpinner, setShowSpinner] = useState(false);
   const [activeChats, setActiveChat] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [showOrderDialogue, setShowOrderDialogue] = useState(false);
+  const [orderType, setOrderType] = useState("");
   const { userAuth } = useSelector((state) => state?.authentication);
   const params = useParams();
+  const chatContainerId = "chatbox-container";
 
   const fetchOrderDetails = () => {
     setShowSpinner(true);
@@ -136,6 +147,86 @@ const OrderDetail = () => {
     });
   };
 
+  // #region Order Cancel/ Extend
+  const [orderReason, setOrderReason] = useState("");
+  const [extendDateTime, setExtendDateTime] = useState("");
+
+  const validRange = {
+    start: getFirstAndLastDayOfMonth().currentDay,
+    end: getFirstAndLastDayOfMonth().monthEnd,
+  };
+
+  const handleOrderModal = (type) => {
+    setOrderType(type);
+    setShowOrderDialogue(true);
+  }
+
+  const handleOrderClose = () => {
+    setShowOrderDialogue(false);
+    setOrderReason("");
+    setOrderType("");
+  }
+
+  const handleOrderSubmit = () =>{
+
+    if(orderReason !== null && orderReason.trim() !== "")
+    {
+      const data = {
+        orderId: encodeURIComponent(orderDetails.encId),
+        senderId: encodeURIComponent(userAuth.userEncId),
+        receiverId:
+          userAuth?.role === "Valet"
+            ? encodeURIComponent(orderDetails?.customerEncId)
+            : encodeURIComponent(orderDetails?.valetEncId),
+        orderStatus: orderType,
+        explanation: orderReason,
+      };
+      
+      if(orderType === "Cancel")
+      {
+        setSendLoader(true);
+        dispatch(cancelOrder(data)).then((response) => {
+          if (response?.payload) {
+            const newMessage = response.payload;
+            setActiveChat((prev) => [...prev, newMessage]);
+
+            console.log("order canceled, newMessage ::: ", newMessage);
+            handleSignalRCall(newMessage);
+          }
+          setSendLoader(false);
+          setShowOrderDialogue(false);
+          setOrderReason("")
+        });
+      }
+      else if(orderType === "Extend" && extendDateTime)
+      {
+        console.log("extendDateTime", extendDateTime)
+        setSendLoader(true);
+        const newData = {
+          ...data,
+          dateExtension: extendDateTime 
+        };
+
+        dispatch(extendOrder(newData)).then((response) => {
+          if (response?.payload) {
+            const newMessage = response.payload;
+            setActiveChat((prev) => [...prev, newMessage]);
+
+            console.log("order extend, newMessage ::: ", newMessage);
+            handleSignalRCall(newMessage);
+          }
+          setSendLoader(false);
+          setShowOrderDialogue(false);
+          setOrderReason("")
+          setExtendDateTime("")
+        });
+      }
+      
+    }
+  }
+
+  // #endregion Cancel Order
+
   useEffect(() => {
     fetchOrderDetails();
   }, [params.id]);
@@ -161,6 +252,10 @@ const OrderDetail = () => {
       signalRService.disconnect();
     };
   }, [params?.id]);
+
+  useEffect(() => {
+      scrollToBottom(chatContainerId);
+    }, [activeChats]);
 
   if (!params || !params.id) {
     return <Navigate to="/" />;
@@ -194,7 +289,7 @@ const OrderDetail = () => {
                         )}
                       </div>
                       <div className="col-sm-12">
-                        <div className="chatbox-container">
+                        <div className="chatbox-container" id={chatContainerId}>
                           {activeChats && (
                             <ChatContainer
                               messageLoader={null}
@@ -250,15 +345,6 @@ const OrderDetail = () => {
                                 }
                                 disabled={sendLoader}
                               >
-                                {/* {sendLoader ? (
-                                  <Spinner
-                                    animation="border"
-                                    size="sm"
-                                    className="me-1"
-                                  />
-                                ) : (
-                                  <i className="bi bi-send-check me-1"></i>
-                                )} */}
                                 Send
                               </Button>
                             </div>
@@ -321,7 +407,11 @@ const OrderDetail = () => {
                   </div>
                   <hr />
                   <div className="order-Info-detail-flex">
-                    <Button className="w-100 btn-sm">Accept Order</Button>
+                    <OrderButton
+                      userRole={userAuth?.role}
+                      orderStatus={orderDetails?.orderStatus}
+                      isDelivered={orderDetails?.isDelivered}
+                    />
                   </div>
                 </CardBody>
               </Card>
@@ -343,7 +433,11 @@ const OrderDetail = () => {
                 <CardBody>
                   <div className="card-headers mb-1">Resolution Center</div>
 
-                  <button className="w-100 btn btn-sm btn-outline-danger">
+                  <button onClick={() => handleOrderModal("Extend")} className="w-100 mb-2 btn btn-sm btn-outline-primary">
+                    Extend Deadline
+                  </button>
+
+                  <button onClick={() => handleOrderModal("Cancel")} className="w-100 btn btn-sm btn-outline-danger">
                     Cancel Order
                   </button>
                 </CardBody>
@@ -352,6 +446,77 @@ const OrderDetail = () => {
           </>
         )}
       </Row>
+
+      {/* #region OrderModal */}
+      <Dialogue
+        show={showOrderDialogue}
+        onHide={handleOrderClose}
+        headerClass="px-3 py-2"
+        title={`${orderType} Order`}
+
+        bodyContent={
+          <Form onSubmit={handleOrderSubmit}>
+            
+            {orderType === "Extend" && 
+              <Form.Group className="mb-3">
+                <Form.Label>Extend Date Time:</Form.Label>
+                <Form.Control
+                  type="datetime-local"
+                  value={extendDateTime}
+                  onChange={(e) => {
+                    setExtendDateTime(e.target.value);
+                  }}
+                  min={disabledPreviousDateTime()}
+                  max={
+                    setDateTimeRestrictions("max", validRange.end)
+                  }
+                  isInvalid={extendDateTime === null || extendDateTime === "" || !extendDateTime}
+                />
+                <Form.Control.Feedback type="invalid">
+                  This Field is Required
+                </Form.Control.Feedback>
+              </Form.Group>
+            }
+
+            <FloatingLabel
+              controlId="floatingTextarea2"
+              label= {`Reason for ${orderType} order - please be as detailed as possible:`}
+
+            >
+              <Form.Control
+                as="textarea"
+                placeholder="Leave a reason here"
+                style={{ height: "100px" }}
+                value={orderReason}
+                onChange={(event) => {
+                  const val = event.target.value;
+                  setOrderReason(val);
+                }}
+                isInvalid={orderReason === null || orderReason.trim() === ""} // Validate input
+              />
+              <Form.Control.Feedback type="invalid">
+                This Field is Required
+              </Form.Control.Feedback>
+            </FloatingLabel>
+
+          </Form>
+        }
+        backdrop="static"
+        customFooterButtons={[
+          {
+            text: "Cancel",
+            className: "btn-secondary-secondary",
+            onClick: handleOrderClose,
+          },
+          {
+            text: "Send",
+            variant: "primary",
+            onClick: handleOrderSubmit,
+            loader: sendLoader,
+          },
+        ]}
+      />
+      {/* #endregion  */}
     </Container>
   );
 };

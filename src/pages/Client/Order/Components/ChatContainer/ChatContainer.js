@@ -48,12 +48,16 @@ const ChatContainer = ({ messageLoader, messages, userAuth }) => {
         Cancel: {
           type: "Cancellation",
           description:
-            "If you do not respond, the order would be cancelled within the next 48 hours",
+            senderId !== String(userAuth?.id)
+              ? "If you do not respond, the order would be cancelled within the next 48 hours"
+              : "You have sent the request of cancelling the order",
         },
         Extend: {
           type: "Days Extension",
           description:
-            "If you do not respond, the date would be extended within the next 48 hours",
+            senderId !== String(userAuth?.id)
+              ? "If you do not respond, the date would be extended within the next 48 hours"
+              : "You have sent the request of extended the date",
         },
         Revision: { type: "Revision", description: "" },
         Zoom: { type: "Zoom Meeting", description: "" },

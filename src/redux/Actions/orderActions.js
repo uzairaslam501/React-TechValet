@@ -112,3 +112,47 @@ export const orderZoomMeeting = createAsyncThunk(
     }
   }
 );
+
+export const cancelOrder = createAsyncThunk(
+  "order/cancelOrder",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.put(
+        "/Message/CancelOrder/" + obj.orderId,
+        obj,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+export const extendOrder = createAsyncThunk(
+  "order/extendOrder",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.put(
+        "/Message/RequestExtendDate/" + obj.orderId,
+        obj,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);      
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
