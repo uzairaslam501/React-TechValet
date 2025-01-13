@@ -1,15 +1,10 @@
 import React from "react";
 import HandleImages from "../../../../../components/Custom/Avatars/HandleImages";
-import RenderOfferStatus from "../../../Messages/RendersCard/RenderOfferStatus";
-import { Card, Spinner } from "react-bootstrap";
+import { Button, Card, Spinner } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
 
-const ChatContainer = ({
-  messageLoader,
-  messages,
-  userAuth,
-  handleOfferStatus,
-}) => {
-  console.log(userAuth);
+const ChatContainer = ({ messageLoader, messages, userAuth }) => {
+  console.log(messages);
   const getFileElement = (filePath) => {
     if (filePath) {
       const fileUrl = filePath;
@@ -21,22 +16,27 @@ const ChatContainer = ({
         <a href={fileUrl} target="_blank" rel="noopener noreferrer">
           <img
             src={fileUrl}
-            className="img-fluid mt-2"
-            style={{ width: "150px", height: "150px" }}
+            className="img-fluid my-2 border-0"
+            style={{ width: "150px", height: "150px", borderRadius: "0" }}
             alt="File"
           />
         </a>
       ) : (
-        <a
-          className="btn btn-success btn-sm mt-2"
-          target="_blank"
-          rel="noopener noreferrer"
-          href={fileUrl}
-          download
-          title="Download"
-        >
-          Download File
-        </a>
+        <div className="text-end">
+          <Button
+            as={NavLink}
+            variant="success"
+            size="sm"
+            className="my-2"
+            target="_blank"
+            rel="noopener noreferrer"
+            to={fileUrl}
+            download
+            title="Download"
+          >
+            Download File
+          </Button>
+        </div>
       );
     }
     return null;
@@ -91,6 +91,69 @@ const ChatContainer = ({
     return null;
   };
 
+  const renderZoomMeeting = (
+    orderReasonType,
+    isZoomMeeting,
+    senderId,
+    joinUrl,
+    startUrl
+  ) => {
+    if (orderReasonType) {
+      if (isZoomMeeting === 1 && senderId !== String(userAuth?.id)) {
+        return (
+          <div>
+            <Card>
+              <Card.Body>
+                <div className="font-weight-bold">Join Meeting</div>
+                <p className="text-muted">
+                  you have recieved the invitation of zoom meeting
+                </p>
+                <div className="text-end">
+                  <Button
+                    variant="success"
+                    size="sm"
+                    as={NavLink}
+                    to={joinUrl}
+                    target="_blank"
+                    className="btn-block"
+                  >
+                    Join Meeting
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
+          </div>
+        );
+      } else if (isZoomMeeting === 1 && senderId === String(userAuth?.id)) {
+        return (
+          <div>
+            <Card>
+              <Card.Body>
+                <div className="font-weight-bold">Meeting Invitation Sent</div>
+                <p className="text-muted">
+                  you have sent the invitation of zoom meeting
+                </p>
+                <div className="text-end">
+                  <Button
+                    variant="success"
+                    size="sm"
+                    as={NavLink}
+                    to={startUrl}
+                    target="_blank"
+                    className="btn-block"
+                  >
+                    Start Meeting
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
+          </div>
+        );
+      }
+    }
+    return null;
+  };
+
   return messageLoader ? (
     <div className="text-center">
       <Spinner animation="grow" />
@@ -123,6 +186,15 @@ const ChatContainer = ({
                     message.orderReasonType,
                     message.orderReasonIsActive,
                     message.senderId
+                  )}
+                </div>
+              ) : message.isZoomMeeting === 1 ? (
+                <div>
+                  {renderZoomMeeting(
+                    message.orderReasonType,
+                    message.isZoomMeeting,
+                    message.senderId,
+                    message.joinUrl
                   )}
                 </div>
               ) : (
