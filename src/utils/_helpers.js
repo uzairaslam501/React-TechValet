@@ -233,3 +233,8 @@ export const toFixedTruncate = (value, decimals) => {
   const factor = Math.pow(10, decimals);
   return Math.floor(value * factor) / factor;
 };
+
+export const scrollToBottom = (id) => {
+  var area = document.querySelector(`#${id}`);
+  area.scrollTop = area.scrollHeight;
+};
