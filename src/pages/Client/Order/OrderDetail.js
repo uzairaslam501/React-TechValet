@@ -10,11 +10,11 @@ import {
   Spinner,
 } from "react-bootstrap";
 import "./OrderDetail.css";
+import "../Messages/style.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useParams } from "react-router";
 import ChatContainer from "./Components/ChatContainer/ChatContainer";
 import ChatHeader from "./Components/ChatHeader/ChatHeader";
-import "../Messages/style.css";
 import {
   getOrderDetails,
   getOrderMessages,
