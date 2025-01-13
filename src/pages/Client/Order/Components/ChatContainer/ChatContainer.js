@@ -4,7 +4,6 @@ import { Button, Card, Spinner } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
 const ChatContainer = ({ messageLoader, messages, userAuth }) => {
-  console.log(messages);
   const getFileElement = (filePath) => {
     if (filePath) {
       const fileUrl = filePath;
@@ -42,7 +41,12 @@ const ChatContainer = ({ messageLoader, messages, userAuth }) => {
     return null;
   };
 
-  const renderStatusType = (orderReasonType, orderReasonIsActive, senderId) => {
+  const renderStatusType = (
+    orderReasonType,
+    orderReasonIsActive,
+    senderId,
+    messageDescription
+  ) => {
     if (orderReasonType) {
       const statusMapping = {
         Cancel: {
@@ -83,10 +87,14 @@ const ChatContainer = ({ messageLoader, messages, userAuth }) => {
 
       return (
         <div>
-          <Card>
-            <Card.Body>
+          <Card style={{ width: "20rem" }}>
+            <Card.Header>
               <div className="font-weight-bold">{status.type} Request:</div>
-              <p className="text-muted">{status.description}</p>
+            </Card.Header>
+            <Card.Body>
+              <p>
+                <div dangerouslySetInnerHTML={{ __html: messageDescription }} />
+              </p>
             </Card.Body>
           </Card>
         </div>
@@ -100,17 +108,21 @@ const ChatContainer = ({ messageLoader, messages, userAuth }) => {
     isZoomMeeting,
     senderId,
     joinUrl,
-    startUrl
+    startUrl,
+    messageDescription
   ) => {
     if (orderReasonType) {
       if (isZoomMeeting === 1 && senderId !== String(userAuth?.id)) {
         return (
           <div>
-            <Card>
-              <Card.Body>
+            <Card style={{ width: "20rem" }}>
+              <Card.Header>
                 <div className="font-weight-bold">Join Meeting</div>
+              </Card.Header>
+              <Card.Body>
                 <p className="text-muted">
-                  you have recieved the invitation of zoom meeting
+                  You have received a Zoom meeting invitation. Click the button
+                  below to join the meeting.
                 </p>
                 <div className="text-end">
                   <Button
@@ -131,11 +143,14 @@ const ChatContainer = ({ messageLoader, messages, userAuth }) => {
       } else if (isZoomMeeting === 1 && senderId === String(userAuth?.id)) {
         return (
           <div>
-            <Card>
+            <Card style={{ width: "20rem" }}>
+              <Card.Header>
+                <div className="font-weight-bold">Start Meeting</div>
+              </Card.Header>
               <Card.Body>
-                <div className="font-weight-bold">Meeting Invitation Sent</div>
                 <p className="text-muted">
-                  you have sent the invitation of zoom meeting
+                  You have sent a Zoom meeting invitation. Click the button
+                  below to start the meeting.
                 </p>
                 <div className="text-end">
                   <Button
@@ -189,7 +204,8 @@ const ChatContainer = ({ messageLoader, messages, userAuth }) => {
                   {renderStatusType(
                     message.orderReasonType,
                     message.orderReasonIsActive,
-                    message.senderId
+                    message.senderId,
+                    message.messageDescription
                   )}
                 </div>
               ) : message.isZoomMeeting === 1 ? (
@@ -198,7 +214,8 @@ const ChatContainer = ({ messageLoader, messages, userAuth }) => {
                     message.orderReasonType,
                     message.isZoomMeeting,
                     message.senderId,
-                    message.joinUrl
+                    message.joinUrl,
+                    message.messageDescription
                   )}
                 </div>
               ) : (
@@ -210,7 +227,17 @@ const ChatContainer = ({ messageLoader, messages, userAuth }) => {
                 </div>
               )}
 
-              <div className="message-time">{message.messageTime}</div>
+              <div
+                className={`message-time `}
+                style={{
+                  color:
+                    message.senderId === String(userAuth?.id)
+                      ? "#f9f9f9"
+                      : "#111111",
+                }}
+              >
+                {message.messageTime}
+              </div>
             </div>
           </li>
         ))}

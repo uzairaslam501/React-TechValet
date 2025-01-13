@@ -94,12 +94,6 @@ class SignalRService {
         if (receiverId === userId) {
           this.broadcastOrderMessage(senderId, receiverId, model);
         }
-        console.log(
-          "SendOrderMessage connection data :: ",
-          model,
-          senderId,
-          receiverId
-        );
       } catch (error) {
         console.error("Error processing received Offer:", error);
       }
