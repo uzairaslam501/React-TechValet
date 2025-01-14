@@ -3,7 +3,7 @@ import { Button, Form, FloatingLabel } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import {
   cancelOrder,
-  extendOrder,
+  extendOrderRequest,
 } from "../../../../../redux/Actions/orderActions";
 import {
   disabledPreviousDateTime,
@@ -19,6 +19,7 @@ const OrderResolution = ({
   setSendLoader,
   setActiveChat,
   handleSignalRCall,
+  showSpinner,
 }) => {
   const dispatch = useDispatch();
 
@@ -84,7 +85,7 @@ const OrderResolution = ({
   const requestExtendOrder = (payload) => {
     const extendedPayload = { ...payload, dateExtension: extensionDate };
 
-    dispatch(extendOrder(extendedPayload)).then((response) => {
+    dispatch(extendOrderRequest(extendedPayload)).then((response) => {
       if (response?.payload) {
         const newMessage = response.payload;
         setActiveChat((prev) => [...prev, newMessage]);
@@ -102,6 +103,7 @@ const OrderResolution = ({
         className="w-100 mb-2"
         variant="outline-primary"
         size="sm"
+        disabled={showSpinner}
       >
         Extend Deadline
       </Button>
@@ -111,6 +113,7 @@ const OrderResolution = ({
         className="w-100"
         variant="outline-danger"
         size="sm"
+        disabled={showSpinner}
       >
         Cancel Order
       </Button>

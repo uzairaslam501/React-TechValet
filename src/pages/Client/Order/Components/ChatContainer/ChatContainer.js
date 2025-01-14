@@ -1,9 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
 import HandleImages from "../../../../../components/Custom/Avatars/HandleImages";
 import { Button, Card, Spinner } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
+import CustomButtons from "../../../../../components/Custom/Button/buttons";
+import { useDispatch } from "react-redux";
+import { extractDate } from "../../../../../utils/_helpers";
 
-const ChatContainer = ({ messageLoader, messages, userAuth }) => {
+const ChatContainer = ({
+  orderDetails,
+  messageLoader,
+  messages,
+  userAuth,
+  handleAcceptRejectDate,
+}) => {
+  const dispatch = useDispatch();
+  const [dateSelected, setDateSelected] = useState(null);
+  const [reasonForDate, setReasonForDate] = useState("");
+
+  const handleAccept = (message, type) => {
+    console.log(message);
+    const data = {
+      orderId: encodeURIComponent(message?.orderEncId),
+      orderReasonId: encodeURIComponent(message?.orderReasonEncId),
+      orderStatus: "Accept",
+      receiverId:
+        userAuth?.role === "Valet"
+          ? encodeURIComponent(orderDetails?.customerEncId)
+          : encodeURIComponent(orderDetails?.valetEncId),
+      senderId: encodeURIComponent(userAuth?.userEncId),
+      dateExtension: extractDate(message?.messageDescription),
+    };
+    handleAcceptRejectDate(data);
+  };
+
+  const handleReject = (message, type) => {
+    const data = {
+      orderId: encodeURIComponent(message?.orderEncId),
+      orderReasonId: encodeURIComponent(message?.orderReasonEncId),
+      orderStatus: "Cancel",
+      receiverId:
+        userAuth?.role === "Valet"
+          ? encodeURIComponent(orderDetails?.customerEncId)
+          : encodeURIComponent(orderDetails?.valetEncId),
+      senderId: encodeURIComponent(userAuth?.userEncId),
+      dateExtension: extractDate(message?.messageDescription),
+    };
+    handleAcceptRejectDate(data);
+  };
+
   const getFileElement = (filePath) => {
     if (filePath) {
       const fileUrl = filePath;
@@ -45,7 +89,8 @@ const ChatContainer = ({ messageLoader, messages, userAuth }) => {
     orderReasonType,
     orderReasonIsActive,
     senderId,
-    messageDescription
+    messageDescription,
+    message
   ) => {
     if (orderReasonType) {
       const statusMapping = {
@@ -55,6 +100,24 @@ const ChatContainer = ({ messageLoader, messages, userAuth }) => {
             senderId !== String(userAuth?.id)
               ? "If you do not respond, the order would be cancelled within the next 48 hours"
               : "You have sent the request of cancelling the order",
+          buttons: [
+            {
+              id: 1,
+              title: "Accept",
+              label: "Accept",
+              onClick: () => handleAccept(message, "cancel"),
+              variant: "success",
+              className: "w-100",
+            },
+            {
+              id: 2,
+              title: "Reject",
+              label: "Reject",
+              onClick: () => handleReject(message, "cancel"),
+              variant: "outline-danger",
+              className: "w-100",
+            },
+          ],
         },
         Extend: {
           type: "Days Extension",
@@ -62,29 +125,31 @@ const ChatContainer = ({ messageLoader, messages, userAuth }) => {
             senderId !== String(userAuth?.id)
               ? "If you do not respond, the date would be extended within the next 48 hours"
               : "You have sent the request of extended the date",
+          buttons: [
+            {
+              id: 1,
+              title: "Accept",
+              label: "Accept",
+              onClick: () => handleAccept(message, "extend"),
+              variant: "success",
+              className: "w-100",
+            },
+            {
+              id: 2,
+              title: "Reject",
+              label: "Reject",
+              onClick: () => handleReject(message, "extend"),
+              variant: "outline-danger",
+              className: "w-100",
+            },
+          ],
         },
         Revision: { type: "Revision", description: "" },
         Zoom: { type: "Zoom Meeting", description: "" },
       };
 
       const status = statusMapping[orderReasonType] || {};
-
-      if (orderReasonIsActive === 1 && senderId !== String(userAuth?.id)) {
-        return (
-          <button type="button" className="btn btn-success btn-block" disabled>
-            Accepted
-          </button>
-        );
-      }
-
-      if (orderReasonIsActive === 3 && senderId !== String(userAuth?.id)) {
-        return (
-          <button type="button" className="btn btn-danger btn-block" disabled>
-            Rejected
-          </button>
-        );
-      }
-
+      const buttons = status.buttons || [];
       return (
         <div>
           <Card style={{ width: "20rem" }}>
@@ -95,6 +160,25 @@ const ChatContainer = ({ messageLoader, messages, userAuth }) => {
               <p>
                 <div dangerouslySetInnerHTML={{ __html: messageDescription }} />
               </p>
+              {message.orderReasonIsActive === "2" ? (
+                <Button className="w-100" size="sm">
+                  Accepted
+                </Button>
+              ) : message?.orderReasonIsActive === "3" ? (
+                <Button className="w-100" size="sm">
+                  Rejected
+                </Button>
+              ) : (
+                senderId !== String(userAuth?.id) &&
+                userAuth?.role !== "Valet" &&
+                message.orderReasonIsActive === "1" && (
+                  <CustomButtons
+                    buttons={buttons}
+                    row={message}
+                    className="w-100"
+                  />
+                )
+              )}
             </Card.Body>
           </Card>
         </div>
@@ -205,7 +289,8 @@ const ChatContainer = ({ messageLoader, messages, userAuth }) => {
                     message.orderReasonType,
                     message.orderReasonIsActive,
                     message.senderId,
-                    message.messageDescription
+                    message.messageDescription,
+                    message
                   )}
                 </div>
               ) : message.isZoomMeeting === 1 ? (

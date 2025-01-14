@@ -113,6 +113,30 @@ export const orderZoomMeeting = createAsyncThunk(
   }
 );
 
+//OrderExtentionRequest
+export const extendOrderRequest = createAsyncThunk(
+  "order/extendOrderRequest",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.put(
+        "/Message/RequestExtendDate/" + obj.orderId,
+        obj,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+//OrderCancelRequest
 export const cancelOrder = createAsyncThunk(
   "order/cancelOrder",
   async (obj, { rejectWithValue, getState, dispatch }) => {
@@ -135,13 +159,14 @@ export const cancelOrder = createAsyncThunk(
   }
 );
 
-export const extendOrder = createAsyncThunk(
-  "order/extendOrder",
+//OrderAcceptRejectDateExtention
+export const extendOrderConfirmation = createAsyncThunk(
+  "order/extendOrderConfirmation",
   async (obj, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
       const response = await api.put(
-        "/Message/RequestExtendDate/" + obj.orderId,
+        "/Message/ExtendDateApproval/" + obj.orderId,
         obj,
         {
           headers: {
@@ -149,7 +174,7 @@ export const extendOrder = createAsyncThunk(
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch, expired);      
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
