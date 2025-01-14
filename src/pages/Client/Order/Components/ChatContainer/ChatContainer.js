@@ -12,11 +12,12 @@ const ChatContainer = ({
   messages,
   userAuth,
   handleAcceptRejectDate,
+  handleAcceptRejectCancel,
 }) => {
   const dispatch = useDispatch();
   const [dateSelected, setDateSelected] = useState(null);
   const [reasonForDate, setReasonForDate] = useState("");
-
+  console.log("orderDetails", orderDetails);
   const handleAccept = (message, type) => {
     console.log(message);
     const data = {
@@ -30,7 +31,11 @@ const ChatContainer = ({
       senderId: encodeURIComponent(userAuth?.userEncId),
       dateExtension: extractDate(message?.messageDescription),
     };
-    handleAcceptRejectDate(data);
+    if (type === "extend") {
+      handleAcceptRejectDate(data);
+    } else {
+      handleAcceptRejectCancel(data);
+    }
   };
 
   const handleReject = (message, type) => {
@@ -45,7 +50,11 @@ const ChatContainer = ({
       senderId: encodeURIComponent(userAuth?.userEncId),
       dateExtension: extractDate(message?.messageDescription),
     };
-    handleAcceptRejectDate(data);
+    if (type === "extend") {
+      handleAcceptRejectDate(data);
+    } else {
+      handleAcceptRejectCancel(data);
+    }
   };
 
   const getFileElement = (filePath) => {
@@ -161,11 +170,16 @@ const ChatContainer = ({
                 <div dangerouslySetInnerHTML={{ __html: messageDescription }} />
               </p>
               {message.orderReasonIsActive === "2" ? (
-                <Button className="w-100" size="sm">
+                <Button
+                  className="w-100"
+                  size="sm"
+                  variant="primary-secondary"
+                  disabled
+                >
                   Accepted
                 </Button>
               ) : message?.orderReasonIsActive === "3" ? (
-                <Button className="w-100" size="sm">
+                <Button className="w-100" size="sm" variant="danger" disabled>
                   Rejected
                 </Button>
               ) : (

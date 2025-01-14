@@ -19,6 +19,7 @@ import {
   extendOrderConfirmation,
   getOrderDetails,
   getOrderMessages,
+  orderCancelConfirmation,
   orderZoomMeeting,
   sendMessages,
 } from "../../../redux/Actions/orderActions";
@@ -29,15 +30,15 @@ import OrderButton from "./Components/Buttons/OrderButtons";
 import Resolution from "./Components/Resolution/Resolution";
 
 const OrderDetail = () => {
+  const params = useParams();
   const dispatch = useDispatch();
   const [sendLoader, setSendLoader] = useState(false);
-  const [messageTyped, setMessageTyped] = useState("");
-  const [orderDetails, setOrderDetails] = useState({});
-  const [showSpinner, setShowSpinner] = useState(false);
   const [activeChats, setActiveChat] = useState(false);
+  const [orderDetails, setOrderDetails] = useState({});
+  const [messageTyped, setMessageTyped] = useState("");
+  const [showSpinner, setShowSpinner] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const { userAuth } = useSelector((state) => state?.authentication);
-  const params = useParams();
   const chatContainerId = "chatbox-container";
 
   const fetchOrderDetails = () => {
@@ -157,6 +158,20 @@ const OrderDetail = () => {
     });
   };
 
+  const handleAcceptRejectCancel = (data) => {
+    dispatch(orderCancelConfirmation(data)).then((response) => {
+      const newMessage = response?.payload;
+      setActiveChat((prev) =>
+        prev.map((msg) =>
+          msg.orderReasonId === newMessage?.orderReasonId
+            ? { ...msg, orderReasonIsActive: newMessage.orderReasonIsActive }
+            : msg
+        )
+      );
+      setActiveChat((prev) => [...prev, newMessage]);
+    });
+  };
+
   useEffect(() => {
     fetchOrderDetails();
   }, [params.id]);
@@ -191,7 +206,6 @@ const OrderDetail = () => {
     return <Navigate to="/" />;
   }
 
-  console.log("orderDetails", orderDetails);
   return (
     <Container className="pb-5">
       <Row className="mt-4">
@@ -231,6 +245,7 @@ const OrderDetail = () => {
                             messages={activeChats}
                             userAuth={userAuth}
                             handleAcceptRejectDate={handleAcceptRejectDate}
+                            handleAcceptRejectCancel={handleAcceptRejectCancel}
                           />
                         )
                       )}
@@ -260,7 +275,12 @@ const OrderDetail = () => {
                           <FileUploadButton
                             setSelectedFile={setSelectedFile}
                             onFileUpload={handleFileUpload}
-                            disabled={showSpinner}
+                            disabled={
+                              showSpinner ||
+                              (orderDetails?.orderReasonType === "3" &&
+                                orderDetails?.orderReasonIsActive === "2" &&
+                                true)
+                            }
                           />
                           {selectedFile && (
                             <div className="mt-2">
@@ -280,7 +300,13 @@ const OrderDetail = () => {
                                   : orderDetails?.valetEncId
                               )
                             }
-                            disabled={sendLoader || showSpinner}
+                            disabled={
+                              sendLoader ||
+                              showSpinner ||
+                              (orderDetails?.orderReasonType === "3" &&
+                                orderDetails?.orderReasonIsActive === "2" &&
+                                true)
+                            }
                           >
                             Send
                           </Button>
@@ -353,13 +379,30 @@ const OrderDetail = () => {
             <CardBody>
               <div className="card-headers mb-1">Zoom Meeting</div>
 
-              <Button
-                onClick={() => handleZoomMeeting()}
-                className="w-100 btn btn-sm"
-                disabled={showSpinner}
-              >
-                Zoom Meeting
-              </Button>
+              {orderDetails &&
+              orderDetails?.orderReasonType === "3" &&
+              orderDetails?.orderReasonIsActive === "2" ? (
+                <>
+                  <Button
+                    className="w-100"
+                    size="sm"
+                    variant="primary-secondary"
+                    disabled
+                  >
+                    Zoom Meeting
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    onClick={() => handleZoomMeeting()}
+                    className="w-100 btn btn-sm"
+                    disabled={showSpinner}
+                  >
+                    Zoom Meeting
+                  </Button>
+                </>
+              )}
             </CardBody>
           </Card>
           {/* Resolution Card */}

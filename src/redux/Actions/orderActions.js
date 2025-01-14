@@ -181,3 +181,26 @@ export const extendOrderConfirmation = createAsyncThunk(
     }
   }
 );
+
+//OrderAcceptRejectCancellation
+export const orderCancelConfirmation = createAsyncThunk(
+  "order/orderCancelConfirmation",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.put(
+        "/Message/HandleCancelOrderRequest/" + obj.orderId,
+        obj,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
