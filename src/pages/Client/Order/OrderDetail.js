@@ -102,6 +102,7 @@ const OrderDetail = () => {
 
   const handleSignalRCall = (newMessage) => {
     const data = {
+      orderId: orderDetails.id,
       senderId: newMessage.senderId,
       receiverId: newMessage.receiverId,
       message: newMessage,
@@ -150,13 +151,15 @@ const OrderDetail = () => {
     if (!userAuth?.id) return;
 
     const handleIncomingData = (senderId, receiverId, model) => {
-      if (userAuth?.id === receiverId) {
-        setActiveChat((prev) => {
-          if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
-            return [...prev, model];
-          }
-          return prev;
-        });
+      if (orderDetails?.id === model.orderId) {
+        if (userAuth?.id === receiverId) {
+          setActiveChat((prev) => {
+            if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
+              return [...prev, model];
+            }
+            return prev;
+          });
+        }
       }
     };
 
