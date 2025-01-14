@@ -1,23 +1,17 @@
-import React, { useState } from "react";
-import HandleImages from "../../../../../components/Custom/Avatars/HandleImages";
-import { Button, Card, Spinner } from "react-bootstrap";
+import React from "react";
 import { NavLink } from "react-router-dom";
-import CustomButtons from "../../../../../components/Custom/Button/buttons";
-import { useDispatch } from "react-redux";
+import { Button, Card } from "react-bootstrap";
 import { extractDate } from "../../../../../utils/_helpers";
+import CustomButtons from "../../../../../components/Custom/Button/buttons";
+import HandleImages from "../../../../../components/Custom/Avatars/HandleImages";
 
 const ChatContainer = ({
   orderDetails,
-  messageLoader,
   messages,
   userAuth,
   handleAcceptRejectDate,
   handleAcceptRejectCancel,
 }) => {
-  const dispatch = useDispatch();
-  const [dateSelected, setDateSelected] = useState(null);
-  const [reasonForDate, setReasonForDate] = useState("");
-  console.log("orderDetails", orderDetails);
   const handleAccept = (message, type) => {
     console.log(message);
     const data = {
@@ -271,11 +265,7 @@ const ChatContainer = ({
     return null;
   };
 
-  return messageLoader ? (
-    <div className="text-center">
-      <Spinner animation="grow" />
-    </div>
-  ) : (
+  return (
     <ul className="chatbox-list">
       {messages &&
         messages.length > 0 &&

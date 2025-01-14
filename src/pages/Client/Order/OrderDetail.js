@@ -50,10 +50,8 @@ const OrderDetail = () => {
   };
 
   const fetchMessages = () => {
-    setShowSpinner(true);
     dispatch(getOrderMessages(params.id)).then((response) => {
       setActiveChat(response?.payload);
-      console.log("messages", response?.payload);
       setShowSpinner(false);
     });
   };
@@ -218,15 +216,14 @@ const OrderDetail = () => {
                     {showSpinner ? (
                       <Spinner animation="grow" />
                     ) : (
-                      activeChats && (
+                      orderDetails && (
                         <ChatHeader
-                          activeChat={activeChats[0]}
                           userOnlineStatus={
                             userAuth?.role === "Valet"
                               ? parseInt(orderDetails?.valetStatus)
                               : parseInt(orderDetails?.customerStatus)
                           }
-                          userAuth={userAuth}
+                          orderDetails={orderDetails}
                         />
                       )
                     )}
@@ -241,7 +238,6 @@ const OrderDetail = () => {
                         activeChats && (
                           <ChatContainer
                             orderDetails={orderDetails}
-                            messageLoader={null}
                             messages={activeChats}
                             userAuth={userAuth}
                             handleAcceptRejectDate={handleAcceptRejectDate}
