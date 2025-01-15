@@ -21,8 +21,10 @@ import signalRService from "../../../services/SignalR";
 import { notificationURL } from "../../../utils/_envConfig";
 import { debounce, set } from "lodash";
 import OfferAccept from "./OfferAccept/OfferAccept";
+import { useParams } from "react-router";
 
 const Messages = () => {
+  const { id } = useParams();
   const dispatch = useDispatch();
   const chatContainerRef = useRef(null);
 
@@ -62,7 +64,14 @@ const Messages = () => {
               );
               setDefaultMessage(filteredPayload[0]);
             } else {
-              setDefaultMessage(response?.payload[0]);
+              if (id) {
+                const filteredPayload = response?.payload?.find(
+                  (record) => record.userEncId === id
+                );
+                setDefaultMessage(filteredPayload);
+              } else {
+                setDefaultMessage(response?.payload[0]);
+              }
             }
           }
         } else {

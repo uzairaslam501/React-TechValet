@@ -10,6 +10,7 @@ import {
 } from "../../../../../redux/Actions/authActions";
 import HandleImages from "../../../../../components/Custom/Avatars/HandleImages";
 import { toast } from "react-toastify";
+import { Link, NavLink } from "react-router-dom";
 
 const UserProfileImage = ({ userRecord, preview = false }) => {
   console.log("preview", userRecord?.role);
@@ -138,13 +139,21 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
       {preview === true ? (
         <div className="d-flex">
           <div className="mx-2 w-100">
-            <Button
-              variant={userRecord?.role === "Valet" ? "secondary" : "primary"}
-              className="w-100"
-              disabled={userRecord?.role === "Valet"}
+            <Link
+              to={
+                userRecord?.userEncId
+                  ? `/messages/${userRecord.userEncId}`
+                  : "#"
+              }
             >
-              Contact Me
-            </Button>
+              <Button
+                variant={userRecord?.role === "Valet" ? "secondary" : "primary"}
+                className="w-100"
+                disabled={userRecord?.role === "Valet"}
+              >
+                Contact Me
+              </Button>
+            </Link>
           </div>
           <div>
             <Button

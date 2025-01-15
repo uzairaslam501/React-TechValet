@@ -37,6 +37,10 @@ import ManageOrders from "../pages/Client/Manage/ManageOrders";
 import PreviewProfile from "../pages/Client/Preview";
 import OrderPreview from "../pages/Client/Preview/Order/orderPreview";
 import OrderDetail from "../pages/Client/Order/OrderDetail";
+import AddArticle from "../pages/Articles/AddArticle";
+import ArticleList from "../pages/Articles/List";
+import PublicArticles from "../pages/Client/Articles/PublicArticles";
+import ArticleDetail from "../pages/Client/Articles/ArticleDetail";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -58,6 +62,10 @@ const createRoute = createBrowserRouter(
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/articles" element={<PublicArticles />} />
+        <Route path="/article/:slug" element={<ArticleDetail />} />
+        <Route path="/preview-profile/:id" element={<PreviewProfile />} />
+
         <Route element={<ProtectedClient />}>
           <Route path="/account" element={<Index />} />
           <Route path="/earning" element={<Earnings />} />
@@ -71,7 +79,7 @@ const createRoute = createBrowserRouter(
           />
           <Route path="/request-service" element={<RequestService />} />
           <Route path="/requested-service" element={<RequestedService />} />
-          <Route path="/messages" element={<Messages />} />
+          <Route path="/messages/:id?" element={<Messages />} />
           <Route path="/PaymentSuccess" element={<PaymentSuccess />} />
           <Route path="/PaymentCancelled" element={<PaymentCancelled />} />
           <Route path="/payment-success" element={<StripePaymentSuccess />} />
@@ -79,9 +87,10 @@ const createRoute = createBrowserRouter(
           <Route path="/account-Verified" element={<AccountVerified />} />
           <Route path="/earnings" element={<Earnings />} />
           <Route path="/orders" element={<ManageOrders />} />
-          <Route path="/preview-profile/:id" element={<PreviewProfile />} />
           <Route path="/preview-order" element={<OrderPreview />} />
           <Route path="/order-details/:id" element={<OrderDetail />} />
+          <Route path="/add-article" element={<AddArticle />} />
+          <Route path="/article-list" element={<ArticleList />} />
         </Route>
       </Route>
       <Route path="/welcome" element={<Welcome />} />
