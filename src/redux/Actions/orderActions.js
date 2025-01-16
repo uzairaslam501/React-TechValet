@@ -11,6 +11,7 @@ const api = axios.create({
   baseURL: baseUrl,
 });
 
+// Handle getOrderDetails
 export const getOrderDetails = createAsyncThunk(
   "orders/getOrderDetails",
   async (orderId, { rejectWithValue, getState, dispatch }) => {
@@ -33,6 +34,7 @@ export const getOrderDetails = createAsyncThunk(
   }
 );
 
+// Handle getOrderMessages
 export const getOrderMessages = createAsyncThunk(
   "orders/getOrderMessages",
   async (orderId, { rejectWithValue, getState, dispatch }) => {
@@ -57,6 +59,7 @@ export const getOrderMessages = createAsyncThunk(
   }
 );
 
+// Handle sendMessages
 export const sendMessages = createAsyncThunk(
   "order/sendMessages",
   async (message, { rejectWithValue, getState, dispatch }) => {
@@ -89,7 +92,7 @@ export const sendMessages = createAsyncThunk(
   }
 );
 
-//Order Deliver
+// Handle deliverOrder
 export const deliverOrder = createAsyncThunk(
   "order/deliverOrder",
   async (obj, { rejectWithValue, getState, dispatch }) => {
@@ -121,7 +124,7 @@ export const deliverOrder = createAsyncThunk(
   }
 );
 
-//Order Revision
+// Handle orderRevision
 export const orderRevision = createAsyncThunk(
   "order/orderRevision",
   async (obj, { rejectWithValue, getState, dispatch }) => {
@@ -145,7 +148,31 @@ export const orderRevision = createAsyncThunk(
   }
 );
 
-//Create Zoom Meeting
+// Handle deliverOrderAccept
+export const deliverOrderAccept = createAsyncThunk(
+  "order/deliverOrderAccept",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+
+    try {
+      const response = await api.post(
+        `/Message/AcceptOrder/${obj.orderId}`,
+        obj,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+// Handle orderZoomMeeting
 export const orderZoomMeeting = createAsyncThunk(
   "order/orderZoomMeeting",
   async (obj, { rejectWithValue, getState, dispatch }) => {
@@ -169,7 +196,7 @@ export const orderZoomMeeting = createAsyncThunk(
   }
 );
 
-//OrderExtentionRequest
+// Handle extendOrderRequest
 export const extendOrderRequest = createAsyncThunk(
   "order/extendOrderRequest",
   async (obj, { rejectWithValue, getState, dispatch }) => {
@@ -192,7 +219,7 @@ export const extendOrderRequest = createAsyncThunk(
   }
 );
 
-//OrderCancelRequest
+// Handle cancelOrder
 export const cancelOrder = createAsyncThunk(
   "order/cancelOrder",
   async (obj, { rejectWithValue, getState, dispatch }) => {
@@ -215,7 +242,7 @@ export const cancelOrder = createAsyncThunk(
   }
 );
 
-//OrderAcceptRejectDateExtention
+// Handle extendOrderConfirmation
 export const extendOrderConfirmation = createAsyncThunk(
   "order/extendOrderConfirmation",
   async (obj, { rejectWithValue, getState, dispatch }) => {
@@ -238,7 +265,7 @@ export const extendOrderConfirmation = createAsyncThunk(
   }
 );
 
-//OrderAcceptRejectCancellation
+// Handle orderCancelConfirmation
 export const orderCancelConfirmation = createAsyncThunk(
   "order/orderCancelConfirmation",
   async (obj, { rejectWithValue, getState, dispatch }) => {

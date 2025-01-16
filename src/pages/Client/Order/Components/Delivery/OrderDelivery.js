@@ -4,10 +4,12 @@ import { Form, FloatingLabel } from "react-bootstrap";
 import Dialogue from "../../../../../components/Custom/Modal/modal";
 import {
   deliverOrder,
+  deliverOrderAccept,
   orderRevision,
 } from "../../../../../redux/Actions/orderActions";
 import FileUploadButton from "../../../../../components/Custom/Button/fileUploadButton";
 import RenderButton from "./RenderButton";
+import StarRating from "./StarRating";
 
 const OrderDelivery = ({
   userRole,
@@ -29,6 +31,7 @@ const OrderDelivery = ({
   const [isDialogueVisible, setIsDialogueVisible] = useState(false);
   const [isRevisionDialogue, setRevisionDialogue] = useState(false);
   const [isAcceptOrderDialogue, setAcceptOrderDialogue] = useState(false);
+  const [isRating, setRating] = useState(0);
 
   // Handlers
   const openDialogue = (type) => {
@@ -68,6 +71,8 @@ const OrderDelivery = ({
       handleOrderRevision(payload);
     } else if (actionType === "delivery") {
       handleOrderDeliver(payload);
+    } else if (actionType === "acceptOrder") {
+      handleOrderAccept(payload);
     }
   };
 
@@ -99,6 +104,35 @@ const OrderDelivery = ({
     });
   };
 
+  const handleOrderAccept = (payload) => {
+    const extraPayload = { ...payload, rating: isRating };
+    if (
+      orderDetails?.capturedId != null ||
+      orderDetails?.packageBuyFrom == "PAYPAL"
+    ) {
+      //For PayPal
+      // dispatch(orderRevision(extraPayload)).then((response) => {
+      //   if (response?.payload) {
+      //     const newMessage = response.payload;
+      //     setActiveChat((prev) => [...prev, newMessage]);
+      //     handleSignalRCall(newMessage);
+      //   }
+      //   setSendLoader(false);
+      //   closeDialogue();
+      // });
+    } else {
+      dispatch(deliverOrderAccept(extraPayload)).then((response) => {
+        if (response?.payload) {
+          const newMessage = response.payload;
+          setActiveChat((prev) => [...prev, newMessage]);
+          handleSignalRCall(newMessage);
+        }
+        setSendLoader(false);
+        closeDialogue();
+      });
+    }
+  };
+
   return (
     <>
       <RenderButton
@@ -114,6 +148,13 @@ const OrderDelivery = ({
         title={!isRevisionDialogue ? `Deliver Order` : `Send Revision`}
         bodyContent={
           <Form>
+            {isAcceptOrderDialogue && (
+              <>
+                <Form.Label className="mb-0">Ratings:</Form.Label>
+                <StarRating totalStars={5} onRatingSubmit={setRating} />
+              </>
+            )}
+
             <Form.Label>Message</Form.Label>
             <FloatingLabel
               controlId="floatingTextarea2"

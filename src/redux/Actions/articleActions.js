@@ -3,11 +3,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   handleApiError,
   processApiResponse,
-  rejectWithError,
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
-import { toast } from "react-toastify";
-import { getToken } from "../../utils/_apiConfig";
 
 const api = axios.create({
   baseURL: baseUrl,

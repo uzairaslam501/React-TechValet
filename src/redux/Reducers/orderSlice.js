@@ -5,6 +5,7 @@ import {
   sendMessages,
   deliverOrder,
   orderRevision,
+  deliverOrderAccept,
   orderZoomMeeting,
   extendOrderRequest,
   cancelOrder,
@@ -96,6 +97,21 @@ const orderSlice = createSlice({
       .addCase(orderRevision.rejected, (state, action) => {
         state.loading = false;
         state.error = "Failed to process revision";
+      });
+
+    // Handle deliverOrderAccept
+    builder
+      .addCase(deliverOrderAccept.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deliverOrderAccept.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(deliverOrderAccept.rejected, (state, action) => {
+        state.loading = false;
+        state.error = "Failed to process payment";
       });
 
     // Handle orderZoomMeeting

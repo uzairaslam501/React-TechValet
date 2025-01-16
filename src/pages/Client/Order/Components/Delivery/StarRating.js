@@ -1,38 +1,57 @@
 import React, { useState } from "react";
+import { Button } from "react-bootstrap";
 
 const StarRating = ({ totalStars = 5, onRatingSubmit }) => {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(null);
 
-  const handleClick = (rate) => {
-    setRating(rate);
+  const handleRating = (starValue) => {
+    setRating(starValue);
     if (onRatingSubmit) {
-      onRatingSubmit(rate);
+      onRatingSubmit(starValue);
     }
   };
 
-  return (
-    <div className="star-rating" style={{ display: "flex", gap: "5px" }}>
-      {[...Array(totalStars)].map((_, index) => {
-        const starValue = index + 1;
-        return (
+  const renderStar = (index) => {
+    const starValue = index + 1;
+    const isHalf = hover ? hover - index > 0.5 : rating - index > 0.5;
+    const fullStarColor = "#ffd700"; // Gold color
+    const emptyStarColor = "#d3d3d3"; // Light gray color
+    const halfStarColor = "#ffd700"; // Half-filled star color
+
+    return (
+      <div
+        key={index}
+        style={{ cursor: "pointer", margin: "0 5px" }}
+        onClick={() => handleRating(starValue)}
+        onMouseEnter={() => setHover(starValue)}
+        onMouseLeave={() => setHover(null)}
+      >
+        {starValue <= (hover || rating) ? (
+          <i
+            className="bi bi-star-fill"
+            style={{ color: fullStarColor, fontSize: "24px" }}
+          />
+        ) : isHalf ? (
+          <i
+            className="bi bi-star-half"
+            style={{ color: halfStarColor, fontSize: "24px" }}
+          />
+        ) : (
           <i
             className="bi bi-star"
-            key={index}
-            size={24}
-            style={{ cursor: "pointer" }}
-            color={starValue <= (hover || rating) ? "#ffc107" : "#e4e5e9"}
-            onClick={() => handleClick(starValue)}
-            onMouseEnter={() => setHover(starValue)}
-            onMouseLeave={() => setHover(null)}
+            style={{ color: emptyStarColor, fontSize: "24px" }}
           />
-        );
-      })}
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="d-flex align-items-center">
+      {[...Array(totalStars)].map((_, index) => renderStar(index))}
     </div>
   );
 };
 
 export default StarRating;
-
-// Usage Example:
-// <StarRating totalStars={5} onRatingSubmit={(rate) => console.log("User rating:", rate)} />
