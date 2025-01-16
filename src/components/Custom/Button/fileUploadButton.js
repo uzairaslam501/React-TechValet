@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 
-const FileUploadButton = ({ setSelectedFile, disabled }) => {
+const FileUploadButton = ({
+  setSelectedFile,
+  disabled,
+  classname = "btn-sm w-50",
+}) => {
   const fileInputRef = React.useRef(null);
   const MAX_FILE_SIZE_MB = 2; // Maximum file size in MB
 
@@ -39,7 +43,7 @@ const FileUploadButton = ({ setSelectedFile, disabled }) => {
       {/* Visible button */}
       <Button
         variant="secondary-secondary"
-        className="btn-sm w-50"
+        className={classname}
         onClick={handleButtonClick}
         disabled={disabled}
       >

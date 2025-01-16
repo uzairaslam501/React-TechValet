@@ -26,8 +26,8 @@ import {
 import signalRService from "../../../services/SignalR";
 import FileUploadButton from "../../../components/Custom/Button/fileUploadButton";
 import { scrollToBottom } from "../../../utils/_helpers";
-import OrderButton from "./Components/Buttons/OrderButtons";
 import Resolution from "./Components/Resolution/Resolution";
+import OrderDelivery from "./Components/Delivery/OrderDelivery";
 
 const OrderDetail = () => {
   const params = useParams();
@@ -178,13 +178,20 @@ const OrderDetail = () => {
     if (!userAuth?.id) return;
 
     const handleIncomingData = (senderId, receiverId, model) => {
-      if (orderDetails?.id === model.orderId && userAuth?.id === receiverId) {
+      console.log(orderDetails);
+      console.log(orderDetails?.id);
+      console.log(model.orderId);
+      if (userAuth?.id === receiverId) {
         setActiveChat((prev) => {
           if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
             return [...prev, model];
           }
           return prev;
         });
+        setOrderDetails((prev) => ({
+          ...prev,
+          isDelivered: model.isDelivered,
+        }));
       }
     };
 
@@ -361,11 +368,17 @@ const OrderDetail = () => {
                 <span className="fw-bold">${orderDetails?.orderPrice}</span>
               </div>
               <hr />
-              <div className="order-Info-detail-flex">
-                <OrderButton
+              <div>
+                <OrderDelivery
                   userRole={userAuth?.role}
-                  orderStatus={orderDetails?.orderStatus}
                   isDelivered={orderDetails?.isDelivered}
+                  orderDetails={orderDetails}
+                  userAuth={userAuth}
+                  sendLoader={sendLoader}
+                  setSendLoader={setSendLoader}
+                  setActiveChat={setActiveChat}
+                  handleSignalRCall={handleSignalRCall}
+                  showSpinner={showSpinner}
                 />
               </div>
             </CardBody>

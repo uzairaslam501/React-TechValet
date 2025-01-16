@@ -6,7 +6,6 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { getToken, getUserId } from "../../utils/_apiConfig";
-import { toast } from "react-toastify";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -90,6 +89,63 @@ export const sendMessages = createAsyncThunk(
   }
 );
 
+//Order Deliver
+export const deliverOrder = createAsyncThunk(
+  "order/deliverOrder",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    const formData = new FormData();
+    formData.append("senderId", obj.senderId);
+    formData.append("receiverId", obj.receiverId);
+    formData.append("messageDescription", obj.messageDescription);
+    formData.append("orderId", obj.orderId);
+    formData.append("way", obj.way);
+
+    formData.append("iFilePath", obj.file);
+
+    try {
+      const response = await api.post(
+        `/Message/PostDeliverOrder/${obj.orderId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+//Order Revision
+export const orderRevision = createAsyncThunk(
+  "order/orderRevision",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+
+    try {
+      const response = await api.put(
+        `/Message/PostSendRevision/${obj.orderId}`,
+        obj,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+//Create Zoom Meeting
 export const orderZoomMeeting = createAsyncThunk(
   "order/orderZoomMeeting",
   async (obj, { rejectWithValue, getState, dispatch }) => {
