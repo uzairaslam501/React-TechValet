@@ -105,7 +105,13 @@ const OrderDelivery = ({
   };
 
   const handleOrderAccept = (payload) => {
-    const extraPayload = { ...payload, rating: isRating };
+    const extraPayload = {
+      orderId: payload?.orderId,
+      senderId: payload?.senderId,
+      receiverId: payload?.receiverId,
+      messageDescription: messageDescription,
+      rating: String(isRating),
+    };
     if (
       orderDetails?.capturedId != null ||
       orderDetails?.packageBuyFrom == "PAYPAL"

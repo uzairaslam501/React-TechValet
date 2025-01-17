@@ -98,9 +98,7 @@ const OrderResolution = ({
 
   return (
     <>
-      {orderDetails &&
-      orderDetails?.orderReasonType === "3" &&
-      orderDetails?.orderReasonIsActive === "2" ? (
+      {orderDetails && orderDetails?.isDelivered === "2" ? (
         <>
           <Button
             className="w-100 mb-2"

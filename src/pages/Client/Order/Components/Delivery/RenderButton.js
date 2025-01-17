@@ -53,12 +53,9 @@ const RenderButton = ({ isDelivered, userRole, openDialogue, showSpinner }) => {
   };
 
   const renderCompletedStatus = () => (
-    <span
-      className="bg-success w-100 mt-2 text-center text-white py-1"
-      style={{ borderRadius: "5px" }}
-    >
-      ORDER COMPLETED
-    </span>
+    <Button className="w-100 mb-2" variant="success" size="sm" disabled={true}>
+      COMPLETED
+    </Button>
   );
 
   return isDelivered === "2"

@@ -280,8 +280,8 @@ const OrderDetail = () => {
                             onFileUpload={handleFileUpload}
                             disabled={
                               showSpinner ||
-                              (orderDetails?.orderReasonType === "3" &&
-                                orderDetails?.orderReasonIsActive === "2" &&
+                              (orderDetails &&
+                                orderDetails?.isDelivered === "2" &&
                                 true)
                             }
                           />
@@ -306,8 +306,8 @@ const OrderDetail = () => {
                             disabled={
                               sendLoader ||
                               showSpinner ||
-                              (orderDetails?.orderReasonType === "3" &&
-                                orderDetails?.orderReasonIsActive === "2" &&
+                              (orderDetails &&
+                                orderDetails?.isDelivered === "2" &&
                                 true)
                             }
                           >
@@ -388,9 +388,7 @@ const OrderDetail = () => {
             <CardBody>
               <div className="card-headers mb-1">Zoom Meeting</div>
 
-              {orderDetails &&
-              orderDetails?.orderReasonType === "3" &&
-              orderDetails?.orderReasonIsActive === "2" ? (
+              {orderDetails && orderDetails?.isDelivered === "2" ? (
                 <>
                   <Button
                     className="w-100"
