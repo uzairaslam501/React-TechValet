@@ -41,6 +41,8 @@ import AddArticle from "../pages/Articles/AddArticle";
 import ArticleList from "../pages/Articles/List";
 import PublicArticles from "../pages/Client/Articles/PublicArticles";
 import ArticleDetail from "../pages/Client/Articles/ArticleDetail";
+import SkillArticle from "../pages/Client/SkillsArticles/SkillArticle";
+import SkillProfiles from "../pages/Client/SkillsArticles/SkillProfiles";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -62,6 +64,8 @@ const createRoute = createBrowserRouter(
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/skills" element={<SkillArticle />} />
+        <Route path="/skill/:skill" element={<SkillProfiles />} />
         <Route path="/articles" element={<PublicArticles />} />
         <Route path="/article/:slug" element={<ArticleDetail />} />
         <Route path="/preview-profile/:id" element={<PreviewProfile />} />
