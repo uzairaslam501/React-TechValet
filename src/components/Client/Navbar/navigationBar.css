@@ -1,0 +1,27 @@
+.custom-navbar {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: transparent !important;
+  box-shadow: none;
+  margin-bottom: -85px;
+}
+
+.custom-navbar.scrolled {
+  background-color: white !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.custom-navbar .navbar-brand,
+.custom-navbar .nav-link {
+  color: #000;
+}
+
+.custom-navbar .navbar-brand:hover,
+.custom-navbar .nav-link:hover {
+  color: #007bff;
+}
+
+@media (max-width: 576px) {
+  .custom-navbar {
+    margin-bottom: 0;
+  }
+}
