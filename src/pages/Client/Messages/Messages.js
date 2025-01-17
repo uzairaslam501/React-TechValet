@@ -49,7 +49,12 @@ const Messages = () => {
   const fetchSideBar = (findUser = "") => {
     try {
       setUserSideBarLoader(true);
-      dispatch(getMessagesSidebar(findUser)).then((response) => {
+      dispatch(
+        getMessagesSidebar({
+          findUser: findUser,
+          userId: encodeURIComponent(id),
+        })
+      ).then((response) => {
         if (response?.payload) {
           setUsersList(response?.payload);
           if (findUser) {
