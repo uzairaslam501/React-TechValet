@@ -149,40 +149,43 @@ const ClientTopbar = () => {
                   )}
                 </div>
 
-                <NotificationCard />
-                <Nav
-                  as={NavLink}
-                  to="/orders"
-                  className="border border-secondary mx-1"
-                  style={{
-                    borderRadius: "50px",
-                    padding: "8px 12px",
-                    background: "#e1e1e1",
-                    color: "#000",
-                    position: "relative",
-                  }}
-                >
-                  <div style={{ position: "relative" }}>
-                    <i className="bi bi-list-ul"></i>
-                  </div>
-                </Nav>
-                <Nav.Link
-                  as={NavLink}
-                  to="/messages"
-                  className="border border-secondary"
-                  style={{
-                    borderRadius: "50px",
-                    padding: "8px 12px",
-                    background: "#e1e1e1",
-                    color: "#000",
-                    position: "relative",
-                  }}
-                >
-                  <div style={{ position: "relative" }}>
-                    <i className="bi bi-envelope-arrow-down-fill"></i>
-                  </div>
-                </Nav.Link>
-
+                {userAuth && userAuth?.role !== "Seo" && (
+                  <>
+                    <NotificationCard />
+                    <Nav
+                      as={NavLink}
+                      to="/orders"
+                      className="border border-secondary mx-1"
+                      style={{
+                        borderRadius: "50px",
+                        padding: "8px 12px",
+                        background: "#e1e1e1",
+                        color: "#000",
+                        position: "relative",
+                      }}
+                    >
+                      <div style={{ position: "relative" }}>
+                        <i className="bi bi-list-ul"></i>
+                      </div>
+                    </Nav>
+                    <Nav.Link
+                      as={NavLink}
+                      to="/messages"
+                      className="border border-secondary"
+                      style={{
+                        borderRadius: "50px",
+                        padding: "8px 12px",
+                        background: "#e1e1e1",
+                        color: "#000",
+                        position: "relative",
+                      }}
+                    >
+                      <div style={{ position: "relative" }}>
+                        <i className="bi bi-envelope-arrow-down-fill"></i>
+                      </div>
+                    </Nav.Link>
+                  </>
+                )}
                 <Nav className="mx-1">
                   <NavDropdown
                     title={

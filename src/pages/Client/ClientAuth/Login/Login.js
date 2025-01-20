@@ -73,8 +73,10 @@ const Login = () => {
 
   // Check if user is authenticated
   if (userAuth && userAuth.id) {
-    return userAuth.role === "0" ? (
+    return userAuth.role === "Admin" ? (
       <Navigate to="/dashboard" />
+    ) : userAuth?.role === "Seo" ? (
+      <Navigate to="/panel" />
     ) : (
       <Navigate to="/account" />
     );

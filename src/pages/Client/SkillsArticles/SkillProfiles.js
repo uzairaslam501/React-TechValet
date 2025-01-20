@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useDispatch } from "react-redux";
-import { valetBySkill } from "../../../redux/Actions/articleActions";
+import { valetBySkill } from "../../../redux/Actions/seoActions";
 import { truncateCharacters } from "../../../utils/_helpers";
 import HandleImages from "../../../components/Custom/Avatars/HandleImages";
 import StarRating from "../../../components/Custom/Rating/StarRating";

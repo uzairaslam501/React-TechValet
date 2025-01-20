@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Navbar, Nav, NavDropdown, Button, Container } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { valetMenu, customerMenu } from "../../../utils/client/_menu";
+import { valetMenu, customerMenu, seoMenu } from "../../../utils/client/_menu";
 import { toast } from "react-toastify";
 import "./style.css";
 
@@ -36,6 +36,8 @@ const ClientNavbar = () => {
       setMenuBar(updatedValetMenu);
     } else if (userAuth?.role === "Customer") {
       setMenuBar(customerMenu);
+    } else if (userAuth?.role === "Seo") {
+      setMenuBar(seoMenu);
     }
   }, [userAuth?.role]);
 

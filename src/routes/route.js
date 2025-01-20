@@ -37,12 +37,13 @@ import ManageOrders from "../pages/Client/Manage/ManageOrders";
 import PreviewProfile from "../pages/Client/Preview";
 import OrderPreview from "../pages/Client/Preview/Order/orderPreview";
 import OrderDetail from "../pages/Client/Order/OrderDetail";
-import AddArticle from "../pages/Articles/AddArticle";
-import ArticleList from "../pages/Articles/List";
-import PublicArticles from "../pages/Client/Articles/PublicArticles";
-import ArticleDetail from "../pages/Client/Articles/ArticleDetail";
+import AddArticle from "../pages/SEO/Articles/AddArticle";
+import ArticleList from "../pages/SEO/Articles/List";
+import PublicArticles from "../pages/SEO/Articles/ArticleGrid/PublicArticles";
+import ArticleDetail from "../pages/SEO/Articles/Single/ArticleDetail";
 import SkillArticle from "../pages/Client/SkillsArticles/SkillArticle";
 import SkillProfiles from "../pages/Client/SkillsArticles/SkillProfiles";
+import SeoDashboard from "../pages/SEO/Dashboard/Dashboard";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -93,6 +94,9 @@ const createRoute = createBrowserRouter(
           <Route path="/orders" element={<ManageOrders />} />
           <Route path="/preview-order" element={<OrderPreview />} />
           <Route path="/order-details/:id" element={<OrderDetail />} />
+
+          {/* SEO Team */}
+          <Route path="/panel" element={<SeoDashboard />} />
           <Route path="/add-article" element={<AddArticle />} />
           <Route path="/article-list" element={<ArticleList />} />
         </Route>

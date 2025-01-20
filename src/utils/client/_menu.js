@@ -110,3 +110,59 @@ export const customerMenu = [
     title: "Share your Referal",
   },
 ];
+
+export const seoMenu = [
+  {
+    href: "/",
+    iconClass: "bi bi-house-check me-2",
+    className: "",
+    label: "Home",
+    title: "Home",
+  },
+  {
+    href: "#",
+    iconClass: "bi bi-boxes me-2",
+    className: "package-dropdown",
+    label: "Blogs",
+    title: "Blogs",
+    submenu: [
+      {
+        href: "/add-article",
+        iconClass: "bi bi-cart-dash me-2",
+        className: "text-dark border-bottom border-grey",
+        label: "Write Blog",
+        title: "Write Blog",
+      },
+      {
+        href: "/article-list",
+        iconClass: "bi bi-eye me-2",
+        className: "text-dark",
+        label: "View Blogs",
+        title: "View Blogs",
+      },
+    ],
+  },
+  {
+    href: "#",
+    iconClass: "bi bi-boxes me-2",
+    className: "package-dropdown",
+    label: "Skill Content",
+    title: "Skill Content",
+    submenu: [
+      {
+        href: "/add-skill-content",
+        iconClass: "bi bi-cart-dash me-2",
+        className: "text-dark border-bottom border-grey",
+        label: "Write Skill Content",
+        title: "Write Skill Content",
+      },
+      {
+        href: "/skill-content-list",
+        iconClass: "bi bi-eye me-2",
+        className: "text-dark",
+        label: "View Skill Content",
+        title: "View Skill Content",
+      },
+    ],
+  },
+];

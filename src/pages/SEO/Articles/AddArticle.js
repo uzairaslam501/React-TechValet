@@ -1,52 +1,65 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import CustomCKEditor from "../../components/Custom/CKEditor/CKEditor";
-import { skillsOptions } from "../../utils/client/data/requestedData";
+import CustomCKEditor from "../../../components/Custom/CKEditor/CKEditor";
 import { useLocation } from "react-router";
+import { useDispatch } from "react-redux";
+import { addBlogs, updateBlogs } from "../../../redux/Actions/seoActions";
 
 const AddArticle = () => {
+  const dispatch = useDispatch();
   const { state } = useLocation();
-  const recordForUpdate = state;
+  const [isUpdate, setIsUpdate] = useState(false);
+  console.log(state);
 
   const initialValues = {
-    Skill: state?.Skill || "",
-    Title: state?.Title || "",
-    Slug: state?.Slug || "",
-    Description: state?.Description || "",
-    Content: state?.Content || "",
-    FeaturedImageUrl: null,
-    Tags: state?.Tags || "",
+    encId: state?.encId || "",
+    Title: state?.title || "",
+    Slug: state?.slug || "",
+    Description: state?.description || "",
+    Content: state?.content || "",
+    FeaturedImageUrl: state?.image || null,
+    Tags: state?.tags || "",
   };
 
   const validationSchema = Yup.object({
-    Skill: Yup.string().required("Skill is required"),
-    Title: Yup.string().required("Title is required"),
-    Slug: Yup.string().required("Slug is required"),
+    Title: Yup.string().trim().required("Title is required"),
+    Slug: Yup.string().trim().required("Slug is required"),
     Description: Yup.string()
       .min(50, "Description must be at least 50 characters")
       .required("Description is required"),
     Content: Yup.string().required("Content is required"),
-    FeaturedImageUrl: Yup.mixed().required("Featured image is required"),
-    Tags: Yup.string().required("Tags are required"),
+    Tags: Yup.string().trim().required("Tags are required"),
+    FeaturedImageUrl: Yup.mixed().when(["isUpdate"], (isUpdate, schema) => {
+      return isUpdate[0]
+        ? schema.optional()
+        : schema.required("Image is required");
+    }),
   });
 
-  const handleSlugGeneration = (title) => {
-    let slug = title.trim().toLowerCase();
+  const handleSlugGeneration = (Title) => {
+    let slug = Title.trim().toLowerCase();
     slug = slug.replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
     return slug;
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-    console.log("Form values:", values);
-
-    // Perform your submit logic, e.g., API calls
-    alert("Record added successfully!");
-
-    // Clear the form fields
-    resetForm();
+    let endpoint = addBlogs(values);
+    if (state) {
+      endpoint = updateBlogs(values);
+    }
+    dispatch(endpoint)
+      .then((response) => {
+        if (response?.payload) {
+          console.log("Response Payload:", response.payload);
+        } else {
+          console.log("No response payload available.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error dispatching action:", error);
+      });
   };
 
   const {
@@ -57,13 +70,20 @@ const AddArticle = () => {
     handleBlur,
     handleChange,
     resetForm,
+    handleSubmit: formikSubmit,
   } = useFormik({
     initialValues,
     validationSchema,
-    validateOnChange: false,
+    validateOnChange: true,
     validateOnBlur: true,
     onSubmit: handleSubmit,
   });
+
+  useEffect(() => {
+    if (state) {
+      setIsUpdate(true);
+    }
+  }, [state]);
 
   return (
     <Container className="my-5">
@@ -74,7 +94,7 @@ const AddArticle = () => {
               <h2 className="text-center text-gray-900 mb-4">
                 Add / Update Record
               </h2>
-              <Form onSubmit={handleSubmit} encType="multipart/form-data">
+              <Form onSubmit={formikSubmit} encType="multipart/form-data">
                 <Row>
                   <Col
                     xl={state?.image ? 9 : 12}
@@ -85,37 +105,7 @@ const AddArticle = () => {
                   >
                     <Form.Group controlId="exampleTitle" className="mb-4">
                       <Form.Label className="text-dark">
-                        Select Skill
-                        <span className="text-danger">*</span>
-                      </Form.Label>
-                      <Form.Control
-                        as="select"
-                        name="Skill"
-                        value={values.Skill}
-                        onChange={(e) => {
-                          handleChange(e);
-                          setFieldValue("Skill", e.target.value); // Update Formik state
-                        }}
-                        onBlur={handleBlur}
-                        isInvalid={touched.Skill && !!errors.Skill}
-                      >
-                        <option value="" disabled>
-                          Select a skill
-                        </option>
-                        {skillsOptions.map((option) => (
-                          <option key={option.id} value={option.value}>
-                            {option.value}
-                          </option>
-                        ))}
-                      </Form.Control>
-                      <Form.Control.Feedback type="invalid">
-                        {errors.Skill}
-                      </Form.Control.Feedback>
-                    </Form.Group>
-
-                    <Form.Group controlId="exampleTitle" className="mb-4">
-                      <Form.Label className="text-dark">
-                        Article Title<span className="text-danger">*</span>
+                        Title<span className="text-danger">*</span>
                       </Form.Label>
                       <Form.Control
                         type="text"
@@ -136,6 +126,24 @@ const AddArticle = () => {
                         {errors.Title}
                       </Form.Control.Feedback>
                     </Form.Group>
+
+                    <Form.Group controlId="exampleSlug" className="mb-4">
+                      <Form.Label className="text-dark">
+                        Slug<span className="text-danger">*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="Slug"
+                        placeholder="Slug"
+                        value={values.Slug}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        isInvalid={touched.Slug && !!errors.Slug}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.Slug}
+                      </Form.Control.Feedback>
+                    </Form.Group>
                   </Col>
                   {state?.image && (
                     <Col xl={3} lg={3} md={3} sm={12} xs={12}>
@@ -147,24 +155,6 @@ const AddArticle = () => {
                     </Col>
                   )}
                 </Row>
-
-                <Form.Group controlId="exampleSlug" className="mb-4">
-                  <Form.Label className="text-dark">
-                    Article Slug<span className="text-danger">*</span>
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    name="Slug"
-                    placeholder="Slug"
-                    value={values.Slug}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    isInvalid={touched.Slug && !!errors.Slug}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.Slug}
-                  </Form.Control.Feedback>
-                </Form.Group>
 
                 <Form.Group controlId="Description" className="mb-4">
                   <Row className="align-items-center mt-2">

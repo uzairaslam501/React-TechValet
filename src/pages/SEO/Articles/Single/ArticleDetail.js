@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { Card, Button, Container, Row, Col } from "react-bootstrap";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { Card, Button, Container, Row, Col, Badge } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { valetBySkill } from "../../../redux/Actions/articleActions";
-import { truncateCharacters } from "../../../utils/_helpers";
-import HandleImages from "../../../components/Custom/Avatars/HandleImages";
-import StarRating from "../../../components/Custom/Rating/StarRating";
+import { valetBySkill } from "../../../../redux/Actions/seoActions";
+import {
+  calculateReadingTime,
+  truncateCharacters,
+} from "../../../../utils/_helpers";
+import HandleImages from "../../../../components/Custom/Avatars/HandleImages";
+import StarRating from "../../../../components/Custom/Rating/StarRating";
 import { Helmet } from "react-helmet-async";
+import "./style.css";
 
 const dataObjects = [
   {
@@ -116,6 +120,8 @@ const dataObjects = [
 
 const ArticleDetail = () => {
   const { slug } = useParams(); // Get the slug from the URL params
+  const { state } = useLocation();
+  console.log(state);
   const dispatch = useDispatch();
   const [article, setArticle] = useState(null);
   const [userRecords, setUserRecords] = useState(null);
@@ -136,20 +142,13 @@ const ArticleDetail = () => {
 
   // Find the article based on the slug
   useEffect(() => {
-    const foundArticle = dataObjects.find((article) => article.slug === slug);
-    if (foundArticle) {
-      setArticle(foundArticle);
-    } else {
-      // Handle case where the article is not found
-      console.log("Article not found!");
-    }
     const runtimeUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
     setCanonicalUrl(runtimeUrl);
   }, [slug]);
 
   useEffect(() => {
     if (article) {
-      fetchProfiles();
+      // fetchProfiles();
     }
   }, [article]);
 
@@ -160,126 +159,116 @@ const ArticleDetail = () => {
         <meta name="description" content={`${article?.description}.`} />
         <meta name="keywords" content={`${article?.tags}.`} />
       </Helmet>
-      {userRecords && (
-        <Container className="my-5">
-          <h2 className="text-center mb-4">Articles</h2>
+
+      <Container fluid className="bg-white">
+        <Container className="py-5">
           <Row className="g-4">
-            {userRecords.map((user, index) => (
-              <Col key={index} xl={3} lg={3} md={4} sm={12}>
-                <Card className="shadow-sm h-100">
-                  {user.userProfile && (
-                    <HandleImages
-                      imagePath={user.userProfile}
-                      imageAlt={user.userName}
-                      imageStyle={{
-                        height: "200px",
-                        width: "100%",
-                      }}
-                    />
-                  )}
-                  <Card.Body>
-                    <StarRating averageStars={user.averageStars} />
-                    <Card.Title>
-                      {`${user.firstName} ${user.lastName}`}
-                    </Card.Title>
-                    <Card.Text className="text-muted">
-                      {truncateCharacters(user.userDescription, 50)}
-                    </Card.Text>
-                    <Button
-                      as={Link}
-                      size="sm"
-                      variant="primary"
-                      to={`/preview-profile/${user.encUserId}`}
-                      target="_self"
-                      rel="noopener noreferrer"
-                    >
-                      View Profile
-                    </Button>
-                  </Card.Body>
-                  <Card.Footer>
-                    <small className="text-muted">Skill: {article.skill}</small>
-                  </Card.Footer>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </Container>
-      )}
-      <Container className="py-5">
-        <Row>
-          <Col xl={8} lg={8} md={8} sm={12} xs={12}>
-            <Card>
-              <Card.Img variant="top" src={article?.image} />
-              <Card.Body>
-                <Card.Title>{article?.title}</Card.Title>
-                <Card.Text>{article?.description}</Card.Text>
-                <div dangerouslySetInnerHTML={{ __html: article?.content }} />
-                <Button variant="secondary">Back to Articles</Button>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col
-            xl={4}
-            lg={4}
-            md={4}
-            sm={12}
-            xs={12}
-            style={{
-              height: "500px",
-              overflowY: "scroll",
-            }}
-          >
-            <Card className="">
-              <Card.Header>Recent Articles</Card.Header>
-              <Card.Body>
-                {dataObjects?.length ? (
-                  dataObjects.map((recentArticle) => (
-                    <Row
-                      key={recentArticle.id}
-                      className="pb-2 mb-3 "
-                      style={{ borderBottom: "1px solid #999" }}
-                    >
-                      <Col xl={4} sm={4}>
-                        <HandleImages
-                          imagePath={recentArticle.image}
-                          imageAlt={recentArticle.title}
-                          imageStyle={{ height: "100%", width: "100%" }}
-                        />
-                      </Col>
-                      <Col xl={8} sm={8}>
-                        <a
-                          title={recentArticle.title}
-                          style={{
-                            textDecoration: "underline",
-                          }}
-                          className="text-dark"
-                          href={`/article/${recentArticle.slug}`}
-                        >
-                          {truncateCharacters(recentArticle.title, 30)}
-                        </a>
-                        <p className="mb-0">
-                          {truncateCharacters(recentArticle.description, 50)}...{" "}
-                          <br />
+            <Col xl={8} lg={8} md={8} sm={12} xs={12}>
+              <Card className="shadow-sm rounded-lg border-0">
+                <Card.Body>
+                  <h1 className="h1 font-weight-bold text-dark">
+                    {state?.title}
+                  </h1>
+                  <div className="d-flex">
+                    <p className="text-muted fs-5">
+                      {state?.publishedDate} <span className="mx-2">|</span>
+                      <span>
+                        {calculateReadingTime(state?.content)} min reading time
+                      </span>
+                    </p>
+                  </div>
+                  <Card.Img
+                    variant="top"
+                    src={state?.image}
+                    className="rounded-3 mb-3"
+                    style={{
+                      width: "100%",
+                      height: "400px",
+                    }}
+                  />
+                  <div dangerouslySetInnerHTML={{ __html: state?.content }} />
+                  <div className="py-3">
+                    {state?.tags &&
+                      state.tags
+                        .split(",")
+                        .map((tag) => tag.trim())
+                        .map((tag, index) => (
+                          <span
+                            key={index}
+                            className="badge bg-danger text-white me-2 mb-2 rounded fw-normal"
+                            style={{ fontSize: "14px" }}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col
+              xl={4}
+              lg={4}
+              md={4}
+              sm={12}
+              xs={12}
+              style={{
+                position: "sticky",
+                top: "0", // Ensures the column stays at the top while scrolling
+                height: "100%", // Full viewport height minus a little padding
+                overflowY: "auto", // Scroll within the column when content overflows
+              }}
+            >
+              <Card className="shadow-sm rounded-lg border-0">
+                <h3 className="px-2 py-3 font-weight-bold text-dark mb-0">
+                  Recent Posts
+                </h3>
+                <Card.Body
+                  style={{ maxHeight: "400px", overflowY: "auto" }}
+                  className="pt-0"
+                >
+                  {dataObjects?.length ? (
+                    dataObjects.map((recentArticle) => (
+                      <Row
+                        key={recentArticle.id}
+                        className="pb-2 mb-3"
+                        style={{ borderBottom: "1px solid #f1f1f1" }}
+                      >
+                        <Col xl={4} sm={4}>
+                          <HandleImages
+                            imagePath={recentArticle.image}
+                            imageAlt={recentArticle.title}
+                            imageStyle={{ height: "100%", width: "100%" }}
+                          />
+                        </Col>
+                        <Col xl={8} sm={8}>
                           <a
-                            className="text-primary"
-                            style={{
-                              fontSize: "13px",
-                            }}
+                            title={recentArticle.title}
+                            className="text-dark text-decoration-none"
                             href={`/article/${recentArticle.slug}`}
                           >
-                            Read More
+                            {truncateCharacters(recentArticle.title, 30)}
                           </a>
-                        </p>
-                      </Col>
-                    </Row>
-                  ))
-                ) : (
-                  <p>No recent articles available.</p>
-                )}
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+                          <p className="text-muted mb-0">
+                            {truncateCharacters(recentArticle.description, 50)}
+                            <a
+                              className="text-primary"
+                              href={`/article/${recentArticle.slug}`}
+                              style={{ fontSize: "13px" }}
+                            >
+                              Read More
+                            </a>
+                          </p>
+                        </Col>
+                      </Row>
+                    ))
+                  ) : (
+                    <p>No recent articles available.</p>
+                  )}
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
       </Container>
     </>
   );

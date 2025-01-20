@@ -47,6 +47,22 @@ export const CountCharactersWithLimit = (text, limit = null) => {
 export const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
+
+//Reading Letters Time
+export const calculateReadingTime = (content) => {
+  // Remove HTML tags and split the content into an array of words
+  const textContent = content.replace(/<[^>]*>/g, ""); // Remove HTML tags
+  const words = textContent.split(/\s+/).filter(Boolean); // Split by spaces and filter out empty values
+
+  // Average reading speed in words per minute
+  const wordsPerMinute = 200;
+
+  // Calculate the reading time in minutes
+  const readingTimeInMinutes = Math.ceil(words.length / wordsPerMinute);
+
+  return readingTimeInMinutes;
+};
+
 //#endregion
 
 //#region DateTimes
