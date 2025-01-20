@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Button, Form, FloatingLabel } from "react-bootstrap";
+import { Button, Form, FloatingLabel, Badge } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import {
   cancelOrder,
-  extendOrder,
+  extendOrderRequest,
 } from "../../../../../redux/Actions/orderActions";
 import {
   disabledPreviousDateTime,
@@ -19,6 +19,7 @@ const OrderResolution = ({
   setSendLoader,
   setActiveChat,
   handleSignalRCall,
+  showSpinner,
 }) => {
   const dispatch = useDispatch();
 
@@ -84,7 +85,7 @@ const OrderResolution = ({
   const requestExtendOrder = (payload) => {
     const extendedPayload = { ...payload, dateExtension: extensionDate };
 
-    dispatch(extendOrder(extendedPayload)).then((response) => {
+    dispatch(extendOrderRequest(extendedPayload)).then((response) => {
       if (response?.payload) {
         const newMessage = response.payload;
         setActiveChat((prev) => [...prev, newMessage]);
@@ -97,24 +98,44 @@ const OrderResolution = ({
 
   return (
     <>
-      <Button
-        onClick={() => openDialogue("Extend")}
-        className="w-100 mb-2"
-        variant="outline-primary"
-        size="sm"
-      >
-        Extend Deadline
-      </Button>
+      {orderDetails && orderDetails?.isDelivered === "2" ? (
+        <>
+          <Button
+            className="w-100 mb-2"
+            variant="primary-secondary"
+            size="sm"
+            disabled
+          >
+            Extend Deadline
+          </Button>
 
-      <Button
-        onClick={() => openDialogue("Cancel")}
-        className="w-100"
-        variant="outline-danger"
-        size="sm"
-      >
-        Cancel Order
-      </Button>
+          <Button className="w-100" variant="secondary" size="sm" disabled>
+            Cancel Order
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button
+            onClick={() => openDialogue("Extend")}
+            className="w-100 mb-2"
+            variant="outline-primary"
+            size="sm"
+            disabled={showSpinner}
+          >
+            Extend Deadline
+          </Button>
 
+          <Button
+            onClick={() => openDialogue("Cancel")}
+            className="w-100"
+            variant="outline-danger"
+            size="sm"
+            disabled={showSpinner}
+          >
+            Cancel Order
+          </Button>
+        </>
+      )}
       <Dialogue
         show={isDialogueVisible}
         onHide={closeDialogue}

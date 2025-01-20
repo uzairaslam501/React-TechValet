@@ -6,12 +6,12 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { getToken, getUserId } from "../../utils/_apiConfig";
-import { toast } from "react-toastify";
 
 const api = axios.create({
   baseURL: baseUrl,
 });
 
+// Handle getOrderDetails
 export const getOrderDetails = createAsyncThunk(
   "orders/getOrderDetails",
   async (orderId, { rejectWithValue, getState, dispatch }) => {
@@ -34,6 +34,7 @@ export const getOrderDetails = createAsyncThunk(
   }
 );
 
+// Handle getOrderMessages
 export const getOrderMessages = createAsyncThunk(
   "orders/getOrderMessages",
   async (orderId, { rejectWithValue, getState, dispatch }) => {
@@ -58,6 +59,7 @@ export const getOrderMessages = createAsyncThunk(
   }
 );
 
+// Handle sendMessages
 export const sendMessages = createAsyncThunk(
   "order/sendMessages",
   async (message, { rejectWithValue, getState, dispatch }) => {
@@ -90,6 +92,87 @@ export const sendMessages = createAsyncThunk(
   }
 );
 
+// Handle deliverOrder
+export const deliverOrder = createAsyncThunk(
+  "order/deliverOrder",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    const formData = new FormData();
+    formData.append("senderId", obj.senderId);
+    formData.append("receiverId", obj.receiverId);
+    formData.append("messageDescription", obj.messageDescription);
+    formData.append("orderId", obj.orderId);
+    formData.append("way", obj.way);
+
+    formData.append("iFilePath", obj.file);
+
+    try {
+      const response = await api.post(
+        `/Message/PostDeliverOrder/${obj.orderId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+// Handle orderRevision
+export const orderRevision = createAsyncThunk(
+  "order/orderRevision",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+
+    try {
+      const response = await api.put(
+        `/Message/PostSendRevision/${obj.orderId}`,
+        obj,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+// Handle deliverOrderAccept
+export const deliverOrderAccept = createAsyncThunk(
+  "order/deliverOrderAccept",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+
+    try {
+      const response = await api.post(
+        `/Message/AcceptOrder/${obj.orderId}`,
+        obj,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+// Handle orderZoomMeeting
 export const orderZoomMeeting = createAsyncThunk(
   "order/orderZoomMeeting",
   async (obj, { rejectWithValue, getState, dispatch }) => {
@@ -113,6 +196,30 @@ export const orderZoomMeeting = createAsyncThunk(
   }
 );
 
+// Handle extendOrderRequest
+export const extendOrderRequest = createAsyncThunk(
+  "order/extendOrderRequest",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.put(
+        "/Message/RequestExtendDate/" + obj.orderId,
+        obj,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+// Handle cancelOrder
 export const cancelOrder = createAsyncThunk(
   "order/cancelOrder",
   async (obj, { rejectWithValue, getState, dispatch }) => {
@@ -135,13 +242,14 @@ export const cancelOrder = createAsyncThunk(
   }
 );
 
-export const extendOrder = createAsyncThunk(
-  "order/extendOrder",
+// Handle extendOrderConfirmation
+export const extendOrderConfirmation = createAsyncThunk(
+  "order/extendOrderConfirmation",
   async (obj, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
       const response = await api.put(
-        "/Message/RequestExtendDate/" + obj.orderId,
+        "/Message/ExtendDateApproval/" + obj.orderId,
         obj,
         {
           headers: {
@@ -149,7 +257,30 @@ export const extendOrder = createAsyncThunk(
           },
         }
       );
-      const { data, message } = processApiResponse(response, dispatch, expired);      
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+// Handle orderCancelConfirmation
+export const orderCancelConfirmation = createAsyncThunk(
+  "order/orderCancelConfirmation",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.put(
+        "/Message/HandleCancelOrderRequest/" + obj.orderId,
+        obj,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);

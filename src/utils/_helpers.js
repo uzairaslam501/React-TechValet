@@ -227,6 +227,15 @@ export const setDateTimeRestrictions = (mode, referenceDate) => {
   return formattedDate; // Return the formatted value
 };
 
+//eturn the matched date or null if no match is found
+export const extractDate = (inputString) => {
+  // Use a regular expression to find the date in the format YYYY-MM-DD
+  const dateRegex = /\b\d{4}-\d{2}-\d{2} \d{1,2}:\d{2} ?(?:[APap][Mm])?\b/;
+  const match = inputString.match(dateRegex);
+
+  // Return the matched date or null if no match is found
+  return match ? match[0] : null;
+};
 //#endregion
 
 export const toFixedTruncate = (value, decimals) => {

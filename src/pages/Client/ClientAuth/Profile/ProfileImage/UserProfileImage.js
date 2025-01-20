@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button, Tooltip, OverlayTrigger } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../../../redux/Reducers/authSlice";
 import "./profileImage.css";
 import {
@@ -10,15 +10,18 @@ import {
 } from "../../../../../redux/Actions/authActions";
 import HandleImages from "../../../../../components/Custom/Avatars/HandleImages";
 import { toast } from "react-toastify";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 const UserProfileImage = ({ userRecord, preview = false }) => {
-  console.log("preview", userRecord?.role);
+  console.log(userRecord);
   const dispatch = useDispatch();
-  const [profileImage, setProfileImage] = useState(userRecord?.profilePicture);
-  const [status, setStatus] = useState(userRecord?.status);
-  const [availability, setAvailability] = useState(userRecord?.availability);
-  const [imagePreview, setImagePreview] = useState(null);
+  const navigate = useNavigate();
   const [imageEvent, setImageEvent] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [status, setStatus] = useState(userRecord?.status);
+  const { userAuth } = useSelector((state) => state?.authentication);
+  const [profileImage, setProfileImage] = useState(userRecord?.profilePicture);
+  const [availability, setAvailability] = useState(userRecord?.availability);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -92,6 +95,14 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
     }
   };
 
+  const handleContactClick = () => {
+    if (userAuth) {
+      navigate(`/messages/${userRecord?.userEncId}`);
+    } else {
+      navigate(`/login?redirect=/messages/${userRecord?.userEncId}`);
+    }
+  };
+
   useEffect(() => {
     setStatus(userRecord?.status === "1" && true);
     setAvailability(userRecord?.availability === "1" && true);
@@ -139,9 +150,12 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
         <div className="d-flex">
           <div className="mx-2 w-100">
             <Button
-              variant={userRecord?.role === "Valet" ? "secondary" : "primary"}
+              onClick={() => handleContactClick()}
+              variant={
+                userAuth && userAuth?.role === "Valet" ? "secondary" : "primary"
+              }
               className="w-100"
-              disabled={userRecord?.role === "Valet"}
+              disabled={userAuth && userAuth?.role === "Valet"}
             >
               Contact Me
             </Button>

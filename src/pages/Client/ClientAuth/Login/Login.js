@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { postLogin } from "../../../../redux/Actions/authActions";
-import { NavLink, Navigate } from "react-router-dom";
+import { NavLink, Navigate, useLocation, useNavigate } from "react-router-dom";
 import {
   Button,
   Col,
@@ -33,15 +33,27 @@ const validateLogin = Yup.object().shape({
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const { userAuth, loading, error } = useSelector(
     (state) => state.authentication
   );
 
   const handleSubmit = useCallback(
     (values) => {
-      dispatch(postLogin(values));
+      dispatch(postLogin(values)).then((response) => {
+        if (response?.payload) {
+          const redirectPath = new URLSearchParams(location.search).get(
+            "redirect"
+          );
+          if (redirectPath) {
+            navigate(redirectPath);
+          }
+        }
+      });
     },
-    [dispatch]
+    [dispatch, location.search, navigate]
   );
 
   const {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -6,8 +6,6 @@ import {
   CardHeader,
   Col,
   Container,
-  FloatingLabel,
-  Form,
   Row,
   Spinner,
 } from "react-bootstrap";
@@ -18,27 +16,29 @@ import { Navigate, useParams } from "react-router";
 import ChatContainer from "./Components/ChatContainer/ChatContainer";
 import ChatHeader from "./Components/ChatHeader/ChatHeader";
 import {
+  extendOrderConfirmation,
   getOrderDetails,
   getOrderMessages,
+  orderCancelConfirmation,
   orderZoomMeeting,
   sendMessages,
 } from "../../../redux/Actions/orderActions";
 import signalRService from "../../../services/SignalR";
 import FileUploadButton from "../../../components/Custom/Button/fileUploadButton";
 import { scrollToBottom } from "../../../utils/_helpers";
-import OrderButton from "./Components/Buttons/OrderButtons";
 import Resolution from "./Components/Resolution/Resolution";
+import OrderDelivery from "./Components/Delivery/OrderDelivery";
 
 const OrderDetail = () => {
+  const params = useParams();
   const dispatch = useDispatch();
   const [sendLoader, setSendLoader] = useState(false);
-  const [messageTyped, setMessageTyped] = useState("");
-  const [orderDetails, setOrderDetails] = useState({});
-  const [showSpinner, setShowSpinner] = useState(false);
   const [activeChats, setActiveChat] = useState(false);
+  const [orderDetails, setOrderDetails] = useState({});
+  const [messageTyped, setMessageTyped] = useState("");
+  const [showSpinner, setShowSpinner] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const { userAuth } = useSelector((state) => state?.authentication);
-  const params = useParams();
   const chatContainerId = "chatbox-container";
 
   const fetchOrderDetails = () => {
@@ -50,7 +50,6 @@ const OrderDetail = () => {
   };
 
   const fetchMessages = () => {
-    setShowSpinner(true);
     dispatch(getOrderMessages(params.id)).then((response) => {
       setActiveChat(response?.payload);
       setShowSpinner(false);
@@ -102,6 +101,7 @@ const OrderDetail = () => {
 
   const handleSignalRCall = (newMessage) => {
     const data = {
+      orderId: orderDetails.id,
       senderId: newMessage.senderId,
       receiverId: newMessage.receiverId,
       message: newMessage,
@@ -142,6 +142,34 @@ const OrderDetail = () => {
     });
   };
 
+  const handleAcceptRejectDate = (data) => {
+    dispatch(extendOrderConfirmation(data)).then((response) => {
+      const newMessage = response?.payload;
+      setActiveChat((prev) =>
+        prev.map((msg) =>
+          msg.orderReasonId === newMessage?.orderReasonId
+            ? { ...msg, orderReasonIsActive: newMessage.orderReasonIsActive }
+            : msg
+        )
+      );
+      setActiveChat((prev) => [...prev, newMessage]);
+    });
+  };
+
+  const handleAcceptRejectCancel = (data) => {
+    dispatch(orderCancelConfirmation(data)).then((response) => {
+      const newMessage = response?.payload;
+      setActiveChat((prev) =>
+        prev.map((msg) =>
+          msg.orderReasonId === newMessage?.orderReasonId
+            ? { ...msg, orderReasonIsActive: newMessage.orderReasonIsActive }
+            : msg
+        )
+      );
+      setActiveChat((prev) => [...prev, newMessage]);
+    });
+  };
+
   useEffect(() => {
     fetchOrderDetails();
   }, [params.id]);
@@ -150,6 +178,9 @@ const OrderDetail = () => {
     if (!userAuth?.id) return;
 
     const handleIncomingData = (senderId, receiverId, model) => {
+      console.log(orderDetails);
+      console.log(orderDetails?.id);
+      console.log(model.orderId);
       if (userAuth?.id === receiverId) {
         setActiveChat((prev) => {
           if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
@@ -157,6 +188,10 @@ const OrderDetail = () => {
           }
           return prev;
         });
+        setOrderDetails((prev) => ({
+          ...prev,
+          isDelivered: model.isDelivered,
+        }));
       }
     };
 
@@ -176,191 +211,223 @@ const OrderDetail = () => {
     return <Navigate to="/" />;
   }
 
-  console.log("orderDetails", orderDetails);
   return (
     <Container className="pb-5">
       <Row className="mt-4">
-        {showSpinner ? (
-          <Col xl={12} lg={12} md={12} sm={12} xs={12} className="text-center">
-            <Spinner animation="grow" />
-          </Col>
-        ) : (
-          <>
-            <Col xl={8} lg={8} md={8} sm={12} xs={12} className="mb-3">
-              <div className="chat-card chat-app">
-                <div className="chat" style={{ margin: 0 }}>
-                  <div className="chat-header clearfix">
-                    <div className="row">
-                      <div className="col-sm-12">
-                        {activeChats && (
-                          <ChatHeader
-                            activeChat={activeChats[0]}
-                            userOnlineStatus={
-                              userAuth?.role === "Valet"
-                                ? parseInt(orderDetails?.valetStatus)
-                                : parseInt(orderDetails?.customerStatus)
-                            }
+        <Col xl={8} lg={8} md={8} sm={12} xs={12} className="mb-3">
+          <div className="chat-card chat-app">
+            <div className="chat" style={{ margin: 0 }}>
+              <div className="chat-header clearfix">
+                <div className="row">
+                  <div className="col-sm-12">
+                    {showSpinner ? (
+                      <Spinner animation="grow" />
+                    ) : (
+                      orderDetails && (
+                        <ChatHeader
+                          userOnlineStatus={
+                            userAuth?.role === "Valet"
+                              ? parseInt(orderDetails?.valetStatus)
+                              : parseInt(orderDetails?.customerStatus)
+                          }
+                          orderDetails={orderDetails}
+                        />
+                      )
+                    )}
+                  </div>
+                  <div className="col-sm-12">
+                    <div className="chatbox-container" id={chatContainerId}>
+                      {showSpinner ? (
+                        <div className="text-center">
+                          <Spinner animation="grow" />
+                        </div>
+                      ) : (
+                        activeChats && (
+                          <ChatContainer
+                            orderDetails={orderDetails}
+                            messages={activeChats}
                             userAuth={userAuth}
+                            handleAcceptRejectDate={handleAcceptRejectDate}
+                            handleAcceptRejectCancel={handleAcceptRejectCancel}
                           />
-                        )}
+                        )
+                      )}
+                    </div>
+                    <div className="clearfix">
+                      <div className="input-group mb-0">
+                        <div className="input-group-prepend">
+                          <span
+                            className="input-group-text"
+                            style={{ borderRadius: "0px" }}
+                          >
+                            <i className="bi bi-send"></i>
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Enter text here..."
+                          rows={1}
+                          value={messageTyped}
+                          onChange={(e) => handleTypeMessage(e.target.value)}
+                          readOnly={showSpinner}
+                        />
                       </div>
-                      <div className="col-sm-12">
-                        <div className="chatbox-container" id={chatContainerId}>
-                          {activeChats && (
-                            <ChatContainer
-                              messageLoader={null}
-                              messages={activeChats}
-                              userAuth={userAuth}
-                            />
+                      <div className="row py-3">
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <FileUploadButton
+                            setSelectedFile={setSelectedFile}
+                            onFileUpload={handleFileUpload}
+                            disabled={
+                              showSpinner ||
+                              (orderDetails &&
+                                orderDetails?.isDelivered === "2" &&
+                                true)
+                            }
+                          />
+                          {selectedFile && (
+                            <div className="mt-2">
+                              <strong>Selected File:</strong>{" "}
+                              {selectedFile.name}
+                            </div>
                           )}
                         </div>
-                        <div className="clearfix">
-                          <div className="input-group mb-0">
-                            <div className="input-group-prepend">
-                              <span
-                                className="input-group-text"
-                                style={{ borderRadius: "0px" }}
-                              >
-                                <i className="bi bi-send"></i>
-                              </span>
-                            </div>
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Enter text here..."
-                              rows={1}
-                              value={messageTyped}
-                              onChange={(e) =>
-                                handleTypeMessage(e.target.value)
-                              }
-                            />
-                          </div>
-                          <div className="row py-3">
-                            <div className="col-md-6 col-sm-12 mb-2">
-                              <FileUploadButton
-                                setSelectedFile={setSelectedFile}
-                                onFileUpload={handleFileUpload}
-                              />
-                              {selectedFile && (
-                                <div className="mt-2">
-                                  <strong>Selected File:</strong>{" "}
-                                  {selectedFile.name}
-                                </div>
-                              )}
-                            </div>
-                            <div className="col-md-6 col-sm-12 mb-2 text-end">
-                              <Button
-                                variant="primary-secondary"
-                                className="btn-sm w-50"
-                                onClick={() =>
-                                  handleSendMessage(
-                                    userAuth?.role === "Valet"
-                                      ? orderDetails?.customerEncId
-                                      : orderDetails?.valetEncId
-                                  )
-                                }
-                                disabled={sendLoader}
-                              >
-                                Send
-                              </Button>
-                            </div>
-                          </div>
+                        <div className="col-md-6 col-sm-12 mb-2 text-end">
+                          <Button
+                            variant="primary-secondary"
+                            className="btn-sm w-50"
+                            onClick={() =>
+                              handleSendMessage(
+                                userAuth?.role === "Valet"
+                                  ? orderDetails?.customerEncId
+                                  : orderDetails?.valetEncId
+                              )
+                            }
+                            disabled={
+                              sendLoader ||
+                              showSpinner ||
+                              (orderDetails &&
+                                orderDetails?.isDelivered === "2" &&
+                                true)
+                            }
+                          >
+                            Send
+                          </Button>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </Col>
-            <Col xl={4} lg={4} md={4} sm={12} xs={12} className="mb-3">
-              {/* Order Info Card */}
-              <Card className="shadow">
-                <CardHeader className="card-headers order-Info-detail-flex">
-                  Order Info
-                  {orderDetails?.isDelivered === "0" &&
-                  orderDetails?.orderStatus === "0" ? (
-                    <span className="badge fw-normal bg-warning px-3">
-                      In-Progress
-                    </span>
-                  ) : orderDetails?.isDelivered === "1" ? (
-                    <span className="badge fw-normal bg-success px-3">
-                      DELIVERED
-                    </span>
-                  ) : ["2", "1"].includes(orderDetails?.orderStatus) ||
-                    orderDetails?.isDelivered === "2" ? (
-                    <span className="badge fw-normal bg-success px-3">
-                      Completed
-                    </span>
-                  ) : orderDetails?.isDelivered === "4" ? (
-                    <span className="badge fw-normal bg-danger px-3">
-                      CANCELED
-                    </span>
-                  ) : null}
-                </CardHeader>
-                <CardBody>
-                  <div className="order-Info-detail-flex">
-                    Order ID <span className="fw-bold">{params.id}</span>
-                  </div>
-                  <hr />
+            </div>
+          </div>
+        </Col>
+        <Col xl={4} lg={4} md={4} sm={12} xs={12} className="mb-3">
+          {/* Order Info Card */}
+          <Card className="shadow">
+            <CardHeader className="card-headers order-Info-detail-flex">
+              Order Info
+              {orderDetails?.isDelivered === "0" &&
+              orderDetails?.orderStatus === "0" ? (
+                <span className="badge fw-normal bg-warning px-3">
+                  In-Progress
+                </span>
+              ) : orderDetails?.isDelivered === "1" ? (
+                <span className="badge fw-normal bg-success px-3">
+                  DELIVERED
+                </span>
+              ) : ["2", "1"].includes(orderDetails?.orderStatus) ||
+                orderDetails?.isDelivered === "2" ? (
+                <span className="badge fw-normal bg-success px-3">
+                  Completed
+                </span>
+              ) : orderDetails?.isDelivered === "4" ? (
+                <span className="badge fw-normal bg-danger px-3">CANCELED</span>
+              ) : null}
+            </CardHeader>
+            <CardBody>
+              <div className="order-Info-detail-flex">
+                Order ID <span className="fw-bold">{params.id}</span>
+              </div>
+              <hr />
 
-                  <div className="order-Info-detail-flex">
-                    Title{" "}
-                    <span className="fw-bold">{orderDetails?.orderTitle}</span>
-                  </div>
-                  <div className="order-Info-detail-flex">
-                    Start Date
-                    <span className="fw-bold">
-                      {orderDetails?.startDateTime}
-                    </span>
-                  </div>
-                  <div className="order-Info-detail-flex">
-                    Delivery date{" "}
-                    <span className="fw-bold">{orderDetails?.endDateTime}</span>
-                  </div>
-                  <div className="order-Info-detail-flex">
-                    Order Price{" "}
-                    <span className="fw-bold">${orderDetails?.orderPrice}</span>
-                  </div>
-                  <hr />
-                  <div className="order-Info-detail-flex">
-                    <OrderButton
-                      userRole={userAuth?.role}
-                      orderStatus={orderDetails?.orderStatus}
-                      isDelivered={orderDetails?.isDelivered}
-                    />
-                  </div>
-                </CardBody>
-              </Card>
-              {/* Zoom Meeting Card */}
-              <Card className="shadow mt-3">
-                <CardBody>
-                  <div className="card-headers mb-1">Zoom Meeting</div>
+              <div className="order-Info-detail-flex">
+                Title{" "}
+                <span className="fw-bold">{orderDetails?.orderTitle}</span>
+              </div>
+              <div className="order-Info-detail-flex">
+                Start Date
+                <span className="fw-bold">{orderDetails?.startDateTime}</span>
+              </div>
+              <div className="order-Info-detail-flex">
+                Delivery date{" "}
+                <span className="fw-bold">{orderDetails?.endDateTime}</span>
+              </div>
+              <div className="order-Info-detail-flex">
+                Order Price{" "}
+                <span className="fw-bold">${orderDetails?.orderPrice}</span>
+              </div>
+              <hr />
+              <div>
+                <OrderDelivery
+                  userRole={userAuth?.role}
+                  isDelivered={orderDetails?.isDelivered}
+                  orderDetails={orderDetails}
+                  userAuth={userAuth}
+                  sendLoader={sendLoader}
+                  setSendLoader={setSendLoader}
+                  setActiveChat={setActiveChat}
+                  handleSignalRCall={handleSignalRCall}
+                  showSpinner={showSpinner}
+                />
+              </div>
+            </CardBody>
+          </Card>
+          {/* Zoom Meeting Card */}
+          <Card className="shadow mt-3">
+            <CardBody>
+              <div className="card-headers mb-1">Zoom Meeting</div>
 
+              {orderDetails && orderDetails?.isDelivered === "2" ? (
+                <>
                   <Button
-                    onClick={() => handleZoomMeeting()}
-                    className="w-100 btn btn-sm"
+                    className="w-100"
+                    size="sm"
+                    variant="primary-secondary"
+                    disabled
                   >
                     Zoom Meeting
                   </Button>
-                </CardBody>
-              </Card>
-              {/* Resolution Card */}
-              <Card className="shadow mt-3">
-                <Card.Header className=" mb-1">Resolution Center</Card.Header>
-                <CardBody>
-                  <Resolution
-                    orderDetails={orderDetails}
-                    userAuth={userAuth}
-                    sendLoader={sendLoader}
-                    setSendLoader={setSendLoader}
-                    setActiveChat={setActiveChat}
-                    handleSignalRCall={handleSignalRCall}
-                  />
-                </CardBody>
-              </Card>
-            </Col>
-          </>
-        )}
+                </>
+              ) : (
+                <>
+                  <Button
+                    onClick={() => handleZoomMeeting()}
+                    className="w-100 btn btn-sm"
+                    disabled={showSpinner}
+                  >
+                    Zoom Meeting
+                  </Button>
+                </>
+              )}
+            </CardBody>
+          </Card>
+          {/* Resolution Card */}
+          <Card className="shadow mt-3">
+            <Card.Header className=" mb-1">Resolution Center</Card.Header>
+            <CardBody>
+              <Resolution
+                orderDetails={orderDetails}
+                userAuth={userAuth}
+                sendLoader={sendLoader}
+                setSendLoader={setSendLoader}
+                setActiveChat={setActiveChat}
+                handleSignalRCall={handleSignalRCall}
+                showSpinner={showSpinner}
+              />
+            </CardBody>
+          </Card>
+        </Col>
       </Row>
     </Container>
   );

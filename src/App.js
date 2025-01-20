@@ -12,6 +12,7 @@ import "aos/dist/aos.css"; // For animation
 import "./assets/fonts/myriad-pro/style.css";
 import AOS from "aos";
 import { notificationURL } from "./utils/_envConfig";
+import { HelmetProvider } from "react-helmet-async";
 
 const App = () => {
   const { userAuth } = useSelector((state) => state.authentication); // Get user info from Redux store
@@ -38,10 +39,12 @@ const App = () => {
 
   return (
     <>
-      <ThemeContextProvider>
-        <ToastContainer />
-        <AppRoutes />
-      </ThemeContextProvider>
+      <HelmetProvider>
+        <ThemeContextProvider>
+          <ToastContainer />
+          <AppRoutes />
+        </ThemeContextProvider>
+      </HelmetProvider>
     </>
   );
 };

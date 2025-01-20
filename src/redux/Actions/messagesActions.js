@@ -14,12 +14,12 @@ const api = axios.create({
 
 export const getMessagesSidebar = createAsyncThunk(
   "messages/getMessagesSidebar",
-  async (findUser, { rejectWithValue, getState, dispatch }) => {
+  async ({ findUser, userId }, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
       const authId = getUserId(getState);
       const response = await api.get(
-        `Message/GetMessageSideBarLists/${authId}?Name=${findUser}`,
+        `Message/GetMessageSideBarLists/${authId}?Name=${findUser}&GetUserChatOnTop=${userId}`,
         {
           headers: {
             Authorization: `${token}`,

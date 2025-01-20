@@ -1,9 +1,9 @@
 import React from "react";
 import { Button, ButtonGroup } from "react-bootstrap";
 
-const CustomButtons = ({ buttons, row }) => {
+const CustomButtons = ({ buttons, row, className = "" }) => {
   return (
-    <ButtonGroup>
+    <ButtonGroup className={className}>
       {buttons.map((button) =>
         button.icon ? (
           <Button
