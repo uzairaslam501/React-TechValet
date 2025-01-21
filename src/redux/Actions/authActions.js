@@ -8,6 +8,7 @@ import {
 import { baseUrl } from "../../utils/_envConfig";
 import { toast } from "react-toastify";
 import { getToken } from "../../utils/_apiConfig";
+import { logout, renewToken } from "../Reducers/authSlice";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -206,6 +207,30 @@ export const getUserSkills = createAsyncThunk(
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+// Renew Token
+export const postRenewToken = createAsyncThunk(
+  "auth/postRenewToken",
+  async (_, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.post(`/Auth/RenewToken`, null, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      const { data } = processApiResponse(response, dispatch, expired);
+      if (data) {
+        dispatch(renewToken(data));
+      }
+      console.log("token renewed response ::", data);
+      return data;
+    } catch (error) {
+      toast.error("Session has expired. Please log in again.");
+      dispatch(logout());
     }
   }
 );

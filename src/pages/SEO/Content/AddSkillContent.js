@@ -1,47 +1,62 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import CustomCKEditor from "../../../components/Custom/CKEditor/CKEditor";
 import { skillsOptions } from "../../../utils/client/data/requestedData";
 import { useLocation } from "react-router";
+import { useDispatch } from "react-redux";
+import {
+  addSkillBlog,
+  updateSkillBlogs,
+} from "../../../redux/Actions/seoActions";
 
 const AddSkillContent = () => {
+  const dispatch = useDispatch();
   const { state } = useLocation();
+  const [isUpdate, setIsUpdate] = useState(false);
 
   const initialValues = {
-    Skill: state?.Skill || "",
-    Title: state?.Title || "",
-    Description: state?.Description || "",
-    Content: state?.Content || "",
+    encId: state?.encId || "",
+    Title: state?.title || "",
+    Skill: state?.skill || "",
+    Slug: state?.slug || "",
+    Description: state?.description || "",
+    Content: state?.content || "",
     FeaturedImageUrl: null,
   };
 
   const validationSchema = Yup.object({
+    Title: Yup.string().required("Title is required"),
     Skill: Yup.string().required("Skill is required"),
-    Title: Yup.string().optional("Title is required"),
     Description: Yup.string()
       .min(50, "Description must be at least 50 characters")
-      .optional("Description is required"),
+      .required("Description is required"),
     Content: Yup.string().required("Content is required"),
-    FeaturedImageUrl: Yup.mixed().optional("Featured image is required"),
   });
 
-  const handleSlugGeneration = (title) => {
-    let slug = title.trim().toLowerCase();
+  const handleSlugGeneration = (Title) => {
+    let slug = Title.trim().toLowerCase();
     slug = slug.replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
     return slug;
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
-    console.log("Form values:", values);
-
-    // Perform your submit logic, e.g., API calls
-    alert("Record added successfully!");
-
-    // Clear the form fields
-    resetForm();
+    let endpoint = addSkillBlog(values);
+    if (state) {
+      endpoint = updateSkillBlogs(values);
+    }
+    dispatch(endpoint)
+      .then((response) => {
+        if (response?.payload) {
+          console.log("Response Payload:", response.payload);
+        } else {
+          console.log("No response payload available.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error dispatching action:", error);
+      });
   };
 
   const {
@@ -52,6 +67,7 @@ const AddSkillContent = () => {
     handleBlur,
     handleChange,
     resetForm,
+    handleSubmit: formikSubmit,
   } = useFormik({
     initialValues,
     validationSchema,
@@ -59,6 +75,12 @@ const AddSkillContent = () => {
     validateOnBlur: true,
     onSubmit: handleSubmit,
   });
+
+  useEffect(() => {
+    if (state) {
+      setIsUpdate(true);
+    }
+  }, [state]);
 
   return (
     <Container className="my-5">
@@ -69,7 +91,7 @@ const AddSkillContent = () => {
               <h2 className="text-center text-gray-900 mb-4">
                 Add / Update Record
               </h2>
-              <Form onSubmit={handleSubmit} encType="multipart/form-data">
+              <Form onSubmit={formikSubmit} encType="multipart/form-data">
                 <Row>
                   <Col
                     xl={state?.image ? 9 : 12}
@@ -90,6 +112,10 @@ const AddSkillContent = () => {
                         onChange={(e) => {
                           handleChange(e);
                           setFieldValue("Skill", e.target.value); // Update Formik state
+                          setFieldValue(
+                            "Slug",
+                            handleSlugGeneration(e.target.value)
+                          );
                         }}
                         onBlur={handleBlur}
                         isInvalid={touched.Skill && !!errors.Skill}
@@ -110,7 +136,7 @@ const AddSkillContent = () => {
 
                     <Form.Group controlId="exampleTitle" className="mb-4">
                       <Form.Label className="text-dark">
-                        Article Title<span className="text-danger">*</span>
+                        Title<span className="text-danger">*</span>
                       </Form.Label>
                       <Form.Control
                         type="text"
