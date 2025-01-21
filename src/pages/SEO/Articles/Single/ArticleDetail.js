@@ -1,163 +1,59 @@
-import React, { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
-import { Card, Button, Container, Row, Col, Badge } from "react-bootstrap";
+import "./style.css";
 import { useDispatch } from "react-redux";
-import { valetBySkill } from "../../../../redux/Actions/seoActions";
+import { Helmet } from "react-helmet-async";
+import React, { useEffect, useState } from "react";
+import { Card, Container, Row, Col } from "react-bootstrap";
+import { getBlogsList } from "../../../../redux/Actions/seoActions";
+import HandleImages from "../../../../components/Custom/Avatars/HandleImages";
+import { NavLink, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   calculateReadingTime,
   truncateCharacters,
 } from "../../../../utils/_helpers";
-import HandleImages from "../../../../components/Custom/Avatars/HandleImages";
-import StarRating from "../../../../components/Custom/Rating/StarRating";
-import { Helmet } from "react-helmet-async";
-import "./style.css";
-
-const dataObjects = [
-  {
-    content: "<p>Here is some new content1</p>",
-    description: "This is a new description1",
-    image:
-      "https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-1170x780.jpg",
-    skill: "Sales",
-    slug: "changed-slug-1",
-    tags: "tag1, tag2",
-    title: "Data Analyst Data Analyst Data Analyst",
-  },
-  {
-    content: "<p>Here is some new content2</p>",
-    description:
-      "This is a new description2 This is a new description2 This is a new description2",
-    image:
-      "https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-1170x780.jpg",
-    skill: "Marketing",
-    slug: "changed-slug-2",
-    tags: "tag3, tag4",
-    title:
-      "Software Engineer Software Engineer Software Engineer Software Engineer",
-  },
-  {
-    content: "<p>Here is some new content3</p>",
-    description:
-      "This is a new description3 This is a new description3 This is a new description3 This is a new description3 This is a new description3",
-    image:
-      "https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-1170x780.jpg",
-    skill: "Customer Success",
-    slug: "changed-slug-3",
-    tags: "tag5, tag6",
-    title: "Product Manager",
-  },
-  {
-    content: "<p>Here is some new content4</p>",
-    description: "This is a new description4",
-    image:
-      "https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-1170x780.jpg",
-    skill: "Design",
-    slug: "changed-slug-4",
-    tags: "tag7, tag8",
-    title: "UX/UI Designer",
-  },
-  {
-    content: "<p>Here is some new content5</p>",
-    description: "This is a new description5",
-    image:
-      "https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-1170x780.jpg",
-    skill: "Engineering",
-    slug: "changed-slug-5",
-    tags: "tag9, tag10",
-    title: "Backend Engineer",
-  },
-  {
-    content: "<p>Here is some new content6</p>",
-    description: "This is a new description6",
-    image:
-      "https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-1170x780.jpg",
-    skill: "Data Science",
-    slug: "changed-slug-6",
-    tags: "tag11, tag12",
-    title: "Data Scientist",
-  },
-  {
-    content: "<p>Here is some new content7</p>",
-    description: "This is a new description7",
-    image:
-      "https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-1170x780.jpg",
-    skill: "Product",
-    slug: "changed-slug-7",
-    tags: "tag13, tag14",
-    title: "Product Owner",
-  },
-  {
-    content: "<p>Here is some new content8</p>",
-    description: "This is a new description8",
-    image:
-      "https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-1170x780.jpg",
-    skill: "Research",
-    slug: "changed-slug-8",
-    tags: "tag15, tag16",
-    title: "User Researcher",
-  },
-  {
-    content: "<p>Here is some new content9</p>",
-    description: "This is a new description9",
-    image:
-      "https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-1170x780.jpg",
-    skill: "content",
-    slug: "changed-slug-9",
-    tags: "tag17, tag18",
-    title: "content Writer",
-  },
-  {
-    content: "<p>Here is some new content10</p>",
-    description: "This is a new description10",
-    image:
-      "https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-1170x780.jpg",
-    skill: "Mac",
-    slug: "changed-slug-10",
-    tags: "tag19, tag20",
-    title: "Other title",
-  },
-];
 
 const ArticleDetail = () => {
-  const { slug } = useParams(); // Get the slug from the URL params
+  const { slug } = useParams();
   const { state } = useLocation();
-  console.log(state);
+
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [article, setArticle] = useState(null);
-  const [userRecords, setUserRecords] = useState(null);
+
+  const [recentPosts, setRecentPosts] = useState(null);
   const [canonicalUrl, setCanonicalUrl] = useState("");
 
-  const fetchProfiles = () => {
-    if (article) {
-      dispatch(valetBySkill(article.skill))
-        .then((response) => {
-          console.log(response?.payload);
-          setUserRecords(response?.payload);
-        })
-        .catch((err) => {
-          console.error("Error fetching profiles:", err);
-        });
-    }
+  const fetchRecentPosts = (pageNumber = 0, pageLength = 8) => {
+    const params = {
+      pageNumber,
+      pageLength,
+      sortColumn: "publishedDate",
+      sortDirection: "desc",
+      searchParam: "",
+    };
+    dispatch(getBlogsList(params))
+      .then((response) => {
+        console.log(response?.payload);
+        setRecentPosts(response?.payload?.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching profiles:", err);
+      });
   };
 
-  // Find the article based on the slug
   useEffect(() => {
     const runtimeUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
     setCanonicalUrl(runtimeUrl);
   }, [slug]);
 
   useEffect(() => {
-    if (article) {
-      // fetchProfiles();
-    }
-  }, [article]);
+    fetchRecentPosts();
+  }, []);
 
   return (
     <>
       <Helmet>
         <link rel="canonical" href={canonicalUrl} />
-        <meta name="description" content={`${article?.description}.`} />
-        <meta name="keywords" content={`${article?.tags}.`} />
+        <meta name="description" content={`${state?.description}.`} />
+        <meta name="keywords" content={`${state?.tags}.`} />
       </Helmet>
 
       <Container fluid className="bg-white">
@@ -226,25 +122,44 @@ const ArticleDetail = () => {
                   style={{ maxHeight: "400px", overflowY: "auto" }}
                   className="pt-0"
                 >
-                  {dataObjects?.length ? (
-                    dataObjects.map((recentArticle) => (
+                  {recentPosts && recentPosts?.length > 0 ? (
+                    recentPosts.map((recentArticle) => (
                       <Row
-                        key={recentArticle.id}
+                        key={recentArticle.encId}
                         className="pb-2 mb-3"
                         style={{ borderBottom: "1px solid #f1f1f1" }}
                       >
-                        <Col xl={4} sm={4}>
-                          <HandleImages
-                            imagePath={recentArticle.image}
-                            imageAlt={recentArticle.title}
-                            imageStyle={{ height: "100%", width: "100%" }}
-                          />
-                        </Col>
-                        <Col xl={8} sm={8}>
+                        <Col xl={3} sm={3}>
                           <a
+                            onClick={() =>
+                              navigate(`/article/${recentArticle.slug}`, {
+                                state: recentArticle,
+                              })
+                            }
+                            style={{
+                              cursor: "pointer",
+                            }}
+                          >
+                            <HandleImages
+                              imagePath={recentArticle.image}
+                              imageAlt={recentArticle.title}
+                              imageStyle={{ height: "100%", width: "100%" }}
+                            />
+                          </a>
+                        </Col>
+                        <Col xl={9} sm={9}>
+                          <a
+                            as={NavLink}
                             title={recentArticle.title}
-                            className="text-dark text-decoration-none"
-                            href={`/article/${recentArticle.slug}`}
+                            className="text-dark h6"
+                            onClick={() =>
+                              navigate(`/article/${recentArticle.slug}`, {
+                                state: recentArticle,
+                              })
+                            }
+                            style={{
+                              cursor: "pointer",
+                            }}
                           >
                             {truncateCharacters(recentArticle.title, 30)}
                           </a>
