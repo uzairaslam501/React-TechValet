@@ -1,0 +1,12 @@
+.what-we-do-bgImage {
+    background-image: url('../../../assets/images/what-we-do-image.svg'); /* Replace with your image path */
+    background-size: cover; /* Ensures the image covers the entire element */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    background-position: center center; /* Centers the image within the element */
+    height: 400px; /* Fixed height, adjust as needed */
+    width: 100%; /* Full width of the viewport */
+    position: relative; /* Allows positioning of other elements inside */
+    display: flex; /* Optional: use flexbox for content alignment */
+    align-items: center; /* Optional: vertically center content */
+    justify-content: center; /* Optional: horizontally center content */
+}
