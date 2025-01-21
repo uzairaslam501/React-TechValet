@@ -7,7 +7,7 @@ import HandleImages from "../../Custom/Avatars/HandleImages";
 import { Container, Row, Col, ListGroup } from "react-bootstrap";
 const Footer = () => {
   return (
-    <>
+    <Container fluid className="bg-white">
       <Container
         className="px-5"
         style={{
@@ -109,7 +109,7 @@ const Footer = () => {
           </Col>
         </Row>
       </Container>
-    </>
+    </Container>
   );
 };
 

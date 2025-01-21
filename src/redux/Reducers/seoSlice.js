@@ -1,4 +1,4 @@
-import { valetBySkill } from "../Actions/articleActions";
+import { valetBySkill } from "../Actions/seoActions";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
