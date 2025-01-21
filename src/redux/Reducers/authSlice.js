@@ -23,6 +23,12 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    renewToken(state, payload) {
+      state.userAuth.token = payload.token;
+      state.userAuth.tokenExpire = payload.tokenExpire;
+      state.loading = false;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     // Handle login actions
@@ -72,5 +78,5 @@ const authSlice = createSlice({
 });
 
 // Export the reducer and actions
-export const { logout } = authSlice.actions;
+export const { logout, renewToken } = authSlice.actions;
 export default authSlice.reducer;
