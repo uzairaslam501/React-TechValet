@@ -1,5 +1,4 @@
 import { toast } from "react-toastify";
-import { logout } from "../../redux/Reducers/authSlice";
 import { convertToISO } from "../_helpers";
 import { postRenewToken } from "../../redux/Actions/authActions";
 

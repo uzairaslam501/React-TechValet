@@ -3,16 +3,20 @@ import {
   addServicesOrExperience,
   updateServicesOrExperience,
   getServicesRecord,
+  updateSlotTimes,
+  getAvailability,
   getUserEarnings,
 } from "../Actions/serviceActions";
 
 const initialState = {
   loading: false,
   error: null,
-  data: null,
+  servicesData: null,
+  availabilityData: null,
+  earningsData: null,
 };
 
-const serviceSlice = createSlice({
+const servicesSlice = createSlice({
   name: "service",
   initialState,
   reducers: {},
@@ -25,14 +29,14 @@ const serviceSlice = createSlice({
       })
       .addCase(addServicesOrExperience.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        state.servicesData = action.payload;
       })
       .addCase(addServicesOrExperience.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });
 
-    // updateServicesOrExperience
+    // Handle updateServicesOrExperience
     builder
       .addCase(updateServicesOrExperience.pending, (state) => {
         state.loading = true;
@@ -40,14 +44,14 @@ const serviceSlice = createSlice({
       })
       .addCase(updateServicesOrExperience.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        state.servicesData = action.payload;
       })
       .addCase(updateServicesOrExperience.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Failed to delete the record";
+        state.error = action.payload || "Failed to update the record";
       });
 
-    // getServicesRecord
+    // Handle getServicesRecord
     builder
       .addCase(getServicesRecord.pending, (state) => {
         state.loading = true;
@@ -55,14 +59,44 @@ const serviceSlice = createSlice({
       })
       .addCase(getServicesRecord.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        state.servicesData = action.payload;
       })
       .addCase(getServicesRecord.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
 
-    // getUserEarnings
+    // Handle updateSlotTimes
+    builder
+      .addCase(updateSlotTimes.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateSlotTimes.fulfilled, (state, action) => {
+        state.loading = false;
+        state.servicesData = action.payload;
+      })
+      .addCase(updateSlotTimes.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Handle getAvailability
+    builder
+      .addCase(getAvailability.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAvailability.fulfilled, (state, action) => {
+        state.loading = false;
+        state.availabilityData = action.payload;
+      })
+      .addCase(getAvailability.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Handle getUserEarnings
     builder
       .addCase(getUserEarnings.pending, (state) => {
         state.loading = true;
@@ -70,7 +104,7 @@ const serviceSlice = createSlice({
       })
       .addCase(getUserEarnings.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        state.earningsData = action.payload;
       })
       .addCase(getUserEarnings.rejected, (state, action) => {
         state.loading = false;
@@ -79,4 +113,4 @@ const serviceSlice = createSlice({
   },
 });
 
-export default serviceSlice.reducer;
+export default servicesSlice.reducer;

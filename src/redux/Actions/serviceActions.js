@@ -13,7 +13,7 @@ const api = axios.create({
 });
 
 export const addServicesOrExperience = createAsyncThunk(
-  "servicesOrExperience/getServicesRecord",
+  "servicesOrExperience/addServicesOrExperience",
   async (values, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
@@ -59,7 +59,7 @@ export const updateServicesOrExperience = createAsyncThunk(
 );
 
 export const getServicesRecord = createAsyncThunk(
-  "servicesOrExperience/getServicesRecord",
+  "servicesOrExperience/getServicesRecord ",
   async (userId, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {

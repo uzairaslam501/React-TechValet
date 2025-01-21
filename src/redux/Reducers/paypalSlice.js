@@ -5,6 +5,7 @@ import {
   checkPaymentStatusForOrder,
   checkPaymentStatusForPackage,
   chargeByPackage,
+  addPayPalAccount,
 } from "../Actions/paypalActions";
 
 const initialState = {
@@ -85,6 +86,20 @@ const paypalSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(chargeByPackage.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      // Handle AddPayPalAccount
+      .addCase(addPayPalAccount.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addPayPalAccount.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(addPayPalAccount.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

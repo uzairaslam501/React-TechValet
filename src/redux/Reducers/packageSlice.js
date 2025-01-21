@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   getUserPackageByUserId,
   getPackageById,
+  paymentWithPackage,
 } from "../Actions/packageActions";
 
 const initialState = {
@@ -43,6 +44,20 @@ const packageSlice = createSlice({
         state.selectedPackage = action.payload;
       })
       .addCase(getPackageById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      // Handle PaymentWithPackage
+      .addCase(paymentWithPackage.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(paymentWithPackage.fulfilled, (state, action) => {
+        state.loading = false;
+        state.selectedPackage = action.payload;
+      })
+      .addCase(paymentWithPackage.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

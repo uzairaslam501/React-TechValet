@@ -13,6 +13,8 @@ import "./assets/fonts/myriad-pro/style.css";
 import AOS from "aos";
 import { notificationURL } from "./utils/_envConfig";
 import { HelmetProvider } from "react-helmet-async";
+import { LoaderProvider } from "./context/LoaderContext";
+import GlobalLoader from "./components/Custom/GlobalLoader/GlobalLoader";
 
 const App = () => {
   const { userAuth } = useSelector((state) => state.authentication); // Get user info from Redux store
@@ -41,6 +43,7 @@ const App = () => {
     <>
       <HelmetProvider>
         <ThemeContextProvider>
+          <GlobalLoader />
           <ToastContainer />
           <AppRoutes />
         </ThemeContextProvider>
