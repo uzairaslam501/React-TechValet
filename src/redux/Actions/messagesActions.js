@@ -7,6 +7,7 @@ import {
 import { baseUrl } from "../../utils/_envConfig";
 import { getToken, getUserId } from "../../utils/_apiConfig";
 import { toast } from "react-toastify";
+import { setLoading } from "../Reducers/loadingSlice";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -18,6 +19,8 @@ export const getMessagesSidebar = createAsyncThunk(
     const { token, expired } = getToken(getState);
     try {
       const authId = getUserId(getState);
+      // Show loader for calendar loading
+      dispatch(setLoading({ key: "messageLoading", value: true }));
       const response = await api.get(
         `Message/GetMessageSideBarLists/${authId}?Name=${findUser}&GetUserChatOnTop=${userId}`,
         {
@@ -30,6 +33,9 @@ export const getMessagesSidebar = createAsyncThunk(
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
+    } finally {
+      // Show loader for calendar loading
+      dispatch(setLoading({ key: "messageLoading", value: false }));
     }
   }
 );

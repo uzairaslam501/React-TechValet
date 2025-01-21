@@ -10,7 +10,6 @@ import {
   getUserForSkills,
   requestGetUserPackages,
 } from "../Actions/customerActions";
-import { getRecordById, postUpdate } from "../Actions/globalActions";
 import { createSlice } from "@reduxjs/toolkit";
 
 // Create auth slice

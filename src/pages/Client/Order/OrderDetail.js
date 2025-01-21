@@ -186,10 +186,7 @@ const OrderDetail = () => {
     if (!userAuth?.id) return;
 
     const handleIncomingData = (senderId, receiverId, model) => {
-      console.log(orderDetails);
-      console.log(orderDetails?.id);
-      console.log(model.orderId);
-      if (userAuth?.id === receiverId) {
+      if (userAuth?.id === receiverId && orderDetails?.id === model.orderId) {
         setActiveChat((prev) => {
           if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
             return [...prev, model];
@@ -282,7 +279,7 @@ const OrderDetail = () => {
                         />
                       </div>
                       <div className="row py-3">
-                        <div className="col-md-6 col-sm-12 mb-2">
+                        <div className="col-6 mb-2">
                           <FileUploadButton
                             setSelectedFile={setSelectedFile}
                             onFileUpload={handleFileUpload}
@@ -292,6 +289,7 @@ const OrderDetail = () => {
                                 orderDetails?.isDelivered === "2" &&
                                 true)
                             }
+                            classname="w-sm-100 btn-sm"
                           />
                           {selectedFile && (
                             <div className="mt-2">
@@ -300,7 +298,7 @@ const OrderDetail = () => {
                             </div>
                           )}
                         </div>
-                        <div className="col-md-6 col-sm-12 mb-2 text-end">
+                        <div className="col-6 mb-2 text-end">
                           <Button
                             variant="primary-secondary"
                             className="btn-sm w-50"

@@ -6,6 +6,7 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { getToken, getUserId } from "../../utils/_apiConfig";
+import { setLoading } from "../Reducers/loadingSlice";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -18,6 +19,10 @@ export const getOrderDetails = createAsyncThunk(
     const { token, expired } = getToken(getState);
     try {
       const userId = getUserId(getState);
+
+      // Show loader for calendar loading
+      dispatch(setLoading({ key: "orderLoading", value: true }));
+
       const response = await api.get(
         `User/GetOrderById/${encodeURIComponent(orderId)}`,
         {
@@ -30,6 +35,9 @@ export const getOrderDetails = createAsyncThunk(
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
+    } finally {
+      // Hide loader after the API call is done
+      dispatch(setLoading({ key: "orderLoading", value: false }));
     }
   }
 );

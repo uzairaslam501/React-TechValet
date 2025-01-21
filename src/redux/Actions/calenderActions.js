@@ -6,8 +6,8 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { getToken, getUserRole } from "../../utils/_apiConfig";
-import { toast } from "react-toastify";
 import { getFirstAndLastDayOfMonth } from "../../utils/_helpers";
+import { setLoading } from "../Reducers/loadingSlice";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -18,7 +18,8 @@ export const getOrderEventsByUserId = createAsyncThunk(
   async (userId, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     const role = getUserRole(getState);
-
+    // Show loader for calendar loading
+    dispatch(setLoading({ key: "calendarLoading", value: true }));
     try {
       const response = await api.get(
         `/User/order-events/${userId}?role=${role}`,
@@ -34,6 +35,9 @@ export const getOrderEventsByUserId = createAsyncThunk(
     } catch (error) {
       handleApiError(error, dispatch, expired);
       return rejectWithValue(error.response?.data || error.message);
+    } finally {
+      // Hide loader after the API call is done
+      dispatch(setLoading({ key: "calendarLoading", value: false }));
     }
   }
 );

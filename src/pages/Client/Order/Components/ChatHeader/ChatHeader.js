@@ -11,17 +11,19 @@ const ChatHeader = ({ userOnlineStatus, orderDetails }) => {
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const fetchUserRecord = (id) => {
-    dispatch(getRecordById(`/User/user-by-id/${encodeURIComponent(id)}`)).then(
-      (response) => {
+    if (id && id !== "undefined") {
+      dispatch(
+        getRecordById(`/User/user-by-id/${encodeURIComponent(id)}`)
+      ).then((response) => {
         setUserRecord(response?.payload);
         setIsLoading(false);
-      }
-    );
+      });
+    }
   };
 
   useEffect(() => {
     setIsLoading(true);
-    if (userAuth?.role === "Valet") {
+    if (userAuth?.role === "Valet" && orderDetails) {
       fetchUserRecord(orderDetails?.customerEncId);
     } else {
       fetchUserRecord(orderDetails?.valetEncId);
