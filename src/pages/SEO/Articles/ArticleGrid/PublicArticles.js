@@ -73,7 +73,11 @@ const PublicArticles = () => {
                 className="shadow-sm h-100 p-3"
                 style={{
                   borderRadius: "20px",
+                  cursor: "pointer",
                 }}
+                onClick={() =>
+                  navigate(`/article/${article.slug}`, { state: article })
+                }
               >
                 <HandleImages
                   imagePath={article.image}
@@ -84,15 +88,9 @@ const PublicArticles = () => {
                     height: "170px",
                     borderRadius: "15px",
                   }}
-                  onClick={() =>
-                    navigate(`/article/${article.slug}`, { state: article })
-                  }
                 />
                 <Card.Body className="px-0">
                   <Card.Title
-                    onClick={() =>
-                      navigate(`/article/${article.slug}`, { state: article })
-                    }
                     title={article.title}
                     style={{
                       cursor: "pointer",

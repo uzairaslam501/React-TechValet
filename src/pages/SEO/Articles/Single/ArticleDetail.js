@@ -21,7 +21,7 @@ const ArticleDetail = () => {
   const [recentPosts, setRecentPosts] = useState(null);
   const [canonicalUrl, setCanonicalUrl] = useState("");
 
-  const fetchRecentPosts = (pageNumber = 0, pageLength = 8) => {
+  const fetchRecentPosts = (pageNumber = 0, pageLength = 9) => {
     const params = {
       pageNumber,
       pageLength,
@@ -31,8 +31,9 @@ const ArticleDetail = () => {
     };
     dispatch(getBlogsList(params))
       .then((response) => {
-        console.log(response?.payload);
-        setRecentPosts(response?.payload?.data);
+        const posts = response?.payload?.data || [];
+        const filteredPosts = posts.filter((post) => post.id !== state.id);
+        setRecentPosts(filteredPosts);
       })
       .catch((err) => {
         console.error("Error fetching profiles:", err);
@@ -52,6 +53,7 @@ const ArticleDetail = () => {
     <>
       <Helmet>
         <link rel="canonical" href={canonicalUrl} />
+        <meta name="title" content={`${state?.title}.`} />
         <meta name="description" content={`${state?.description}.`} />
         <meta name="keywords" content={`${state?.tags}.`} />
       </Helmet>
