@@ -46,6 +46,9 @@ import SkillProfiles from "../pages/SEO/Content/Single/SkillProfiles";
 import SeoDashboard from "../pages/SEO/Dashboard/Dashboard";
 import AddSkillContent from "../pages/SEO/Content/AddSkillContent";
 import SkillContentList from "../pages/SEO/Content/List";
+import RoleBasedRoute from "../utils/authorized/RoleBasedRoute";
+import Unauthorized from "../pages/Error/Unauthorized";
+import NotFound from "../pages/Error/NotFound";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -74,40 +77,57 @@ const createRoute = createBrowserRouter(
         <Route path="/preview-profile/:id" element={<PreviewProfile />} />
 
         <Route element={<ProtectedClient />}>
+          {/* Global */}
           <Route path="/account" element={<Index />} />
-          <Route path="/earning" element={<Earnings />} />
-          <Route path="/search/:value?" element={<Search />} />
           <Route path="/appointment" element={<ManageAppointment />} />
-          <Route path="/packages" element={<PackageSelection />} />
-          <Route path="/package-details" element={<ViewPackages />} />
           <Route
             path="/scheduled-appointment"
             element={<ScheduledAppointment />}
           />
-          <Route path="/request-service" element={<RequestService />} />
-          <Route path="/requested-service" element={<RequestedService />} />
           <Route path="/messages/:id?" element={<Messages />} />
-          <Route path="/PaymentSuccess" element={<PaymentSuccess />} />
-          <Route path="/PaymentCancelled" element={<PaymentCancelled />} />
-          <Route path="/payment-success" element={<StripePaymentSuccess />} />
-          <Route path="/verification-failed" element={<VerificationFailed />} />
-          <Route path="/account-Verified" element={<AccountVerified />} />
-          <Route path="/earnings" element={<Earnings />} />
           <Route path="/orders" element={<ManageOrders />} />
           <Route path="/preview-order" element={<OrderPreview />} />
           <Route path="/order-details/:id" element={<OrderDetail />} />
 
-          {/* SEO Team */}
-          <Route path="/panel" element={<SeoDashboard />} />
-          {/* Blogs */}
-          <Route path="/add-article" element={<AddArticle />} />
-          <Route path="/article-list" element={<ArticleList />} />
-          {/* Skill Content */}
-          <Route path="/add-content" element={<AddSkillContent />} />
-          <Route path="/content-list" element={<SkillContentList />} />
+          <Route element={<RoleBasedRoute allowedRoles={["Customer"]} />}>
+            {/* Customer */}
+            <Route path="/search/:value?" element={<Search />} />
+            <Route path="/packages" element={<PackageSelection />} />
+            <Route path="/package-details" element={<ViewPackages />} />
+
+            <Route path="/request-service" element={<RequestService />} />
+            <Route path="/requested-service" element={<RequestedService />} />
+
+            <Route path="/PaymentSuccess" element={<PaymentSuccess />} />
+            <Route path="/PaymentCancelled" element={<PaymentCancelled />} />
+            <Route path="/payment-success" element={<StripePaymentSuccess />} />
+            <Route
+              path="/verification-failed"
+              element={<VerificationFailed />}
+            />
+          </Route>
+
+          <Route element={<RoleBasedRoute allowedRoles={["Valet"]} />}>
+            {/* Valet */}
+            <Route path="/earnings" element={<Earnings />} />
+            <Route path="/account-Verified" element={<AccountVerified />} />
+          </Route>
+
+          <Route element={<RoleBasedRoute allowedRoles={["Seo"]} />}>
+            {/* SEO Team */}
+            <Route path="/panel" element={<SeoDashboard />} />
+            {/* Blogs */}
+            <Route path="/add-article" element={<AddArticle />} />
+            <Route path="/article-list" element={<ArticleList />} />
+            {/* Skill Content */}
+            <Route path="/add-content" element={<AddSkillContent />} />
+            <Route path="/content-list" element={<SkillContentList />} />
+          </Route>
         </Route>
       </Route>
       <Route path="/welcome" element={<Welcome />} />
+      <Route path="/unauthorized" element={<Unauthorized />} />
+      <Route path="/not-found" element={<NotFound />} />
     </>
   )
 );
