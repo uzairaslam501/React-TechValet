@@ -12,7 +12,7 @@ import {
 import "./OrderDetail.css";
 import "../Messages/style.css";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useParams } from "react-router";
+import { Navigate, useNavigate, useParams } from "react-router";
 import ChatContainer from "./Components/ChatContainer/ChatContainer";
 import ChatHeader from "./Components/ChatHeader/ChatHeader";
 import {
@@ -32,6 +32,7 @@ import OrderDelivery from "./Components/Delivery/OrderDelivery";
 const OrderDetail = () => {
   const params = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [sendLoader, setSendLoader] = useState(false);
   const [activeChats, setActiveChat] = useState(false);
   const [orderDetails, setOrderDetails] = useState({});
@@ -45,7 +46,14 @@ const OrderDetail = () => {
     setShowSpinner(true);
     dispatch(getOrderDetails(params.id)).then((response) => {
       setOrderDetails(response?.payload);
-      fetchMessages();
+      if (
+        response?.payload?.customerEncId === userAuth?.userEncId ||
+        response?.payload?.valetEncId === userAuth?.userEncId
+      ) {
+        fetchMessages();
+      } else {
+        navigate("/not-found");
+      }
     });
   };
 
