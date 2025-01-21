@@ -1,7 +1,7 @@
 .skill-card {
   border: none;
   border-radius: 15px;
-  background: linear-gradient(135deg, #fdfbfb, #ebedee);
+  background: linear-gradient(135deg, #fdfbfb, #fafafa);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 

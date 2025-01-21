@@ -107,13 +107,13 @@ export const addSkillBlog = createAsyncThunk(
     const { token, expired } = getToken(getState);
     const userId = getAuthUserId(getState);
     const formData = new FormData();
-    formData.append("title", obj.title);
-    formData.append("description", obj.description);
-    formData.append("skill", obj.skill);
-    formData.append("content", obj.content);
-    formData.append("tags", obj.tags);
+    formData.append("title", obj.Title);
+    formData.append("description", obj.Description);
+    formData.append("skill", obj.Skill);
+    formData.append("slug", obj.Slug);
+    formData.append("content", obj.Content);
     formData.append("createdBy", parseInt(userId));
-    formData.append("Image", obj.file);
+    formData.append("Image", obj.FeaturedImageUrl);
 
     try {
       const response = await api.post(`/Blogs/InsertBlog`, formData, {
@@ -129,6 +129,101 @@ export const addSkillBlog = createAsyncThunk(
   }
 );
 
+export const updateSkillBlogs = createAsyncThunk(
+  "seo/updateSkillBlogs",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    const userId = getAuthUserId(getState);
+    const formData = new FormData();
+    formData.append("encId", encodeURIComponent(obj.encId));
+    formData.append("title", obj.Title);
+    formData.append("description", obj.Description);
+    formData.append("skill", obj.Skill);
+    formData.append("slug", obj.Slug);
+    formData.append("content", obj.Content);
+    formData.append("createdBy", parseInt(userId));
+    formData.append("Image", obj.FeaturedImageUrl);
+
+    try {
+      const response = await api.put(`/Blogs/UpdateBlog`, formData, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+export const getSkillsContentList = createAsyncThunk(
+  "seo/getSkillsContentList",
+  async (
+    { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.post(
+        `${baseUrl}/Blogs/BlogDatatableWithSkill?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        &sortDirection=${sortDirection}&searchValue=${searchParam}&skillName=`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      rejectWithValue(error);
+    }
+  }
+);
+
+export const GetBlogBySkill = createAsyncThunk(
+  "seo/getSkillsContentBySkill",
+  async (skillName, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.get(
+        `${baseUrl}/Blogs/GetBlogBySkill/${skillName}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      rejectWithValue(error);
+    }
+  }
+);
+
+export const GetSkills = createAsyncThunk(
+  "seo/GetSkills",
+  async (_, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.get(`${baseUrl}/Blogs/GetSkills`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      rejectWithValue(error);
+    }
+  }
+);
 // Get Valet By Skills
 export const valetBySkill = createAsyncThunk(
   "article/valetBySkill",

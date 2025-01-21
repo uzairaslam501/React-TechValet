@@ -41,9 +41,11 @@ import AddArticle from "../pages/SEO/Articles/AddArticle";
 import ArticleList from "../pages/SEO/Articles/List";
 import PublicArticles from "../pages/SEO/Articles/ArticleGrid/PublicArticles";
 import ArticleDetail from "../pages/SEO/Articles/Single/ArticleDetail";
-import SkillArticle from "../pages/Client/SkillsArticles/SkillArticle";
-import SkillProfiles from "../pages/Client/SkillsArticles/SkillProfiles";
+import SkillArticle from "../pages/SEO/Content/Grid/SkillArticle";
+import SkillProfiles from "../pages/SEO/Content/Single/SkillProfiles";
 import SeoDashboard from "../pages/SEO/Dashboard/Dashboard";
+import AddSkillContent from "../pages/SEO/Content/AddSkillContent";
+import SkillContentList from "../pages/SEO/Content/List";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -97,8 +99,12 @@ const createRoute = createBrowserRouter(
 
           {/* SEO Team */}
           <Route path="/panel" element={<SeoDashboard />} />
+          {/* Blogs */}
           <Route path="/add-article" element={<AddArticle />} />
           <Route path="/article-list" element={<ArticleList />} />
+          {/* Skill Content */}
+          <Route path="/add-content" element={<AddSkillContent />} />
+          <Route path="/content-list" element={<SkillContentList />} />
         </Route>
       </Route>
       <Route path="/welcome" element={<Welcome />} />

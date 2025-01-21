@@ -150,14 +150,14 @@ export const seoMenu = [
     title: "Skill Content",
     submenu: [
       {
-        href: "/add-skill-content",
+        href: "/add-content",
         iconClass: "bi bi-cart-dash me-2",
         className: "text-dark border-bottom border-grey",
         label: "Write Skill Content",
         title: "Write Skill Content",
       },
       {
-        href: "/skill-content-list",
+        href: "/content-list",
         iconClass: "bi bi-eye me-2",
         className: "text-dark",
         label: "View Skill Content",
