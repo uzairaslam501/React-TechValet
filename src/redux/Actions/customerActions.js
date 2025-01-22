@@ -7,6 +7,7 @@ import {
 import { baseUrl } from "../../utils/_envConfig";
 import { toast } from "react-toastify";
 import { getAuthUserId, getToken } from "../../utils/_apiConfig";
+import { setLoading } from "../Reducers/loadingSlice";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -169,6 +170,8 @@ export const getAppointments = createAsyncThunk(
     { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
     { rejectWithValue, getState, dispatch }
   ) => {
+    // Show loader for calendar loading
+    dispatch(setLoading({ key: "orderLoading", value: true }));
     const { token, expired } = getToken(getState);
     try {
       const response = await api.get(
@@ -186,6 +189,8 @@ export const getAppointments = createAsyncThunk(
     } catch (error) {
       handleApiError(error, dispatch, expired);
       rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "orderLoading", value: false }));
     }
   }
 );
@@ -197,6 +202,8 @@ export const getOrderRecords = createAsyncThunk(
     { rejectWithValue, getState, dispatch }
   ) => {
     const { token, expired } = getToken(getState);
+    // Show loader for calendar loading
+    dispatch(setLoading({ key: "orderLoading", value: true }));
     try {
       const response = await api.get(
         `${baseUrl}/Datatable/orders-by-userId?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
@@ -212,6 +219,8 @@ export const getOrderRecords = createAsyncThunk(
     } catch (error) {
       handleApiError(error, dispatch, expired);
       rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "orderLoading", value: false }));
     }
   }
 );
@@ -223,6 +232,8 @@ export const getUserPackagesRecords = createAsyncThunk(
     { rejectWithValue, getState, dispatch }
   ) => {
     const { token, expired } = getToken(getState);
+    // Show loader for calendar loading
+    dispatch(setLoading({ key: "orderLoading", value: true }));
     try {
       const response = await api.get(
         `${baseUrl}/Datatable/GetUserPackageDatatableAsync?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
@@ -238,6 +249,8 @@ export const getUserPackagesRecords = createAsyncThunk(
     } catch (error) {
       handleApiError(error, dispatch, expired);
       rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "orderLoading", value: false }));
     }
   }
 );
@@ -257,6 +270,8 @@ export const getUserPackagesConsumptionRecords = createAsyncThunk(
   ) => {
     const { token, expired } = getToken(getState);
     try {
+      // Show loader for calendar loading
+      dispatch(setLoading({ key: "orderLoading", value: true }));
       const response = await api.get(
         `${baseUrl}/Datatable/GetOrdersDatatableByPackageId?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}&packageId=${packageId}`,
@@ -271,6 +286,8 @@ export const getUserPackagesConsumptionRecords = createAsyncThunk(
     } catch (error) {
       handleApiError(error, dispatch, expired);
       rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "orderLoading", value: false }));
     }
   }
 );

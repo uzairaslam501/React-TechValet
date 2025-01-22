@@ -2,6 +2,12 @@ import {
   postLogin,
   postRegister,
   postUserUpdate,
+  UpdateProfileImage,
+  postUserActivity,
+  postUserAvailable,
+  postAddUserSkill,
+  getUserSkills,
+  postRenewToken,
 } from "../Actions/authActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -45,6 +51,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload; // Save error message
       });
+
     // Handle registration actions
     builder
       .addCase(postRegister.pending, (state) => {
@@ -60,6 +67,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload; // Save error message
       });
+
     // Handle user update actions
     builder
       .addCase(postUserUpdate.pending, (state) => {
@@ -68,11 +76,113 @@ const authSlice = createSlice({
       })
       .addCase(postUserUpdate.fulfilled, (state, action) => {
         state.loading = false;
-        state.userAuth = action.payload;
+        state.userAuth = action.payload; // Save updated user data
       })
       .addCase(postUserUpdate.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload; // Save error message
+      });
+
+    // Handle profile image update actions
+    builder
+      .addCase(UpdateProfileImage.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(UpdateProfileImage.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userAuth = {
+          ...state.userAuth,
+          profileImage: action.payload, // Update profile image in userAuth
+        };
+      })
+      .addCase(UpdateProfileImage.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Handle user activity update actions
+    builder
+      .addCase(postUserActivity.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(postUserActivity.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userAuth = {
+          ...state.userAuth,
+          activity: action.payload, // Update activity in userAuth
+        };
+      })
+      .addCase(postUserActivity.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Handle user availability update actions
+    builder
+      .addCase(postUserAvailable.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(postUserAvailable.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userAuth = {
+          ...state.userAuth,
+          availability: action.payload, // Update availability in userAuth
+        };
+      })
+      .addCase(postUserAvailable.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Handle add user skill actions
+    builder
+      .addCase(postAddUserSkill.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(postAddUserSkill.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userAuth = {
+          ...state.userAuth,
+          skills: [...(state.userAuth.skills || []), action.payload], // Add new skill
+        };
+      })
+      .addCase(postAddUserSkill.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Handle get user skills actions
+    builder
+      .addCase(getUserSkills.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserSkills.fulfilled, (state, action) => {
+        state.loading = false;
+        state.skills = action.payload; // Save fetched skills
+      })
+      .addCase(getUserSkills.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Handle renew token actions
+    builder
+      .addCase(postRenewToken.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(postRenewToken.fulfilled, (state, action) => {
+        state.loading = false;
+        state.token = action.payload; // Update token in the state
+      })
+      .addCase(postRenewToken.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

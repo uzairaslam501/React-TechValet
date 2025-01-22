@@ -12,7 +12,7 @@ import {
 import "./OrderDetail.css";
 import "../Messages/style.css";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useParams } from "react-router";
+import { Navigate, useNavigate, useParams } from "react-router";
 import ChatContainer from "./Components/ChatContainer/ChatContainer";
 import ChatHeader from "./Components/ChatHeader/ChatHeader";
 import {
@@ -32,6 +32,7 @@ import OrderDelivery from "./Components/Delivery/OrderDelivery";
 const OrderDetail = () => {
   const params = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [sendLoader, setSendLoader] = useState(false);
   const [activeChats, setActiveChat] = useState(false);
   const [orderDetails, setOrderDetails] = useState({});
@@ -45,7 +46,14 @@ const OrderDetail = () => {
     setShowSpinner(true);
     dispatch(getOrderDetails(params.id)).then((response) => {
       setOrderDetails(response?.payload);
-      fetchMessages();
+      if (
+        response?.payload?.customerEncId === userAuth?.userEncId ||
+        response?.payload?.valetEncId === userAuth?.userEncId
+      ) {
+        fetchMessages();
+      } else {
+        navigate("/not-found");
+      }
     });
   };
 
@@ -178,10 +186,7 @@ const OrderDetail = () => {
     if (!userAuth?.id) return;
 
     const handleIncomingData = (senderId, receiverId, model) => {
-      console.log(orderDetails);
-      console.log(orderDetails?.id);
-      console.log(model.orderId);
-      if (userAuth?.id === receiverId) {
+      if (userAuth?.id === receiverId && orderDetails?.id === model.orderId) {
         setActiveChat((prev) => {
           if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
             return [...prev, model];
@@ -274,7 +279,7 @@ const OrderDetail = () => {
                         />
                       </div>
                       <div className="row py-3">
-                        <div className="col-md-6 col-sm-12 mb-2">
+                        <div className="col-6 mb-2">
                           <FileUploadButton
                             setSelectedFile={setSelectedFile}
                             onFileUpload={handleFileUpload}
@@ -284,6 +289,7 @@ const OrderDetail = () => {
                                 orderDetails?.isDelivered === "2" &&
                                 true)
                             }
+                            classname="w-sm-100 btn-sm"
                           />
                           {selectedFile && (
                             <div className="mt-2">
@@ -292,7 +298,7 @@ const OrderDetail = () => {
                             </div>
                           )}
                         </div>
-                        <div className="col-md-6 col-sm-12 mb-2 text-end">
+                        <div className="col-6 mb-2 text-end">
                           <Button
                             variant="primary-secondary"
                             className="btn-sm w-50"
