@@ -239,6 +239,25 @@ export const postRenewToken = createAsyncThunk(
 //#region Verifications
 
 //Email Verification
+export const sendVerificationEmail = createAsyncThunk(
+  "auth/sendVerificationEmail",
+  async (email, { rejectWithValue, getState, dispatch }) => {
+    try {
+      dispatch(setLoading({ key: "authLoading", value: true }));
+      const response = await api.post(`/Auth/ResendVerificationEmail/${email}`);
+      const { data, message } = processApiResponse(response, dispatch);
+      if (message) {
+        toast.success(message);
+      }
+      return data;
+    } catch (error) {
+      rejectWithError(error, dispatch);
+    } finally {
+      dispatch(setLoading({ key: "authLoading", value: false }));
+    }
+  }
+);
+
 export const emailVerification = createAsyncThunk(
   "auth/emailVerification",
   async (params, { rejectWithValue, getState, dispatch }) => {
