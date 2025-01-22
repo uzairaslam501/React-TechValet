@@ -116,14 +116,14 @@ const CalenderOrders = ({ id, pricePerHour }) => {
       <MyCalendar
         events={orderRecords}
         permissions={{
-          canViewDetails: true,
+          canViewDetails: userAuth ? true : false,
           canEditEvents: false,
-          canNavigate: true,
-          canChangeView: true,
-          canDateClick: true,
+          canNavigate: userAuth ? true : false,
+          canChangeView: userAuth ? true : false,
+          canDateClick: userAuth ? true : false,
         }}
         validRange={validRange}
-        handleDateClick={handleDateClick}
+        handleDateClick={userAuth && handleDateClick}
       />
       {showOrderDialogue && (
         <OfferDialogue

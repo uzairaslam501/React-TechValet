@@ -20,6 +20,7 @@ import {
   paymentWithPackage,
 } from "../../../../redux/Actions/packageActions";
 import PayWithStripe from "../../Messages/OfferAccept/Payment/PayWithStripe";
+import PayWithPaypal from "../../Messages/OfferAccept/Payment/PayWithPaypal";
 
 const OrderPreview = () => {
   const navigate = useNavigate();
@@ -46,6 +47,7 @@ const OrderPreview = () => {
     dispatch(getUserPackageByUserId())
       .then((response) => {
         setUserPackageDetails(response?.payload);
+        console.log("response?.payload", response?.payload);
       })
       .finally(() => {
         setLoading(false);
@@ -101,7 +103,8 @@ const OrderPreview = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (state && packageDetails?.remainingSessions) {
+    console.log(packageDetails);
+    if (state) {
       const fromDate = new Date(state.startedDateTime);
       const toDate = new Date(state.endedDateTime);
 
@@ -123,7 +126,7 @@ const OrderPreview = () => {
       setPlatformFee(platformFeeCalculated);
 
       // Handle remaining sessions
-      if (diffInHours <= packageDetails.remainingSessions) {
+      if (packageDetails && diffInHours <= packageDetails.remainingSessions) {
         setInsufficientSessions("");
         setRemainingSessionsAfterOrderConfirm(
           packageDetails.remainingSessions - diffInHours
@@ -291,7 +294,7 @@ const OrderPreview = () => {
                   <Col xl={4} lg={4} md={4} sm={12} xs={12}>
                     <Card className="mb-4">
                       <Card.Header>
-                        <Card.Title>Pay with Stripe</Card.Title>
+                        <Card.Title>Pay with Paypal</Card.Title>
                       </Card.Header>
                       <Card.Body>
                         <Table striped bordered responsive>
@@ -327,13 +330,16 @@ const OrderPreview = () => {
                           </tbody>
                         </Table>
                         <div className="text-center">
-                          <Button
-                            variant="secondary"
-                            className="my-2"
-                            onClick={() => console.log("Paypal Payment")}
-                          >
-                            Pay with PayPal
-                          </Button>
+                          {buttonClicked ? (
+                            <Spinner animation="border" size="sm" />
+                          ) : (
+                            initialValues && (
+                              <PayWithPaypal
+                                selectedOfferValues={null}
+                                selectedOfferPayPalValues={initialValues}
+                              />
+                            )
+                          )}
                         </div>
                       </Card.Body>
                     </Card>

@@ -5,7 +5,7 @@ import {
   processApiResponse,
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
-import { getAuthUserId, getToken } from "../../utils/_apiConfig";
+import { getAuthUserId, getToken, getUserId } from "../../utils/_apiConfig";
 import { toast } from "react-toastify";
 
 const api = axios.create({
@@ -17,7 +17,7 @@ export const getUserPackageByUserId = createAsyncThunk(
   async (_, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
-      const userId = getAuthUserId(getState);
+      const userId = getUserId(getState);
       const response = await api.get(
         `Customer/GetUserPackageByUserId/${userId}`,
         {

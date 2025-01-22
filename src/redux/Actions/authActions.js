@@ -9,6 +9,7 @@ import { baseUrl } from "../../utils/_envConfig";
 import { toast } from "react-toastify";
 import { getToken } from "../../utils/_apiConfig";
 import { logout, renewToken } from "../Reducers/authSlice";
+import { setLoading } from "../Reducers/loadingSlice";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -234,3 +235,29 @@ export const postRenewToken = createAsyncThunk(
     }
   }
 );
+
+//#region Verifications
+
+//Email Verification
+export const emailVerification = createAsyncThunk(
+  "auth/emailVerification",
+  async (params, { rejectWithValue, getState, dispatch }) => {
+    try {
+      dispatch(setLoading({ key: "authLoading", value: true }));
+      const response = await api.get(
+        `/Auth/EmailVerification/${encodeURIComponent(params.id)}?t=${params.t}`
+      );
+      const { data, message } = processApiResponse(response, dispatch);
+      if (message) {
+        toast.success(message);
+      }
+      return data;
+    } catch (error) {
+      rejectWithError(error, dispatch);
+    } finally {
+      dispatch(setLoading({ key: "authLoading", value: false }));
+    }
+  }
+);
+
+//#endregion
