@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const RoleBasedRoute = ({ allowedRoles }) => {
-  const userAuth = useSelector((state) => state?.authentication?.userAuth);
+  const { userAuth } = useSelector((state) => state?.authentication);
 
   if (!userAuth) {
     return <Navigate to="/login" />;

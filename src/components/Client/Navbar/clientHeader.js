@@ -50,101 +50,120 @@ const ClientNavbar = () => {
         bg="dark"
         variant="dark"
       >
-        <Container className="justify-content-end">
+        <Container
+          className={`justify-content-${
+            userAuth
+              ? userAuth?.isActive === "Active"
+                ? "end"
+                : "center"
+              : "end"
+          }`}
+        >
           {userAuth ? (
-            <>
-              <Navbar.Toggle aria-controls="responsive-header-navbar-nav" />
-              <Navbar.Collapse id="responsive-header-navbar-nav">
-                <Nav className="me-auto header-navbar-nav">
-                  {menuBar &&
-                    menuBar.map((link, index) => {
-                      return (
-                        link.label === "Home" && (
-                          <Nav className="me-auto">
+            userAuth?.isActive === "Active" ? (
+              <>
+                <Navbar.Toggle aria-controls="responsive-header-navbar-nav" />
+                <Navbar.Collapse id="responsive-header-navbar-nav">
+                  <Nav className="me-auto header-navbar-nav">
+                    {menuBar &&
+                      menuBar.map((link, index) => {
+                        return (
+                          link.label === "Home" && (
+                            <Nav className="me-auto">
+                              <Nav.Link
+                                as={NavLink}
+                                to={link.href}
+                                key={index}
+                                className={`${link.className}`}
+                              >
+                                {link.iconClass && (
+                                  <i className={`${link.iconClass}`}></i>
+                                )}
+                                {link.label}
+                              </Nav.Link>
+                            </Nav>
+                          )
+                        );
+                      })}
+                  </Nav>
+                  <Nav className="header-navbar-nav">
+                    {menuBar &&
+                      menuBar.map((link, index) => {
+                        if (link.submenu) {
+                          // Handle links with submenus
+                          return (
+                            <NavDropdown
+                              title={
+                                <>
+                                  {link.iconClass && (
+                                    <i className={`${link.iconClass} me-2`}></i>
+                                  )}
+                                  {link.label}
+                                </>
+                              }
+                              id={`nav-dropdown-${index}`}
+                              key={index}
+                              className={`${link.className}`}
+                            >
+                              {link.submenu.map((subLink, subIndex) => (
+                                <NavDropdown.Item
+                                  as={NavLink}
+                                  to={subLink.href}
+                                  key={subIndex}
+                                  className={`${subLink.className}`}
+                                >
+                                  {subLink.iconClass && (
+                                    <i
+                                      className={`${subLink.iconClass} me-2`}
+                                    ></i>
+                                  )}
+                                  {subLink.label}
+                                </NavDropdown.Item>
+                              ))}
+                            </NavDropdown>
+                          );
+                        }
+
+                        // Handle single-level links
+                        return link.label === "Referal" ? (
+                          <Button
+                            onClick={handleCopyReferral}
+                            className={link.className}
+                            key={index}
+                            title={link.title}
+                          >
+                            {link.label}
+                          </Button>
+                        ) : (
+                          link.label !== "Home" && (
                             <Nav.Link
                               as={NavLink}
                               to={link.href}
                               key={index}
                               className={`${link.className}`}
+                              title={link.title}
                             >
                               {link.iconClass && (
-                                <i className={`${link.iconClass}`}></i>
+                                <i className={`${link.iconClass} me-2`}></i>
                               )}
                               {link.label}
                             </Nav.Link>
-                          </Nav>
-                        )
-                      );
-                    })}
-                </Nav>
-                <Nav className="header-navbar-nav">
-                  {menuBar &&
-                    menuBar.map((link, index) => {
-                      if (link.submenu) {
-                        // Handle links with submenus
-                        return (
-                          <NavDropdown
-                            title={
-                              <>
-                                {link.iconClass && (
-                                  <i className={`${link.iconClass} me-2`}></i>
-                                )}
-                                {link.label}
-                              </>
-                            }
-                            id={`nav-dropdown-${index}`}
-                            key={index}
-                            className={`${link.className}`}
-                          >
-                            {link.submenu.map((subLink, subIndex) => (
-                              <NavDropdown.Item
-                                as={NavLink}
-                                to={subLink.href}
-                                key={subIndex}
-                                className={`${subLink.className}`}
-                              >
-                                {subLink.iconClass && (
-                                  <i
-                                    className={`${subLink.iconClass} me-2`}
-                                  ></i>
-                                )}
-                                {subLink.label}
-                              </NavDropdown.Item>
-                            ))}
-                          </NavDropdown>
+                          )
                         );
-                      }
-
-                      // Handle single-level links
-                      return link.label === "Referal" ? (
-                        <Button
-                          onClick={handleCopyReferral}
-                          className={link.className}
-                          key={index}
-                          title={link.title}
-                        >
-                          {link.label}
-                        </Button>
-                      ) : (
-                        link.label !== "Home" && (
-                          <Nav.Link
-                            as={NavLink}
-                            to={link.href}
-                            key={index}
-                            className={`${link.className}`}
-                            title={link.title}
-                          >
-                            {link.iconClass && (
-                              <i className={`${link.iconClass} me-2`}></i>
-                            )}
-                            {link.label}
-                          </Nav.Link>
-                        )
-                      );
-                    })}
-                </Nav>
-              </Navbar.Collapse>
-            </>
+                      })}
+                  </Nav>
+                </Navbar.Collapse>
+              </>
+            ) : (
+              <>
+                <h5 className="text-center" style={{ color: "#fcd609" }}>
+                  Your account is currently going through a review process. We
+                  appreciate your understanding during this time. We kindly ask
+                  for your patience as we work through the necessary steps.
+                  Thank you for your cooperation and support.
+                </h5>
+              </>
+            )
           ) : (
             <>
               <Nav className="me-auto header-navbar-nav">

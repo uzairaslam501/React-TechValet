@@ -92,19 +92,21 @@ const Index = () => {
               <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                 <UserProfileImage userRecord={userRecords} />
               </Col>
-              <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
-                <Card className="shadow">
-                  <Card.Header>Scheduled Customer Appointments</Card.Header>
-                  <Card.Body>
-                    <Button
-                      onClick={handleSchedule}
-                      className="btn btn-success w-100"
-                    >
-                      View Scheduling
-                    </Button>
-                  </Card.Body>
-                </Card>
-              </Col>
+              {userAuth?.isActive === "Active" && (
+                <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
+                  <Card className="shadow">
+                    <Card.Header>Scheduled Customer Appointments</Card.Header>
+                    <Card.Body>
+                      <Button
+                        onClick={handleSchedule}
+                        className="btn btn-success w-100"
+                      >
+                        View Scheduling
+                      </Button>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              )}
               {columns && (
                 <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
                   <SkillsAndEndorsements userRecord={userRecords} />
