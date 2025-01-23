@@ -6,12 +6,13 @@ import { useSelector } from "react-redux";
 import SidebarMenu from "react-bootstrap-sidebar-menu";
 import "./customSidebar.css";
 import { useState } from "react";
+import HandleImages from "../../Custom/Avatars/HandleImages";
 
 const CustomSidebar = ({ isOpen }) => {
   const { userAuth } = useSelector((state) => state.authentication);
 
   // State to track the currently open menu
-  const [openMenu, setOpenMenu] = useState("Settings"); // Set the default open menu here
+  const [openMenu, setOpenMenu] = useState("Dashboard"); // Set the default open menu here
 
   const menuItems1 = [
     {
@@ -68,16 +69,14 @@ const CustomSidebar = ({ isOpen }) => {
         >
           <Row className="d-flex">
             <Col xs="auto" style={{ position: "relative", left: "8px" }}>
-              <Image
-                src={
-                  "https://wallpapersmug.com/download/1920x1080/abfc00/vector-design-retro-4k.jpg"
-                }
-                alt="Profile"
-                roundedCircle
-                style={{
+              <HandleImages
+                imagePath={userAuth?.profile}
+                imageAlt={userAuth?.userName}
+                imageStyle={{
                   width: isOpen ? "50px" : "40px",
                   height: isOpen ? "50px" : "40px",
                 }}
+                className="rounded-circle"
               />
             </Col>
             {isOpen && (

@@ -45,6 +45,7 @@ export const CountCharactersWithLimit = (text, limit = null) => {
 
 // Capitialize first character of the word
 export const capitalizeFirstLetter = (string) => {
+  if (!string) return "";
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 

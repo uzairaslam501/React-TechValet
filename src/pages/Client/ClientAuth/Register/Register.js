@@ -158,6 +158,7 @@ const Register = () => {
             <h2 className="text-center">Create your Account</h2>
             <Form onSubmit={formikSubmit}>
               <Row>
+                {/* First Name */}
                 <Col xl={6} lg={6} md={6} sm={12} xs={12}>
                   <Form.Group className="mb-2">
                     <Form.Label>
@@ -177,6 +178,7 @@ const Register = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
+                {/* Last Name */}
                 <Col xl={6} lg={6} md={6} sm={12} xs={12}>
                   <Form.Group as={Col} className="mb-2">
                     <Form.Label>

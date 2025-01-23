@@ -50,6 +50,8 @@ import RoleBasedRoute from "../utils/authorized/RoleBasedRoute";
 import Unauthorized from "../pages/Error/Unauthorized";
 import NotFound from "../pages/Error/NotFound";
 import AccountProcess from "../pages/Client/AccountVerification/Index";
+import AddUser from "../pages/Admin/User/AddUser";
+import UserList from "../pages/Admin/User/UserList";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -77,6 +79,8 @@ const createRoute = createBrowserRouter(
       <Route element={<ProtectedLayout />}>
         <Route element={<RootLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/add-user/:type" element={<AddUser />} />
+          <Route path="/users-list/:type" element={<UserList />} />
         </Route>
       </Route>
 
