@@ -6,7 +6,7 @@ const ProtectedClient = () => {
   const location = useLocation();
   const { userAuth } = useSelector((state) => state?.authentication);
   if (userAuth) {
-    if (userAuth?.isActive !== "Active" && location?.pathname === "/account") {
+    if (userAuth?.isActive === "Active" || location?.pathname === "/account") {
       return <Outlet />;
     } else {
       return <Navigate to="/unauthorized" state={{ from: location }} />;
