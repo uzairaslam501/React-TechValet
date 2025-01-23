@@ -49,10 +49,27 @@ import SkillContentList from "../pages/SEO/Content/List";
 import RoleBasedRoute from "../utils/authorized/RoleBasedRoute";
 import Unauthorized from "../pages/Error/Unauthorized";
 import NotFound from "../pages/Error/NotFound";
+import AccountProcess from "../pages/Client/AccountVerification/Index";
+import AddUser from "../pages/Admin/User/AddUser";
+import UserList from "../pages/Admin/User/UserList";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
     <>
+      {/* Public Routes */}
+      <Route path="/login" element={<ClientLogin />} />
+      <Route path="/register/:value" element={<Register />} />
+
+      <Route path="/account-verification/:id/:t" element={<AccountProcess />} />
+      <Route
+        path="/account-verification/success"
+        element={<AccountVerified />}
+      />
+      <Route
+        path="/account-verification/failed"
+        element={<VerificationFailed />}
+      />
+
       <Route element={<AuthLayout />}>
         <Route path="/admin" element={<Login />} />
         <Route path="/signup" element={<Register />} />
@@ -62,10 +79,11 @@ const createRoute = createBrowserRouter(
       <Route element={<ProtectedLayout />}>
         <Route element={<RootLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/add-user/:type" element={<AddUser />} />
+          <Route path="/users-list/:type" element={<UserList />} />
         </Route>
       </Route>
-      <Route path="/login" element={<ClientLogin />} />
-      <Route path="/register/:value" element={<Register />} />
+
       <Route element={<ClientRoot />}>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -110,7 +128,6 @@ const createRoute = createBrowserRouter(
           <Route element={<RoleBasedRoute allowedRoles={["Valet"]} />}>
             {/* Valet */}
             <Route path="/earnings" element={<Earnings />} />
-            <Route path="/account-Verified" element={<AccountVerified />} />
           </Route>
 
           <Route element={<RoleBasedRoute allowedRoles={["Seo"]} />}>

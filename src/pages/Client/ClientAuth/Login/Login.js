@@ -1,8 +1,11 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { postLogin } from "../../../../redux/Actions/authActions";
+import {
+  postLogin,
+  sendVerificationEmail,
+} from "../../../../redux/Actions/authActions";
 import { NavLink, Navigate, useLocation, useNavigate } from "react-router-dom";
 import {
   Button,
@@ -35,6 +38,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const [sendEmail, setSendEmail] = useState(false);
 
   const { userAuth, loading, error } = useSelector(
     (state) => state.authentication
@@ -43,13 +47,15 @@ const Login = () => {
   const handleSubmit = useCallback(
     (values) => {
       dispatch(postLogin(values)).then((response) => {
-        if (response?.payload) {
+        if (response?.payload !== "EmailVerfication") {
           const redirectPath = new URLSearchParams(location.search).get(
             "redirect"
           );
           if (redirectPath) {
             navigate(redirectPath);
           }
+        } else {
+          setSendEmail(true);
         }
       });
     },
@@ -70,6 +76,13 @@ const Login = () => {
     validateOnBlur: true,
     onSubmit: handleSubmit,
   });
+
+  const setVerificationEmail = useCallback(
+    (email) => {
+      dispatch(sendVerificationEmail(email)).then((response) => {});
+    },
+    [dispatch, location.search, navigate]
+  );
 
   // Check if user is authenticated
   if (userAuth && userAuth.id) {
@@ -215,6 +228,24 @@ const Login = () => {
                       "Login"
                     )}
                   </Button>
+
+                  {sendEmail && (
+                    <p className="text-danger">
+                      <Button
+                        className="btn-md w-100 text-uppercase mb-3"
+                        variant="success"
+                        type="button"
+                        onClick={() => setVerificationEmail(values.email)}
+                      >
+                        {loading ? (
+                          <Spinner animation="border" size="sm" />
+                        ) : (
+                          "verify your email"
+                        )}
+                      </Button>
+                      Your email is not verified. Please verify your email
+                    </p>
+                  )}
 
                   <div>
                     <span className="text-secondary">Not Registered Yet?</span>

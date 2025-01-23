@@ -76,86 +76,39 @@ const ClientTopbar = () => {
             </NavLink>
 
             {/* Search Bar (Visible on medium and larger screens) */}
-            {userAuth && userAuth.role === "Customer" && (
-              <div className="d-none d-md-flex ms-3 flex-grow-1">
-                <SearchBar
-                  boxClass="py-2"
-                  boxStyle={{
-                    width: "calc(100% - 60px)", // Adjust for button space if necessary
-                    borderRadius: "0",
-                    backgroundColor: "#f9f9f9",
-                    borderColor: "#999",
-                  }}
-                  buttonClass=""
-                  buttonStyle={{
-                    borderRadius: "0",
-                    width: "60px",
-                    borderColor: "#999",
-                  }}
-                />
-              </div>
-            )}
+            {userAuth &&
+              userAuth.isActive === "Active" &&
+              userAuth.role === "Customer" && (
+                <div className="d-none d-md-flex ms-3 flex-grow-1">
+                  <SearchBar
+                    boxClass="py-2"
+                    boxStyle={{
+                      width: "calc(100% - 60px)", // Adjust for button space if necessary
+                      borderRadius: "0",
+                      backgroundColor: "#f9f9f9",
+                      borderColor: "#999",
+                    }}
+                    buttonClass=""
+                    buttonStyle={{
+                      borderRadius: "0",
+                      width: "60px",
+                      borderColor: "#999",
+                    }}
+                  />
+                </div>
+              )}
           </div>
 
           {userAuth && (
             <>
               <Navbar className="justify-content-end">
-                <div
-                  className="d-flex w-100 justify-content-center d-md-none"
-                  ref={searchRef}
-                >
-                  <i
-                    className="bi bi-search border border-secondary mx-1"
-                    style={{
-                      borderRadius: "50px",
-                      padding: "8px 12px",
-                      background: "#e1e1e1",
-                      color: "#000",
-                      position: "relative",
-                    }}
-                    onClick={() => toggleSearch()}
-                  ></i>
-
-                  {isSearchVisible && (
-                    <div
-                      className="p-3"
-                      style={{
-                        backgroundColor: "transparent",
-                        position: "absolute", // Positions the search bar below the icon
-                        width: "320px", // Fixed width for the search bar
-                        top: "100%", // Make sure the search bar appears right below the icon
-                        left: "50%", // Center the search bar horizontally
-                        transform: "translateX(-50%)", // Ensure it is perfectly centered
-                        zIndex: 9998, // Ensure the search bar is above other elements
-                        boxSizing: "border-box", // Make sure padding doesn't cause overflow
-                      }}
-                    >
-                      <SearchBar
-                        boxClass="py-2"
-                        boxStyle={{
-                          width: "calc(100% - 60px)", // Adjust for button space if necessary
-                          borderRadius: "0",
-                          backgroundColor: "#f9f9f9",
-                          borderColor: "#999",
-                        }}
-                        buttonClass=""
-                        buttonStyle={{
-                          borderRadius: "0",
-                          width: "60px",
-                          borderColor: "#999",
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                {userAuth && userAuth?.role !== "Seo" && (
-                  <>
-                    <NotificationCard />
-                    <Nav
-                      as={NavLink}
-                      to="/orders"
-                      className="border border-secondary mx-1"
+                {userAuth.isActive === "Active" && (
+                  <div
+                    className="d-flex w-100 justify-content-center d-md-none"
+                    ref={searchRef}
+                  >
+                    <i
+                      className="bi bi-search border border-secondary mx-1"
                       style={{
                         borderRadius: "50px",
                         padding: "8px 12px",
@@ -163,29 +116,82 @@ const ClientTopbar = () => {
                         color: "#000",
                         position: "relative",
                       }}
-                    >
-                      <div style={{ position: "relative" }}>
-                        <i className="bi bi-list-ul"></i>
+                      onClick={() => toggleSearch()}
+                    ></i>
+
+                    {isSearchVisible && (
+                      <div
+                        className="p-3"
+                        style={{
+                          backgroundColor: "transparent",
+                          position: "absolute", // Positions the search bar below the icon
+                          width: "320px", // Fixed width for the search bar
+                          top: "100%", // Make sure the search bar appears right below the icon
+                          left: "50%", // Center the search bar horizontally
+                          transform: "translateX(-50%)", // Ensure it is perfectly centered
+                          zIndex: 9998, // Ensure the search bar is above other elements
+                          boxSizing: "border-box", // Make sure padding doesn't cause overflow
+                        }}
+                      >
+                        <SearchBar
+                          boxClass="py-2"
+                          boxStyle={{
+                            width: "calc(100% - 60px)", // Adjust for button space if necessary
+                            borderRadius: "0",
+                            backgroundColor: "#f9f9f9",
+                            borderColor: "#999",
+                          }}
+                          buttonClass=""
+                          buttonStyle={{
+                            borderRadius: "0",
+                            width: "60px",
+                            borderColor: "#999",
+                          }}
+                        />
                       </div>
-                    </Nav>
-                    <Nav.Link
-                      as={NavLink}
-                      to="/messages"
-                      className="border border-secondary"
-                      style={{
-                        borderRadius: "50px",
-                        padding: "8px 12px",
-                        background: "#e1e1e1",
-                        color: "#000",
-                        position: "relative",
-                      }}
-                    >
-                      <div style={{ position: "relative" }}>
-                        <i className="bi bi-envelope-arrow-down-fill"></i>
-                      </div>
-                    </Nav.Link>
-                  </>
+                    )}
+                  </div>
                 )}
+
+                {userAuth &&
+                  userAuth?.role !== "Seo" &&
+                  userAuth.isActive === "Active" && (
+                    <>
+                      <NotificationCard />
+                      <Nav
+                        as={NavLink}
+                        to="/orders"
+                        className="border border-secondary mx-1"
+                        style={{
+                          borderRadius: "50px",
+                          padding: "8px 12px",
+                          background: "#e1e1e1",
+                          color: "#000",
+                          position: "relative",
+                        }}
+                      >
+                        <div style={{ position: "relative" }}>
+                          <i className="bi bi-list-ul"></i>
+                        </div>
+                      </Nav>
+                      <Nav.Link
+                        as={NavLink}
+                        to="/messages"
+                        className="border border-secondary"
+                        style={{
+                          borderRadius: "50px",
+                          padding: "8px 12px",
+                          background: "#e1e1e1",
+                          color: "#000",
+                          position: "relative",
+                        }}
+                      >
+                        <div style={{ position: "relative" }}>
+                          <i className="bi bi-envelope-arrow-down-fill"></i>
+                        </div>
+                      </Nav.Link>
+                    </>
+                  )}
                 <Nav className="mx-1">
                   <NavDropdown
                     title={
