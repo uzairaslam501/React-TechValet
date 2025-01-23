@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
-import { Card, CardBody, Col, Row } from "react-bootstrap";
+import { Card, CardBody } from "react-bootstrap";
 import CustomTable from "../../../../components/Custom/Datatable/table";
 import { getUserPackagesConsumptionRecords } from "../../../../redux/Actions/customerActions";
 
@@ -42,39 +41,40 @@ const ViewConsumption = ({ packageId }) => {
     handleViewConsumption();
   }, [packageId]);
 
-  const handleViewConsumption = async (
-    pageNumber = 0,
-    pageLength = 5,
-    sortColumn = "",
-    sortDirection = "",
-    searchParam = ""
-  ) => {
-    const params = {
-      pageNumber,
-      pageLength,
-      sortColumn,
-      sortDirection,
-      searchParam,
-      packageId,
-    };
-    try {
-      setConsumptionLoader(true);
-      const consumptionResponse = await dispatch(
-        getUserPackagesConsumptionRecords(params)
-      );
-      if (consumptionResponse.payload.data?.length > 0) {
-        setConsumptionRecords(consumptionResponse.payload?.data);
-        setTotalConsumptionRecords(consumptionResponse.payload?.recordsTotal);
-      } else {
-        setConsumptionRecords([]);
-        setTotalConsumptionRecords(0);
+  const handleViewConsumption = useCallback(
+    (
+      pageNumber = 0,
+      pageLength = 5,
+      sortColumn = "",
+      sortDirection = "",
+      searchParam = ""
+    ) => {
+      const params = {
+        pageNumber,
+        pageLength,
+        sortColumn,
+        sortDirection,
+        searchParam,
+        packageId,
+      };
+      try {
+        setConsumptionLoader(true);
+        dispatch(getUserPackagesConsumptionRecords(params)).then((response) => {
+          if (response?.payload) {
+            setConsumptionRecords(response.payload?.data);
+            setTotalConsumptionRecords(response.payload?.recordsTotal);
+          } else {
+            setConsumptionRecords([]);
+            setTotalConsumptionRecords(0);
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      } finally {
+        setConsumptionLoader(false);
       }
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    } finally {
-      setConsumptionLoader(false);
     }
-  };
+  );
 
   return (
     <>

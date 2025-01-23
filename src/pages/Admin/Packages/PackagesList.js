@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Card, CardBody, Col, Row } from "react-bootstrap";
-import CustomTable from "../../../../components/Custom/Datatable/table";
-import { userPackageByUserId } from "../../../../redux/Actions/customerActions";
-import Dialogue from "../../../../components/Custom/Modal/modal";
-import ViewConsumption from "./viewConsumption";
+import Dialogue from "../../../components/Custom/Modal/modal";
+import { getUserPackagesRecords } from "../../../redux/Actions/customerActions";
+import CustomTable from "../../../components/Custom/Datatable/table";
+import ViewConsumption from "../../Client/Manage/Packages/viewConsumption";
 
-const ViewPackages = () => {
+const PackagesList = () => {
   const dispatch = useDispatch();
 
   const [records, setRecords] = useState([]);
@@ -74,17 +74,38 @@ const ViewPackages = () => {
     setShowConsumptionModal(false);
   };
 
-  const fetchUsers = useCallback(() => {
-    dispatch(userPackageByUserId())
-      .then((response) => {
-        setRecords(response.payload?.data);
-        setTotalRecords(response.payload?.recordsTotal);
-      })
-      .catch((error) => {
-        setRecords([]);
-        setTotalRecords(0);
-      });
-  });
+  const fetchUsers = async (
+    pageNumber = 0,
+    pageLength = 5,
+    sortColumn = "",
+    sortDirection = "",
+    searchParam = ""
+  ) => {
+    const params = {
+      pageNumber,
+      pageLength,
+      sortColumn,
+      sortDirection,
+      searchParam,
+    };
+
+    try {
+      setLoader(true);
+      dispatch(getUserPackagesRecords(params))
+        .then((response) => {
+          setRecords(response.payload?.data);
+          setTotalRecords(response.payload?.recordsTotal);
+        })
+        .catch((error) => {
+          setRecords([]);
+          setTotalRecords(0);
+        });
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoader(false);
+    }
+  };
 
   useEffect(() => {
     fetchUsers(0, pageLength);
@@ -131,4 +152,4 @@ const ViewPackages = () => {
   );
 };
 
-export default ViewPackages;
+export default PackagesList;

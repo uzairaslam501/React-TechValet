@@ -6,7 +6,7 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { toast } from "react-toastify";
-import { getAuthUserId, getToken } from "../../utils/_apiConfig";
+import { getAuthUserId, getToken, getUserId } from "../../utils/_apiConfig";
 import { setLoading } from "../Reducers/loadingSlice";
 
 const api = axios.create({
@@ -225,19 +225,16 @@ export const getOrderRecords = createAsyncThunk(
   }
 );
 
-export const getUserPackagesRecords = createAsyncThunk(
-  "customer/getUserPackagesRecords",
-  async (
-    { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
-    { rejectWithValue, getState, dispatch }
-  ) => {
+export const userPackageByUserId = createAsyncThunk(
+  "customer/userPackageByUserId",
+  async (_, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     // Show loader for calendar loading
     dispatch(setLoading({ key: "orderLoading", value: true }));
+    const userId = getUserId(getState);
     try {
       const response = await api.get(
-        `${baseUrl}/Datatable/GetUserPackageDatatableAsync?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
-        &sortDirection=${sortDirection}&searchValue=${searchParam}`,
+        `${baseUrl}/Customer/GetUserPackageByUserId?${userId}`,
         {
           headers: {
             Authorization: `${token}`,
