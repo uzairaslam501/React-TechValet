@@ -9,12 +9,11 @@ import { baseUrl } from "../../utils/_envConfig";
 import { toast } from "react-toastify";
 import { getToken } from "../../utils/_apiConfig";
 import { logout, renewToken } from "../Reducers/authSlice";
+import { setLoading } from "../Reducers/loadingSlice";
 
 const api = axios.create({
   baseURL: baseUrl,
 });
-
-
 
 // Add User
 export const postAddUser = createAsyncThunk(
@@ -22,22 +21,18 @@ export const postAddUser = createAsyncThunk(
   async (userData, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
-        const response = await api.post(
-        `/Admin/PostAddUser`,
-        userData,
-        {
-          headers: {
-            Authorization: `${token}`,
-          },
-        }
-      );
-    //   const response1 = await api.post("/Admin/PostAddUser", userData,
-    //     {
-    //       headers: {
-    //         Authorization: `${token}`,
-    //       },
-    //     }
-    // );
+      const response = await api.post(`/Admin/PostAddUser`, userData, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      //   const response1 = await api.post("/Admin/PostAddUser", userData,
+      //     {
+      //       headers: {
+      //         Authorization: `${token}`,
+      //       },
+      //     }
+      // );
       const { data, message } = processApiResponse(response, dispatch);
       if (message) {
         toast.success(message);
@@ -49,20 +44,14 @@ export const postAddUser = createAsyncThunk(
   }
 );
 
-
 //User Update
 export const postUpdateUser = createAsyncThunk(
   "admin/postUpdateUser",
-  async (
-    { userId, userData },
-    { rejectWithValue, getState, dispatch }
-  ) => {
+  async ({ userId, userData }, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
       const response = await api.put(
-        `/Admin/PostUpdateUser/${String(
-          encodeURIComponent(userId)
-        )}`,
+        `/Admin/PostUpdateUser/${String(encodeURIComponent(userId))}`,
         userData,
         {
           headers: {
@@ -80,3 +69,35 @@ export const postUpdateUser = createAsyncThunk(
     }
   }
 );
+
+//#region  tables
+export const getUserPackagesRecords = createAsyncThunk(
+  "customer/getUserPackagesRecords",
+  async (
+    { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    const { token, expired } = getToken(getState);
+    // Show loader for calendar loading
+    dispatch(setLoading({ key: "orderLoading", value: true }));
+    try {
+      const response = await api.get(
+        `${baseUrl}/Datatable/GetUserPackageDatatableAsync?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        &sortDirection=${sortDirection}&searchValue=${searchParam}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "orderLoading", value: false }));
+    }
+  }
+);
+//#endregion

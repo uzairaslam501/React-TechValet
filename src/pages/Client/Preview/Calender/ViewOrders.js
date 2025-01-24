@@ -41,7 +41,10 @@ const CalenderOrders = ({ id, pricePerHour }) => {
   });
 
   const validRange = {
-    start: getFirstAndLastDayOfMonth().currentDay,
+    start:
+      userAuth && userAuth.role === "Customer"
+        ? getFirstAndLastDayOfMonth().currentDay
+        : getFirstAndLastDayOfMonth().monthStart,
     end: getFirstAndLastDayOfMonth().monthEnd,
   };
 
@@ -116,14 +119,18 @@ const CalenderOrders = ({ id, pricePerHour }) => {
       <MyCalendar
         events={orderRecords}
         permissions={{
-          canViewDetails: userAuth ? true : false,
-          canEditEvents: false,
-          canNavigate: userAuth ? true : false,
-          canChangeView: userAuth ? true : false,
-          canDateClick: userAuth ? true : false,
+          canViewDetails:
+            userAuth && userAuth.role === "Customer" ? true : false,
+          canEditEvents: userAuth && userAuth.role === "Customer" && false,
+          canNavigate: userAuth && userAuth.role === "Customer" ? true : false,
+          canChangeView:
+            userAuth && userAuth.role === "Customer" ? true : false,
+          canDateClick: userAuth && userAuth.role === "Customer" ? true : false,
         }}
         validRange={validRange}
-        handleDateClick={userAuth && handleDateClick}
+        handleDateClick={
+          userAuth && userAuth.role === "Customer" && handleDateClick
+        }
       />
       {showOrderDialogue && (
         <OfferDialogue

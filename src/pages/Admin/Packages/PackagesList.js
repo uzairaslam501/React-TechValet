@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Card, CardBody, Col, Row } from "react-bootstrap";
-import CustomTable from "../../../../components/Custom/Datatable/table";
-import { userPackageByUserId } from "../../../../redux/Actions/customerActions";
-import Dialogue from "../../../../components/Custom/Modal/modal";
-import ViewConsumption from "./viewConsumption";
+import Dialogue from "../../../components/Custom/Modal/modal";
+import { getUserPackagesRecords } from "../../../redux/Actions/customerActions";
+import CustomTable from "../../../components/Custom/Datatable/table";
+import ViewConsumption from "../../Client/Manage/Packages/viewConsumption";
 
-const ViewPackages = () => {
+const PackagesList = () => {
   const dispatch = useDispatch();
 
   const [records, setRecords] = useState([]);
@@ -29,6 +29,7 @@ const ViewPackages = () => {
 
   const headers = [
     { id: "0", label: "Action", column: "Action" },
+    { id: "0", label: "Customer Name", column: "customer" },
     {
       id: "0",
       label: "Package Start",
@@ -73,38 +74,38 @@ const ViewPackages = () => {
     setShowConsumptionModal(false);
   };
 
-  const fetchUsers = useCallback(
-    (
-      pageNumber = 0,
-      pageLength = 5,
-      sortColumn = "",
-      sortDirection = "",
-      searchParam = ""
-    ) => {
-      const params = {
-        pageNumber,
-        pageLength,
-        sortColumn,
-        sortDirection,
-        searchParam,
-      };
+  const fetchUsers = async (
+    pageNumber = 0,
+    pageLength = 5,
+    sortColumn = "",
+    sortDirection = "",
+    searchParam = ""
+  ) => {
+    const params = {
+      pageNumber,
+      pageLength,
+      sortColumn,
+      sortDirection,
+      searchParam,
+    };
 
+    try {
       setLoader(true);
-      dispatch(userPackageByUserId(params))
+      dispatch(getUserPackagesRecords(params))
         .then((response) => {
-          console.log(response.payload);
           setRecords(response.payload?.data);
           setTotalRecords(response.payload?.recordsTotal);
         })
         .catch((error) => {
           setRecords([]);
           setTotalRecords(0);
-        })
-        .finally((response) => {
-          setLoader(false);
         });
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoader(false);
     }
-  );
+  };
 
   useEffect(() => {
     fetchUsers(0, pageLength);
@@ -151,4 +152,4 @@ const ViewPackages = () => {
   );
 };
 
-export default ViewPackages;
+export default PackagesList;

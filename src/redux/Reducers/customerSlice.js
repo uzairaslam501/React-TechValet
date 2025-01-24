@@ -4,7 +4,7 @@ import {
   getValetsBySearch,
   getAppointments,
   getOrderRecords,
-  getUserPackagesRecords,
+  userPackageByUserId,
   getUserPackagesConsumptionRecords,
   requestService,
   getUserForSkills,
@@ -101,17 +101,17 @@ const customerSlice = createSlice({
         state.error = action.payload;
       });
 
-    // Handle getUserPackagesRecords
+    // Handle userPackageByUserId
     builder
-      .addCase(getUserPackagesRecords.pending, (state) => {
+      .addCase(userPackageByUserId.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getUserPackagesRecords.fulfilled, (state, action) => {
+      .addCase(userPackageByUserId.fulfilled, (state, action) => {
         state.loading = false;
         state.userPackages = action.payload; // Save user packages records
       })
-      .addCase(getUserPackagesRecords.rejected, (state, action) => {
+      .addCase(userPackageByUserId.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

@@ -10,6 +10,7 @@ import { addBlogs, updateBlogs } from "../../../redux/Actions/seoActions";
 const AddArticle = () => {
   const dispatch = useDispatch();
   const { state } = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   console.log(state);
 
@@ -45,6 +46,7 @@ const AddArticle = () => {
   };
 
   const handleSubmit = (e) => {
+    setIsLoading(true);
     let endpoint = addBlogs(values);
     if (state) {
       endpoint = updateBlogs(values);
@@ -56,9 +58,12 @@ const AddArticle = () => {
         } else {
           console.log("No response payload available.");
         }
+        setIsLoading(false);
+        resetForm();
       })
       .catch((error) => {
         console.error("Error dispatching action:", error);
+        setIsLoading(false);
       });
   };
 
@@ -244,8 +249,9 @@ const AddArticle = () => {
                     variant="primary"
                     size="md"
                     className="w-50"
+                    disabled={isLoading}
                   >
-                    Add / Update Record
+                    {isLoading ? "Submitting..." : "Submit"}
                   </Button>
                 </div>
               </Form>

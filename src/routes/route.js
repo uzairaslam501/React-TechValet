@@ -81,6 +81,7 @@ const createRoute = createBrowserRouter(
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-user/:type" element={<AddUser />} />
           <Route path="/users-list/:type" element={<UserList />} />
+          <Route path="/view-packages" element={<ViewPackages />} />
         </Route>
       </Route>
 
@@ -91,7 +92,7 @@ const createRoute = createBrowserRouter(
         <Route path="/skills" element={<SkillArticle />} />
         <Route path="/skill/:skill" element={<SkillProfiles />} />
         <Route path="/articles" element={<PublicArticles />} />
-        <Route path="/article/:slug" element={<ArticleDetail />} />
+        <Route path="/:slug" element={<ArticleDetail />} />
         <Route path="/preview-profile/:id" element={<PreviewProfile />} />
 
         <Route element={<ProtectedClient />}>
