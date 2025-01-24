@@ -50,12 +50,12 @@ class SignalRService {
         isRead,
         isActive,
         url,
-        createdAt,
         description,
+        createdAt,
         notificationType
       ) => {
         try {
-          if (receiverId === userId) {
+          if (receiverId === String(userId)) {
             // Process the message
             this.broadcastNotification(
               receiverId,
@@ -144,8 +144,8 @@ class SignalRService {
     isRead,
     isActive,
     url,
-    createdAt,
     description,
+    createdAt,
     notificationType
   ) {
     this.subscribers.forEach((callback) =>
@@ -155,8 +155,8 @@ class SignalRService {
         isRead,
         isActive,
         url,
-        createdAt,
         description,
+        createdAt,
         notificationType
       )
     );

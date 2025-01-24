@@ -18,6 +18,7 @@ import {
 } from "../../../redux/Actions/notificationActions";
 import signalRService from "../../../services/SignalR";
 import { notificationURL } from "../../../utils/_envConfig";
+import { toast } from "react-toastify";
 
 const NotificationCard = () => {
   const dispatch = useDispatch();
@@ -106,6 +107,7 @@ const NotificationCard = () => {
         receivedNotifications.add(notificationKey);
         setReceivedNotifications(new Set(receivedNotifications));
         setUnReadCount((prev) => prev + 1); // Only increment if notification is unique
+        toast.success(description);
       }
     },
     [receivedNotifications]
