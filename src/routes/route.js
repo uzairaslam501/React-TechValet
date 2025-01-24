@@ -52,6 +52,7 @@ import NotFound from "../pages/Error/NotFound";
 import AccountProcess from "../pages/Client/AccountVerification/Index";
 import AddUser from "../pages/Admin/User/AddUser";
 import UserList from "../pages/Admin/User/UserList";
+import UpdatePassword from "../pages/Admin/Auth/Profile/UpdatePassword";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -82,6 +83,7 @@ const createRoute = createBrowserRouter(
           <Route path="/add-user/:type" element={<AddUser />} />
           <Route path="/users-list/:type" element={<UserList />} />
           <Route path="/view-packages" element={<ViewPackages />} />
+          <Route path="/update-password" element={<UpdatePassword />} />
         </Route>
       </Route>
 
