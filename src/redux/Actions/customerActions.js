@@ -227,14 +227,19 @@ export const getOrderRecords = createAsyncThunk(
 
 export const userPackageByUserId = createAsyncThunk(
   "customer/userPackageByUserId",
-  async (_, { rejectWithValue, getState, dispatch }) => {
+  async (
+    { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
+    { rejectWithValue, getState, dispatch }
+  ) => {
     const { token, expired } = getToken(getState);
-    // Show loader for calendar loading
     dispatch(setLoading({ key: "orderLoading", value: true }));
     const userId = getUserId(getState);
     try {
       const response = await api.get(
-        `${baseUrl}/Customer/GetUserPackageByUserId?${userId}`,
+        `${baseUrl}/Customer/GetUserPackageByUserId/?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        &sortDirection=${sortDirection}&searchValue=${searchParam}&userId=${encodeURIComponent(
+          userId
+        )}`,
         {
           headers: {
             Authorization: `${token}`,
@@ -267,8 +272,6 @@ export const getUserPackagesConsumptionRecords = createAsyncThunk(
   ) => {
     const { token, expired } = getToken(getState);
     try {
-      // Show loader for calendar loading
-      dispatch(setLoading({ key: "orderLoading", value: true }));
       const response = await api.get(
         `${baseUrl}/Datatable/GetOrdersDatatableByPackageId?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
         &sortDirection=${sortDirection}&searchValue=${searchParam}&packageId=${packageId}`,
@@ -283,8 +286,6 @@ export const getUserPackagesConsumptionRecords = createAsyncThunk(
     } catch (error) {
       handleApiError(error, dispatch, expired);
       rejectWithValue(error);
-    } finally {
-      dispatch(setLoading({ key: "orderLoading", value: false }));
     }
   }
 );

@@ -29,7 +29,6 @@ const ViewPackages = () => {
 
   const headers = [
     { id: "0", label: "Action", column: "Action" },
-    { id: "0", label: "Customer Name", column: "customer" },
     {
       id: "0",
       label: "Package Start",
@@ -74,17 +73,38 @@ const ViewPackages = () => {
     setShowConsumptionModal(false);
   };
 
-  const fetchUsers = useCallback(() => {
-    dispatch(userPackageByUserId())
-      .then((response) => {
-        setRecords(response.payload?.data);
-        setTotalRecords(response.payload?.recordsTotal);
-      })
-      .catch((error) => {
-        setRecords([]);
-        setTotalRecords(0);
-      });
-  });
+  const fetchUsers = useCallback(
+    (
+      pageNumber = 0,
+      pageLength = 5,
+      sortColumn = "",
+      sortDirection = "",
+      searchParam = ""
+    ) => {
+      const params = {
+        pageNumber,
+        pageLength,
+        sortColumn,
+        sortDirection,
+        searchParam,
+      };
+
+      setLoader(true);
+      dispatch(userPackageByUserId(params))
+        .then((response) => {
+          console.log(response.payload);
+          setRecords(response.payload?.data);
+          setTotalRecords(response.payload?.recordsTotal);
+        })
+        .catch((error) => {
+          setRecords([]);
+          setTotalRecords(0);
+        })
+        .finally((response) => {
+          setLoader(false);
+        });
+    }
+  );
 
   useEffect(() => {
     fetchUsers(0, pageLength);
