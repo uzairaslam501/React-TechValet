@@ -6,6 +6,7 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { getAuthUserId, getToken } from "../../utils/_apiConfig";
+import { toast } from "react-toastify";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -34,7 +35,10 @@ export const addBlogs = createAsyncThunk(
           Authorization: `${token}`,
         },
       });
-      const { data } = processApiResponse(response, dispatch, expired);
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
@@ -121,7 +125,10 @@ export const addSkillBlog = createAsyncThunk(
           Authorization: `${token}`,
         },
       });
-      const { data } = processApiResponse(response, dispatch, expired);
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
