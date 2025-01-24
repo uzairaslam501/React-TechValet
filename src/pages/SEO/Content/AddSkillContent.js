@@ -14,6 +14,7 @@ import {
 const AddSkillContent = () => {
   const dispatch = useDispatch();
   const { state } = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
 
   const initialValues = {
@@ -42,6 +43,7 @@ const AddSkillContent = () => {
   };
 
   const handleSubmit = (e) => {
+    setIsLoading(true);
     let endpoint = addSkillBlog(values);
     if (state) {
       endpoint = updateSkillBlogs(values);
@@ -53,9 +55,12 @@ const AddSkillContent = () => {
         } else {
           console.log("No response payload available.");
         }
+        setIsLoading(false);
+        resetForm();
       })
       .catch((error) => {
         console.error("Error dispatching action:", error);
+        setIsLoading(false);
       });
   };
 
@@ -237,8 +242,9 @@ const AddSkillContent = () => {
                     variant="primary"
                     size="md"
                     className="w-50"
+                    disabled={isLoading}
                   >
-                    Add / Update Record
+                    {isLoading ? "Submitting..." : "Submit"}
                   </Button>
                 </div>
               </Form>

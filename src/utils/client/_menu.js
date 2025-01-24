@@ -7,11 +7,11 @@ export const valetMenu = [
     title: "Home",
   },
   {
-    href: "/appointment",
-    iconClass: "bi bi-envelope me-2",
+    href: "/orders",
+    iconClass: "bi bi-boxes me-2",
     className: "",
-    label: "Appointments",
-    title: "Manage Appointments",
+    label: "Orders",
+    title: "Manage Orders",
   },
   {
     href: "/earnings",
