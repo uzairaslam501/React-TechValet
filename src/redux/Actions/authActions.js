@@ -103,6 +103,32 @@ export const UpdateProfileImage = createAsyncThunk(
   }
 );
 
+//Update Password
+export const postUpdatePassword = createAsyncThunk(
+  "auth/postUpdatePassword",
+  async ({ userId, userData }, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.put(
+        `/Auth/UpdatePassword/${userId}`,
+        userData,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
 //User Online or Offline Status
 export const postUserActivity = createAsyncThunk(
   "user/postUserActivity",
