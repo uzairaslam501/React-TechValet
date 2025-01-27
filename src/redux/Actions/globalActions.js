@@ -7,6 +7,7 @@ import {
 import { baseUrl } from "../../utils/_envConfig";
 import { getToken } from "../../utils/_apiConfig";
 import { toast } from "react-toastify";
+import { setLoading } from "../Reducers/loadingSlice";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -17,6 +18,7 @@ export const getRecordById = createAsyncThunk(
   async (endpoint, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
+      dispatch(setLoading({ key: "globalLoading", value: true }));
       const response = await api.get(endpoint, {
         headers: {
           Authorization: `${token}`,
@@ -26,6 +28,8 @@ export const getRecordById = createAsyncThunk(
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
+    } finally {
+      dispatch(setLoading({ key: "globalLoading", value: false }));
     }
   }
 );

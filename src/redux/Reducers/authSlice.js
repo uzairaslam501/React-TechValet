@@ -80,7 +80,7 @@ const authSlice = createSlice({
       })
       .addCase(postUserUpdate.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload; // Save error message
+        state.error = "something went wrong"; // Save error message
       });
 
     // Handle profile image update actions
@@ -91,10 +91,7 @@ const authSlice = createSlice({
       })
       .addCase(UpdateProfileImage.fulfilled, (state, action) => {
         state.loading = false;
-        state.userAuth = {
-          ...state.userAuth,
-          profileImage: action.payload, // Update profile image in userAuth
-        };
+        state.userAuth = action.payload;
       })
       .addCase(UpdateProfileImage.rejected, (state, action) => {
         state.loading = false;

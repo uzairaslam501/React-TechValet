@@ -100,4 +100,62 @@ export const getUserPackagesRecords = createAsyncThunk(
     }
   }
 );
+
+export const getPackagesRecord = createAsyncThunk(
+  "admin/getPackagesRecord",
+  async (
+    { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    const { token, expired } = getToken(getState);
+    dispatch(setLoading({ key: "orderLoading", value: true }));
+    try {
+      const response = await api.get(
+        `${baseUrl}/Datatable/GetPackagesRecord/?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        &sortDirection=${sortDirection}&searchValue=${searchParam}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "orderLoading", value: false }));
+    }
+  }
+);
+
+export const getStripeRecords = createAsyncThunk(
+  "admin/getStripeRecords",
+  async (
+    { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    const { token, expired } = getToken(getState);
+    dispatch(setLoading({ key: "orderLoading", value: true }));
+    try {
+      const response = await api.get(
+        `${baseUrl}/Datatable/GetStripeOrdersRecord?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        &sortDirection=${sortDirection}&searchValue=${searchParam}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "orderLoading", value: false }));
+    }
+  }
+);
 //#endregion

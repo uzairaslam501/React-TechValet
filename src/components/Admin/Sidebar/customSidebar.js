@@ -70,7 +70,7 @@ const CustomSidebar = ({ isOpen }) => {
           <Row className="d-flex">
             <Col xs="auto" style={{ position: "relative", left: "8px" }}>
               <HandleImages
-                imagePath={userAuth?.profile}
+                imagePath={userAuth?.profilePicture}
                 imageAlt={userAuth?.userName}
                 imageStyle={{
                   width: isOpen ? "50px" : "40px",

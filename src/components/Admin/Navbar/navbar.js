@@ -61,7 +61,7 @@ const CustomNavbar = ({ toggleSidebar }) => {
                   <NavDropdown
                     title={
                       <HandleImages
-                        imagePath={userAuth?.profile}
+                        imagePath={userAuth?.profilePicture}
                         imageAlt={userAuth?.userName}
                         imageStyle={{
                           width: "40px",
@@ -74,7 +74,7 @@ const CustomNavbar = ({ toggleSidebar }) => {
                     id="profile-dropdown"
                     className="user-profile-dropdown"
                   >
-                    <NavDropdown.Item as={NavLink} to="/account">
+                    <NavDropdown.Item as={NavLink} to="/update-profile">
                       Profile
                     </NavDropdown.Item>
                     <NavDropdown.Item as={NavLink} to="/update-password">

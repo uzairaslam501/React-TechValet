@@ -226,32 +226,36 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
             </div>
           </Form>
 
-          <div className="custom-control custom-switch my-2">
-            <Form.Check
-              type="switch"
-              id="custom-switch-button"
-              label={status ? "Online" : "Offline"}
-              checked={status}
-              onChange={handleStatusChange}
-            />
-            <Form.Check
-              type="switch"
-              id="custom-switch-button"
-              label={availability ? "Available" : "Unavailable"}
-              checked={availability}
-              onChange={handleAvailabilityChange}
-            />
-          </div>
+          {userAuth && userAuth?.role !== "Admin" && (
+            <>
+              <div className="custom-control custom-switch my-2">
+                <Form.Check
+                  type="switch"
+                  id="status-switch"
+                  label={status ? "Online" : "Offline"}
+                  checked={status}
+                  onChange={handleStatusChange}
+                />
+                <Form.Check
+                  type="switch"
+                  id="availability-switch"
+                  label={availability ? "Available" : "Unavailable"}
+                  checked={availability}
+                  onChange={handleAvailabilityChange}
+                />
+              </div>
 
-          {/* Logout Link */}
-          <Button
-            type="button"
-            variant="link"
-            onClick={() => handleLogout()}
-            className="text-dark w-100 border-top my-2"
-          >
-            Log Out
-          </Button>
+              {/* Logout Link */}
+              <Button
+                type="button"
+                variant="link"
+                onClick={() => handleLogout()}
+                className="text-dark w-100 border-top my-2"
+              >
+                Log Out
+              </Button>
+            </>
+          )}
         </>
       )}
     </div>

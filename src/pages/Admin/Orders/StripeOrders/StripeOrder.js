@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Card, CardBody, Col, Row } from "react-bootstrap";
-import Dialogue from "../../../components/Custom/Modal/modal";
-import CustomTable from "../../../components/Custom/Datatable/table";
-import ViewConsumption from "../../Client/Manage/Packages/viewConsumption";
-import { getPackagesRecord } from "../../../redux/Actions/adminActions";
+import CustomTable from "../../../../components/Custom/Datatable/table";
+import { getStripeRecords } from "../../../../redux/Actions/adminActions";
 
-const PackagesList = () => {
+const StripeOrder = () => {
   const dispatch = useDispatch();
 
   const [records, setRecords] = useState([]);
@@ -17,66 +15,44 @@ const PackagesList = () => {
   const [showConsumptionModal, setShowConsumptionModal] = useState(false);
   const [isPackageId, setPackageId] = useState();
 
-  const buttons = [
-    {
-      id: 1,
-      title: "View Consumption(s)",
-      onClick: (row) => handleOpen(row.id),
-      variant: "primary-secondary",
-      icon: "bi bi-eye",
-    },
-  ];
-
   const headers = [
-    { id: "0", label: "Action", column: "Action" },
     {
       id: "0",
-      label: "Name",
-      column: "customer",
+      label: "Order",
+      column: "orderTitle",
     },
     {
       id: "0",
-      label: "Package Start",
-      column: "startDateTime",
+      label: "Customer",
+      column: "customerName",
     },
     {
       id: "0",
-      label: "Package End",
-      column: "endDateTime",
+      label: "Valet",
+      column: "itValet",
     },
     {
       id: "0",
-      label: "Package Type",
-      column: "packageType",
+      label: "Price",
+      column: "orderPrice",
     },
-    {
-      id: "0",
-      label: "Total Sessions",
-      column: "totalSessions",
-    },
-
-    {
-      id: "0",
-      label: "Remaining Sessions",
-      column: "remainingSessions",
-    },
-
     {
       id: "0",
       label: "Status",
-      column: "status",
+      column: "orderStatus",
+    },
+    {
+      id: "0",
+      label: "Payment",
+      column: "paymentStatus",
+    },
+
+    {
+      id: "0",
+      label: "StripeStatus",
+      column: "stripeStatus",
     },
   ];
-
-  const handleOpen = (id) => {
-    setPackageId(id);
-    setShowConsumptionModal(true);
-  };
-
-  const handleClose = () => {
-    setPackageId("");
-    setShowConsumptionModal(false);
-  };
 
   const fetchUsers = useCallback(
     (
@@ -95,11 +71,16 @@ const PackagesList = () => {
       };
 
       setLoader(true);
-      dispatch(getPackagesRecord(params))
+      dispatch(getStripeRecords(params))
         .then((response) => {
-          console.log(response.payload);
-          setRecords(response.payload?.data);
-          setTotalRecords(response.payload?.recordsTotal);
+          if (response?.payload) {
+            console.log(response.payload);
+            setRecords(response.payload?.data);
+            setTotalRecords(response.payload?.recordsTotal);
+          } else {
+            setRecords([]);
+            setTotalRecords(0);
+          }
         })
         .catch((error) => {
           setRecords([]);
@@ -128,7 +109,6 @@ const PackagesList = () => {
                   records={records}
                   totalRecords={totalRecord}
                   pageLength={pageLength}
-                  buttons={buttons}
                   onPageChange={fetchUsers}
                   onPageLengthChange={setPageLength}
                   loader={loader}
@@ -140,21 +120,8 @@ const PackagesList = () => {
           </Col>
         </Row>
       </section>
-
-      <Dialogue
-        show={showConsumptionModal}
-        onHide={handleClose}
-        headerClass=""
-        modalBodyClass="p-0"
-        title="View Consumptions"
-        size="lg"
-        bodyContent={<ViewConsumption packageId={isPackageId} />}
-        backdrop="static"
-        centered={true}
-        showFooter={false}
-      />
     </>
   );
 };
 
-export default PackagesList;
+export default StripeOrder;

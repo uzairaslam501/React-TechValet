@@ -196,7 +196,7 @@ const ClientTopbar = () => {
                   <NavDropdown
                     title={
                       <HandleImages
-                        imagePath={userAuth?.profile}
+                        imagePath={userAuth?.profilePicture}
                         imageAlt={userAuth?.userName}
                         imageStyle={{
                           width: "40px",
