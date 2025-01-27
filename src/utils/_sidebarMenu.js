@@ -64,4 +64,9 @@ export const menuItems = [
       },
     ],
   },
+  {
+    title: "View Packages",
+    icon: "bi bi-journal",
+    path: "/packages",
+  },
 ];

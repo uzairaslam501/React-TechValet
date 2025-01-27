@@ -238,6 +238,16 @@ function CustomTable({
                           <span className="fw-bold">$</span>{" "}
                           {row[header.column]}
                         </>
+                      ) : header.column === "encOrderId" ? (
+                        <>
+                          <Button
+                            as={NavLink}
+                            to={`/order-details/${row.encOrderId}`}
+                            className="text-primary bg-transparent border-0 p-0"
+                          >
+                            <u>{row.encOrderId}</u>
+                          </Button>
+                        </>
                       ) : header.column === "orderReasonType" ? (
                         <>
                           {row.orderReasonType === "3" &&

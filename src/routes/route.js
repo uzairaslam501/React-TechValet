@@ -53,6 +53,9 @@ import AccountProcess from "../pages/Client/AccountVerification/Index";
 import AddUser from "../pages/Admin/User/AddUser";
 import UserList from "../pages/Admin/User/UserList";
 import UpdatePassword from "../pages/Admin/Auth/Profile/UpdatePassword";
+import UpdateProfile from "../pages/Admin/Auth/Profile/UpdateProfile";
+import PackagesList from "../pages/Admin/Packages/PackagesList";
+import OrdersRecord from "../pages/Admin/Orders";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -82,7 +85,9 @@ const createRoute = createBrowserRouter(
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-user/:type" element={<AddUser />} />
           <Route path="/users-list/:type" element={<UserList />} />
-          <Route path="/view-packages" element={<ViewPackages />} />
+          <Route path="/view-packages" element={<PackagesList />} />
+          <Route path="/order-record" element={<OrdersRecord />} />
+          <Route path="/update-profile" element={<UpdateProfile />} />
           <Route path="/update-password" element={<UpdatePassword />} />
         </Route>
       </Route>

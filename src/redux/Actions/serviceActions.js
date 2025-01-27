@@ -143,4 +143,37 @@ export const getUserEarnings = createAsyncThunk(
     }
   }
 );
+
+export const getUserEarningRecords = createAsyncThunk(
+  "servicesOrExperience/getEarningRecords",
+  async (
+    {
+      pageNumber,
+      pageLength,
+      sortColumn,
+      sortDirection,
+      searchParam,
+      packageId,
+      userId,
+    },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.get(
+        `${baseUrl}/Datatable/CompletedOrder/${userId}?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        &sortDirection=${sortDirection}&searchValue=${searchParam}&packageId=${packageId}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
 //#endregion

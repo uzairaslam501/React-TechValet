@@ -80,6 +80,17 @@ const RootLayout = () => {
           >
             <Outlet />
           </Col>
+
+          <Row className="p-0" style={{ backgroundColor: "#FFFFFF" }}>
+            <p
+              className="text-black text-center pt-3"
+              style={{
+                paddingLeft: isSidebarOpen ? "18rem" : "8rem",
+              }}
+            >
+              Copyright © Tech Valet, 2025
+            </p>
+          </Row>
         </Row>
       </Container>
     </>

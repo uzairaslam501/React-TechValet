@@ -12,9 +12,8 @@ import "../css/main.css";
 const WelcomeFooter = () => {
   return (
     <>
-      <footer style={{ background: "#fcd609" }}>
-        <div style={{ padding: "7px 0" }}>
-          {/* <Container>
+      <div style={{ padding: "7px 0" }}>
+        {/* <Container>
             <Row className="justify-content-center">
               <Col md={6}>
                 <span>2024 © IT Valet</span>
@@ -34,17 +33,16 @@ const WelcomeFooter = () => {
               </Col>
             </Row>
           </Container> */}
-          <Container fluid>
-            <Row>
-              <Col className="text-end">
-                <h1 style={{ color: "#000" }}>
-                  <i>At Your Service _____</i>
-                </h1>
-              </Col>
-            </Row>
-          </Container>
-        </div>
-      </footer>
+        <Container fluid>
+          <Row>
+            <Col className="text-end">
+              <h1 style={{ color: "#000" }}>
+                <i>At Your Service _____</i>
+              </h1>
+            </Col>
+          </Row>
+        </Container>
+      </div>
     </>
   );
 };

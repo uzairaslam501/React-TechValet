@@ -5,7 +5,6 @@ import CustomTable from "../../../../components/Custom/Datatable/table";
 import { getUserPackagesConsumptionRecords } from "../../../../redux/Actions/customerActions";
 
 const ViewConsumption = ({ packageId }) => {
-  console.log(packageId);
   const dispatch = useDispatch();
 
   const [consumptionRecords, setConsumptionRecords] = useState([]);
