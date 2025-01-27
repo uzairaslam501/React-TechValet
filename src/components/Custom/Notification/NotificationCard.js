@@ -19,6 +19,7 @@ import {
 import signalRService from "../../../services/SignalR";
 import { notificationURL } from "../../../utils/_envConfig";
 import { toast } from "react-toastify";
+import { NavLink } from "react-router-dom";
 
 const NotificationCard = () => {
   const dispatch = useDispatch();
@@ -192,21 +193,23 @@ const NotificationCard = () => {
                       }}
                     >
                       <div>
-                        <div
-                          className="fw-bold"
-                          style={{
-                            wordBreak: "break-all",
-                          }}
-                        >
-                          {truncateCharacters(notification.title, 33)}
-                        </div>
-                        <small
-                          style={{
-                            wordBreak: "break-all",
-                          }}
-                        >
-                          {truncateCharacters(notification.description, 76)}
-                        </small>
+                        <a as={NavLink} to={notification.url} target="_blank">
+                          <div
+                            className="fw-bold"
+                            style={{
+                              wordBreak: "break-all",
+                            }}
+                          >
+                            {truncateCharacters(notification.title, 33)}
+                          </div>
+                          <small
+                            style={{
+                              wordBreak: "break-all",
+                            }}
+                          >
+                            {truncateCharacters(notification.description, 76)}
+                          </small>
+                        </a>
                       </div>
                       <div className="d-flex flex-column">
                         {notification.isRead === 0 && (
@@ -234,6 +237,18 @@ const NotificationCard = () => {
               ) : (
                 <p className="text-center">No notifications</p>
               )}
+              <div className="notification-footer">
+                {notifications.length > 0 && (
+                  <Button type="button" size="sm" variant="danger">
+                    Delete All
+                  </Button>
+                )}
+                {notifications.some((n) => n.isRead === 0) && (
+                  <Button type="button" size="sm" variant="primary">
+                    Read All
+                  </Button>
+                )}
+              </div>
             </>
           )}
         </div>
