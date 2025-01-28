@@ -8,12 +8,15 @@ import { useLocation } from "react-router";
 import { useDispatch } from "react-redux";
 import {
   addSkillBlog,
+  GetSkills,
   updateSkillBlogs,
 } from "../../../redux/Actions/seoActions";
 
 const AddSkillContent = () => {
   const dispatch = useDispatch();
   const { state } = useLocation();
+  const [skills, setSkills] = useState([]);
+  const [loader, setLoader] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
 
@@ -81,7 +84,32 @@ const AddSkillContent = () => {
     onSubmit: handleSubmit,
   });
 
+  const fetchSkillRecords = () => {
+    setLoader(true);
+    dispatch(GetSkills())
+      .then((response) => {
+        console.log(response?.payload);
+        if (response?.payload) {
+          // Get the list of skills from the response payload
+          const fetchedSkills = response.payload;
+
+          // Filter the skillsOptions to exclude the ones in the fetchedSkills
+          const filteredSkills = skillsOptions.filter(
+            (option) => !fetchedSkills.includes(option.value)
+          );
+          // Update the skills state with the filtered options
+          setSkills(filteredSkills);
+        }
+        setLoader(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching skills:", err);
+        setLoader(false);
+      });
+  };
+
   useEffect(() => {
+    fetchSkillRecords();
     if (state) {
       setIsUpdate(true);
     }
@@ -124,11 +152,12 @@ const AddSkillContent = () => {
                         }}
                         onBlur={handleBlur}
                         isInvalid={touched.Skill && !!errors.Skill}
+                        disabled={isUpdate}
                       >
                         <option value="" disabled>
                           Select a skill
                         </option>
-                        {skillsOptions.map((option) => (
+                        {skills.map((option) => (
                           <option key={option.id} value={option.value}>
                             {option.value}
                           </option>

@@ -31,10 +31,7 @@ const SkillArticle = () => {
   return (
     <Container fluid className="bg-white py-5" style={{ minHeight: "100vh" }}>
       {!loader ? (
-        <Container
-          className="vh-100 my-4"
-          style={{ backgroundColor: "#f9f9f9" }}
-        >
+        <Container className="my-4 py-4">
           <Row className="g-4">
             {skills.map((option, index) => (
               <Col xl={4} lg={4} md={6} sm={6} xs={12} key={index}>

@@ -66,7 +66,9 @@ export const postUserUpdate = createAsyncThunk(
       if (message) {
         toast.success(message);
       }
-      localStorage.setItem("userInfo", JSON.stringify(data));
+      if (data) {
+        localStorage.setItem("userInfo", JSON.stringify(data));
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
