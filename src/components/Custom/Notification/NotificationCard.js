@@ -193,7 +193,11 @@ const NotificationCard = () => {
                       }}
                     >
                       <div>
-                        <a as={NavLink} to={notification.url} target="_blank">
+                        <NavLink
+                          to={notification.url}
+                          target="_blank"
+                          className="text-decoration-none"
+                        >
                           <div
                             className="fw-bold"
                             style={{
@@ -209,7 +213,7 @@ const NotificationCard = () => {
                           >
                             {truncateCharacters(notification.description, 76)}
                           </small>
-                        </a>
+                        </NavLink>
                       </div>
                       <div className="d-flex flex-column">
                         {notification.isRead === 0 && (
