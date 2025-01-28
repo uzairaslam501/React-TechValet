@@ -4,18 +4,50 @@ import { Card, CardBody, Col, Row } from "react-bootstrap";
 import CustomTable from "../../../../components/Custom/Datatable/table";
 import { getStripeRecords } from "../../../../redux/Actions/adminActions";
 
-const StripeOrder = () => {
+const StripeOrder = ({ handleOpen }) => {
   const dispatch = useDispatch();
 
   const [records, setRecords] = useState([]);
-  const [pageLength, setPageLength] = useState(5);
   const [loader, setLoader] = useState(false);
+  const [pageLength, setPageLength] = useState(5);
   const [totalRecord, setTotalRecords] = useState(0);
 
-  const [showConsumptionModal, setShowConsumptionModal] = useState(false);
-  const [isPackageId, setPackageId] = useState();
+  const buttons = [
+    {
+      id: 1,
+      title: (row) => {
+        if (row.orderStatus === "0" && row.stripeStatus == "1") {
+          return "Cancel";
+        } else if (row.orderStatus == "1" && row.stripeStatus == "5") {
+          return "Order Completed";
+        } else if (row.orderStatus == "4" && row.stripeStatus == "2") {
+          return "Payment Refunded";
+        } else if (row.orderStatus == "4" && row.paymentStatus == "4") {
+          return "Session Reverted";
+        } else {
+          return null;
+        }
+      },
+      onClick: (row) => {
+        if (row.orderStatus === "0" && row.stripeStatus == "1") {
+          handleOpen(row, "refund");
+        } else if (row.orderStatus === "0" && row.stripeStatus == "1") {
+          handleOpen(row, "session");
+        } else if (
+          (row.orderStatus == "1" && row.stripeStatus == "5") ||
+          (row.orderStatus == "4" && row.stripeStatus == "2") ||
+          (row.orderStatus == "4" && row.paymentStatus == "4")
+        ) {
+          // Do nothing for these cases
+        }
+      },
+      variant: "danger",
+      icon: "bi bi-trash",
+    },
+  ];
 
   const headers = [
+    { id: "0", label: "Action", column: "Action" },
     {
       id: "0",
       label: "Order",
@@ -33,28 +65,22 @@ const StripeOrder = () => {
     },
     {
       id: "0",
-      label: "Price",
-      column: "orderPrice",
+      label: "Status",
+      column: "orderStatus",
     },
     {
       id: "0",
-      label: "Status",
-      column: "orderStatus",
+      label: "Price",
+      column: "orderPrice",
     },
     {
       id: "0",
       label: "Payment",
       column: "paymentStatus",
     },
-
-    {
-      id: "0",
-      label: "StripeStatus",
-      column: "stripeStatus",
-    },
   ];
 
-  const fetchUsers = useCallback(
+  const fetchRecords = useCallback(
     (
       pageNumber = 0,
       pageLength = 5,
@@ -73,14 +99,9 @@ const StripeOrder = () => {
       setLoader(true);
       dispatch(getStripeRecords(params))
         .then((response) => {
-          if (response?.payload) {
-            console.log(response.payload);
-            setRecords(response.payload?.data);
-            setTotalRecords(response.payload?.recordsTotal);
-          } else {
-            setRecords([]);
-            setTotalRecords(0);
-          }
+          console.log(response.payload);
+          setRecords(response.payload?.data || []);
+          setTotalRecords(response.payload?.recordsTotal || 0);
         })
         .catch((error) => {
           setRecords([]);
@@ -93,7 +114,7 @@ const StripeOrder = () => {
   );
 
   useEffect(() => {
-    fetchUsers(0, pageLength);
+    fetchRecords(0, pageLength);
   }, [pageLength]);
 
   return (
@@ -109,7 +130,8 @@ const StripeOrder = () => {
                   records={records}
                   totalRecords={totalRecord}
                   pageLength={pageLength}
-                  onPageChange={fetchUsers}
+                  buttons={buttons}
+                  onPageChange={fetchRecords}
                   onPageLengthChange={setPageLength}
                   loader={loader}
                   searchFunctionality={false}
