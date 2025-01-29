@@ -118,7 +118,7 @@ const ArticleList = () => {
   };
 
   const onView = (row) => {
-    navigate("/add-article", { state: row });
+    navigate("/add-blog", { state: row });
   };
 
   useEffect(() => {

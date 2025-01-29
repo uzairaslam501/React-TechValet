@@ -57,6 +57,8 @@ import PackagesList from "../pages/Admin/Packages/PackagesList";
 import OrdersRecord from "../pages/Admin/Orders";
 import AdminUpdatePassword from "../pages/Admin/Auth/Profile/UpdatePassword";
 import ClientUpdatePassword from "../pages/Client/ClientAuth/UpdatePassword/ClientUpdatePassword";
+import PrivacyPolicy from "../pages/Policies/PrivacyPolicy/privacy";
+import TermsAndConditions from "../pages/Policies/TermsAndCondition/TermsAndCondition";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -99,9 +101,11 @@ const createRoute = createBrowserRouter(
         <Route path="/contact" element={<Contact />} />
         <Route path="/skills" element={<SkillArticle />} />
         <Route path="/skill/:skill" element={<SkillProfiles />} />
-        <Route path="/articles" element={<PublicArticles />} />
+        <Route path="/blogs" element={<PublicArticles />} />
         <Route path="/:slug" element={<ArticleDetail />} />
         <Route path="/preview-profile/:id" element={<PreviewProfile />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
 
         <Route element={<ProtectedClient />}>
           {/* Global */}
@@ -144,8 +148,8 @@ const createRoute = createBrowserRouter(
             {/* SEO Team */}
             <Route path="/panel" element={<SeoDashboard />} />
             {/* Blogs */}
-            <Route path="/add-article" element={<AddArticle />} />
-            <Route path="/article-list" element={<ArticleList />} />
+            <Route path="/add-blog" element={<AddArticle />} />
+            <Route path="/blog-list" element={<ArticleList />} />
             {/* Skill Content */}
             <Route path="/add-content" element={<AddSkillContent />} />
             <Route path="/content-list" element={<SkillContentList />} />

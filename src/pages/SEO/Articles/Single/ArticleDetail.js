@@ -163,6 +163,7 @@ const ArticleDetail = () => {
                                 imagePath={recentArticle.image}
                                 imageAlt={recentArticle.title}
                                 imageStyle={{ height: "100%", width: "100%" }}
+                                placeholder="article"
                               />
                             </a>
                           </Col>

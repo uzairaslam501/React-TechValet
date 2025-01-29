@@ -260,7 +260,7 @@ const AddArticle = () => {
                       size="md"
                       className="w-25"
                       as={NavLink}
-                      to="/article-list"
+                      to="/blog-list"
                     >
                       Back To List
                     </Button>
