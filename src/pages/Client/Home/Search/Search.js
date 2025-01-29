@@ -83,7 +83,7 @@ const SearchSection = () => {
                     about.
                   </Card.Text>
                   <Button
-                    href={"/Auth/Register?value=Customer"}
+                    href={"/register/customer"}
                     className="btn-primary-secondary"
                   >
                     Get Started
@@ -120,7 +120,7 @@ const SearchSection = () => {
                     in real-time. Tech Valet team handles all the details of
                     each job.
                   </Card.Text>
-                  <NavLink to={"/register/customer"}>
+                  <NavLink to={"/register/valet"}>
                     <Button className="btn-secondary-secondary">Join Us</Button>
                   </NavLink>
                   {!userAuth && (

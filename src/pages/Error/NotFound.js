@@ -1,17 +1,24 @@
 import React from "react";
-import { Button, Container, Row, Col, Image } from "react-bootstrap";
+import { Button, Container, Row, Col } from "react-bootstrap";
+import NotFoundImage from "../../assets/images/404.png";
 
 const NotFound = () => {
   return (
     <Container className="d-flex flex-column justify-content-center align-items-center vh-100 text-center">
       <Row>
-        <Col>
-          <Image
-            src="https://via.placeholder.com/300"
+        <Col
+          xl={{ span: 8, offset: 2 }}
+          lg={{ span: 8, offset: 2 }}
+          md={{ span: 8, offset: 2 }}
+          sm={{ span: 12 }}
+          xs={{ span: 12 }}
+        >
+          <img
+            src={NotFoundImage}
             alt="404 Not Found"
             fluid
+            className="w-100"
           />
-          <h1 className="mt-4 display-4 text-warning">404 - Page Not Found</h1>
           <p className="lead">
             The page you’re looking for doesn’t exist. It might have been moved
             or deleted.

@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Container, Row, Spinner } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  OverlayTrigger,
+  Row,
+  Spinner,
+  Tooltip,
+} from "react-bootstrap";
 import Account from "./Account/account";
 import { useDispatch, useSelector } from "react-redux";
 import { getRecordById } from "../../../../redux/Actions/globalActions";
@@ -95,13 +104,24 @@ const Index = () => {
               {userAuth?.isActive === "Active" && (
                 <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
                   <Card className="shadow">
-                    <Card.Header>Scheduled Customer Appointments</Card.Header>
+                    <Card.Header>
+                      <OverlayTrigger
+                        placement="top"
+                        overlay={
+                          <Tooltip id="orders-tooltip">
+                            View and manage your placed orders here.
+                          </Tooltip>
+                        }
+                      >
+                        <span>Recent Orders</span>
+                      </OverlayTrigger>
+                    </Card.Header>
                     <Card.Body>
                       <Button
                         onClick={handleSchedule}
                         className="btn btn-success w-100"
                       >
-                        View Scheduling
+                        Order History
                       </Button>
                     </Card.Body>
                   </Card>

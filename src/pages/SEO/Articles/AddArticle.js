@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
@@ -6,13 +6,14 @@ import CustomCKEditor from "../../../components/Custom/CKEditor/CKEditor";
 import { useLocation } from "react-router";
 import { useDispatch } from "react-redux";
 import { addBlogs, updateBlogs } from "../../../redux/Actions/seoActions";
+import { NavLink } from "react-router-dom";
 
 const AddArticle = () => {
   const dispatch = useDispatch();
   const { state } = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
-  console.log(state);
+  const fileInputRef = useRef(null);
 
   const initialValues = {
     encId: state?.encId || "",
@@ -60,6 +61,9 @@ const AddArticle = () => {
         }
         setIsLoading(false);
         resetForm();
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       })
       .catch((error) => {
         console.error("Error dispatching action:", error);
@@ -83,6 +87,7 @@ const AddArticle = () => {
     validateOnBlur: true,
     onSubmit: handleSubmit,
   });
+  console.log("values", values);
 
   useEffect(() => {
     if (state) {
@@ -230,6 +235,7 @@ const AddArticle = () => {
                     type="file"
                     name="FeaturedImageUrl"
                     accept="image/*"
+                    ref={fileInputRef}
                     onChange={(event) =>
                       setFieldValue("FeaturedImageUrl", event.target.files[0])
                     }
@@ -242,18 +248,33 @@ const AddArticle = () => {
                     {errors.FeaturedImageUrl}
                   </Form.Control.Feedback>
                 </Form.Group>
-
-                <div className="text-center">
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    size="md"
-                    className="w-50"
-                    disabled={isLoading}
+                <Row>
+                  <Col
+                    md={12}
+                    className="d-flex"
+                    style={{ justifyContent: "space-between" }}
                   >
-                    {isLoading ? "Submitting..." : "Submit"}
-                  </Button>
-                </div>
+                    <Button
+                      type="submit"
+                      variant="secondary"
+                      size="md"
+                      className="w-25"
+                      as={NavLink}
+                      to="/article-list"
+                    >
+                      Back To List
+                    </Button>
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      size="md"
+                      className="w-25"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Submitting..." : "Submit"}
+                    </Button>
+                  </Col>
+                </Row>
               </Form>
             </Card.Body>
           </Card>

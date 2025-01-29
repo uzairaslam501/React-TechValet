@@ -15,30 +15,12 @@ const StripeOrder = ({ handleOpen }) => {
   const buttons = [
     {
       id: 1,
-      title: (row) => {
-        if (row.orderStatus === "0" && row.stripeStatus == "1") {
-          return "Cancel";
-        } else if (row.orderStatus == "1" && row.stripeStatus == "5") {
-          return "Order Completed";
-        } else if (row.orderStatus == "4" && row.stripeStatus == "2") {
-          return "Payment Refunded";
-        } else if (row.orderStatus == "4" && row.paymentStatus == "4") {
-          return "Session Reverted";
-        } else {
-          return null;
-        }
-      },
+      title: (row) => row.buttonHandle,
       onClick: (row) => {
-        if (row.orderStatus === "0" && row.stripeStatus == "1") {
+        if (row.buttonHandle === "Refund") {
           handleOpen(row, "refund");
-        } else if (row.orderStatus === "0" && row.stripeStatus == "1") {
+        } else if (row.buttonHandle === "Session") {
           handleOpen(row, "session");
-        } else if (
-          (row.orderStatus == "1" && row.stripeStatus == "5") ||
-          (row.orderStatus == "4" && row.stripeStatus == "2") ||
-          (row.orderStatus == "4" && row.paymentStatus == "4")
-        ) {
-          // Do nothing for these cases
         }
       },
       variant: "danger",

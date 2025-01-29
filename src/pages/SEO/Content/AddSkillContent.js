@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
@@ -8,17 +8,16 @@ import { useLocation } from "react-router";
 import { useDispatch } from "react-redux";
 import {
   addSkillBlog,
-  GetSkills,
   updateSkillBlogs,
 } from "../../../redux/Actions/seoActions";
+import { NavLink } from "react-router-dom";
 
 const AddSkillContent = () => {
   const dispatch = useDispatch();
   const { state } = useLocation();
-  const [skills, setSkills] = useState([]);
-  const [loader, setLoader] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
+  const fileInputRef = useRef(null);
 
   const initialValues = {
     encId: state?.encId || "",
@@ -60,6 +59,9 @@ const AddSkillContent = () => {
         }
         setIsLoading(false);
         resetForm();
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       })
       .catch((error) => {
         console.error("Error dispatching action:", error);
@@ -84,32 +86,7 @@ const AddSkillContent = () => {
     onSubmit: handleSubmit,
   });
 
-  const fetchSkillRecords = () => {
-    setLoader(true);
-    dispatch(GetSkills())
-      .then((response) => {
-        console.log(response?.payload);
-        if (response?.payload) {
-          // Get the list of skills from the response payload
-          const fetchedSkills = response.payload;
-
-          // Filter the skillsOptions to exclude the ones in the fetchedSkills
-          const filteredSkills = skillsOptions.filter(
-            (option) => !fetchedSkills.includes(option.value)
-          );
-          // Update the skills state with the filtered options
-          setSkills(filteredSkills);
-        }
-        setLoader(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching skills:", err);
-        setLoader(false);
-      });
-  };
-
   useEffect(() => {
-    fetchSkillRecords();
     if (state) {
       setIsUpdate(true);
     }
@@ -152,12 +129,11 @@ const AddSkillContent = () => {
                         }}
                         onBlur={handleBlur}
                         isInvalid={touched.Skill && !!errors.Skill}
-                        disabled={isUpdate}
                       >
                         <option value="" disabled>
                           Select a skill
                         </option>
-                        {skills.map((option) => (
+                        {skillsOptions.map((option) => (
                           <option key={option.id} value={option.value}>
                             {option.value}
                           </option>
@@ -252,6 +228,7 @@ const AddSkillContent = () => {
                     type="file"
                     name="FeaturedImageUrl"
                     accept="image/*"
+                    ref={fileInputRef}
                     onChange={(event) =>
                       setFieldValue("FeaturedImageUrl", event.target.files[0])
                     }
@@ -265,17 +242,33 @@ const AddSkillContent = () => {
                   </Form.Control.Feedback>
                 </Form.Group>
 
-                <div className="text-center">
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    size="md"
-                    className="w-50"
-                    disabled={isLoading}
+                <Row>
+                  <Col
+                    md={12}
+                    className="d-flex"
+                    style={{ justifyContent: "space-between" }}
                   >
-                    {isLoading ? "Submitting..." : "Submit"}
-                  </Button>
-                </div>
+                    <Button
+                      type="submit"
+                      variant="secondary"
+                      size="md"
+                      className="w-25"
+                      as={NavLink}
+                      to="/content-list"
+                    >
+                      Back To List
+                    </Button>
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      size="md"
+                      className="w-25"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Submitting..." : "Submit"}
+                    </Button>
+                  </Col>
+                </Row>
               </Form>
             </Card.Body>
           </Card>

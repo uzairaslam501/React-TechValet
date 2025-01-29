@@ -77,7 +77,7 @@ const CustomNavbar = ({ toggleSidebar }) => {
                     <NavDropdown.Item as={NavLink} to="/update-profile">
                       Profile
                     </NavDropdown.Item>
-                    <NavDropdown.Item as={NavLink} to="/update-password">
+                    <NavDropdown.Item as={NavLink} to="/password-update">
                       Update Password
                     </NavDropdown.Item>
                     <NavDropdown.Divider />

@@ -1,18 +1,24 @@
 import { useState, useEffect } from "react";
+import userPlaceholder from "../../../assets/images/user-placeholder.jpg";
+import articlePlaceholder from "../../../assets/images/Articles.jpg";
 
-const HandleImages = ({ imagePath, imageAlt, imageStyle, className = "" }) => {
-  const [imageSrc, setImageSrc] = useState(
-    imagePath || "https://bootdey.com/img/Content/avatar/avatar2.png"
-  );
+const HandleImages = ({
+  imagePath,
+  imageAlt,
+  imageStyle,
+  placeholder,
+  className = "",
+}) => {
+  const placeholderImage =
+    placeholder === "article" ? articlePlaceholder : userPlaceholder;
+  const [imageSrc, setImageSrc] = useState(imagePath || placeholderImage);
 
   const handleBrokenImage = () => {
-    setImageSrc("https://bootdey.com/img/Content/avatar/avatar2.png");
+    setImageSrc(placeholderImage);
   };
 
   useEffect(() => {
-    setImageSrc(
-      imagePath || "https://bootdey.com/img/Content/avatar/avatar2.png"
-    );
+    setImageSrc(imagePath || placeholderImage);
   }, [imagePath]);
 
   return (

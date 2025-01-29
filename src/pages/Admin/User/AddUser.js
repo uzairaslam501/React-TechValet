@@ -25,12 +25,12 @@ import {
 function AddUser() {
   const dispatch = useDispatch();
   const { userAuth } = useSelector((state) => state.authentication);
-  const location = useLocation();
   const [isUpdateCall, setIsUpdate] = useState(false);
   const [showSpinner, setShowSpinner] = useState(false);
   const [timeZones, setTimeZones] = useState([]);
 
   const params = useParams();
+  const location = useLocation();
   const getRecord = location.state;
 
   useEffect(() => {
@@ -77,11 +77,11 @@ function AddUser() {
   };
 
   const initialValues = {
-    id: getRecord?.id || "",
+    id: getRecord?.userEncId || "",
     role: capitalizeFirstLetter(params?.type) || "", //chooseRole(params.type) || "",
-    firstname: getRecord?.firstname || "",
-    lastname: getRecord?.lastname || "",
-    username: getRecord?.username || "",
+    firstname: getRecord?.firstName || "",
+    lastname: getRecord?.lastName || "",
+    username: getRecord?.userName || "",
     email: getRecord?.email || "",
     password: getRecord?.password || "",
     confirmPassword: getRecord?.confirmPassword || "",
@@ -150,7 +150,9 @@ function AddUser() {
       try {
         setShowSpinner(true);
         if (isUpdateCall) {
-          await dispatch(postUpdateUser(values));
+          await dispatch(
+            postUpdateUser({ userId: values.id, userData: values })
+          );
         } else {
           await dispatch(postAddUser(values));
           resetForm();
@@ -236,6 +238,7 @@ function AddUser() {
                               Username <span className="text-danger">*</span>
                             </Form.Label>
                             <Form.Control
+                              disabled={isUpdateCall}
                               type="text"
                               name="username"
                               placeholder="Enter Username"
@@ -256,6 +259,7 @@ function AddUser() {
                               Email <span className="text-danger">*</span>
                             </Form.Label>
                             <Form.Control
+                              disabled={isUpdateCall}
                               type="email"
                               name="email"
                               placeholder="Enter Email"
@@ -291,45 +295,51 @@ function AddUser() {
                                 </Form.Control.Feedback>
                             </Form.Group>
                         </Col> */}
-                        {/* Password */}
-                        <Col xl={6} lg={6} md={6} sm={12} xs={12}>
-                          <Form.Group className="mb-2">
-                            <PasswordField
-                              label="Password"
-                              name="password"
-                              placeholder="Enter your password"
-                              required={true}
-                              value={values.password}
-                              onBlur={handleBlur("password")}
-                              onChange={handleChange("password")}
-                              isInvalid={touched.password && !!errors.password}
-                              touched={touched.password}
-                              errors={errors.password}
-                              size="md"
-                            />
-                          </Form.Group>
-                        </Col>
-                        {/* Confirm Password */}
-                        <Col xl={6} lg={6} md={6} sm={12} xs={12}>
-                          <Form.Group className="mb-2">
-                            <PasswordField
-                              label="Confirm Password"
-                              name="confirmPassword"
-                              placeholder="Re-enter password"
-                              required={true}
-                              value={values.confirmPassword}
-                              onBlur={handleBlur("confirmPassword")}
-                              onChange={handleChange("confirmPassword")}
-                              isInvalid={
-                                touched.confirmPassword &&
-                                !!errors.confirmPassword
-                              }
-                              touched={touched.confirmPassword}
-                              errors={errors.confirmPassword}
-                              size="md"
-                            />
-                          </Form.Group>
-                        </Col>
+                        {!isUpdateCall && (
+                          <>
+                            {/* Password */}
+                            <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                              <Form.Group className="mb-2">
+                                <PasswordField
+                                  label="Password"
+                                  name="password"
+                                  placeholder="Enter your password"
+                                  required={true}
+                                  value={values.password}
+                                  onBlur={handleBlur("password")}
+                                  onChange={handleChange("password")}
+                                  isInvalid={
+                                    touched.password && !!errors.password
+                                  }
+                                  touched={touched.password}
+                                  errors={errors.password}
+                                  size="md"
+                                />
+                              </Form.Group>
+                            </Col>
+                            {/* Confirm Password */}
+                            <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                              <Form.Group className="mb-2">
+                                <PasswordField
+                                  label="Confirm Password"
+                                  name="confirmPassword"
+                                  placeholder="Re-enter password"
+                                  required={true}
+                                  value={values.confirmPassword}
+                                  onBlur={handleBlur("confirmPassword")}
+                                  onChange={handleChange("confirmPassword")}
+                                  isInvalid={
+                                    touched.confirmPassword &&
+                                    !!errors.confirmPassword
+                                  }
+                                  touched={touched.confirmPassword}
+                                  errors={errors.confirmPassword}
+                                  size="md"
+                                />
+                              </Form.Group>
+                            </Col>
+                          </>
+                        )}
                         {/* State */}
                         <Col xl={4} lg={4} md={4} sm={12} xs={12}>
                           <Form.Group className="mb-2">
@@ -465,7 +475,7 @@ function AddUser() {
 
                         <NavLink
                           className="btn btn-white-secondary btn-block"
-                          to="/user-list"
+                          to={`/user-list/${params?.type}`}
                         >
                           Back To List
                         </NavLink>

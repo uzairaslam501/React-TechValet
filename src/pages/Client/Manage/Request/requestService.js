@@ -83,6 +83,7 @@ const RequestService = () => {
   const [selectedTime, setSelectedTime] = useState([]);
   const [selectedIssue, setSelectedIssue] = useState([]);
   const [foundMatch, setFoundMatch] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCategoryChange = (category) => {
     // Compute the updated selected categories
@@ -156,6 +157,7 @@ const RequestService = () => {
     validateOnChange: false,
     validateOnBlur: true,
     onSubmit: (values) => {
+      setIsLoading(true);
       try {
         const convertedData = {
           ...values,
@@ -170,9 +172,12 @@ const RequestService = () => {
             ...convertedData,
             id: response.payload,
           };
+          setIsLoading(false);
           navigate("/requested-service", { state: convertedDatas });
         });
-      } catch (ex) {}
+      } catch (ex) {
+        setIsLoading(false);
+      }
     },
   });
 
@@ -501,8 +506,13 @@ const RequestService = () => {
                     ) : null}
                   </Form.Group>
 
-                  <Button type="submit" variant="primary" className="w-100">
-                    Submit Service
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    className="w-100"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Submitting..." : "Submit Service"}
                   </Button>
                 </Form>
               </CardBody>

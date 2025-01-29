@@ -4,12 +4,23 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { postRegister } from "../../../../redux/Actions/authActions";
 import { Navigate, NavLink, useNavigate, useParams } from "react-router-dom";
-import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  Container,
+  Form,
+  OverlayTrigger,
+  Row,
+  Spinner,
+  Tooltip,
+} from "react-bootstrap";
 import loginPage from "../../../../assets/images/login-page.png";
 import background from "../../../../assets/images/Background.svg";
+import customerRegisterImage from "../../../../assets/images/customer-register.svg";
 import HandleImages from "../../../../components/Custom/Avatars/HandleImages";
 import PasswordField from "../../../../components/Custom/PasswordInput/PasswordInput";
 import { getTimezones } from "../../../../redux/Actions/globalActions";
+import { capitalizeFirstLetter } from "../../../../utils/_helpers";
 
 const Register = () => {
   const { value } = useParams();
@@ -122,7 +133,9 @@ const Register = () => {
           <div className="text-center">
             <div className="position-relative mx-auto w-50">
               <HandleImages
-                imagePath={loginPage}
+                imagePath={
+                  value === "customer" ? customerRegisterImage : loginPage
+                }
                 imageAlt="login"
                 imageStyle={{
                   width: "100%",
@@ -135,11 +148,26 @@ const Register = () => {
 
             {/* Heading and Paragraph */}
             <div className="mt-4">
-              <h3 className="text-dark fw-bold">Welcome to TechValet</h3>
-              <p className="text-dark">
-                Don't waste your skills. Create an account to provide your
-                services
-              </p>
+              <h3 className="text-dark fw-bold">
+                Welcome to TechValet!
+                <br /> You are registering as a {capitalizeFirstLetter(value)}.
+              </h3>
+
+              {value === "customer" ? (
+                <>
+                  <p className="text-dark">
+                    Need help? Create an account to get your issues resolved
+                    instantly.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-dark">
+                    Don't waste your skills. Create an account to provide your
+                    services
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </Col>
@@ -388,19 +416,34 @@ const Register = () => {
                 </Col>
 
                 <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mb-3">
-                  <Form.Check
-                    type="switch"
-                    id="custom-switch"
-                    label="Register as Valet?"
-                    checked={value === "valet"}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        navigate("/register/valet");
-                      } else {
-                        navigate("/register/customer");
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={
+                      <Tooltip id="switch-tooltip">
+                        {value === "valet"
+                          ? "You are registering as a valet."
+                          : "You are registering as a customer."}
+                      </Tooltip>
+                    }
+                  >
+                    <Form.Check
+                      type="switch"
+                      id="custom-switch"
+                      label={
+                        value === "valet"
+                          ? "Registering as Valet"
+                          : "Registering as Customer"
                       }
-                    }}
-                  />
+                      checked={value === "valet"}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          navigate("/register/valet");
+                        } else {
+                          navigate("/register/customer");
+                        }
+                      }}
+                    />
+                  </OverlayTrigger>
                 </Col>
 
                 <Col sm={12} className="text-center">

@@ -42,6 +42,7 @@ const Messages = () => {
 
   const [showAcceptOrderDialogue, setShowAcceptOrderDialogue] = useState(false);
   const [selectedOfferValues, setSelectedOfferValues] = useState(null);
+  const [noRecordToShow, setNoRecordToShow] = useState(false);
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const activeChatRef = useRef(activeChat);
@@ -81,6 +82,14 @@ const Messages = () => {
           }
         } else {
           console.error("No payload received");
+        }
+        if (
+          !Array.isArray(response?.payload) ||
+          response.payload.length === 0
+        ) {
+          setUserSideBarLoader(false);
+          setMessagesLoader(false);
+          setNoRecordToShow(true);
         }
       });
     } catch (error) {
@@ -364,6 +373,7 @@ const Messages = () => {
                     className="form-control"
                     placeholder="Search..."
                     onChange={(e) => handleSearchMessage(e.target.value)}
+                    disabled={noRecordToShow}
                   />
                 </div>
                 <ul className="list-unstyled chat-list mt-2 mb-0">
@@ -552,37 +562,44 @@ const Messages = () => {
                       rows={1}
                       value={messageTyped}
                       onChange={(e) => handleTypeMessage(e.target.value)}
+                      disabled={noRecordToShow}
                     />
                   </div>
                   <div className="row py-3">
-                    <div className="col-md-2 col-sm-12 mb-2">
-                      <Button
-                        variant="secondary-secondary"
-                        className="btn-sm w-100"
-                        onClick={() => handleCreateOrder()}
-                      >
-                        <i className="bi bi-coin"></i> Create Offer
-                      </Button>
-                    </div>
-                    <div className="col-md-2 offset-md-8 col-sm-12 mb-2 text-end">
-                      <Button
-                        variant="primary-secondary"
-                        className="btn-sm w-100"
-                        onClick={() => handleSendMessage(activeChat?.userDecId)}
-                        disabled={sendLoader}
-                      >
-                        {sendLoader ? (
-                          <Spinner
-                            animation="border"
-                            size="sm"
-                            className="me-1"
-                          />
-                        ) : (
-                          <i className="bi bi-send-check me-1"></i>
-                        )}
-                        Send
-                      </Button>
-                    </div>
+                    {!noRecordToShow && (
+                      <>
+                        <div className="col-md-2 col-sm-12 mb-2">
+                          <Button
+                            variant="secondary-secondary"
+                            className="btn-sm w-100"
+                            onClick={() => handleCreateOrder()}
+                          >
+                            <i className="bi bi-coin"></i> Create Offer
+                          </Button>
+                        </div>
+                        <div className="col-md-2 offset-md-8 col-sm-12 mb-2 text-end">
+                          <Button
+                            variant="primary-secondary"
+                            className="btn-sm w-100"
+                            onClick={() =>
+                              handleSendMessage(activeChat?.userDecId)
+                            }
+                            disabled={sendLoader}
+                          >
+                            {sendLoader ? (
+                              <Spinner
+                                animation="border"
+                                size="sm"
+                                className="me-1"
+                              />
+                            ) : (
+                              <i className="bi bi-send-check me-1"></i>
+                            )}
+                            Send
+                          </Button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
