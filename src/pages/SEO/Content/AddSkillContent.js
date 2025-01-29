@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
@@ -10,12 +10,14 @@ import {
   addSkillBlog,
   updateSkillBlogs,
 } from "../../../redux/Actions/seoActions";
+import { NavLink } from "react-router-dom";
 
 const AddSkillContent = () => {
   const dispatch = useDispatch();
   const { state } = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
+  const fileInputRef = useRef(null);
 
   const initialValues = {
     encId: state?.encId || "",
@@ -57,6 +59,9 @@ const AddSkillContent = () => {
         }
         setIsLoading(false);
         resetForm();
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       })
       .catch((error) => {
         console.error("Error dispatching action:", error);
@@ -223,6 +228,7 @@ const AddSkillContent = () => {
                     type="file"
                     name="FeaturedImageUrl"
                     accept="image/*"
+                    ref={fileInputRef}
                     onChange={(event) =>
                       setFieldValue("FeaturedImageUrl", event.target.files[0])
                     }
@@ -236,17 +242,33 @@ const AddSkillContent = () => {
                   </Form.Control.Feedback>
                 </Form.Group>
 
-                <div className="text-center">
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    size="md"
-                    className="w-50"
-                    disabled={isLoading}
+                <Row>
+                  <Col
+                    md={12}
+                    className="d-flex"
+                    style={{ justifyContent: "space-between" }}
                   >
-                    {isLoading ? "Submitting..." : "Submit"}
-                  </Button>
-                </div>
+                    <Button
+                      type="submit"
+                      variant="secondary"
+                      size="md"
+                      className="w-25"
+                      as={NavLink}
+                      to="/content-list"
+                    >
+                      Back To List
+                    </Button>
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      size="md"
+                      className="w-25"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Submitting..." : "Submit"}
+                    </Button>
+                  </Col>
+                </Row>
               </Form>
             </Card.Body>
           </Card>

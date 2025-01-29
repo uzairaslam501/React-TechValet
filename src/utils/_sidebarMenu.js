@@ -15,7 +15,7 @@ export const menuItems = [
       },
       {
         title: "Customer List",
-        path: "/users-list/customer",
+        path: "/user-list/customer",
         icon: "bi bi-list-task",
       },
     ],
@@ -31,7 +31,7 @@ export const menuItems = [
       },
       {
         title: "Valet List",
-        path: "/users-list/valet",
+        path: "/user-list/valet",
         icon: "bi bi-list-task",
       },
     ],
@@ -45,23 +45,7 @@ export const menuItems = [
         path: "/add-user/seo",
         icon: "bi bi-plus-circle",
       },
-      { title: "SEO List", path: "/users-list/seo", icon: "bi bi-list-task" },
-    ],
-  },
-  {
-    title: "Manage Categories",
-    icon: "bi bi-journal",
-    subItems: [
-      {
-        title: "Add Category",
-        path: "/add-categories",
-        icon: "bi bi-plus-circle",
-      },
-      {
-        title: "Categories List",
-        path: "/categories",
-        icon: "bi bi-list-task",
-      },
+      { title: "SEO List", path: "/user-list/seo", icon: "bi bi-list-task" },
     ],
   },
   {

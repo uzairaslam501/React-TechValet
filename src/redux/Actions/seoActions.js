@@ -67,7 +67,10 @@ export const updateBlogs = createAsyncThunk(
           Authorization: `${token}`,
         },
       });
-      const { data } = processApiResponse(response, dispatch, expired);
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
@@ -157,7 +160,10 @@ export const updateSkillBlogs = createAsyncThunk(
           Authorization: `${token}`,
         },
       });
-      const { data } = processApiResponse(response, dispatch, expired);
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);

@@ -76,7 +76,7 @@ const authSlice = createSlice({
       })
       .addCase(postUserUpdate.fulfilled, (state, action) => {
         state.loading = false;
-        state.userAuth = action.payload; // Save updated user data
+        state.userAuth = action.payload ? action.payload : state.userAuth; // Save updated user data
       })
       .addCase(postUserUpdate.rejected, (state, action) => {
         state.loading = false;
@@ -91,7 +91,7 @@ const authSlice = createSlice({
       })
       .addCase(UpdateProfileImage.fulfilled, (state, action) => {
         state.loading = false;
-        state.userAuth = action.payload;
+        state.userAuth = action.payload ? action.payload : state.userAuth;
       })
       .addCase(UpdateProfileImage.rejected, (state, action) => {
         state.loading = false;

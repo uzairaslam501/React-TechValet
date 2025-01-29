@@ -295,3 +295,52 @@ export const orderCancelConfirmation = createAsyncThunk(
     }
   }
 );
+
+//#region AdminFunctions
+// Handle revert Sessions
+export const cancelOrderAndRevertStripe = createAsyncThunk(
+  "order/cancelOrderAndRevertStripe",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    console.log(obj);
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.post(
+        `/StripePayment/StripeRefund/${obj.orderEncId}?chargeId=${obj.stripeId}`,
+        null,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+// Handle revert Sessions
+export const cancelOrderAndRevertSession = createAsyncThunk(
+  "order/cancelOrderAndRevertSession",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.post(
+        "/StripePayment/CancelOrderAndRevertSession/" + obj.orderEncId,
+        null,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+//#endregion

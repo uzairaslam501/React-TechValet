@@ -8,6 +8,7 @@ import {
 } from "react-bootstrap";
 import CustomButtons from "../Button/buttons";
 import { NavLink } from "react-router-dom";
+import BadgeStatus from "../StatusBadge/StatusBadge";
 
 function CustomTable({
   headers,
@@ -235,8 +236,10 @@ function CustomTable({
                         </a>
                       ) : header.column === "orderPrice" ? (
                         <>
-                          <span className="fw-bold">$</span>{" "}
-                          {row[header.column]}
+                          <p>
+                            <span className="fw-bold">$</span>
+                            {row[header.column]}
+                          </p>
                         </>
                       ) : header.column === "encOrderId" ? (
                         <>
@@ -295,6 +298,42 @@ function CustomTable({
                             <span>Activate</span>
                           ) : (
                             <span>Expired</span>
+                          )}
+                        </>
+                      ) : header.column == "orderStatus" ? (
+                        <>
+                          {
+                            <NavLink
+                              to={`/order-details/${
+                                row.encOrderId || row.orderEncId
+                              }`}
+                            >
+                              <BadgeStatus status={parseInt(row.orderStatus)} />
+                            </NavLink>
+                          }
+                        </>
+                      ) : header.column == "paymentStatus" ? (
+                        <>
+                          {row.paymentStatus === "COMPLETED" ? (
+                            <BadgeStatus status="Completed" />
+                          ) : row.paymentStatus === "REFUNDED" ? (
+                            <BadgeStatus status="Refunded" />
+                          ) : row.paymentStatus === "PAID-BY-PACKAGE" ? (
+                            <BadgeStatus status="Package" />
+                          ) : (
+                            <BadgeStatus status="N/A" />
+                          )}
+                        </>
+                      ) : header.column == "stripeStatus" ? (
+                        <>
+                          {row.orderStatus === "0" ? (
+                            <span className="text-warning">Pending</span>
+                          ) : row.orderStatus === "1" ? (
+                            <span className="text-success">Completed</span>
+                          ) : row.orderStatus === "2" ? (
+                            <span className="text-danger">Cancelled</span>
+                          ) : (
+                            <span className="text-info">In Progress</span>
                           )}
                         </>
                       ) : (

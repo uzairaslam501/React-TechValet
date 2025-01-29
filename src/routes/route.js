@@ -52,10 +52,11 @@ import NotFound from "../pages/Error/NotFound";
 import AccountProcess from "../pages/Client/AccountVerification/Index";
 import AddUser from "../pages/Admin/User/AddUser";
 import UserList from "../pages/Admin/User/UserList";
-import UpdatePassword from "../pages/Admin/Auth/Profile/UpdatePassword";
 import UpdateProfile from "../pages/Admin/Auth/Profile/UpdateProfile";
 import PackagesList from "../pages/Admin/Packages/PackagesList";
 import OrdersRecord from "../pages/Admin/Orders";
+import AdminUpdatePassword from "../pages/Admin/Auth/Profile/UpdatePassword";
+import ClientUpdatePassword from "../pages/Client/ClientAuth/UpdatePassword/ClientUpdatePassword";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -84,11 +85,11 @@ const createRoute = createBrowserRouter(
         <Route element={<RootLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-user/:type" element={<AddUser />} />
-          <Route path="/users-list/:type" element={<UserList />} />
+          <Route path="/user-list/:type" element={<UserList />} />
           <Route path="/view-packages" element={<PackagesList />} />
           <Route path="/order-record" element={<OrdersRecord />} />
           <Route path="/update-profile" element={<UpdateProfile />} />
-          <Route path="/update-password" element={<UpdatePassword />} />
+          <Route path="/password-update" element={<AdminUpdatePassword />} />
         </Route>
       </Route>
 
@@ -114,6 +115,7 @@ const createRoute = createBrowserRouter(
           <Route path="/orders" element={<ManageOrders />} />
           <Route path="/preview-order" element={<OrderPreview />} />
           <Route path="/order-details/:id" element={<OrderDetail />} />
+          <Route path="/update-password" element={<ClientUpdatePassword />} />
 
           <Route element={<RoleBasedRoute allowedRoles={["Customer"]} />}>
             {/* Customer */}

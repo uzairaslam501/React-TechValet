@@ -3,9 +3,17 @@ import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedLayout = () => {
-  const userAuth = useSelector((state) => state?.authentication?.userAuth);
+  const { userAuth } = useSelector((state) => state?.authentication);
 
-  return <>{userAuth ? <Outlet /> : <Navigate to="/" />}</>;
+  return (
+    <>
+      {userAuth && userAuth?.role === "Admin" ? (
+        <Outlet />
+      ) : (
+        <Navigate to="/" />
+      )}
+    </>
+  );
 };
 
 export default ProtectedLayout;
