@@ -71,13 +71,18 @@ const Footer = () => {
             <h4 className="text-white">Company</h4>
             <ListGroup className="footer-pages-list">
               <ListGroup.Item>
-                <NavLink to={"/integration"}>Integration</NavLink>
-              </ListGroup.Item>
-              <ListGroup.Item>
                 <NavLink to={"/blogs"}>Blogs</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
                 <NavLink to={"/contact"}>Contact</NavLink>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <NavLink to={"/privacy-policy"}>Privacy Policy</NavLink>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <NavLink to={"/terms-and-conditions"}>
+                  Terms And Conditon
+                </NavLink>
               </ListGroup.Item>
             </ListGroup>
           </Col>

@@ -120,14 +120,14 @@ export const seoMenu = [
     title: "Blogs",
     submenu: [
       {
-        href: "/add-article",
+        href: "/add-blog",
         iconClass: "bi bi-cart-dash me-2",
         className: "text-dark border-bottom border-grey",
         label: "Write Blog",
         title: "Write Blog",
       },
       {
-        href: "/article-list",
+        href: "/blog-list",
         iconClass: "bi bi-eye me-2",
         className: "text-dark",
         label: "View Blogs",

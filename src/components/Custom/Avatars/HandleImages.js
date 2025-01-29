@@ -6,7 +6,7 @@ const HandleImages = ({
   imagePath,
   imageAlt,
   imageStyle,
-  placeholder,
+  placeholder = "user",
   className = "",
 }) => {
   const placeholderImage =

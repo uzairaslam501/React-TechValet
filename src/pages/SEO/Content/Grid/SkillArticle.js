@@ -33,31 +33,39 @@ const SkillArticle = () => {
       {!loader ? (
         <Container className="my-4 py-4">
           <Row className="g-4">
-            {skills.map((option, index) => (
-              <Col xl={4} lg={4} md={6} sm={6} xs={12} key={index}>
-                <Card className="skill-card shadow-sm text-center h-100">
-                  <Card.Body className="d-flex flex-column justify-content-center align-items-center">
-                    <div className="skill-icon mb-3">
-                      <i
-                        className="bi bi-lightbulb-fill"
-                        style={{ fontSize: "2rem", color: "#f39c12" }}
-                      ></i>
-                    </div>
-                    <Link to={`/skill/${option}`}>
-                      <Card.Title
-                        className="mb-2"
-                        style={{ fontWeight: "bold", fontSize: "1.2rem" }}
-                      >
-                        {option}
-                      </Card.Title>
-                    </Link>
-                    <Card.Text className="text-muted">
-                      Find the valets based on this skill!
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
+            {skills && skills.length > 0 ? (
+              skills.map((option, index) => (
+                <Col xl={4} lg={4} md={6} sm={6} xs={12} key={index}>
+                  <Card className="skill-card shadow-sm text-center h-100">
+                    <Card.Body className="d-flex flex-column justify-content-center align-items-center">
+                      <div className="skill-icon mb-3">
+                        <i
+                          className="bi bi-lightbulb-fill"
+                          style={{ fontSize: "2rem", color: "#f39c12" }}
+                        ></i>
+                      </div>
+                      <Link to={`/skill/${option}`}>
+                        <Card.Title
+                          className="mb-2"
+                          style={{ fontWeight: "bold", fontSize: "1.2rem" }}
+                        >
+                          {option}
+                        </Card.Title>
+                      </Link>
+                      <Card.Text className="text-muted">
+                        Find the valets based on this skill!
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))
+            ) : (
+              <>
+                <Col xl={12} lg={12} md={12} sm={12} className="text-center">
+                  <h3>No Record Found</h3>
+                </Col>
+              </>
+            )}
           </Row>
         </Container>
       ) : (
