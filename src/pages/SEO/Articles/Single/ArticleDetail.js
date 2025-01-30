@@ -55,7 +55,7 @@ const ArticleDetail = () => {
     fetchRecentPosts();
   }, []);
 
-  const reservedRoutes = ["articles", "skill"];
+  const reservedRoutes = ["blogs", "skill"];
   if (reservedRoutes.includes(slug)) {
     return <navigate to={`/${slug}`} />;
   }
@@ -92,14 +92,15 @@ const ArticleDetail = () => {
                         </span>
                       </p>
                     </div>
-                    <Card.Img
-                      variant="top"
-                      src={state?.image}
-                      className="rounded-3 mb-3"
-                      style={{
+                    <HandleImages
+                      imageSrc={state?.image}
+                      imageAlt={state?.title}
+                      imageStyle={{
                         width: "100%",
                         height: "400px",
                       }}
+                      className="top"
+                      placeholder="article"
                     />
                     <div dangerouslySetInnerHTML={{ __html: state?.content }} />
                     <div className="py-3">

@@ -1,26 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import "./navigationBar.css"; // Add custom CSS for additional styles
+import { Container, Nav, Navbar } from "react-bootstrap";
+import { NavLink, useLocation } from "react-router-dom";
+import "./navigationBar.css";
 import logo from "../../../assets/images/logo-for-white-bg.svg";
-import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function NavigationBar() {
+  const location = useLocation();
   const [navBackground, setNavBackground] = useState(false);
+  const isHomePage = location.pathname === "/welcome";
+  const { userAuth } = useSelector((state) => state?.authentication);
 
   useEffect(() => {
+    if (!isHomePage) {
+      setNavBackground(true); // Always apply background on other pages
+      return;
+    }
+
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setNavBackground(true);
-      } else {
-        setNavBackground(false);
-      }
+      setNavBackground(window.scrollY > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isHomePage]);
 
   return (
     <Navbar
@@ -28,6 +31,9 @@ function NavigationBar() {
       collapseOnSelect
       expand="md"
       className={`custom-navbar ${navBackground ? "scrolled" : ""}`}
+      style={{
+        marginBottom: navBackground && "0px",
+      }}
     >
       <Container>
         <NavLink to="/" className="text-center">
@@ -35,7 +41,6 @@ function NavigationBar() {
         </NavLink>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          {/* Centered Navigation Links */}
           <Nav className="mx-auto navbar-center-links">
             <Nav.Link as={NavLink} to="/" className="mx-2">
               Home
@@ -53,7 +58,7 @@ function NavigationBar() {
           <Nav>
             <Nav.Link
               as={NavLink}
-              to="/login"
+              to={userAuth ? "/account" : "/login"}
               className={`px-5 py-2 ${
                 !navBackground ? "bg-white text-dark" : "bg-dark text-white"
               }`}
@@ -61,7 +66,7 @@ function NavigationBar() {
                 borderRadius: "50px",
               }}
             >
-              Sign In
+              {userAuth ? "Profile" : "Sign In"}
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>

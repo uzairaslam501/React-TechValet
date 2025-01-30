@@ -136,7 +136,7 @@ const Appointment = ({ onComplete }) => {
           <Col lg={{ span: 10, offset: 1 }}>
             <Card>
               <CardBody>
-                <h2 className="fw-bold">Manage Appointments with Tech Valet</h2>
+                <h2 className="fw-bold">Requested Services</h2>
                 <CustomTable
                   headers={headers}
                   records={records}

@@ -1,15 +1,15 @@
 import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import WelcomeHeader from "../../../components/Client/Navbar/welcomeHeader";
 import background from "../../../assets/images/header-image.png";
 import createAccount from "../../../assets/images/icons/create-your-account.svg";
 import makeAppointment from "../../../assets/images/icons/make-an-appointment.svg";
 import joinMeeting from "../../../assets/images/icons/join-meeting.svg";
 import whatWeDoImage from "../../../assets/images/what-we-do-image.svg";
+import "./style.css";
+import Footer from "../../../components/Client/Footer/footer";
 const Welcome = () => {
   return (
     <>
-      <WelcomeHeader />
       <Container
         fluid
         style={{ backgroundColor: "#fcd609" }}
@@ -26,17 +26,11 @@ const Welcome = () => {
               className="text-center text-lg-start mb-4 mb-lg-0"
             >
               <div>
-                <h4>Who We Are</h4>
-                <h1
-                  className="fw-bold"
-                  style={{
-                    fontSize: "60px",
-                    lineHeight: "1.2",
-                  }}
-                >
+                <h4 className="text-responsive">Who We Are</h4>
+                <h1 className="fw-bold text-responsive-heading">
                   Community-Driven Tech Assistance
                 </h1>
-                <p className="fs-5 mt-3">
+                <p className="fs-5 mt-3 text-responsive-paragraph">
                   We are a community of people with IT expertise in computers,
                   smartphones, and other devices. We are here to help you.
                 </p>
@@ -64,11 +58,7 @@ const Welcome = () => {
               <img
                 src={background}
                 alt="Community Assistance"
-                style={{
-                  width: "100%",
-                  maxWidth: "500px",
-                  height: "auto",
-                }}
+                className="img-fluid"
               />
             </Col>
           </Row>
@@ -76,101 +66,139 @@ const Welcome = () => {
       </Container>
 
       {/* How Does It Work */}
-      <Row style={{ position: "relative" }}>
-        <Container fluid className="bg-white pt-5">
-          {/* What We Do */}
-          <Row
-            className="mb-5 px-5"
-            style={{ position: "relative", top: "25%" }}
+
+      <Container className="py-5">
+        <Row>
+          {/* Text Column */}
+          <Col xl={12} lg={12} md={12} sm={12} xs={12} className="">
+            <h2 className="text-center fw-bold text-responsive-heading">
+              How Does It Work
+            </h2>
+            <p className="text-center mt-3 text-black text-responsive-paragraph">
+              We have a valet to walk you through it in 3-Easy-Steps
+            </p>
+          </Col>
+
+          <Col
+            style={{
+              backgroundColor: "#000000",
+              borderRadius: "15px",
+              zIndex: 9,
+            }}
+            xl={{ span: 10, offset: 1 }}
+            lg={{ span: 10, offset: 1 }}
+            md={{ span: 10, offset: 1 }}
+            sm={{ span: 10, offset: 1 }}
+            xs={{ span: 10, offset: 1 }}
+            className="text-center text-lg-start mb-4 mb-lg-0"
           >
-            <Container
-              style={{ backgroundColor: "#f7f7f8", borderRadius: "15px" }}
-            >
-              <Container style={{ padding: "10rem 0 1rem 5rem" }}>
-                <Row>
-                  <h4 className="text-center text-danger">
-                    * At the end of the appointment, our Valets will provide you
-                    with a 1-page overview of the solution, so you can use it
-                    any time you run into the same roadblock in the future!
-                  </h4>
-                </Row>
-
-                <Row className="pt-5">
-                  <Col xl={6} lg={6} md={6} sm={12}>
-                    <h1 className="fw-bold mb-3" style={{ fontSize: "3rem" }}>
-                      What we Do
-                    </h1>
-                    <h4 className="mt-5" style={{ lineHeight: "2.5rem" }}>
-                      We connect you with people who are IT savvy, so they can
-                      help you solve your techheadaches, quickly, at an
-                      affordable price, and at a time that's convenient for you.
-                    </h4>
-
-                    <Button className="mt-5 mb-3 btn-white-secondary" size="lg">
-                      Get Started <span className="bi bi-arrow-right"></span>
-                    </Button>
-                  </Col>
-
-                  <Col xl={6} lg={6} md={6} sm={12} className="mb-5">
-                    <img src={whatWeDoImage} alt="what-we-do-image" />
-                  </Col>
-                </Row>
-              </Container>
-            </Container>
-          </Row>
-
-          <Container style={{ position: "relative", bottom: "65%" }}>
-            <Row>
-              {/* Text Column */}
+            <Row className="py-5 text-center">
               <Col
-                xl={12}
-                lg={12}
-                md={12}
+                xl={4}
+                lg={4}
+                md={4}
                 sm={12}
-                className="text-center text-lg-start mb-4 mb-lg-0"
+                xs={12}
+                className="py-2"
+                style={{ borderRight: "solid 1px #565252" }}
               >
-                <h2
-                  className="text-center fw-bold"
-                  style={{
-                    fontSize: "55px",
-                    lineHeight: "1",
-                  }}
-                >
-                  How Does It Work
-                </h2>
-                <p className="text-center mt-3 text-black">
-                  We have a valet to walk you through it in 3-Easy-Steps
-                </p>
+                <img
+                  src={createAccount}
+                  alt="account-icon"
+                  className="img-fluid"
+                />
+                <h5 className="text-white pt-3">Create your Account</h5>
+              </Col>
+              <Col
+                xl={4}
+                lg={4}
+                md={4}
+                sm={12}
+                xs={12}
+                className="py-2"
+                style={{ borderRight: "solid 1px #565252" }}
+              >
+                <img
+                  src={makeAppointment}
+                  alt="appointment-icon"
+                  className="img-fluid"
+                />
+                <h5 className="text-white pt-3">Make an Appointment</h5>
+              </Col>
+              <Col xl={4} lg={4} md={4} sm={12} xs={12} className="py-2">
+                <img
+                  src={joinMeeting}
+                  alt="appointment-icon"
+                  className="img-fluid"
+                />
+                <h5 className="text-white pt-3">Join the Meeting</h5>
               </Col>
             </Row>
-            <Row className="mt-5 px-5">
+          </Col>
+
+          <Col
+            xl={12}
+            lg={12}
+            md={12}
+            sm={12}
+            xs={12}
+            className="p-5 custom-margin"
+            style={{ backgroundColor: "#f3f3f3", borderRadius: "25px" }}
+          >
+            <Row className="m-0 custom-padding">
               <Col
-                style={{ backgroundColor: "#000000", borderRadius: "15px" }}
-                xl={12}
-                lg={12}
-                md={12}
-                sm={12}
-                className="text-center text-lg-start mb-4 mb-lg-0"
+                xl={{ span: 10, offset: 1 }}
+                lg={{ span: 10, offset: 1 }}
+                md={{ span: 10, offset: 1 }}
+                sm={{ span: 12 }}
+                xs={{ span: 12 }}
               >
-                <Row className="py-5 text-center">
-                  <Col style={{ borderRight: "solid 1px #565252" }}>
-                    <img src={createAccount} alt="account-icon" />
-                    <h4 className="text-white">Create your account</h4>
-                  </Col>
-                  <Col style={{ borderRight: "solid 1px #565252" }}>
-                    <img src={makeAppointment} alt="appointment-icon" />
-                    <h4 className="text-white">Make an appointment</h4>
-                  </Col>
-                  <Col>
-                    <img src={joinMeeting} alt="appointment-icon" />
-                    <h4 className="text-white">Join the meeting</h4>
-                  </Col>
-                </Row>
+                <h4 className="text-center text-danger">
+                  * At the end of the appointment, our Valets will provide you
+                  with a 1-page overview of the solution, so you can use it any
+                  time you run into the same roadblock in the future!
+                </h4>
+
+                <Container className="pt-5">
+                  <Row className="justify-content-center align-items-center">
+                    <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                      <h1 className="fw-bold mb-3">What we Do</h1>
+                      <p className="mt-2 text-dark text-responsive-paragraph">
+                        We connect you with people who are IT savvy, so they can
+                        help you solve your tech headaches, quickly, at an
+                        affordable price, and at a time that's convenient for
+                        you.
+                      </p>
+
+                      <Button
+                        className="mt-3 mb-3 btn-white-secondary"
+                        size="lg"
+                      >
+                        Get Started <span className="bi bi-arrow-right"></span>
+                      </Button>
+                    </Col>
+
+                    <Col
+                      xl={6}
+                      lg={6}
+                      md={6}
+                      sm={12}
+                      xs={12}
+                      className="text-center"
+                    >
+                      <img
+                        src={whatWeDoImage}
+                        alt="what-we-do-image"
+                        className="img-fluid w-100"
+                      />
+                    </Col>
+                  </Row>
+                </Container>
               </Col>
             </Row>
-          </Container>
-        </Container>
-      </Row>
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 };

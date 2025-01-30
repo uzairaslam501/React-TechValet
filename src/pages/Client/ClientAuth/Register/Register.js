@@ -118,7 +118,7 @@ const Register = () => {
 
   return (
     <Container fluid>
-      <Row className="vh-100">
+      <Row className="bg-white">
         {/* Image Column */}
         <Col
           xl={6}
