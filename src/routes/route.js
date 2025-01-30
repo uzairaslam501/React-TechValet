@@ -59,6 +59,7 @@ import AdminUpdatePassword from "../pages/Admin/Auth/Profile/UpdatePassword";
 import ClientUpdatePassword from "../pages/Client/ClientAuth/UpdatePassword/ClientUpdatePassword";
 import PrivacyPolicy from "../pages/Policies/PrivacyPolicy/privacy";
 import TermsAndConditions from "../pages/Policies/TermsAndCondition/TermsAndCondition";
+import PublicRoot from "../components/Public/Layout/publicRoot";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -77,12 +78,6 @@ const createRoute = createBrowserRouter(
         element={<VerificationFailed />}
       />
 
-      <Route element={<AuthLayout />}>
-        <Route path="/admin" element={<Login />} />
-        <Route path="/signup" element={<Register />} />
-        {/* <Route path="reset-password/:token?" element={<ResetPassword />} />
-        <Route path="forgot-password" element={<ForgotPassword />} /> */}
-      </Route>
       <Route element={<ProtectedLayout />}>
         <Route element={<RootLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
@@ -96,16 +91,7 @@ const createRoute = createBrowserRouter(
       </Route>
 
       <Route element={<ClientRoot />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/skills" element={<SkillArticle />} />
-        <Route path="/skill/:skill" element={<SkillProfiles />} />
-        <Route path="/blogs" element={<PublicArticles />} />
-        <Route path="/:slug" element={<ArticleDetail />} />
-        <Route path="/preview-profile/:id" element={<PreviewProfile />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+        <Route path="/home" element={<Home />} />
 
         <Route element={<ProtectedClient />}>
           {/* Global */}
@@ -156,7 +142,19 @@ const createRoute = createBrowserRouter(
           </Route>
         </Route>
       </Route>
-      <Route path="/welcome" element={<Welcome />} />
+
+      <Route element={<PublicRoot />}>
+        <Route path="/" element={<Welcome />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/skills" element={<SkillArticle />} />
+        <Route path="/skill/:skill" element={<SkillProfiles />} />
+        <Route path="/blogs" element={<PublicArticles />} />
+        <Route path="/:slug" element={<ArticleDetail />} />
+        <Route path="/preview-profile/:id" element={<PreviewProfile />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+      </Route>
       <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="/not-found" element={<NotFound />} />
     </>

@@ -9,6 +9,7 @@ import {
 import CustomButtons from "../Button/buttons";
 import { NavLink } from "react-router-dom";
 import BadgeStatus from "../StatusBadge/StatusBadge";
+import { truncateCharacters } from "../../../utils/_helpers";
 
 function CustomTable({
   headers,
@@ -337,7 +338,9 @@ function CustomTable({
                           )}
                         </>
                       ) : (
-                        row[header.column]
+                        <span title={row[header.column]}>
+                          {truncateCharacters(row[header.column], 25)}
+                        </span>
                       )}
                     </td>
                   ))}

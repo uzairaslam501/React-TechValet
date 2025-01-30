@@ -1,12 +1,84 @@
-.what-we-do-bgImage {
-    background-image: url('../../../assets/images/what-we-do-image.svg'); /* Replace with your image path */
-    background-size: cover; /* Ensures the image covers the entire element */
-    background-repeat: no-repeat; /* Prevents the image from repeating */
-    background-position: center center; /* Centers the image within the element */
-    height: 400px; /* Fixed height, adjust as needed */
-    width: 100%; /* Full width of the viewport */
-    position: relative; /* Allows positioning of other elements inside */
-    display: flex; /* Optional: use flexbox for content alignment */
-    align-items: center; /* Optional: vertically center content */
-    justify-content: center; /* Optional: horizontally center content */
+/* Default font sizes for larger screens */
+.text-responsive-heading {
+  font-size: 60px;
+}
+
+.text-responsive-paragraph {
+  font-size: 1.25rem;
+  line-height: 2rem;
+}
+
+.custom-margin {
+  margin-top: -100px;
+}
+
+.custom-padding {
+  padding-top: 100px;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 1200px) {
+  .text-responsive-heading {
+    font-size: 50px;
+  }
+
+  .text-responsive-paragraph {
+    font-size: 1.3rem;
+    line-height: 2rem;
+  }
+
+  .custom-margin {
+    margin-top: -120px;
+  }
+
+  .custom-padding {
+    padding-top: 100px;
+  }
+}
+
+@media (max-width: 992px) {
+  .text-responsive-heading {
+    font-size: 40px;
+  }
+
+  .text-responsive-paragraph {
+    font-size: 1.1rem;
+    line-height: 1.5rem;
+  }
+
+  .custom-margin {
+    margin-top: -150px;
+  }
+
+  .custom-padding {
+    padding-top: 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .text-responsive-heading {
+    font-size: 35px;
+  }
+
+  .text-responsive-paragraph {
+    font-size: 1.2rem;
+  }
+
+  .custom-margin {
+    margin-top: -150px;
+  }
+
+  .custom-padding {
+    padding-top: 100px;
+  }
+}
+
+@media (max-width: 576px) {
+  .text-responsive-heading {
+    font-size: 30px;
+  }
+
+  .text-responsive-paragraph {
+    font-size: 1.1rem;
+  }
 }
