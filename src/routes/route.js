@@ -60,6 +60,7 @@ import PublicRoot from "../components/Public/Layout/publicRoot";
 import CustomerList from "../pages/Admin/User/List/Customer/CustomerList";
 import ValetList from "../pages/Admin/User/List/Valet/ValetList";
 import SeoList from "../pages/Admin/User/List/SEO/SeoList";
+import { Helmet } from "react-helmet-async";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -166,6 +167,9 @@ const createRoute = createBrowserRouter(
 function AppRoutes() {
   return (
     <>
+      <Helmet>
+        <title>Tech Valet</title>
+      </Helmet>
       <RouterProvider router={createRoute} />
     </>
   );

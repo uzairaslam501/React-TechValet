@@ -87,10 +87,10 @@ const ArticleDetail = () => {
     isBlogPost && (
       <>
         <Helmet>
+          <title>{`${isBlogPost?.title} - Tech Valet`}</title>
           <link rel="canonical" href={canonicalUrl} />
-          <meta name="title" content={`${isBlogPost?.title}.`} />
-          <meta name="description" content={`${isBlogPost?.description}.`} />
-          <meta name="keywords" content={`${isBlogPost?.tags}.`} />
+          <meta name="description" content={`${isBlogPost?.description}`} />
+          <meta name="keywords" content={`${isBlogPost?.tags}`} />
         </Helmet>
 
         <Container fluid className="bg-white">
