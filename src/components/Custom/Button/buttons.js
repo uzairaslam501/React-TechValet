@@ -15,6 +15,7 @@ const CustomButtons = ({ buttons, row, className = "" }) => {
               variant={button.variant || "light"}
               title={button.title || ""}
               size="sm"
+              disabled={button?.disabled}
             >
               <i className={button.icon}></i>
             </Button>
@@ -26,6 +27,7 @@ const CustomButtons = ({ buttons, row, className = "" }) => {
               title={button.title || ""}
               variant={button.variant || "primary"}
               size="sm"
+              disabled={button?.disabled}
             >
               {button.label}
             </Button>

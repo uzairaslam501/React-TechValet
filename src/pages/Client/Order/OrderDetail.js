@@ -151,6 +151,7 @@ const OrderDetail = () => {
   };
 
   const handleAcceptRejectDate = (data) => {
+    setSendLoader(true);
     dispatch(extendOrderConfirmation(data)).then((response) => {
       const newMessage = response?.payload;
       setActiveChat((prev) =>
@@ -161,10 +162,12 @@ const OrderDetail = () => {
         )
       );
       setActiveChat((prev) => [...prev, newMessage]);
+      setSendLoader(false);
     });
   };
 
   const handleAcceptRejectCancel = (data) => {
+    setSendLoader(true);
     dispatch(orderCancelConfirmation(data)).then((response) => {
       const newMessage = response?.payload;
       setActiveChat((prev) =>
@@ -175,6 +178,7 @@ const OrderDetail = () => {
         )
       );
       setActiveChat((prev) => [...prev, newMessage]);
+      setSendLoader(false);
     });
   };
 
@@ -254,6 +258,7 @@ const OrderDetail = () => {
                             userAuth={userAuth}
                             handleAcceptRejectDate={handleAcceptRejectDate}
                             handleAcceptRejectCancel={handleAcceptRejectCancel}
+                            sendLoader={sendLoader}
                           />
                         )
                       )}
@@ -276,51 +281,57 @@ const OrderDetail = () => {
                           value={messageTyped}
                           onChange={(e) => handleTypeMessage(e.target.value)}
                           readOnly={showSpinner}
+                          disabled={
+                            orderDetails && orderDetails?.isDelivered === "2"
+                          }
                         />
                       </div>
-                      <div className="row py-3">
-                        <div className="col-6 mb-2">
-                          <FileUploadButton
-                            setSelectedFile={setSelectedFile}
-                            onFileUpload={handleFileUpload}
-                            disabled={
-                              showSpinner ||
-                              (orderDetails &&
-                                orderDetails?.isDelivered === "2" &&
-                                true)
-                            }
-                            classname="w-sm-100 btn-sm"
-                          />
-                          {selectedFile && (
-                            <div className="mt-2">
-                              <strong>Selected File:</strong>{" "}
-                              {selectedFile.name}
-                            </div>
-                          )}
+                      {orderDetails && orderDetails?.isDelivered !== "2" && (
+                        <div className="row py-3">
+                          <div className="col-6 mb-2">
+                            <FileUploadButton
+                              setSelectedFile={setSelectedFile}
+                              onFileUpload={handleFileUpload}
+                              disabled={
+                                sendLoader ||
+                                showSpinner ||
+                                (orderDetails &&
+                                  orderDetails?.isDelivered === "2" &&
+                                  true)
+                              }
+                              classname="w-sm-100 btn-sm"
+                            />
+                            {selectedFile && (
+                              <div className="mt-2">
+                                <strong>Selected File:</strong>{" "}
+                                {selectedFile.name}
+                              </div>
+                            )}
+                          </div>
+                          <div className="col-6 mb-2 text-end">
+                            <Button
+                              variant="primary-secondary"
+                              className="btn-sm w-50"
+                              onClick={() =>
+                                handleSendMessage(
+                                  userAuth?.role === "Valet"
+                                    ? orderDetails?.customerEncId
+                                    : orderDetails?.valetEncId
+                                )
+                              }
+                              disabled={
+                                sendLoader ||
+                                showSpinner ||
+                                (orderDetails &&
+                                  orderDetails?.isDelivered === "2" &&
+                                  true)
+                              }
+                            >
+                              Send
+                            </Button>
+                          </div>
                         </div>
-                        <div className="col-6 mb-2 text-end">
-                          <Button
-                            variant="primary-secondary"
-                            className="btn-sm w-50"
-                            onClick={() =>
-                              handleSendMessage(
-                                userAuth?.role === "Valet"
-                                  ? orderDetails?.customerEncId
-                                  : orderDetails?.valetEncId
-                              )
-                            }
-                            disabled={
-                              sendLoader ||
-                              showSpinner ||
-                              (orderDetails &&
-                                orderDetails?.isDelivered === "2" &&
-                                true)
-                            }
-                          >
-                            Send
-                          </Button>
-                        </div>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -409,8 +420,9 @@ const OrderDetail = () => {
                 <>
                   <Button
                     onClick={() => handleZoomMeeting()}
-                    className="w-100 btn btn-sm"
-                    disabled={showSpinner}
+                    className="w-100"
+                    size="sm"
+                    disabled={showSpinner || sendLoader}
                   >
                     Zoom Meeting
                   </Button>
