@@ -11,6 +11,7 @@ const ChatContainer = ({
   userAuth,
   handleAcceptRejectDate,
   handleAcceptRejectCancel,
+  sendLoader,
 }) => {
   const handleAccept = (message, type) => {
     console.log(message);
@@ -111,6 +112,7 @@ const ChatContainer = ({
               onClick: () => handleAccept(message, "cancel"),
               variant: "success",
               className: "w-100",
+              disabled: sendLoader,
             },
             {
               id: 2,
@@ -119,6 +121,7 @@ const ChatContainer = ({
               onClick: () => handleReject(message, "cancel"),
               variant: "outline-danger",
               className: "w-100",
+              disabled: sendLoader,
             },
           ],
         },
@@ -136,6 +139,7 @@ const ChatContainer = ({
               onClick: () => handleAccept(message, "extend"),
               variant: "success",
               className: "w-100",
+              disabled: sendLoader,
             },
             {
               id: 2,
@@ -144,6 +148,7 @@ const ChatContainer = ({
               onClick: () => handleReject(message, "extend"),
               variant: "outline-danger",
               className: "w-100",
+              disabled: sendLoader,
             },
           ],
         },
