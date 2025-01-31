@@ -5,9 +5,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import Login from "../pages/Admin/Auth/Login/Login";
 import Register from "../pages/Client/ClientAuth/Register/Register";
-import AuthLayout from "../components/Admin/Layouts/authLayout";
 import ProtectedLayout from "../components/Admin/Layouts/protected";
 import Dashboard from "../pages/Admin/Dashboard/Dashboard";
 import RootLayout from "../components/Admin/Layouts/rootLayout";
@@ -51,7 +49,6 @@ import Unauthorized from "../pages/Error/Unauthorized";
 import NotFound from "../pages/Error/NotFound";
 import AccountProcess from "../pages/Client/AccountVerification/Index";
 import AddUser from "../pages/Admin/User/AddUser";
-import UserList from "../pages/Admin/User/UserList";
 import UpdateProfile from "../pages/Admin/Auth/Profile/UpdateProfile";
 import PackagesList from "../pages/Admin/Packages/PackagesList";
 import OrdersRecord from "../pages/Admin/Orders";
@@ -60,6 +57,9 @@ import ClientUpdatePassword from "../pages/Client/ClientAuth/UpdatePassword/Clie
 import PrivacyPolicy from "../pages/Policies/PrivacyPolicy/privacy";
 import TermsAndConditions from "../pages/Policies/TermsAndCondition/TermsAndCondition";
 import PublicRoot from "../components/Public/Layout/publicRoot";
+import CustomerList from "../pages/Admin/User/List/Customer/CustomerList";
+import ValetList from "../pages/Admin/User/List/Valet/ValetList";
+import SeoList from "../pages/Admin/User/List/SEO/SeoList";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -82,7 +82,9 @@ const createRoute = createBrowserRouter(
         <Route element={<RootLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/add-user/:type" element={<AddUser />} />
-          <Route path="/user-list/:type" element={<UserList />} />
+          <Route path="/user-list/customer" element={<CustomerList />} />
+          <Route path="/user-list/valet" element={<ValetList />} />
+          <Route path="/user-list/seo" element={<SeoList />} />
           <Route path="/view-packages" element={<PackagesList />} />
           <Route path="/order-record" element={<OrdersRecord />} />
           <Route path="/update-profile" element={<UpdateProfile />} />

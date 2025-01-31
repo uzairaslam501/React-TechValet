@@ -3,7 +3,10 @@ import { useDispatch } from "react-redux";
 import { Helmet } from "react-helmet-async";
 import React, { useEffect, useState } from "react";
 import { Card, Container, Row, Col } from "react-bootstrap";
-import { getBlogsList } from "../../../../redux/Actions/seoActions";
+import {
+  getBlogBySlug,
+  getBlogsList,
+} from "../../../../redux/Actions/seoActions";
 import HandleImages from "../../../../components/Custom/Avatars/HandleImages";
 import {
   Navigate,
@@ -19,13 +22,25 @@ import {
 
 const ArticleDetail = () => {
   const { slug } = useParams();
-  const { state } = useLocation();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [isBlogPost, setIsBlogPost] = useState(null);
   const [recentPosts, setRecentPosts] = useState(null);
   const [canonicalUrl, setCanonicalUrl] = useState("");
+
+  const fetchPostData = () => {
+    dispatch(getBlogBySlug(slug))
+      .then((response) => {
+        if (response?.payload) {
+          setIsBlogPost(response?.payload);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching profiles:", err);
+      });
+  };
 
   const fetchRecentPosts = (pageNumber = 0, pageLength = 9) => {
     const params = {
@@ -38,8 +53,12 @@ const ArticleDetail = () => {
     dispatch(getBlogsList(params))
       .then((response) => {
         const posts = response?.payload?.data || [];
-        const filteredPosts = posts.filter((post) => post.id !== state.id);
-        setRecentPosts(filteredPosts);
+        if (isBlogPost) {
+          const filteredPosts = posts.filter(
+            (post) => post.id !== isBlogPost.id
+          );
+          setRecentPosts(filteredPosts);
+        }
       })
       .catch((err) => {
         console.error("Error fetching profiles:", err);
@@ -52,26 +71,26 @@ const ArticleDetail = () => {
   }, [slug]);
 
   useEffect(() => {
+    fetchPostData();
+  }, [slug]);
+
+  useEffect(() => {
     fetchRecentPosts();
-  }, []);
+  }, [isBlogPost]);
 
   const reservedRoutes = ["blogs", "skill"];
   if (reservedRoutes.includes(slug)) {
     return <navigate to={`/${slug}`} />;
   }
 
-  if (!state) {
-    return <Navigate to={`/not-found`} />;
-  }
-
   return (
-    state && (
+    isBlogPost && (
       <>
         <Helmet>
           <link rel="canonical" href={canonicalUrl} />
-          <meta name="title" content={`${state?.title}.`} />
-          <meta name="description" content={`${state?.description}.`} />
-          <meta name="keywords" content={`${state?.tags}.`} />
+          <meta name="title" content={`${isBlogPost?.title}.`} />
+          <meta name="description" content={`${isBlogPost?.description}.`} />
+          <meta name="keywords" content={`${isBlogPost?.tags}.`} />
         </Helmet>
 
         <Container fluid className="bg-white">
@@ -81,20 +100,21 @@ const ArticleDetail = () => {
                 <Card className="shadow-sm rounded-lg border-0">
                   <Card.Body>
                     <h1 className="h1 font-weight-bold text-dark">
-                      {state?.title}
+                      {isBlogPost?.title}
                     </h1>
                     <div className="d-flex">
                       <p className="text-muted fs-5">
-                        {state?.publishedDate} <span className="mx-2">|</span>
+                        {isBlogPost?.publishedDate}{" "}
+                        <span className="mx-2">|</span>
                         <span>
-                          {calculateReadingTime(state?.content)} min reading
-                          time
+                          {calculateReadingTime(isBlogPost?.content)} min
+                          reading time
                         </span>
                       </p>
                     </div>
                     <HandleImages
-                      imageSrc={state?.image}
-                      imageAlt={state?.title}
+                      imageSrc={isBlogPost?.image}
+                      imageAlt={isBlogPost?.title}
                       imageStyle={{
                         width: "100%",
                         height: "400px",
@@ -102,10 +122,12 @@ const ArticleDetail = () => {
                       className="top"
                       placeholder="article"
                     />
-                    <div dangerouslySetInnerHTML={{ __html: state?.content }} />
+                    <div
+                      dangerouslySetInnerHTML={{ __html: isBlogPost?.content }}
+                    />
                     <div className="py-3">
-                      {state?.tags &&
-                        state.tags
+                      {isBlogPost?.tags &&
+                        isBlogPost.tags
                           .split(",")
                           .map((tag) => tag.trim())
                           .map((tag, index) => (

@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { convertToISO } from "../_helpers";
 import { postRenewToken } from "../../redux/Actions/authActions";
+import { logout } from "../../redux/Reducers/authSlice";
 
 // Main API Error Handler
 export const handleApiError = (error, dispatch, tokenExpiryTime) => {
@@ -32,18 +33,18 @@ const handleUnauthorizedError = (error, dispatch, tokenExpiryTime) => {
   const currentTimeInSeconds = Date.now() / 1000;
   const tokenExpiryInSeconds = new Date(tokenExpiryTime).getTime() / 1000;
 
-  if (tokenExpiryInSeconds && tokenExpiryInSeconds < currentTimeInSeconds) {
-    toast.error("Session has expired. Please log in again.");
-    dispatch(logout());
-  }
+  // if (tokenExpiryInSeconds && tokenExpiryInSeconds < currentTimeInSeconds) {
+  //   toast.error("Session has expired. Please log in again.");
+  //   dispatch(logout());
+  // }
 
   // Check if the token is about to expire in 5 minutes or less
-  // if (
-  //   tokenExpiryInSeconds &&
-  //   tokenExpiryInSeconds - currentTimeInSeconds <= 300
-  // ) {
-  //   dispatch(postRenewToken());
-  // }
+  if (
+    tokenExpiryInSeconds &&
+    tokenExpiryInSeconds - currentTimeInSeconds <= 300
+  ) {
+    dispatch(postRenewToken());
+  }
 };
 
 // Utility function to log and display errors

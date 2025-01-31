@@ -132,7 +132,7 @@ const ArticleList = () => {
           <Col xl={12} lg={12} md={12} sm={12} xs={12}>
             <Card className="shadow">
               <CardBody>
-                <h2 className="fw-bold">Manage Appointments with Tech Valet</h2>
+                <h2 className="fw-bold">Manage Blogs</h2>
                 <CustomTable
                   headers={headers}
                   records={articlesRecord}

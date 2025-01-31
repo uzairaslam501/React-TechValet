@@ -58,12 +58,16 @@ const SkillProfiles = () => {
   return (
     <div className="profiles-container">
       <Helmet>
+        <meta name="title" content={`${skillArticle?.title}.`} />
         <link rel="canonical" href={canonicalUrl} />
         <meta
           name="description"
-          content={`Discover profiles with skill: ${skill}.`}
+          content={`Discover profiles with skill: ${skill}, ${skillArticle?.description}`}
         />
-        <meta name="keywords" content={`skills, ${skill}, profiles`} />
+        <meta
+          name="keywords"
+          content={`skills, ${skill}, profiles, ${skillArticle?.tags}`}
+        />
       </Helmet>
       {isLoading ? (
         <div className="profiles-loading">

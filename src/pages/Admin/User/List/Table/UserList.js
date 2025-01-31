@@ -1,39 +1,20 @@
 import React, { useEffect, useState } from "react";
-import CustomTable from "../../../components/Custom/Datatable/table";
-import { useDispatch, useSelector } from "react-redux";
+import CustomTable from "../../../../../components/Custom/Datatable/table";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router";
-import { Card, CardBody, Col, Container, Row } from "react-bootstrap";
-import Dialogue from "../../../components/Custom/Modal/modal";
-import { getUserRecords } from "../../../redux/Actions/adminActions";
-import { deleteRecords } from "../../../redux/Actions/globalActions";
+import { Card, Col, Container, Row } from "react-bootstrap";
+import Dialogue from "../../../../../components/Custom/Modal/modal";
+import { getUserRecords } from "../../../../../redux/Actions/adminActions";
+import { deleteRecords } from "../../../../../redux/Actions/globalActions";
 
-const UserList = () => {
+const UserList = ({ userRole }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { userAuth } = useSelector((state) => state.authentication);
 
   const params = useParams();
-  console.log(params);
-
-  const chooseRole = (role) => {
-    let roleId;
-    switch (role) {
-      case "customer":
-        roleId = 3;
-        break;
-      case "valet":
-        roleId = 4;
-        break;
-      case "seo":
-        roleId = 5;
-        break;
-      default:
-        roleId = 3;
-    }
-    return roleId;
-  };
 
   const [records, setRecords] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
   const [pageLength, setPageLength] = useState(5);
   const [loader, setLoader] = useState(false);
   const [totalRecord, setTotalRecords] = useState(0);
@@ -84,7 +65,7 @@ const UserList = () => {
       .then((response) => {
         setDeleteLoader(false);
         handleClose();
-        fetchUsers();
+        fetchRecords();
       })
       .catch((error) => {
         console.log(
@@ -109,41 +90,43 @@ const UserList = () => {
     setShowDeleteModal(false);
   };
 
-  const fetchUsers = async (
-    role = chooseRole(params?.type),
+  const fetchRecords = async (
     pageNumber = 0,
     pageLength = 5,
     sortColumn = "",
     sortDirection = "",
-    searchParam = ""
+    searchParam = "",
+    role = userRole
   ) => {
     const params = {
-      role,
       pageNumber,
       pageLength,
       sortColumn,
       sortDirection,
       searchParam,
+      role,
     };
 
     try {
       setLoader(true);
       dispatch(getUserRecords(params))
         .then((response) => {
-          const data = response.payload?.data.map((user) => {
-            if (user.isActive === "EmailVerificationPending") {
-              user.gender = "Pending Activation";
-            } else if (user.isActive === "AdminVerificationPending") {
-              user.gender = "Pending Approval";
-            } else if (user.isActive === "Active") {
-              user.gender = "Activated";
-            } else {
-              user.gender = "N/A";
-            }
-            return user;
-          });
-          setRecords(data);
-          console.log(data);
+          if (response?.payload) {
+            const data = response.payload?.data.map((user) => {
+              if (user.isActive === "EmailVerificationPending") {
+                user.gender = "Pending Activation";
+              } else if (user.isActive === "AdminVerificationPending") {
+                user.gender = "Pending Approval";
+              } else if (user.isActive === "Active") {
+                user.gender = "Activated";
+              } else {
+                user.gender = "N/A";
+              }
+              return user;
+            });
+            setRecords(data);
+            console.log(data);
+          }
           setTotalRecords(response.payload?.recordsTotal);
         })
         .catch((error) => {
@@ -158,42 +141,32 @@ const UserList = () => {
   };
 
   useEffect(() => {
-    fetchUsers(chooseRole(params?.type), 0, pageLength);
-  }, [pageLength, params]);
+    fetchRecords(pageNumber, pageLength);
+  }, [pageNumber, pageLength, userRole]);
 
   return (
     <>
-      <Container className="mt-5">
-        <Row className="justify-content-center">
-          <div className="col-xl-10 col-lg-12 col-md-9">
-            <div className="card o-hidden border-0 shadow-lg my-3">
-              <div className="card-body p-0">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <div className="p-5">
-                      <div className="text-center">
-                        <h1 className="h3 text-gray-900 mb-4 text-bold">
-                          Manage Customer
-                        </h1>
-                      </div>
-                      <CustomTable
-                        headers={headers}
-                        records={records}
-                        totalRecords={totalRecord}
-                        pageLength={pageLength}
-                        buttons={buttons}
-                        onPageChange={fetchUsers}
-                        onPageLengthChange={setPageLength}
-                        loader={loader}
-                        searchFunctionality={false}
-                        pageLengthFunctionality={true}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+      <Container className="py-5 mt-5">
+        <Row className="">
+          <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+            <Card>
+              <Card.Body>
+                <h1 className="text-center h3 fw-bold">Manage Customer</h1>
+                <CustomTable
+                  headers={headers}
+                  records={records}
+                  totalRecords={totalRecord}
+                  pageLength={pageLength}
+                  buttons={buttons}
+                  onPageChange={fetchRecords}
+                  onPageLengthChange={setPageLength}
+                  loader={loader}
+                  searchFunctionality={false}
+                  pageLengthFunctionality={true}
+                />
+              </Card.Body>
+            </Card>
+          </Col>
         </Row>
       </Container>
 

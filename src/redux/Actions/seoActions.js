@@ -78,6 +78,25 @@ export const updateBlogs = createAsyncThunk(
   }
 );
 
+export const getBlogBySlug = createAsyncThunk(
+  "seo/getBlogBySlug",
+  async (slugName, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.get(`/Blogs/GetBlogBySlug/${slugName}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      rejectWithValue(error);
+    }
+  }
+);
+
 export const getBlogsList = createAsyncThunk(
   "seo/getBlogsList",
   async (
@@ -120,6 +139,7 @@ export const addSkillBlog = createAsyncThunk(
     formData.append("slug", obj.Slug);
     formData.append("content", obj.Content);
     formData.append("createdBy", parseInt(userId));
+    formData.append("tags", obj.Tags);
     formData.append("Image", obj.FeaturedImageUrl);
 
     try {
@@ -152,6 +172,7 @@ export const updateSkillBlogs = createAsyncThunk(
     formData.append("slug", obj.Slug);
     formData.append("content", obj.Content);
     formData.append("createdBy", parseInt(userId));
+    formData.append("tags", obj.Tags);
     formData.append("Image", obj.FeaturedImageUrl);
 
     try {

@@ -10,12 +10,7 @@ const ManageAppointment = () => {
     setIsAppointmentComplete(true);
   };
 
-  return (
-    <>
-      {<Appointment onComplete={handleAppointmentComplete} />}
-      {isAppointmentComplete && <Order isLoading={isAppointmentComplete} />}
-    </>
-  );
+  return <>{<Appointment onComplete={handleAppointmentComplete} />}</>;
 };
 
 export default ManageAppointment;

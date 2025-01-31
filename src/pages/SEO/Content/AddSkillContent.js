@@ -26,6 +26,7 @@ const AddSkillContent = () => {
     Slug: state?.slug || "",
     Description: state?.description || "",
     Content: state?.content || "",
+    Tags: state?.tags || "",
     FeaturedImageUrl: null,
   };
 
@@ -36,6 +37,7 @@ const AddSkillContent = () => {
       .min(50, "Description must be at least 50 characters")
       .required("Description is required"),
     Content: Yup.string().required("Content is required"),
+    Tags: Yup.string().trim().required("Tags are required"),
   });
 
   const handleSlugGeneration = (Title) => {
@@ -122,10 +124,6 @@ const AddSkillContent = () => {
                         onChange={(e) => {
                           handleChange(e);
                           setFieldValue("Skill", e.target.value); // Update Formik state
-                          setFieldValue(
-                            "Slug",
-                            handleSlugGeneration(e.target.value)
-                          );
                         }}
                         onBlur={handleBlur}
                         isInvalid={touched.Skill && !!errors.Skill}
@@ -155,6 +153,10 @@ const AddSkillContent = () => {
                         value={values.Title}
                         onChange={(e) => {
                           handleChange(e);
+                          setFieldValue(
+                            "Slug",
+                            handleSlugGeneration(e.target.value)
+                          );
                         }}
                         onBlur={handleBlur}
                         isInvalid={touched.Title && !!errors.Title}
@@ -174,6 +176,24 @@ const AddSkillContent = () => {
                     </Col>
                   )}
                 </Row>
+
+                <Form.Group controlId="exampleSlug" className="mb-4">
+                  <Form.Label className="text-dark">
+                    Slug<span className="text-danger">*</span>
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="Slug"
+                    placeholder="Slug"
+                    value={values.Slug}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    isInvalid={touched.Slug && !!errors.Slug}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.Slug}
+                  </Form.Control.Feedback>
+                </Form.Group>
 
                 <Form.Group controlId="Description" className="mb-4">
                   <Row className="align-items-center mt-2">
@@ -220,6 +240,22 @@ const AddSkillContent = () => {
                   {touched.Content && errors.Content && (
                     <div className="text-danger">{errors.Content}</div>
                   )}
+                </Form.Group>
+
+                <Form.Group controlId="Tags" className="mb-4">
+                  <Form.Label>Tags</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="Tags"
+                    placeholder="Add tags"
+                    value={values.Tags}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    isInvalid={touched.Tags && !!errors.Tags}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.Tags}
+                  </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group controlId="FeaturedImage" className="mb-4">
