@@ -15,6 +15,29 @@ const api = axios.create({
 
 //#region Articles
 
+//Handle Dashbaord
+export const getBlogsCount = createAsyncThunk(
+  "seo/getBlogsCount",
+  async (_, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      dispatch(setLoading({ key: "seoLoading", value: true }));
+      const response = await api.get(`/Blogs/Dashbaord`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "seoLoading", value: false }));
+    }
+  }
+);
+
 // Handle AddBlogs
 export const addBlogs = createAsyncThunk(
   "seo/addBlogs",
