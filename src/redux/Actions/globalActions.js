@@ -85,3 +85,21 @@ export const getTimezones = createAsyncThunk(
     }
   }
 );
+
+export const postAddContact = createAsyncThunk(
+  "user/postAddContact",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    try {
+      dispatch(setLoading({ key: "globalLoading", value: true }));
+      const response = await api.post(`/Contact/PostAddContact`, obj);
+      const { message } = processApiResponse(response, dispatch);
+      if (message) {
+        toast.success(message);
+      }
+    } catch (error) {
+      handleApiError(error, dispatch);
+    } finally {
+      dispatch(setLoading({ key: "globalLoading", value: false }));
+    }
+  }
+);

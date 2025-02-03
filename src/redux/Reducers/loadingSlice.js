@@ -11,6 +11,7 @@ const initialState = {
   packageLoading: false,
   paypalLoading: false,
   stripeLoading: false,
+  seoLoading: false,
 };
 
 const loadingSlice = createSlice({

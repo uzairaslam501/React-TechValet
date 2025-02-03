@@ -2,7 +2,12 @@ import React from "react";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import mission from "../../../assets/images/About/mission.png";
 import vission from "../../../assets/images/About/vission.png";
-import vector from "../../../assets/images/icons/Vector.png";
+import vector from "../../../assets/images/About/Vector.svg";
+import marketIcon from "../../../assets/images/About/healthicons_market-stall.svg";
+import jobSearchIcon from "../../../assets/images/About/hugeicons_job-search.svg";
+import teacherIcon from "../../../assets/images/About/hugeicons_teacher.svg";
+import helpIcon from "../../../assets/images/About/material-symbols_help-outline-rounded.svg";
+import informationIcon from "../../../assets/images/About/streamline_information-desk-customer.svg";
 import HandleImages from "../../../components/Custom/Avatars/HandleImages";
 import { NavLink } from "react-router-dom";
 
@@ -41,7 +46,7 @@ const About = () => {
                 imageAlt="Our Vission"
                 imageStyle={{
                   width: "400px",
-                  height: "400px",
+                  height: "auto",
                 }}
                 className="img-fluid rounded"
               />
@@ -64,7 +69,7 @@ const About = () => {
                 imageAlt="Our Mission"
                 imageStyle={{
                   width: "400px",
-                  height: "400px",
+                  height: "auto",
                 }}
                 className="img-fluid rounded"
               />
@@ -209,7 +214,7 @@ const About = () => {
                   <div className="d-flex align-items-center">
                     <div>
                       <img
-                        src={vector}
+                        src={informationIcon}
                         className="img-fluid"
                         style={{
                           width: "40px",
@@ -248,7 +253,7 @@ const About = () => {
                   <div className="d-flex align-items-center">
                     <div>
                       <img
-                        src={vector}
+                        src={marketIcon}
                         className="img-fluid"
                         style={{
                           width: "40px",
@@ -287,7 +292,7 @@ const About = () => {
                   <div className="d-flex align-items-center">
                     <div>
                       <img
-                        src={vector}
+                        src={teacherIcon}
                         className="img-fluid"
                         style={{
                           width: "40px",
@@ -326,7 +331,7 @@ const About = () => {
                   <div className="d-flex align-items-center">
                     <div>
                       <img
-                        src={vector}
+                        src={jobSearchIcon}
                         className="img-fluid"
                         style={{
                           width: "40px",
@@ -365,7 +370,7 @@ const About = () => {
                   <div className="d-flex align-items-center">
                     <div>
                       <img
-                        src={vector}
+                        src={helpIcon}
                         className="img-fluid"
                         style={{
                           width: "40px",

@@ -7,6 +7,7 @@ import {
 import { baseUrl } from "../../utils/_envConfig";
 import { getAuthUserId, getToken } from "../../utils/_apiConfig";
 import { toast } from "react-toastify";
+import { setLoading } from "../Reducers/loadingSlice";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -83,6 +84,7 @@ export const getBlogBySlug = createAsyncThunk(
   async (slugName, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
+      dispatch(setLoading({ key: "seoLoading", value: true }));
       const response = await api.get(`/Blogs/GetBlogBySlug/${slugName}`, {
         headers: {
           Authorization: `${token}`,
@@ -93,6 +95,8 @@ export const getBlogBySlug = createAsyncThunk(
     } catch (error) {
       handleApiError(error, dispatch, expired);
       rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "seoLoading", value: false }));
     }
   }
 );
