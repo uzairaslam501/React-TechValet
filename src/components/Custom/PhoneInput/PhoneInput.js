@@ -1,21 +1,19 @@
-import React, { useState } from "react";
-import { countryCodeList } from "../../../utils/client/data/countries";
+import React, { useState, useEffect } from "react";
 import { Form, InputGroup } from "react-bootstrap";
+import { countryCodeList } from "../../../utils/client/data/countries";
 import "./PhoneInput.css";
 
 const formatPhoneNumber = (number, format) => {
   let formatted = "";
   let index = 0;
 
+  // Loop through the format and apply digits where 'X' appears
   for (let char of format) {
     if (char === "X" && index < number.length) {
       formatted += number[index];
       index++;
-    } else if (char !== "X") {
-      formatted += char;
     }
   }
-
   return formatted;
 };
 
@@ -26,6 +24,7 @@ const CustomPhoneInput = ({
   onChange,
   countryFilter = [],
 }) => {
+  // Filter country list based on provided country codes
   const filteredCountries = countryFilter.length
     ? countryCodeList.filter((country) => countryFilter.includes(country.code))
     : countryCodeList;
@@ -33,71 +32,66 @@ const CustomPhoneInput = ({
   const [selectedCountry, setSelectedCountry] = useState(filteredCountries[0]);
   const [phoneNumber, setPhoneNumber] = useState(value);
 
+  useEffect(() => {
+    setPhoneNumber(value);
+  }, [value]);
+
   const handleCountryChange = (event) => {
     const countryCode = event.target.value;
     const country = filteredCountries.find((c) => c.code === countryCode);
     setSelectedCountry(country);
     setPhoneNumber(""); // Reset phone number when country changes
-    onChange(""); // Clear parent state when country changes
+    onChange(""); // Clear parent state
   };
 
   const handlePhoneNumberChange = (event) => {
-    const rawValue = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+    let rawValue = event.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+
+    // Prevent duplicate dial codes
+    if (rawValue.startsWith(selectedCountry.dialCode.replace("+", ""))) {
+      rawValue = rawValue.substring(selectedCountry.dialCode.length - 1);
+    }
+
+    // If empty, allow full deletion
+    if (rawValue.length === 0) {
+      setPhoneNumber("");
+      onChange("");
+      return;
+    }
+
+    // Apply format if there's still input left
     const formattedNumber = formatPhoneNumber(rawValue, selectedCountry.format);
-    setPhoneNumber(formattedNumber);
-    onChange(formattedNumber); // Update parent component
+
+    setPhoneNumber(`${selectedCountry.dialCode} ${formattedNumber}`);
+    onChange(`${selectedCountry.dialCode} ${formattedNumber}`);
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-      <InputGroup className="mb-3">
-        <InputGroup.Text style={{ padding: "0", borderRight: "none" }}>
-          <Form.Select
-            value={selectedCountry.code}
-            onChange={handleCountryChange}
-            style={{
-              border: "none",
-              fontSize: "1rem",
-              padding: "0.5rem 1rem",
-              width: "80px",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
-          >
-            {filteredCountries.map((country) => (
-              <option
-                key={country.code}
-                value={country.code}
-                style={{
-                  backgroundSize: "contain",
-                  fontSize: "1rem",
-                  padding: "0.25rem",
-                }}
-              >
-                {country.flag}
-              </option>
-            ))}
-          </Form.Select>
-        </InputGroup.Text>
-
-        <InputGroup.Text
+    <div className="custom-phone-input">
+      <InputGroup>
+        {/* Country Selector */}
+        <Form.Select
+          value={selectedCountry.code}
+          onChange={handleCountryChange}
+          className="country-select"
           style={{
-            padding: "0.5rem 0.75rem",
-            fontSize: "1rem",
-            borderLeft: "none",
-            borderRight: "none",
+            borderRight: "3px solid #eee",
           }}
         >
-          {selectedCountry.dialCode}
-        </InputGroup.Text>
+          {filteredCountries.map((country) => (
+            <option key={country.code} value={country.code}>
+              {country.name}
+            </option>
+          ))}
+        </Form.Select>
 
+        {/* Phone Number Input */}
         <Form.Control
           type="text"
           value={phoneNumber}
           onChange={handlePhoneNumberChange}
           placeholder={placeholder}
-          className={className}
-          style={{ borderLeft: "none" }}
+          className={`phone-input ${className}`}
         />
       </InputGroup>
     </div>

@@ -1,16 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  Row,
-  Col,
-  Form,
-  Button,
-  Tooltip,
-  OverlayTrigger,
-  Card,
-  Container,
-} from "react-bootstrap";
+import { Row, Col, Form, Button, Card, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../../../../redux/Reducers/authSlice";
 import "./profileImage.css";
 import {
   postUserActivity,
