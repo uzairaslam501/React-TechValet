@@ -84,6 +84,7 @@ export const UpdateProfileImage = createAsyncThunk(
     const formData = new FormData();
     formData.append("file", file);
     try {
+      dispatch(setLoading({ key: "authLoading", value: true }));
       const response = await api.put(
         `/Auth/update-profile-image/${encodeURIComponent(userId)}`,
         formData,
@@ -101,6 +102,8 @@ export const UpdateProfileImage = createAsyncThunk(
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
+    } finally {
+      dispatch(setLoading({ key: "authLoading", value: false }));
     }
   }
 );

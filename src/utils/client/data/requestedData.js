@@ -112,20 +112,20 @@ export const initialValues = {
 
 export const languageOptions = [
   { id: "English", value: "English" },
-  { id: "French", value: "French" },
-  { id: "Deutsch", value: "Deutsch" },
-  { id: "Portugese", value: "Portuguêse" },
-  { id: "Mandarin", value: "Mandarin" },
-  { id: "Cantonese", value: "Yue (Cantonese)" },
-  { id: "Spanish", value: "Spanish" },
+  { id: "French", value: "Français (French)" },
+  { id: "Deutsch", value: "Deutsch (German)" },
+  { id: "Portugese", value: "Português (Portuguese)" },
+  { id: "Mandarin", value: "普通话 (Mandarin)" },
+  { id: "Cantonese", value: "粵語 (Yue/Cantonese)" },
+  { id: "Spanish", value: "Español (Spanish)" },
   { id: "Tagalog", value: "Tagalog (Filipino)" },
-  { id: "Russian", value: "Russian" },
-  { id: "Chinese", value: "Chinese" },
-  { id: "Korean", value: "Korean" },
-  { id: "Persian", value: "Persian" },
-  { id: "Italian", value: "Italian" },
-  { id: "Vietnamese", value: "Vietnamese" },
-  { id: "Dutch", value: "Dutch" },
+  { id: "Russian", value: "Русский (Russian)" },
+  { id: "Chinese", value: "中文 (Chinese)" },
+  { id: "Korean", value: "한국어 (Korean)" },
+  { id: "Persian", value: "فارسی (Persian)" },
+  { id: "Italian", value: "Italiano (Italian)" },
+  { id: "Vietnamese", value: "Tiếng Việt (Vietnamese)" },
+  { id: "Dutch", value: "Nederlands (Dutch)" },
 ];
 
 export const skillsOptions = [

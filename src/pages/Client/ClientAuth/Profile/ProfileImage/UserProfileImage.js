@@ -43,18 +43,16 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
     if (imageEvent) {
       dispatch(
         UpdateProfileImage({ userId: userRecord?.userEncId, file: imageEvent })
-      ).then((response) => {});
+      ).then((response) => {
+        document.getElementById("uploadImageBtnSection").style.display = "none";
+      });
     }
   };
 
   const handleImageReset = () => {
     setImagePreview(null);
-    setProfileImage(
-      userRecord?.profilePicture ||
-        "https://usman78056-001-site7.gtempurl.com/profiles/download-(1)_638646395157341553.png"
-    );
+    setProfileImage(userRecord?.profilePicture);
     document.getElementById("uploadImageBtnSection").style.display = "none";
-    document.getElementById("imageLoadSection").style.display = "block";
   };
 
   const handleStatusChange = () => {
@@ -120,24 +118,62 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
   return (
     <>
       <Card className="shadow rounded bg-white profile-box text-center p-0">
-        <div className="mb-2 py-4 px-3">
-          <div className="">
-            <HandleImages
-              imagePath={
-                preview !== true
-                  ? imagePreview || profileImage
-                  : userRecord?.profileImage
-              }
-              imageAlt={`${userRecord?.firstName} ${userRecord?.lastName}`}
-              imageStyle={{ width: "250px", height: "250px" }}
-              className="mb-3 rounded-circle"
-            />
+        <div className="pt-4 px-3">
+          <div className="text-end">
+            <Button
+              onClick={handleCopyReferral}
+              className="rounded-circle border-0 text-black"
+              title="Share User Referral"
+              style={{
+                background: "#eae9e9",
+              }}
+            >
+              <i className="bi bi-share-fill"></i>
+            </Button>
+          </div>
+
+          <div>
+            <div className="position-relative d-inline-block">
+              {/* Profile Image */}
+              <HandleImages
+                imagePath={
+                  preview !== true
+                    ? imagePreview || profileImage
+                    : userRecord?.profileImage
+                }
+                imageAlt={`${userRecord?.firstName} ${userRecord?.lastName}`}
+                imageStyle={{
+                  width: "250px",
+                  height: "250px",
+                  border: "5px solid #000",
+                }}
+                className="mb-3 rounded-circle shadow"
+              />
+
+              {/* Camera Icon as Upload Button */}
+              <label
+                htmlFor="fileAttachmentBtn"
+                className="camera-icon"
+                id="imageLoadSection"
+              >
+                <i className="bi bi-camera-fill"></i>
+                <input
+                  id="fileAttachmentBtn"
+                  name="ImagePath"
+                  type="file"
+                  className="d-none"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+              </label>
+            </div>
+
+            <h2 className="fw-bold text-dark mb-3">
+              {userRecord?.firstName} {userRecord?.lastName}
+            </h2>
 
             {preview === true && (
               <>
-                <h5 className="font-weight-bold text-dark mb-1">
-                  {userRecord?.firstName} {userRecord?.lastName}
-                </h5>
                 {status ? (
                   <p className="mb-0 text-success">Online</p>
                 ) : (
@@ -188,28 +224,6 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
                 method="post"
                 encType="multipart/form-data"
               >
-                <div className="pb-3" id="imageLoadSection">
-                  <OverlayTrigger
-                    placement="top"
-                    overlay={<Tooltip>Upload New Picture</Tooltip>}
-                  >
-                    <label
-                      className="btn btn-success m-0"
-                      htmlFor="fileAttachmentBtn"
-                    >
-                      <i className="mdi mdi-image"></i> Upload Photo
-                      <input
-                        id="fileAttachmentBtn"
-                        name="ImagePath"
-                        type="file"
-                        className="d-none"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                      />
-                    </label>
-                  </OverlayTrigger>
-                </div>
-
                 {/* Update Image Section */}
                 <div
                   className="pb-3"
@@ -240,7 +254,6 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
           <>
             <Container className="justify-content-center">
               <Row
-                className=""
                 style={{
                   borderTop: "2px solid #eee",
                 }}
@@ -249,8 +262,8 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
                   xl={6}
                   lg={6}
                   md={6}
-                  sm={12}
-                  xs={12}
+                  sm={6}
+                  xs={6}
                   className="p-0 pb-3"
                   style={{
                     borderRight: "2px solid #eee",
@@ -270,7 +283,7 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
                     </div>
                   </div>
                 </Col>
-                <Col xl={6} lg={6} md={6} sm={12} xs={12} className="p-0">
+                <Col xl={6} lg={6} md={6} sm={6} xs={6} className="p-0">
                   <div className="custom-control custom-switch my-2">
                     <label>{availability ? "Available" : "Unavailable"}</label>
                     <div>

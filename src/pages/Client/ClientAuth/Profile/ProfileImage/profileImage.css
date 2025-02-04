@@ -55,3 +55,27 @@ input:checked + .slider:before {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4),
     inset 0 2px 3px rgba(255, 255, 255, 0.7);
 }
+
+.camera-icon {
+  width: 40px;
+  height: 40px;
+  background: #000;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  bottom: 30px;
+  right: 25px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #ffc107;
+}
+
+.camera-icon:hover {
+  background: #f1ba15;
+  border: 1px solid #000;
+  color: #000;
+}
