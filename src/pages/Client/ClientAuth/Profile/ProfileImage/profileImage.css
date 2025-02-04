@@ -5,3 +5,53 @@
 .form-check-label {
   margin-left: 20px;
 }
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, #ddd, #bbb);
+  border-radius: 34px;
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.3);
+  transition: 0.4s;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 17px;
+  width: 17px;
+  left: 4px;
+  bottom: 4px;
+  background: linear-gradient(to bottom, #fff, #ddd);
+  border-radius: 50%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4),
+    inset 0 2px 3px rgba(255, 255, 255, 0.7);
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background: linear-gradient(to bottom, #ffc107, #e6ad03);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4),
+    inset 0 2px 3px rgba(255, 255, 255, 0.7);
+}

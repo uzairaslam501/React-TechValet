@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button, Tooltip, OverlayTrigger } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Form,
+  Button,
+  Tooltip,
+  OverlayTrigger,
+  Card,
+  Container,
+} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../../../redux/Reducers/authSlice";
 import "./profileImage.css";
@@ -10,10 +19,9 @@ import {
 } from "../../../../../redux/Actions/authActions";
 import HandleImages from "../../../../../components/Custom/Avatars/HandleImages";
 import { toast } from "react-toastify";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const UserProfileImage = ({ userRecord, preview = false }) => {
-  console.log(userRecord);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [imageEvent, setImageEvent] = useState(null);
@@ -79,10 +87,6 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
     });
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
-  };
-
   const handleCopyReferral = async () => {
     const systemUrl = `${window.location.origin}`;
     const textToCopy = `${systemUrl}?referredBy=${userRecord?.userName}`;
@@ -114,151 +118,179 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
   ]);
 
   return (
-    <div className="mb-2 shadow rounded bg-white profile-box text-center py-4 px-3">
-      <div className="">
-        <HandleImages
-          imagePath={
-            preview !== true
-              ? imagePreview || profileImage
-              : userRecord?.profileImage
-          }
-          imageAlt={`${userRecord?.firstName} ${userRecord?.lastName}`}
-          imageStyle={{ width: "250px", height: "250px" }}
-          className="mb-3 rounded-circle"
-        />
-
-        {preview === true && (
-          <>
-            <h5 className="font-weight-bold text-dark mb-1">
-              {userRecord?.firstName} {userRecord?.lastName}
-            </h5>
-            {status ? (
-              <p className="mb-0 text-success">Online</p>
-            ) : (
-              <p className="mb-0 text-danger">Offline</p>
-            )}
-            {availability ? (
-              <p className="mb-0 text-success">Available</p>
-            ) : (
-              <p className="mb-0 text-danger">Unavailable</p>
-            )}
-          </>
-        )}
-      </div>
-
-      {preview === true ? (
-        <div className="d-flex">
-          <div className="mx-2 w-100">
-            <Button
-              onClick={() => handleContactClick()}
-              variant={
-                userAuth && userAuth?.role === "Valet" ? "secondary" : "primary"
+    <>
+      <Card className="shadow rounded bg-white profile-box text-center p-0">
+        <div className="mb-2 py-4 px-3">
+          <div className="">
+            <HandleImages
+              imagePath={
+                preview !== true
+                  ? imagePreview || profileImage
+                  : userRecord?.profileImage
               }
-              className="w-100"
-              disabled={userAuth && userAuth?.role === "Valet"}
-            >
-              Contact Me
-            </Button>
+              imageAlt={`${userRecord?.firstName} ${userRecord?.lastName}`}
+              imageStyle={{ width: "250px", height: "250px" }}
+              className="mb-3 rounded-circle"
+            />
+
+            {preview === true && (
+              <>
+                <h5 className="font-weight-bold text-dark mb-1">
+                  {userRecord?.firstName} {userRecord?.lastName}
+                </h5>
+                {status ? (
+                  <p className="mb-0 text-success">Online</p>
+                ) : (
+                  <p className="mb-0 text-danger">Offline</p>
+                )}
+                {availability ? (
+                  <p className="mb-0 text-success">Available</p>
+                ) : (
+                  <p className="mb-0 text-danger">Unavailable</p>
+                )}
+              </>
+            )}
           </div>
-          <div>
-            <Button
-              variant="outline-danger"
-              onClick={handleCopyReferral}
-              className="w-100"
-              title="Share User Refferal"
-            >
-              <i className="bi bi-solid bi-gift"></i>
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <>
-          {/* Image Upload Form */}
-          <Form
-            action="/User/UploadProfileImage"
-            id="uploadProfileImageForm"
-            method="post"
-            encType="multipart/form-data"
-          >
-            <div className="pb-3" id="imageLoadSection">
-              <OverlayTrigger
-                placement="top"
-                overlay={<Tooltip>Upload New Picture</Tooltip>}
-              >
-                <label
-                  className="btn btn-success m-0"
-                  htmlFor="fileAttachmentBtn"
+
+          {preview === true ? (
+            <div className="d-flex">
+              <div className="mx-2 w-100">
+                <Button
+                  onClick={() => handleContactClick()}
+                  variant={
+                    userAuth && userAuth?.role === "Valet"
+                      ? "secondary"
+                      : "primary"
+                  }
+                  className="w-100"
+                  disabled={userAuth && userAuth?.role === "Valet"}
                 >
-                  <i className="mdi mdi-image"></i> Upload Photo
-                  <input
-                    id="fileAttachmentBtn"
-                    name="ImagePath"
-                    type="file"
-                    className="d-none"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                  />
-                </label>
-              </OverlayTrigger>
-            </div>
-
-            {/* Update Image Section */}
-            <div
-              className="pb-3"
-              id="uploadImageBtnSection"
-              style={{ display: "none" }}
-            >
-              <Button
-                onClick={handleUpdateImage}
-                className="btn btn-success"
-                id="saveImage"
-              >
-                Update Image
-              </Button>
-              <Button
-                variant="danger"
-                className="text-white mx-2"
-                onClick={handleImageReset}
-                id="imgReset"
-              >
-                Reset
-              </Button>
-            </div>
-          </Form>
-
-          {userAuth && userAuth?.role !== "Admin" && (
-            <>
-              <div className="custom-control custom-switch my-2">
-                <Form.Check
-                  type="switch"
-                  id="status-switch"
-                  label={status ? "Online" : "Offline"}
-                  checked={status}
-                  onChange={handleStatusChange}
-                />
-                <Form.Check
-                  type="switch"
-                  id="availability-switch"
-                  label={availability ? "Available" : "Unavailable"}
-                  checked={availability}
-                  onChange={handleAvailabilityChange}
-                />
+                  Contact Me
+                </Button>
               </div>
-
-              {/* Logout Link */}
-              <Button
-                type="button"
-                variant="link"
-                onClick={() => handleLogout()}
-                className="text-dark w-100 border-top my-2"
+              <div>
+                <Button
+                  variant="outline-danger"
+                  onClick={handleCopyReferral}
+                  className="w-100"
+                  title="Share User Refferal"
+                >
+                  <i className="bi bi-solid bi-gift"></i>
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Image Upload Form */}
+              <Form
+                action="/User/UploadProfileImage"
+                id="uploadProfileImageForm"
+                method="post"
+                encType="multipart/form-data"
               >
-                Log Out
-              </Button>
+                <div className="pb-3" id="imageLoadSection">
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={<Tooltip>Upload New Picture</Tooltip>}
+                  >
+                    <label
+                      className="btn btn-success m-0"
+                      htmlFor="fileAttachmentBtn"
+                    >
+                      <i className="mdi mdi-image"></i> Upload Photo
+                      <input
+                        id="fileAttachmentBtn"
+                        name="ImagePath"
+                        type="file"
+                        className="d-none"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                      />
+                    </label>
+                  </OverlayTrigger>
+                </div>
+
+                {/* Update Image Section */}
+                <div
+                  className="pb-3"
+                  id="uploadImageBtnSection"
+                  style={{ display: "none" }}
+                >
+                  <Button
+                    onClick={handleUpdateImage}
+                    className="btn btn-success"
+                    id="saveImage"
+                  >
+                    Update Image
+                  </Button>
+                  <Button
+                    variant="danger"
+                    className="text-white mx-2"
+                    onClick={handleImageReset}
+                    id="imgReset"
+                  >
+                    Reset
+                  </Button>
+                </div>
+              </Form>
             </>
           )}
-        </>
-      )}
-    </div>
+        </div>
+        {userAuth && userAuth?.role !== "Admin" && (
+          <>
+            <Container className="justify-content-center">
+              <Row
+                className=""
+                style={{
+                  borderTop: "2px solid #eee",
+                }}
+              >
+                <Col
+                  xl={6}
+                  lg={6}
+                  md={6}
+                  sm={12}
+                  xs={12}
+                  className="p-0 pb-3"
+                  style={{
+                    borderRight: "2px solid #eee",
+                  }}
+                >
+                  <div className="custom-control custom-switch my-2">
+                    <label>{status ? "Online" : "Offline"}</label>
+                    <div>
+                      <label class="switch">
+                        <input
+                          type="checkbox"
+                          checked={status}
+                          onChange={handleStatusChange}
+                        />
+                        <span class="slider"></span>
+                      </label>
+                    </div>
+                  </div>
+                </Col>
+                <Col xl={6} lg={6} md={6} sm={12} xs={12} className="p-0">
+                  <div className="custom-control custom-switch my-2">
+                    <label>{availability ? "Available" : "Unavailable"}</label>
+                    <div>
+                      <label class="switch">
+                        <input
+                          type="checkbox"
+                          checked={availability}
+                          onChange={handleAvailabilityChange}
+                        />
+                        <span class="slider"></span>
+                      </label>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            </Container>
+          </>
+        )}
+      </Card>
+    </>
   );
 };
 

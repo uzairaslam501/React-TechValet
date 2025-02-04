@@ -138,6 +138,7 @@ export const postUserActivity = createAsyncThunk(
     { userId, activityStatus },
     { rejectWithValue, getState, dispatch }
   ) => {
+    dispatch(setLoading({ key: "authLoading", value: true }));
     const { token, expired } = getToken(getState);
     try {
       const response = await api.put(
@@ -158,6 +159,8 @@ export const postUserActivity = createAsyncThunk(
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
+    } finally {
+      dispatch(setLoading({ key: "authLoading", value: false }));
     }
   }
 );
@@ -168,6 +171,7 @@ export const postUserAvailable = createAsyncThunk(
   async ({ userId, available }, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
+      dispatch(setLoading({ key: "authLoading", value: true }));
       const response = await api.put(
         `/Auth/user-availability/${String(
           encodeURIComponent(userId)
@@ -186,6 +190,8 @@ export const postUserAvailable = createAsyncThunk(
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
+    } finally {
+      dispatch(setLoading({ key: "authLoading", value: false }));
     }
   }
 );
