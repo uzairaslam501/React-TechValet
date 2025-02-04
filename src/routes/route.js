@@ -61,6 +61,7 @@ import CustomerList from "../pages/Admin/User/List/Customer/CustomerList";
 import ValetList from "../pages/Admin/User/List/Valet/ValetList";
 import SeoList from "../pages/Admin/User/List/SEO/SeoList";
 import { Helmet } from "react-helmet-async";
+import PaypalOrderDetail from "../pages/Admin/Orders/PaypalOrders/PaypalOrder";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -90,6 +91,15 @@ const createRoute = createBrowserRouter(
           <Route path="/order-record" element={<OrdersRecord />} />
           <Route path="/update-profile" element={<UpdateProfile />} />
           <Route path="/password-update" element={<AdminUpdatePassword />} />
+          <Route path="/paypal-order-detail" element={<PaypalOrderDetail />} />
+          <Route
+            path="/paypal-transaction-record"
+            element={<PaypalOrderDetail />}
+          />
+          <Route
+            path="/paypal-unclaimed-payment"
+            element={<PaypalOrderDetail />}
+          />
         </Route>
       </Route>
 

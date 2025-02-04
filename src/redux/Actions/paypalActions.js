@@ -159,3 +159,53 @@ export const addPayPalAccount = createAsyncThunk(
     }
   }
 );
+
+export const cancelAndRefundOrder = createAsyncThunk(
+  "paypal/cancelAndRefundOrder",
+  async ({ captureId, orderId }, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.post(
+        `PayPalGateWay/paypal-refund/${captureId}?orderId=${orderId}`,
+        null,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+export const cancelOrderAndRevertSession = createAsyncThunk(
+  "paypal/cancelOrderAndRevertSession",
+  async (orderId, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.post(
+        `PayPalGateWay/cancelOrderAndRevertSession/${orderId}`,
+        null,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);

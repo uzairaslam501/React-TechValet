@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   authLoading: false,
+  adminLoading: false,
   calendarLoading: false,
   customerLoading: false,
   globalLoading: false,

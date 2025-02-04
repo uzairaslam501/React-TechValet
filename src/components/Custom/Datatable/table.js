@@ -161,10 +161,11 @@ function CustomTable({
           </div>
         )}
         {searchFunctionality && (
-          <FormGroup className="d-flex">
-            <InputGroup>
+          <FormGroup className="d-flex" style={{ alignItems: "flex-end" }}>
+            <div className="col-9">
               <input
                 type="text"
+                size="sm"
                 className="form-control"
                 placeholder="Search"
                 value={search}
@@ -172,10 +173,12 @@ function CustomTable({
                   setSearch(e.target.value);
                 }}
               />
+            </div>
+            <div className="col-3">
               <Button variant="primary" onClick={handleSearch}>
                 <i className="bi bi-search"></i>
               </Button>
-            </InputGroup>
+            </div>
           </FormGroup>
         )}
       </div>
@@ -306,7 +309,7 @@ function CustomTable({
                         </>
                       ) : header.column == "orderStatus" ? (
                         <>
-                          {
+                          {row.orderStatus !== "" ? (
                             <NavLink
                               to={`/order-details/${
                                 row.encOrderId || row.orderEncId
@@ -314,15 +317,19 @@ function CustomTable({
                             >
                               <BadgeStatus status={parseInt(row.orderStatus)} />
                             </NavLink>
-                          }
+                          ) : (
+                            <BadgeStatus status="N/A" />
+                          )}
+                          {}
                         </>
                       ) : header.column == "paymentStatus" ? (
                         <>
-                          {row.paymentStatus === "COMPLETED" ? (
+                          {row.paymentStatus.toUpperCase() === "COMPLETED" ? (
                             <BadgeStatus status="Completed" />
-                          ) : row.paymentStatus === "REFUNDED" ? (
+                          ) : row.paymentStatus.toUpperCase() === "REFUNDED" ? (
                             <BadgeStatus status="Refunded" />
-                          ) : row.paymentStatus === "PAID-BY-PACKAGE" ? (
+                          ) : row.paymentStatus.toUpperCase() ===
+                            "PAID-BY-PACKAGE" ? (
                             <BadgeStatus status="Package" />
                           ) : (
                             <BadgeStatus status="N/A" />

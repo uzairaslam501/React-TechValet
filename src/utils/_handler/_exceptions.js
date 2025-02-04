@@ -33,10 +33,10 @@ const handleUnauthorizedError = (error, dispatch, tokenExpiryTime) => {
   const currentTimeInSeconds = Date.now() / 1000;
   const tokenExpiryInSeconds = new Date(tokenExpiryTime).getTime() / 1000;
 
-  // if (tokenExpiryInSeconds && tokenExpiryInSeconds < currentTimeInSeconds) {
-  //   toast.error("Session has expired. Please log in again.");
-  //   // dispatch(logout());
-  // }
+  if (tokenExpiryInSeconds && tokenExpiryInSeconds < currentTimeInSeconds) {
+    toast.error("Session has expired. Please log in again.");
+    dispatch(logout());
+  }
 
   // Check if the token is about to expire in 5 minutes or less
   // if (

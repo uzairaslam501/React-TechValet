@@ -53,4 +53,25 @@ export const menuItems = [
     icon: "bi bi-journal",
     path: "/packages",
   },
+  {
+    title: "PapPal GateWay",
+    icon: "bi bi-paypal",
+    subItems: [
+      {
+        title: "Orders Detail",
+        path: "/paypal-order-detail",
+        icon: "bi bi-list-task",
+      },
+      {
+        title: "Transaction Record",
+        path: "/paypal-transaction-record",
+        icon: "bi bi-credit-card",
+      },
+      {
+        title: "Unclaimed Payments",
+        path: "/paypal-unclaimed-payment",
+        icon: "bi bi-dash-circle-fill",
+      },
+    ],
+  },
 ];
