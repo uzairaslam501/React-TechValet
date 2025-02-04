@@ -1,22 +1,50 @@
-import React from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import "./style.css";
+import React, { useEffect, useState } from "react";
+import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
 import background from "../../../assets/images/header-image.png";
-import createAccount from "../../../assets/images/icons/create-your-account.svg";
-import makeAppointment from "../../../assets/images/icons/make-an-appointment.svg";
 import joinMeeting from "../../../assets/images/icons/join-meeting.svg";
 import whatWeDoImage from "../../../assets/images/what-we-do-image.svg";
-import "./style.css";
-import Footer from "../../../components/Client/Footer/footer";
+import createAccount from "../../../assets/images/icons/create-your-account.svg";
+import makeAppointment from "../../../assets/images/icons/make-an-appointment.svg";
+import { useDispatch } from "react-redux";
+import { getBlogsList } from "../../../redux/Actions/seoActions";
+import BlogSlider from "../../../components/Custom/BlogSlider/BlogSlider";
 const Welcome = () => {
+  const dispatch = useDispatch();
+  const [isLoading, setLoader] = useState(false);
+  const [recentPosts, setRecentPosts] = useState(null);
+
+  const fetchPosts = (pageNumber = 0, pageLength = 9) => {
+    const params = {
+      pageNumber,
+      pageLength,
+      sortColumn: "publishedDate",
+      sortDirection: "desc",
+      searchParam: "",
+    };
+    setLoader(true);
+    dispatch(getBlogsList(params))
+      .then((response) => {
+        console.log(response?.payload);
+        const posts = response?.payload?.data || [];
+        setRecentPosts(posts);
+        setLoader(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching profiles:", err);
+        setLoader(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, [dispatch]);
+
   return (
     <>
-      <Container
-        fluid
-        style={{ backgroundColor: "#fcd609" }}
-        className="pt-sm-3"
-      >
-        <Container className="pt-sm-5">
-          <Row className="align-items-center pt-md-5">
+      <Container fluid style={{ backgroundColor: "#fcd609" }} className="pt-5">
+        <Container className="">
+          <Row className="align-items-center">
             {/* Text Column */}
             <Col
               xl={6}
@@ -34,18 +62,18 @@ const Welcome = () => {
                   We are a community of people with IT expertise in computers,
                   smartphones, and other devices. We are here to help you.
                 </p>
-                <div className="mt-4">
+                <div className="mt-4 d-flex">
                   <Button
                     variant="secondary"
-                    size="lg"
-                    className="me-3 px-4 py-2"
+                    size="md"
+                    className="border-1 border-dark me-3 px-4 py-2 mb-3"
                   >
                     Need Service
                   </Button>
                   <Button
                     variant="primary"
-                    size="lg"
-                    className="border-1 border-dark px-4 py-2"
+                    size="md"
+                    className="border-1 border-dark px-4 py-2 mb-3"
                   >
                     Offering Service
                   </Button>
@@ -196,6 +224,29 @@ const Welcome = () => {
                 </Container>
               </Col>
             </Row>
+          </Col>
+        </Row>
+      </Container>
+
+      <Container className="pb-5">
+        <Row>
+          <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+            <div className="d-flex align-items-center">
+              <span
+                style={{
+                  border: "10px solid #fcd609",
+                  borderRadius: "50px",
+                }}
+              ></span>
+              <h2 className="ps-2 mb-0">Recent Posts</h2>
+            </div>
+            {!isLoading ? (
+              recentPosts && <BlogSlider articles={recentPosts} />
+            ) : (
+              <div className="text-center">
+                <Spinner animation="border" />
+              </div>
+            )}
           </Col>
         </Row>
       </Container>

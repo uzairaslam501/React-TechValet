@@ -49,19 +49,19 @@ const Footer = () => {
             <h4 className="text-white">Pages</h4>
             <ListGroup className="footer-pages-list">
               <ListGroup.Item>
-                <NavLink to={"/account"}>Overview</NavLink>
-              </ListGroup.Item>
-              <ListGroup.Item>
                 <NavLink to={"/"}>Home</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
                 <NavLink to={"/about"}>About</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink to={"/features"}>Features</NavLink>
+                <NavLink to={"/contact"}>Contact</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink to={"/pricing"}>Pricing</NavLink>
+                <NavLink to={"/account"}>Profile</NavLink>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <NavLink to={"/register/valet"}>Valet Registeration</NavLink>
               </ListGroup.Item>
             </ListGroup>
           </Col>
@@ -71,10 +71,10 @@ const Footer = () => {
             <h4 className="text-white">Company</h4>
             <ListGroup className="footer-pages-list">
               <ListGroup.Item>
-                <NavLink to={"/blogs"}>Blogs</NavLink>
+                <NavLink to={"/skills"}>Skills</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink to={"/contact"}>Contact</NavLink>
+                <NavLink to={"/blogs"}>Blogs</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
                 <NavLink to={"/privacy-policy"}>Privacy Policy</NavLink>
