@@ -1,0 +1,30 @@
+.customSwiper {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.customSwiper .swiper-slide {
+  border-radius: 20px;
+  height: 390px;
+}
+
+.customSwiper .swiper-button-next,
+.customSwiper .swiper-button-prev {
+  background-color: #00000017;
+  border-radius: 50%;
+  padding: 22px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.customSwiper .swiper-button-next:hover,
+.customSwiper .swiper-button-prev:hover {
+  background-color: #000;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Adds a subtle shadow effect */
+}
+
+.customSwiper .swiper-button-prev:after,
+.customSwiper .swiper-button-next:after {
+  font-size: 20px;
+  color: #fff;
+  transition: color 0.3s ease;
+}

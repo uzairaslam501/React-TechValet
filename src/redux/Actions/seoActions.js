@@ -7,12 +7,36 @@ import {
 import { baseUrl } from "../../utils/_envConfig";
 import { getAuthUserId, getToken } from "../../utils/_apiConfig";
 import { toast } from "react-toastify";
+import { setLoading } from "../Reducers/loadingSlice";
 
 const api = axios.create({
   baseURL: baseUrl,
 });
 
 //#region Articles
+
+//Handle Dashbaord
+export const getBlogsCount = createAsyncThunk(
+  "seo/getBlogsCount",
+  async (_, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      dispatch(setLoading({ key: "seoLoading", value: true }));
+      const response = await api.get(`/Blogs/Dashbaord`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "seoLoading", value: false }));
+    }
+  }
+);
 
 // Handle AddBlogs
 export const addBlogs = createAsyncThunk(
@@ -78,6 +102,28 @@ export const updateBlogs = createAsyncThunk(
   }
 );
 
+export const getBlogBySlug = createAsyncThunk(
+  "seo/getBlogBySlug",
+  async (slugName, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      dispatch(setLoading({ key: "seoLoading", value: true }));
+      const response = await api.get(`/Blogs/GetBlogBySlug/${slugName}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "seoLoading", value: false }));
+    }
+  }
+);
+
 export const getBlogsList = createAsyncThunk(
   "seo/getBlogsList",
   async (
@@ -120,6 +166,7 @@ export const addSkillBlog = createAsyncThunk(
     formData.append("slug", obj.Slug);
     formData.append("content", obj.Content);
     formData.append("createdBy", parseInt(userId));
+    formData.append("tags", obj.Tags);
     formData.append("Image", obj.FeaturedImageUrl);
 
     try {
@@ -152,6 +199,7 @@ export const updateSkillBlogs = createAsyncThunk(
     formData.append("slug", obj.Slug);
     formData.append("content", obj.Content);
     formData.append("createdBy", parseInt(userId));
+    formData.append("tags", obj.Tags);
     formData.append("Image", obj.FeaturedImageUrl);
 
     try {

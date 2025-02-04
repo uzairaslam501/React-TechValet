@@ -255,7 +255,7 @@ const Account = ({ userRecord }) => {
                   value={values.contact}
                   onChange={(value) => setFieldValue("contact", value)}
                   onBlur={handleBlur("contact")}
-                  countryFilter={["ca"]}
+                  countryFilter={[]}
                 />
                 <Form.Control.Feedback type="invalid">
                   {touched.contact && errors.contact}

@@ -3,7 +3,7 @@ import CustomTable from "../../../../../components/Custom/Datatable/table";
 import { getOrderRecords } from "../../../../../redux/Actions/customerActions";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { Card, CardBody, Col, Row, Spinner } from "react-bootstrap";
+import { Card, CardBody, Col, Container, Row, Spinner } from "react-bootstrap";
 import Dialogue from "../../../../../components/Custom/Modal/modal";
 
 const Order = ({ isLoading }) => {
@@ -49,10 +49,6 @@ const Order = ({ isLoading }) => {
     handleOrderClose();
   };
 
-  const handleOrderUpdate = (row) => {
-    navigate("/add-user", { state: row });
-  };
-
   const handleOrderShowModal = (id) => {
     setOrdersIsDelete(id);
     setOrderShowModal(true);
@@ -79,7 +75,7 @@ const Order = ({ isLoading }) => {
     },
   ];
 
-  const fetchUsers = async (
+  const fetchRecords = async (
     pageNumber = 0,
     pageLength = 5,
     sortColumn = "",
@@ -113,14 +109,14 @@ const Order = ({ isLoading }) => {
   };
 
   useEffect(() => {
-    fetchUsers(0, orderPageLength);
+    fetchRecords(0, orderPageLength);
   }, [orderPageLength]);
 
   return (
     <>
-      <section id="OrdersTable">
+      <Container className="py-5">
         <Row className="text-center">
-          <Col lg={{ span: 10, offset: 1 }}>
+          <Col xl={12} lg={12} md={12} sm={12} xs={12}>
             <Card>
               <CardBody>
                 <h2 className="fw-bold">Manage Orders</h2>
@@ -132,7 +128,7 @@ const Order = ({ isLoading }) => {
                     records={orderRecords}
                     totalRecords={orderTotalRecord}
                     pageLength={orderPageLength}
-                    onPageChange={fetchUsers}
+                    onPageChange={fetchRecords}
                     onPageLengthChange={setOrdersPageLength}
                     loader={orderLoader}
                     searchFunctionality={false}
@@ -143,7 +139,7 @@ const Order = ({ isLoading }) => {
             </Card>
           </Col>
         </Row>
-      </section>
+      </Container>
 
       <Dialogue
         show={showOderModal}

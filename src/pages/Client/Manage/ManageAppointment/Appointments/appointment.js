@@ -3,7 +3,7 @@ import CustomTable from "../../../../../components/Custom/Datatable/table";
 import { getAppointments } from "../../../../../redux/Actions/customerActions";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { Card, CardBody, Col, Row } from "react-bootstrap";
+import { Card, CardBody, Col, Container, Row } from "react-bootstrap";
 import Dialogue from "../../../../../components/Custom/Modal/modal";
 
 const Appointment = ({ onComplete }) => {
@@ -131,9 +131,9 @@ const Appointment = ({ onComplete }) => {
 
   return (
     <>
-      <section id="AppointmentTable" className="">
+      <Container className="py-5">
         <Row className="text-center">
-          <Col lg={{ span: 10, offset: 1 }}>
+          <Col xl={12} lg={12} md={12} sm={12} xs={12}>
             <Card>
               <CardBody>
                 <h2 className="fw-bold">Requested Services</h2>
@@ -153,7 +153,7 @@ const Appointment = ({ onComplete }) => {
             </Card>
           </Col>
         </Row>
-      </section>
+      </Container>
 
       <Dialogue
         show={showDeleteModal}

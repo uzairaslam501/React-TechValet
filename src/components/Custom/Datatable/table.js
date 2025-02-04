@@ -10,6 +10,7 @@ import CustomButtons from "../Button/buttons";
 import { NavLink } from "react-router-dom";
 import BadgeStatus from "../StatusBadge/StatusBadge";
 import { truncateCharacters } from "../../../utils/_helpers";
+import HandleImages from "../Avatars/HandleImages";
 
 function CustomTable({
   headers,
@@ -69,8 +70,9 @@ function CustomTable({
           <Button
             key={i}
             onClick={() => handlePageClick(i)}
-            variant={page === i ? "secondary" : "primary"}
+            variant={page === i ? "secondary-secondary" : "primary-secondary"}
             className="m-1"
+            disabled={page === i} // Disable the current page button
           >
             {i + 1}
           </Button>
@@ -81,9 +83,9 @@ function CustomTable({
         pagination.push(
           <Button
             key={0}
-            size="sm"
+            size="md"
             onClick={() => handlePageClick(0)}
-            variant="secondary"
+            variant="primary-secondary"
             className="m-1"
           >
             1
@@ -98,10 +100,11 @@ function CustomTable({
       pagination.push(
         <Button
           key={page}
-          size="sm"
+          size="md"
           onClick={() => handlePageClick(page)}
-          variant="primary"
+          variant="secondary-secondary"
           className="m-1"
+          disabled
         >
           {page + 1}
         </Button>
@@ -113,10 +116,10 @@ function CustomTable({
         }
         pagination.push(
           <Button
-            size="sm"
+            size="md"
             key={totalPages - 1}
             onClick={() => handlePageClick(totalPages - 1)}
-            variant="secondary"
+            variant="primary-secondary"
             className="m-1"
           >
             {totalPages}
@@ -158,10 +161,11 @@ function CustomTable({
           </div>
         )}
         {searchFunctionality && (
-          <FormGroup className="d-flex">
-            <InputGroup>
+          <FormGroup className="d-flex" style={{ alignItems: "flex-end" }}>
+            <div className="col-9">
               <input
                 type="text"
+                size="sm"
                 className="form-control"
                 placeholder="Search"
                 value={search}
@@ -169,10 +173,12 @@ function CustomTable({
                   setSearch(e.target.value);
                 }}
               />
+            </div>
+            <div className="col-3">
               <Button variant="primary" onClick={handleSearch}>
                 <i className="bi bi-search"></i>
               </Button>
-            </InputGroup>
+            </div>
           </FormGroup>
         )}
       </div>
@@ -229,10 +235,10 @@ function CustomTable({
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <img
-                            src={row.image}
-                            alt=""
-                            style={{ width: "50px", height: "50px" }}
+                          <HandleImages
+                            imagePath={row.image}
+                            imageAlt=""
+                            imageStyle={{ width: "50px", height: "50px" }}
                           />
                         </a>
                       ) : header.column === "orderPrice" ? (
@@ -303,7 +309,7 @@ function CustomTable({
                         </>
                       ) : header.column == "orderStatus" ? (
                         <>
-                          {
+                          {row.orderStatus !== "" ? (
                             <NavLink
                               to={`/order-details/${
                                 row.encOrderId || row.orderEncId
@@ -311,15 +317,19 @@ function CustomTable({
                             >
                               <BadgeStatus status={parseInt(row.orderStatus)} />
                             </NavLink>
-                          }
+                          ) : (
+                            <BadgeStatus status="N/A" />
+                          )}
+                          {}
                         </>
                       ) : header.column == "paymentStatus" ? (
                         <>
-                          {row.paymentStatus === "COMPLETED" ? (
+                          {row.paymentStatus.toUpperCase() === "COMPLETED" ? (
                             <BadgeStatus status="Completed" />
-                          ) : row.paymentStatus === "REFUNDED" ? (
+                          ) : row.paymentStatus.toUpperCase() === "REFUNDED" ? (
                             <BadgeStatus status="Refunded" />
-                          ) : row.paymentStatus === "PAID-BY-PACKAGE" ? (
+                          ) : row.paymentStatus.toUpperCase() ===
+                            "PAID-BY-PACKAGE" ? (
                             <BadgeStatus status="Package" />
                           ) : (
                             <BadgeStatus status="N/A" />
@@ -339,7 +349,8 @@ function CustomTable({
                         </>
                       ) : (
                         <span title={row[header.column]}>
-                          {truncateCharacters(row[header.column], 25)}
+                          {row[header.column] &&
+                            truncateCharacters(row[header.column], 25)}
                         </span>
                       )}
                     </td>
@@ -372,7 +383,7 @@ function CustomTable({
 
         <div>
           <Button
-            variant="primary"
+            variant="primary-secondary"
             onClick={handlePreviousPage}
             disabled={page === 0}
             className="m-1"
@@ -381,7 +392,7 @@ function CustomTable({
           </Button>
           {renderPagination()}
           <Button
-            variant="primary"
+            variant="primary-secondary"
             onClick={handleNextPage}
             disabled={page === totalPages - 1}
             className="m-1"

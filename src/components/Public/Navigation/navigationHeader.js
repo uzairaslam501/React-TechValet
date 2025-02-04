@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 function NavigationBar() {
   const location = useLocation();
   const [navBackground, setNavBackground] = useState(false);
-  const isHomePage = location.pathname === "/welcome";
+  const isHomePage = location.pathname === "/";
   const { userAuth } = useSelector((state) => state?.authentication);
 
   useEffect(() => {

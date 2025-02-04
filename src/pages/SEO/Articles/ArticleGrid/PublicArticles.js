@@ -1,21 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Pagination,
-  Spinner,
-} from "react-bootstrap";
-import { truncateCharacters } from "../../../../utils/_helpers";
-import { useNavigate } from "react-router-dom";
+import { Container, Row, Col, Pagination, Spinner } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { getBlogsList } from "../../../../redux/Actions/seoActions";
-import HandleImages from "../../../../components/Custom/Avatars/HandleImages";
+import CustomCard from "../../../../components/Custom/Cards/CustomCard";
 
 const PublicArticles = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [totalRecord, setTotalRecords] = useState(0);
   const [articlesRecord, setArticlesRecord] = useState([]);
   const [loader, setLoader] = useState(false);
@@ -74,67 +64,7 @@ const PublicArticles = () => {
             {articlesRecord && articlesRecord.length > 0 ? (
               articlesRecord.map((article, index) => (
                 <Col key={index} xl={3} lg={3} md={4} sm={12}>
-                  <Card
-                    className="shadow-sm h-100 p-3"
-                    style={{
-                      borderRadius: "20px",
-                      cursor: "pointer",
-                    }}
-                    onClick={() =>
-                      navigate(`/${article.slug}`, { state: article })
-                    }
-                  >
-                    <HandleImages
-                      imagePath={article.image}
-                      imageAlt={article.title}
-                      className="top"
-                      imageStyle={{
-                        width: "100%",
-                        height: "170px",
-                        borderRadius: "15px",
-                      }}
-                      placeholder="article"
-                    />
-                    <Card.Body className="px-0">
-                      <Card.Title
-                        title={article.title}
-                        style={{
-                          cursor: "pointer",
-                        }}
-                      >
-                        {truncateCharacters(article.title, 27)}
-                      </Card.Title>
-                      <Card.Text className="text-muted">
-                        {truncateCharacters(article.description, 50)}
-                      </Card.Text>
-                    </Card.Body>
-                    <Card.Footer className="border-0">
-                      <div className="d-flex align-items-center justify-content-between">
-                        <div className="d-flex align-items-center">
-                          <HandleImages
-                            imagePath={article?.publisherImage}
-                            imageAlt={article?.publishedBy}
-                            imageStyle={{
-                              width: "45px",
-                              height: "45px",
-                              borderRadius: "5px",
-                            }}
-                          />
-                          <div className="mx-2">
-                            <h5 className="text-dark text-capitalize mb-1">
-                              {article?.publishedBy}
-                            </h5>
-                            <p className="m-0 text-muted">
-                              {article?.publishedDate}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-end">
-                          <i className="bi bi-bookmark"></i>
-                        </div>
-                      </div>
-                    </Card.Footer>
-                  </Card>
+                  <CustomCard article={article} />
                 </Col>
               ))
             ) : (

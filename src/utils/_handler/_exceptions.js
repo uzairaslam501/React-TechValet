@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { convertToISO } from "../_helpers";
 import { postRenewToken } from "../../redux/Actions/authActions";
+import { logout } from "../../redux/Reducers/authSlice";
 
 // Main API Error Handler
 export const handleApiError = (error, dispatch, tokenExpiryTime) => {

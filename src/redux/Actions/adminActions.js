@@ -187,4 +187,33 @@ export const getStripeRecords = createAsyncThunk(
     }
   }
 );
+
+export const getPaypalOrderDetailRecords = createAsyncThunk(
+  "admin/getPaypalOrderDetailRecords",
+  async (
+    { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    const { token, expired } = getToken(getState);
+    dispatch(setLoading({ key: "adminLoading", value: true }));
+    try {
+      const response = await api.get(
+        `${baseUrl}/Admin/GetPayPalOrdersRecord?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        &sortDirection=${sortDirection}&searchValue=${searchParam}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "adminLoading", value: false }));
+    }
+  }
+);
 //#endregion

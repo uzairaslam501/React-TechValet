@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   authLoading: false,
+  adminLoading: false,
   calendarLoading: false,
   customerLoading: false,
   globalLoading: false,
@@ -11,6 +12,7 @@ const initialState = {
   packageLoading: false,
   paypalLoading: false,
   stripeLoading: false,
+  seoLoading: false,
 };
 
 const loadingSlice = createSlice({
