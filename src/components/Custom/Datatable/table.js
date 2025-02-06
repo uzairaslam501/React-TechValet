@@ -198,7 +198,6 @@ function CustomTable({
                 onClick={() => header.id !== "0" && handleSort(header.id)}
                 style={{
                   cursor: "pointer",
-                  minWidth: header.column !== "Action" ? "200px" : "100px",
                 }}
                 className="py-3"
               >

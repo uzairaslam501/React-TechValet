@@ -62,6 +62,9 @@ import ValetList from "../pages/Admin/User/List/Valet/ValetList";
 import SeoList from "../pages/Admin/User/List/SEO/SeoList";
 import { Helmet } from "react-helmet-async";
 import PaypalOrderDetail from "../pages/Admin/Orders/PaypalOrders/PaypalOrder";
+import PaypalTransactionDetail from "../pages/Admin/Orders/PaypalOrders/PaypalTransaction";
+import PaypalUnclaimedDetail from "../pages/Admin/Orders/PaypalOrders/PaypalUnclaimed";
+import ViewFeedback from "../pages/Admin/Feedback/ViewFeedback";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -94,12 +97,13 @@ const createRoute = createBrowserRouter(
           <Route path="/paypal-order-detail" element={<PaypalOrderDetail />} />
           <Route
             path="/paypal-transaction-record"
-            element={<PaypalOrderDetail />}
+            element={<PaypalTransactionDetail />}
           />
           <Route
             path="/paypal-unclaimed-payment"
-            element={<PaypalOrderDetail />}
+            element={<PaypalUnclaimedDetail />}
           />
+          <Route path="/view-feedbacks" element={<ViewFeedback />} />
         </Route>
       </Route>
 

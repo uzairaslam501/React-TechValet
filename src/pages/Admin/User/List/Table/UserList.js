@@ -146,7 +146,7 @@ const UserList = ({ userRole }) => {
 
   return (
     <>
-      <Container className="py-5 mt-5">
+      <Container className="py-5">
         <Row className="">
           <Col xl={12} lg={12} md={12} sm={12} xs={12}>
             <Card>

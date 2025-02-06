@@ -209,3 +209,28 @@ export const cancelOrderAndRevertSession = createAsyncThunk(
     }
   }
 );
+
+export const cancelUnclaimedPayment = createAsyncThunk(
+  "paypal/cancelOrderAndRevertSession",
+  async (payOutItemId, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.post(
+        `PayPalGateWay/cancel-unclaimed-payment/${payOutItemId}`,
+        null,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);

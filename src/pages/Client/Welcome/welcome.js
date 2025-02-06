@@ -231,17 +231,22 @@ const Welcome = () => {
       <Container className="pb-5">
         <Row>
           <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-            <div className="d-flex align-items-center">
-              <span
-                style={{
-                  border: "10px solid #fcd609",
-                  borderRadius: "50px",
-                }}
-              ></span>
-              <h2 className="ps-2 mb-0">Recent Posts</h2>
-            </div>
             {!isLoading ? (
-              recentPosts && <BlogSlider articles={recentPosts} />
+              recentPosts &&
+              recentPosts.length > 0 && (
+                <>
+                  <div className="d-flex align-items-center">
+                    <span
+                      style={{
+                        border: "10px solid #fcd609",
+                        borderRadius: "50px",
+                      }}
+                    ></span>
+                    <h2 className="ps-2 mb-0">Recent Posts</h2>
+                  </div>
+                  <BlogSlider articles={recentPosts} />
+                </>
+              )
             ) : (
               <div className="text-center">
                 <Spinner animation="border" />

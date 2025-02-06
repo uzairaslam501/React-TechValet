@@ -71,10 +71,15 @@ const Register = () => {
   });
 
   const handleSubmit = useCallback(
-    (values) => {
-      dispatch(postRegister(values));
+    (values, { resetForm }) => {
+      dispatch(postRegister(values)).then((res) => {
+        if (res?.payload) {
+          resetForm();
+          navigate("/login");
+        }
+      });
     },
-    [dispatch]
+    [dispatch, navigate]
   );
 
   const {
