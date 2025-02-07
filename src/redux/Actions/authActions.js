@@ -317,3 +317,42 @@ export const emailVerification = createAsyncThunk(
 );
 
 //#endregion
+
+//#region Forgot Password
+export const requestForgotPassword = createAsyncThunk(
+  "auth/requestForgotPassword",
+  async (email, { rejectWithValue, getState, dispatch }) => {
+    try {
+      dispatch(setLoading({ key: "authLoading", value: true }));
+      const response = await api.get(`/Auth/ForgotPassword/${email}`);
+      const { data, message } = processApiResponse(response, dispatch);
+      if (message) {
+        toast.success(message);
+      }
+      return data;
+    } catch (error) {
+      rejectWithError(error, dispatch);
+    } finally {
+      dispatch(setLoading({ key: "authLoading", value: false }));
+    }
+  }
+);
+
+// Async thunk for reset-password
+export const postResetPassword = createAsyncThunk(
+  "auth/postResetPassword",
+  async (userData, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const response = await api.post("/auth/PostRenewPassword", userData);
+      const { data, message } = processApiResponse(response, dispatch);
+      if (message) {
+        toast.success(message);
+      }
+      return data;
+    } catch (error) {
+      console.log("postResetPassword error ::", error);
+      handleApiError(error, dispatch);
+    }
+  }
+);
+//#endregion

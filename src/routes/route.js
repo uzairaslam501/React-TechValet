@@ -65,6 +65,8 @@ import PaypalOrderDetail from "../pages/Admin/Orders/PaypalOrders/PaypalOrder";
 import PaypalTransactionDetail from "../pages/Admin/Orders/PaypalOrders/PaypalTransaction";
 import PaypalUnclaimedDetail from "../pages/Admin/Orders/PaypalOrders/PaypalUnclaimed";
 import ViewFeedback from "../pages/Admin/Feedback/ViewFeedback";
+import ForgotPassword from "../pages/Client/ClientAuth/ForgotPassword/ForgotPassword";
+import ResetPassword from "../pages/Client/ClientAuth/ResetPassword/ResetPassword";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -72,6 +74,11 @@ const createRoute = createBrowserRouter(
       {/* Public Routes */}
       <Route path="/login" element={<ClientLogin />} />
       <Route path="/register/:value" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route
+        path="/reset-password/:value/:validity"
+        element={<ResetPassword />}
+      />
 
       <Route path="/account-verification/:id/:t" element={<AccountProcess />} />
       <Route

@@ -4,9 +4,9 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import {
   postLogin,
-  sendVerificationEmail,
+  postResetPassword,
 } from "../../../../redux/Actions/authActions";
-import { NavLink, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, Navigate, useParams } from "react-router-dom";
 import {
   Button,
   Col,
@@ -21,46 +21,28 @@ import HandleImages from "../../../../components/Custom/Avatars/HandleImages";
 import loginPage from "../../../../assets/images/login-page.png";
 import background from "../../../../assets/images/Background.svg";
 import PasswordField from "../../../../components/Custom/PasswordInput/PasswordInput";
+import { toast } from "react-toastify";
 
-const initialValues = {
-  email: "",
-  password: "",
-};
-
-const validateLogin = Yup.object().shape({
-  email: Yup.string()
-    .min(3, "User Name must be at least 3 characters")
-    .required("Please enter User Name or email"),
-  password: Yup.string().required("Please enter password"),
-});
-
-const Login = () => {
+const ResetPassword = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [sendEmail, setSendEmail] = useState(false);
+  const { value, validity } = useParams();
+  const [showSpinner, setShowSpinner] = useState(false);
 
   const { userAuth, loading, error } = useSelector(
     (state) => state.authentication
   );
 
-  const handleSubmit = useCallback(
-    (values) => {
-      dispatch(postLogin(values)).then((response) => {
-        if (response?.payload && response?.payload !== "EmailVerfication") {
-          const redirectPath = new URLSearchParams(location.search).get(
-            "redirect"
-          );
-          if (redirectPath) {
-            navigate(redirectPath);
-          }
-        } else {
-          setSendEmail(true);
-        }
-      });
-    },
-    [dispatch, location.search, navigate]
-  );
+  const initialValues = {
+    id: value || "",
+    validity: validity || "",
+    newPassword: "",
+    confirmPassword: "",
+  };
+
+  const validateLogin = Yup.object().shape({
+    newPassword: Yup.string().required("Password is required"),
+    confirmPassword: Yup.string().required("Confirm Password is required"),
+  });
 
   const {
     values,
@@ -68,20 +50,29 @@ const Login = () => {
     errors,
     handleBlur,
     handleChange,
+    resetForm,
     handleSubmit: formikSubmit,
   } = useFormik({
     initialValues,
     validationSchema: validateLogin,
     validateOnChange: false,
     validateOnBlur: true,
-    onSubmit: handleSubmit,
+    onSubmit: async (values) => {
+      try {
+        setShowSpinner(true);
+        dispatch(postResetPassword(values)).then((response) => {
+          console.log("response :", response?.payload);
+          resetForm();
+          setShowSpinner(false);
+        });
+      } catch (error) {}
+    },
   });
 
-  const setVerificationEmail = useCallback(
-    (email) => {
-      dispatch(sendVerificationEmail(email)).then((response) => {});
-    },
-    [dispatch, location.search, navigate]
+  const isPasswordMatch = values.newPassword === values.confirmPassword;
+  const updateButtonDisabled = !isPasswordMatch;
+  const passwordMismatchMessage = !isPasswordMatch && (
+    <div className="text-danger">Password & Confirm Password do not match!</div>
   );
 
   // Check if user is authenticated
@@ -128,10 +119,10 @@ const Login = () => {
 
             {/* Heading and Paragraph */}
             <div className="mt-4">
-              <h3 className="text-dark fw-bold">Welcome to TechValet</h3>
+              <h3 className="text-dark fw-bold">Reset Your Password</h3>
               <p className="text-dark">
-                Don't miss your next opportunity. Sign in to stay updated on
-                your professional world.
+                Enter your new password to regain access to your account. Make
+                sure it's strong and secure.
               </p>
             </div>
           </div>
@@ -160,92 +151,59 @@ const Login = () => {
 
           {/* Form */}
           <div className="mb-4 w-75">
-            <h2>Login to your Account</h2>
+            <h2>Reset Your Password</h2>
             <p className="text-dark">
-              See what is going on with your account. Login to your account
+              Just enter your new password and continue with your account!
             </p>
             <Form onSubmit={formikSubmit}>
-              <input type="hidden" name="way" value="user" />
+              <input type="hidden" name="Id" value={values.id} />
+              <input type="hidden" name="Validity" value={values.validity} />
+
               <Form.Group className="mb-2">
-                <Form.Label>Email / Username</Form.Label>
-                <InputGroup>
-                  <Form.Control
-                    type="text"
-                    name="Email"
-                    required
-                    placeholder="Email / Username"
-                    value={values.email}
-                    onBlur={handleBlur("email")}
-                    onChange={handleChange("email")}
-                    isInvalid={touched.email && !!errors.email}
-                  />
-                  <InputGroup.Text>
-                    <i className="bi bi-person"></i>
-                  </InputGroup.Text>
-                  <Form.Control.Feedback type="invalid">
-                    {touched.email && errors.email}
-                  </Form.Control.Feedback>
-                </InputGroup>
+                <PasswordField
+                  label="New Password"
+                  placeholder="********"
+                  value={values.newPassword}
+                  onBlur={handleBlur("newPassword")}
+                  onChange={handleChange("newPassword")}
+                  required={true}
+                  isInvalid={touched.newPassword && !!errors.newPassword}
+                  touched={touched.newPassword}
+                  errors={errors.newPassword}
+                />
               </Form.Group>
 
               <Form.Group className="mb-2">
                 <PasswordField
-                  label="Password"
+                  label="Confirm Password"
                   placeholder="********"
-                  value={values.password}
-                  onBlur={handleBlur("password")}
-                  onChange={handleChange("password")}
+                  value={values.confirmPassword}
+                  onBlur={handleBlur("confirmPassword")}
+                  onChange={handleChange("confirmPassword")}
                   required={true}
-                  isInvalid={touched.password && !!errors.password}
-                  touched={touched.password}
-                  errors={errors.password}
+                  isInvalid={
+                    touched.confirmPassword && !!errors.confirmPassword
+                  }
+                  touched={touched.confirmPassword}
+                  errors={errors.confirmPassword}
                 />
               </Form.Group>
 
-              <div className="d-flex justify-content-between">
-                <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                  <Form.Check
-                    type="checkbox"
-                    label="Remember me"
-                    className="text-dark"
-                  />
-                </Form.Group>
-                <NavLink to="/forgot-password" className="text-dark">
-                  Forgot password?
-                </NavLink>
-              </div>
-
               <Row>
                 <Col sm={12} className="text-center">
+                  {passwordMismatchMessage}
                   <Button
                     className="btn-md w-100 text-uppercase mb-3"
                     variant="primary"
                     type="submit"
+                    disabled={showSpinner || updateButtonDisabled}
                   >
                     {loading ? (
                       <Spinner animation="border" size="sm" />
                     ) : (
-                      "Login"
+                      "Confirm"
                     )}
                   </Button>
-
-                  {sendEmail && (
-                    <p className="text-danger">
-                      <Button
-                        className="btn-md w-100 text-uppercase mb-3"
-                        variant="success"
-                        type="button"
-                        onClick={() => setVerificationEmail(values.email)}
-                      >
-                        {loading ? (
-                          <Spinner animation="border" size="sm" />
-                        ) : (
-                          "verify your email"
-                        )}
-                      </Button>
-                      Your email is not verified. Please verify your email
-                    </p>
-                  )}
 
                   <div>
                     <span className="text-secondary">Not Registered Yet?</span>
@@ -271,4 +229,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ResetPassword;

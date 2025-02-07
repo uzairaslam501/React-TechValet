@@ -88,7 +88,7 @@ const RootLayout = () => {
         </Col>
       </Row>
 
-      <Row
+      {/* <Row
         style={{
           position: "sticky",
         }}
@@ -113,7 +113,7 @@ const RootLayout = () => {
             </Row>
           </Container>
         </footer>
-      </Row>
+      </Row> */}
     </Container>
   );
 };
