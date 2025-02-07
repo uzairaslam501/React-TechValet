@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import {
   postLogin,
+  requestForgotPassword,
   sendVerificationEmail,
 } from "../../../../redux/Actions/authActions";
 import { NavLink, Navigate, useLocation, useNavigate } from "react-router-dom";
@@ -18,9 +19,8 @@ import {
 } from "react-bootstrap";
 import logo from "../../../../assets/images/logo-for-white-bg.svg";
 import HandleImages from "../../../../components/Custom/Avatars/HandleImages";
-import loginPage from "../../../../assets/images/login-page.png";
+import loginPage from "../../../../assets/images/forgot-password.png";
 import background from "../../../../assets/images/Background.svg";
-import PasswordField from "../../../../components/Custom/PasswordInput/PasswordInput";
 
 const initialValues = {
   email: "",
@@ -31,10 +31,9 @@ const validateLogin = Yup.object().shape({
   email: Yup.string()
     .min(3, "User Name must be at least 3 characters")
     .required("Please enter User Name or email"),
-  password: Yup.string().required("Please enter password"),
 });
 
-const Login = () => {
+const ForgotPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,18 +45,7 @@ const Login = () => {
 
   const handleSubmit = useCallback(
     (values) => {
-      dispatch(postLogin(values)).then((response) => {
-        if (response?.payload && response?.payload !== "EmailVerfication") {
-          const redirectPath = new URLSearchParams(location.search).get(
-            "redirect"
-          );
-          if (redirectPath) {
-            navigate(redirectPath);
-          }
-        } else {
-          setSendEmail(true);
-        }
-      });
+      dispatch(requestForgotPassword(values.email)).then((response) => {});
     },
     [dispatch, location.search, navigate]
   );
@@ -128,10 +116,9 @@ const Login = () => {
 
             {/* Heading and Paragraph */}
             <div className="mt-4">
-              <h3 className="text-dark fw-bold">Welcome to TechValet</h3>
+              <h3 className="text-dark fw-bold">Lost your Account?</h3>
               <p className="text-dark">
-                Don't miss your next opportunity. Sign in to stay updated on
-                your professional world.
+                Reset your password to regain access to your account.
               </p>
             </div>
           </div>
@@ -160,9 +147,10 @@ const Login = () => {
 
           {/* Form */}
           <div className="mb-4 w-75">
-            <h2>Login to your Account</h2>
-            <p className="text-dark">
-              See what is going on with your account. Login to your account
+            <h2>Forgot Your Password?</h2>
+            <p>
+              Don't worry, it happens! Reset your password below to get back
+              into your account.
             </p>
             <Form onSubmit={formikSubmit}>
               <input type="hidden" name="way" value="user" />
@@ -188,33 +176,6 @@ const Login = () => {
                 </InputGroup>
               </Form.Group>
 
-              <Form.Group className="mb-2">
-                <PasswordField
-                  label="Password"
-                  placeholder="********"
-                  value={values.password}
-                  onBlur={handleBlur("password")}
-                  onChange={handleChange("password")}
-                  required={true}
-                  isInvalid={touched.password && !!errors.password}
-                  touched={touched.password}
-                  errors={errors.password}
-                />
-              </Form.Group>
-
-              <div className="d-flex justify-content-between">
-                <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                  <Form.Check
-                    type="checkbox"
-                    label="Remember me"
-                    className="text-dark"
-                  />
-                </Form.Group>
-                <NavLink to="/forgot-password" className="text-dark">
-                  Forgot password?
-                </NavLink>
-              </div>
-
               <Row>
                 <Col sm={12} className="text-center">
                   <Button
@@ -225,7 +186,7 @@ const Login = () => {
                     {loading ? (
                       <Spinner animation="border" size="sm" />
                     ) : (
-                      "Login"
+                      "Reset Password"
                     )}
                   </Button>
 
@@ -271,4 +232,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;
