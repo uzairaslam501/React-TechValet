@@ -1,7 +1,7 @@
 export const menuItems = [
   {
     title: "Dashboard",
-    path: "/admin",
+    path: "/dashboard",
     icon: "bi bi-speedometer2",
   },
   {
@@ -51,7 +51,7 @@ export const menuItems = [
   {
     title: "View Packages",
     icon: "bi bi-journal",
-    path: "/packages",
+    path: "/view-packages",
   },
   {
     title: "PapPal GateWay",
@@ -73,5 +73,15 @@ export const menuItems = [
         icon: "bi bi-dash-circle-fill",
       },
     ],
+  },
+  {
+    title: "View Stripe Orders",
+    icon: "bi bi-stripe",
+    path: "/order-record",
+  },
+  {
+    title: "View Feedbacks",
+    path: "/view-feedbacks",
+    icon: "bi bi-journal-text",
   },
 ];

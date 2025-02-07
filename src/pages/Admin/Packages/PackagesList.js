@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Card, CardBody, Col, Row } from "react-bootstrap";
+import { Card, CardBody, Col, Container, Row } from "react-bootstrap";
 import Dialogue from "../../../components/Custom/Modal/modal";
 import CustomTable from "../../../components/Custom/Datatable/table";
 import ViewConsumption from "../../Client/Manage/Packages/viewConsumption";
@@ -54,13 +54,11 @@ const PackagesList = () => {
       label: "Total Sessions",
       column: "totalSessions",
     },
-
     {
       id: "0",
       label: "Remaining Sessions",
       column: "remainingSessions",
     },
-
     {
       id: "0",
       label: "Status",
@@ -117,12 +115,12 @@ const PackagesList = () => {
 
   return (
     <>
-      <section id="AppointmentTable" className="">
-        <Row className="text-center">
-          <Col lg={{ span: 10, offset: 1 }}>
+      <Container className="py-5 mt-5">
+        <Row>
+          <Col xl={12} lg={12} md={12} sm={12} xs={12}>
             <Card>
-              <CardBody>
-                <h2 className="fw-bold">Manage Packages</h2>
+              <CardBody className="w-100">
+                <h1 className="fw-bold text-center">Manage Packages</h1>
                 <CustomTable
                   headers={headers}
                   records={records}
@@ -139,8 +137,7 @@ const PackagesList = () => {
             </Card>
           </Col>
         </Row>
-      </section>
-
+      </Container>
       <Dialogue
         show={showConsumptionModal}
         onHide={handleClose}

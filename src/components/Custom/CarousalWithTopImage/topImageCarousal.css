@@ -1,117 +1,122 @@
 .customswipper {
-  padding-top: 20px;
+  padding: 10px;
 }
 
 .customswipper .swiper-slide {
   height: fit-content;
 }
 
-.customswipper .swiper-slide:hover {
-  box-shadow: 1px 1px 10px #999;
-}
-
-.user-card-top {
+.user-card {
   width: 100%;
-  border: 1px solid #000;
-  border-radius: 12px;
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.user-card-top__link {
-  display: block;
+.user-card__link {
   text-decoration: none;
 }
 
-.user-card-top__image-wrapper {
+.user-card__image-wrapper {
   width: 100%;
+  height: 220px;
   overflow: hidden;
-  height: 200px;
-  border-bottom: 1px solid #000;
-  border-radius: 12px 12px 0 0;
+  position: relative;
+  background: #f5f5f5;
 }
 
-.user-card-top__image {
-  top: 0;
-  left: 0;
+.user-card__image {
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  border-radius: 16px 16px 0 0;
 }
 
-.user-card-top__details {
-  padding: 14px;
+.user-card__details {
+  padding: 16px;
 }
 
-.user-card-top__header {
+.user-card__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
-.user-card-top__name {
+.user-card__name {
   font-size: 1.2rem;
   font-weight: bold;
   margin: 0;
 }
 
-.user-card-top__name-link {
+.user-card__name-link {
   color: #333;
   text-decoration: none;
-  transition: color 0.3s;
-  word-break: break-all;
 }
 
-.user-card-top__name-link:hover {
-  color: #000;
-}
-
-.user-card-top__location {
+.user-card__location {
   font-size: 0.9rem;
-  color: #999;
+  color: #666;
+  display: flex;
+  align-items: center;
 }
 
-.user-card-top__description {
+.user-card__location i {
+  margin-right: 5px;
+  color: #007bff;
+}
+
+.user-card__description {
   font-size: 1rem;
   color: #555;
   margin-bottom: 15px;
-  word-break: break-all;
+  line-height: 1.4;
 }
 
-.user-card-top__no-description {
+.user-card__no-description {
   color: #bbb;
+  font-style: italic;
 }
 
-.user-card-top__rating {
+.user-card__rating {
   display: flex;
   align-items: center;
   margin-bottom: 15px;
 }
 
-.user-card-top__rating-star {
-  margin-right: 5px;
+.stars {
+  display: flex;
+  margin-right: 8px;
+}
+
+.bi-star {
+  font-size: 16px;
+  margin-right: 3px;
+  color: #ddd;
+}
+
+.bi-star-fill {
   color: #ffb400;
 }
 
-.user-card-top__footer {
+.user-card__footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.user-card-top__price {
+.user-card__price {
   font-size: 1.1rem;
   color: #000;
 }
 
-.user-card-top__favorite-btn {
+.user-card__favorite-btn {
   background: none;
   border: none;
   font-size: 1.5rem;
   color: #e74c3c;
   cursor: pointer;
-}
-
-.user-card-top__favorite-btn:hover {
-  color: #ff6b6b;
 }
 
 .customswipper .swiper-button-next,

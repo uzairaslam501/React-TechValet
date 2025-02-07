@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Card, CardBody, Col, Row } from "react-bootstrap";
+import { Card, CardBody, Col, Container, Row } from "react-bootstrap";
 import CustomTable from "../../../../components/Custom/Datatable/table";
 import { getStripeRecords } from "../../../../redux/Actions/adminActions";
 
-const StripeOrder = ({ handleOpen }) => {
+const StripeOrder = ({ handleOpen, refreshKey }) => {
   const dispatch = useDispatch();
 
   const [records, setRecords] = useState([]);
@@ -15,16 +15,32 @@ const StripeOrder = ({ handleOpen }) => {
   const buttons = [
     {
       id: 1,
-      title: (row) => row.buttonHandle,
+      title: "Cancle Order & Refund",
       onClick: (row) => {
-        if (row.buttonHandle === "Refund") {
-          handleOpen(row, "refund");
-        } else if (row.buttonHandle === "Session") {
-          handleOpen(row, "session");
-        }
+        handleOpen(row, "refund");
       },
       variant: "danger",
-      icon: "bi bi-trash",
+      icon: "bi bi-wallet",
+      show: (row) => row.orderStatus === "0" && row.stripeStatus === "1",
+    },
+    {
+      id: 2,
+      title: "Cancle Order & Revert Session",
+      onClick: (row) => {
+        handleOpen(row, "session");
+      },
+      variant: "danger",
+      icon: "bi bi-x-circle",
+      show: (row) =>
+        row.orderStatus === "0" && row.paymentStatus === "PAID-BY-PACKAGE",
+    },
+    {
+      id: 3,
+      title: "Refunded",
+      variant: "danger",
+      icon: "bi bi-x-circle",
+      disabled: true,
+      show: (row) => row.orderStatus !== "0" && row.stripeStatus !== "1",
     },
   ];
 
@@ -97,16 +113,16 @@ const StripeOrder = ({ handleOpen }) => {
 
   useEffect(() => {
     fetchRecords(0, pageLength);
-  }, [pageLength]);
+  }, [pageLength, refreshKey]);
 
   return (
     <>
-      <section id="AppointmentTable" className="">
+      <Container className="py-5">
         <Row className="text-center">
-          <Col lg={{ span: 10, offset: 1 }}>
+          <Col xl={12} lg={12} md={12} sm={12} xs={12}>
             <Card>
               <CardBody>
-                <h2 className="fw-bold">Manage Packages</h2>
+                <h2 className="fw-bold">Manage Orders</h2>
                 <CustomTable
                   headers={headers}
                   records={records}
@@ -123,7 +139,7 @@ const StripeOrder = ({ handleOpen }) => {
             </Card>
           </Col>
         </Row>
-      </section>
+      </Container>
     </>
   );
 };

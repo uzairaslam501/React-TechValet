@@ -216,4 +216,91 @@ export const getPaypalOrderDetailRecords = createAsyncThunk(
     }
   }
 );
+
+export const getPaypalTransactionRecords = createAsyncThunk(
+  "admin/getPaypalTransactionRecords",
+  async (
+    { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    const { token, expired } = getToken(getState);
+    dispatch(setLoading({ key: "adminLoading", value: true }));
+    try {
+      const response = await api.get(
+        `${baseUrl}/Admin/GetPayPalTransactionRecord?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        &sortDirection=${sortDirection}&searchValue=${searchParam}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "adminLoading", value: false }));
+    }
+  }
+);
+
+export const getPaypalUnclaimedRecords = createAsyncThunk(
+  "admin/getPaypalUnclaimedRecords",
+  async (
+    { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    const { token, expired } = getToken(getState);
+    dispatch(setLoading({ key: "adminLoading", value: true }));
+    try {
+      const response = await api.get(
+        `${baseUrl}/Admin/GetPayPalUnclaimedPaymentRecord?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        &sortDirection=${sortDirection}&searchValue=${searchParam}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "adminLoading", value: false }));
+    }
+  }
+);
+
+export const getFeedbackRecords = createAsyncThunk(
+  "admin/getFeedbackRecords",
+  async (
+    { pageNumber, pageLength, sortColumn, sortDirection, searchParam },
+    { rejectWithValue, getState, dispatch }
+  ) => {
+    const { token, expired } = getToken(getState);
+    dispatch(setLoading({ key: "adminLoading", value: true }));
+    try {
+      const response = await api.get(
+        `${baseUrl}/Datatable/GetContactListAsync?start=${pageNumber}&length=${pageLength}&sortColumnName=${sortColumn}
+        &sortDirection=${sortDirection}&searchValue=${searchParam}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "adminLoading", value: false }));
+    }
+  }
+);
 //#endregion

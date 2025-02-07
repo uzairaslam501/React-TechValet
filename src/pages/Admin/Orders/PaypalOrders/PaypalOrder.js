@@ -104,25 +104,6 @@ const PaypalOrderDetail = () => {
         row.orderStatus === "4" && row.paymentStatus === "SESSION_REVERTED",
     },
   ];
-  // const buttons = [
-  //   {
-  //     id: 1,
-  //     title: "Delete",
-  //     onClick: (row) => handleOnDelete(row.userEncId),
-  //     variant: "outline-danger",
-  //     icon: "bi bi-trash",
-  //     show: true
-  //   },
-  //   {
-  //     id: 2,
-  //     title: "Activate Account",
-  //     onClick: (row) => onView(row),
-  //     variant: "outline-dark",
-  //     icon: "bi bi-check2",
-  //     show: (row) =>
-  //       row.isActive === "AdminVerificationPending" ? true : false,
-  //   },
-  // ];
 
   const headers = [
     { id: "0", label: "Action", column: "Action" },
@@ -216,16 +197,6 @@ const PaypalOrderDetail = () => {
       dispatch(getPaypalOrderDetailRecords(params))
         .then((response) => {
           const data = response.payload?.data;
-          // const data = response.payload?.data.map((obj) => {
-          //   if (obj.orderStatus === "2") {
-          //     obj.orderStatus = "Completed";
-          //   } else if (obj.orderStatus === "4") {
-          //     obj.orderStatus = "Cancelled";
-          //   } else {
-          //     obj.orderStatus = "N/A";
-          //   }
-          //   return obj;
-          // });
           setRecords(data);
           console.log(data);
           setTotalRecords(response.payload?.recordsTotal);
@@ -257,7 +228,7 @@ const PaypalOrderDetail = () => {
                     <div className="p-3">
                       <div className="text-center">
                         <h1 className="h3 text-gray-900 mb-4 text-bold">
-                          PayPal Orders Detail
+                          PayPal Orders Record
                         </h1>
                       </div>
                       <CustomTable

@@ -10,12 +10,17 @@ import {
 const OrdersRecord = () => {
   const dispatch = useDispatch();
   const [orderData, setOrderData] = useState();
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [showDialogue, setShowDialogue] = useState(false);
   const [setDialoueType, isSetDialoueType] = useState("");
 
   const deleteOrderAndRefund = () => {
+    setIsLoading(true);
     if (orderData) {
       dispatch(cancelOrderAndRevertStripe(orderData)).then((response) => {
+        handleClose();
+        setRefreshKey((prevKey) => prevKey + 1);
         if (response?.payload) {
         } else {
         }
@@ -24,8 +29,11 @@ const OrdersRecord = () => {
   };
 
   const deleteOrderAndRevertSession = () => {
+    setIsLoading(true);
     if (orderData) {
       dispatch(cancelOrderAndRevertSession(orderData)).then((response) => {
+        handleClose();
+        setRefreshKey((prevKey) => prevKey + 1);
         if (response?.payload) {
         } else {
         }
@@ -40,19 +48,22 @@ const OrdersRecord = () => {
 
   const handleClose = () => {
     setShowDialogue(false);
+    setIsLoading(false);
   };
 
   return (
     <div>
-      <StripeOrder handleOpen={handleOpen} />
+      <StripeOrder handleOpen={handleOpen} refreshKey={refreshKey} />
 
       <Dialogue
         show={showDialogue}
         onHide={handleClose}
         headerClass=""
         modalBodyClass="p-0"
-        title={"Cancel Order"}
-        size="md"
+        title={`Cancel Order & ${
+          setDialoueType === "refund" ? "Refund" : "Revert Session"
+        }`}
+        size="lg"
         bodyContent={
           <p className="p-3 fs-5">
             Canceling this order will stop all further processing and any
@@ -73,6 +84,7 @@ const OrdersRecord = () => {
               setDialoueType === "session"
                 ? deleteOrderAndRevertSession()
                 : deleteOrderAndRefund(),
+            loader: isLoading,
           },
         ]}
       />

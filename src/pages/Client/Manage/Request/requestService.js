@@ -7,8 +7,9 @@ import {
   Button,
   Card,
   CardBody,
+  ProgressBar,
+  ButtonGroup,
 } from "react-bootstrap";
-import logo from "../../../../assets/images/logo-for-white-bg.svg";
 import RadioCheck from "../../../../components/Custom/RadioChecks/radioChecks";
 import RadioCheckMultiple from "../../../../components/Custom/RadioChecks/multipleChecks";
 import CustomDropdown from "../../../../components/Custom/Dropdown/Dropdown";
@@ -26,10 +27,8 @@ import {
   initialValues,
   languageOptions,
 } from "../../../../utils/client/data/requestedData";
-import image from "../../../../assets/images/request-service.png";
 import { disabledPreviousDateTime } from "../../../../utils/_helpers";
-import animationData from "../../../../assets/lottie/video-tablet.json";
-import LottiePlayer from "../../../../components/Custom/LottiePlayer/LottiePlayer";
+import "./style.css";
 
 export const validationSchema = Yup.object({
   requestServiceType: Yup.string().required("Please select a service type"),
@@ -84,16 +83,25 @@ const RequestService = () => {
   const [selectedIssue, setSelectedIssue] = useState([]);
   const [foundMatch, setFoundMatch] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState(1);
+
+  // Handle Next & Previous
+  const nextStep = () => {
+    setStep(step + 1);
+  };
+  const prevStep = () => {
+    setStep(step - 1);
+  };
 
   const handleCategoryChange = (category) => {
-    // Compute the updated selected categories
     const updatedCategories = selectedCategories.includes(category)
       ? selectedCategories.filter((c) => c !== category)
       : [...selectedCategories, category];
-    // Update selectedCategories with the updated list
-    setSelectedCategories(updatedCategories);
+
+    setSelectedCategories(updatedCategories); // Update local state
+
+    // Use Formik's setFieldValue to keep the form state in sync
     setFieldValue("categoriesOfProblems", updatedCategories);
-    console.log("updatedCategories", updatedCategories);
 
     const newSubOptions = [
       ...new Set(
@@ -110,7 +118,6 @@ const RequestService = () => {
 
   const handleServiceTimeChange = (time) => {
     setSelectedTime(time);
-    console.log(time);
 
     // Create a new array of matched times based on the selected ids
     const newFoundMatchTime = time.map((id) => {
@@ -127,8 +134,6 @@ const RequestService = () => {
       setFieldValue("toDateTime", "");
     }
 
-    console.log(newFoundMatchTime);
-
     setFieldValue("prefferedServiceTime", time.join(","));
   };
 
@@ -139,7 +144,6 @@ const RequestService = () => {
 
   const handleIssuesInCategoiesChange = (issue) => {
     setSelectedIssue(issue);
-    console.log("Issues in Categories", issue);
     setFieldValue("issuesInCategoriesSelected", issue);
   };
 
@@ -167,7 +171,6 @@ const RequestService = () => {
           requestedServiceUserId: `${userAuth.id}`,
         };
         dispatch(requestService(convertedData)).then((response) => {
-          console.log("response", response);
           const convertedDatas = {
             ...convertedData,
             id: response.payload,
@@ -239,288 +242,368 @@ const RequestService = () => {
   };
 
   return (
-    <Container className="py-5 text-black">
-      <Row>
-        <Col lg={6} className="text-center my-auto">
-          <LottiePlayer
-            src={animationData}
-            style={{ height: "100%", width: "100%" }}
-          />
-        </Col>
-        <Col lg={6} sm={12}>
-          <Card
-            className="shadow border border-dark"
-            style={{
-              borderRadius: "25px",
-              backgroundColor: "#f3f3f3",
-            }}
+    <>
+      <Container className="py-5">
+        <Row className="">
+          <Col
+            xl={{ span: 8, offset: 2 }}
+            lg={{ span: 8, offset: 2 }}
+            md={{ span: 8, offset: 2 }}
+            sm={12}
+            xs={12}
           >
-            <CardBody>
-              <CardBody className="text-center">
-                <img
-                  src={logo}
-                  alt="Logo"
-                  style={{ width: "140px", height: "65px" }}
-                />
-                <h5 className="fw-semibold mt-3 text-black">
-                  Service Required
-                </h5>
-              </CardBody>
+            <Card
+              className="shadow border-0 rounded"
+              style={{
+                backgroundColor: "#f3f3f3",
+              }}
+            >
               <CardBody>
-                <Form onSubmit={handleSubmit}>
-                  <Form.Group controlId="requestServiceType" className="mb-3">
-                    <Form.Label className="text-black">
-                      When do you want help from your Tech Valet
-                      <span className="text-danger"> *</span>
-                    </Form.Label>
-                    <RadioCheck
-                      checkType="radio"
-                      inlineOrNot={true}
-                      options={options}
-                      name="requestServiceType"
-                      selectedValue={values.requestServiceType}
-                      onBlur={handleBlur("requestServiceType")}
-                      onChange={handleChange("requestServiceType")}
-                    />
-                  </Form.Group>
+                <div className="text-center">
+                  <h3 className="fw-semibold mt-3 text-black">
+                    Request a Valet!
+                  </h3>
+                  <p>
+                    Complete this form to help us match you with the perfect
+                    Valet based on your needs.
+                  </p>
+                </div>
+                <CardBody>
+                  <ProgressBar
+                    now={(step / 3) * 100}
+                    label={`${Math.ceil((step / 3) * 100)}%`}
+                    className="mb-3 progress-3d animated-progress"
+                  />
+                  <Form onSubmit={handleSubmit}>
+                    {step === 1 && (
+                      <>
+                        <Form.Group
+                          controlId="requestServiceType"
+                          className="mb-3"
+                        >
+                          <Form.Label className="text-black">
+                            When do you want help from your Tech Valet
+                            <span className="text-danger"> *</span>
+                          </Form.Label>
+                          <RadioCheck
+                            checkType="radio"
+                            inlineOrNot={true}
+                            options={options}
+                            name="requestServiceType"
+                            selectedValue={values.requestServiceType}
+                            onBlur={handleBlur("requestServiceType")}
+                            onChange={handleChange("requestServiceType")}
+                          />
+                        </Form.Group>
 
-                  {values.requestServiceType === "2" && (
-                    <>
-                      <Row className="mb-3">
-                        <Col>
-                          <Form.Group controlId="Time">
+                        {values.requestServiceType === "2" && (
+                          <>
+                            <Row className="mb-3">
+                              <Col>
+                                <Form.Group controlId="Time">
+                                  <Form.Label>
+                                    Preferred Service Time
+                                    <span className="text-danger">*</span>
+                                  </Form.Label>
+                                  <CustomDropdown
+                                    optionsList={serviceTime}
+                                    selectedOptions={selectedTime}
+                                    handleChange={handleServiceTimeChange}
+                                    values={{ preferredTime: selectedTime }}
+                                    isMultiSelect
+                                    isSearchable={false}
+                                    valueKey="preferredTime"
+                                    fieldName="Time"
+                                    isInvalid={
+                                      !!errors.prefferedServiceTime &&
+                                      touched.prefferedServiceTime
+                                    }
+                                  />
+                                  {touched.prefferedServiceTime &&
+                                    errors.prefferedServiceTime && (
+                                      <div className="text-danger">
+                                        {errors.prefferedServiceTime}
+                                      </div>
+                                    )}
+                                </Form.Group>
+                              </Col>
+                            </Row>
+
+                            <Row className="mb-3">
+                              <Col md={6}>
+                                <Form.Group>
+                                  <Form.Label>
+                                    From Date Time
+                                    <span className="text-danger">*</span>
+                                  </Form.Label>
+                                  <Form.Control
+                                    type="datetime-local"
+                                    value={values.fromDateTime}
+                                    onBlur={handleBlur("fromDateTime")}
+                                    onChange={(e) => {
+                                      handleChange("fromDateTime");
+                                      handleTimeChange(e.target.value);
+                                    }}
+                                    min={disabledPreviousDateTime()}
+                                    disabled={selectedTime.length === 0}
+                                    isInvalid={
+                                      !!errors.fromDateTime &&
+                                      touched.fromDateTime
+                                    }
+                                  />
+                                  {selectedTime.length === 0 && (
+                                    <div className="text-danger">
+                                      Please select a service time.
+                                    </div>
+                                  )}
+                                  {touched.fromDateTime &&
+                                    errors.fromDateTime && (
+                                      <div className="text-danger">
+                                        {errors.fromDateTime}
+                                      </div>
+                                    )}
+                                </Form.Group>
+                              </Col>
+                              <Col md={6}>
+                                <Form.Group>
+                                  <Form.Label>
+                                    To Date Time
+                                    <span className="text-danger">*</span>
+                                  </Form.Label>
+                                  <Form.Control
+                                    type="datetime-local"
+                                    onBlur={handleBlur("toDateTime")}
+                                    onChange={(e) => {
+                                      handleChange("toDateTime");
+                                      handleEndTime(e.target.value);
+                                    }}
+                                    value={values.toDateTime}
+                                    min={disabledPreviousDateTime()}
+                                    disabled={selectedTime.length === 0}
+                                    isInvalid={
+                                      !!errors.toDateTime && touched.toDateTime
+                                    }
+                                  />
+                                  {touched.toDateTime && errors.toDateTime && (
+                                    <div className="text-danger">
+                                      {errors.toDateTime}
+                                    </div>
+                                  )}
+                                </Form.Group>
+                              </Col>
+                            </Row>
+                          </>
+                        )}
+
+                        <ButtonGroup className="w-100">
+                          <Button
+                            onClick={nextStep}
+                            variant="primary-secondary"
+                            className="w-100"
+                          >
+                            Next
+                          </Button>
+                        </ButtonGroup>
+                      </>
+                    )}
+
+                    {step === 2 && (
+                      <>
+                        <Form.Group
+                          controlId="requestCategoryProblem"
+                          className="mb-3"
+                        >
+                          <Form.Label className="text-black">
+                            Categories of Problem{" "}
+                            <span className="text-danger">*</span>
+                          </Form.Label>
+                          <RadioCheckMultiple
+                            checkType="switch"
+                            inlineOrNot={true}
+                            options={problemOptions}
+                            name="categoriesOfProblems"
+                            selectedValues={values.categoriesOfProblems}
+                            onBlur={handleBlur("categoriesOfProblems")}
+                            className="mb-2"
+                            onChange={(e) => {
+                              handleCategoryChange(e.target.value);
+                            }}
+                            isInvalid={
+                              !!errors.categoriesOfProblems &&
+                              touched.categoriesOfProblems
+                            }
+                          />
+                          {touched.categoriesOfProblems &&
+                          errors.categoriesOfProblems ? (
+                            <div className="text-danger">
+                              {errors.categoriesOfProblems}
+                            </div>
+                          ) : null}
+                        </Form.Group>
+
+                        {selectedCategories.length > 0 && (
+                          <Form.Group controlId="subCategory" className="mb-3">
                             <Form.Label>
-                              Preferred Service Time
+                              What best describes your problem
                               <span className="text-danger">*</span>
                             </Form.Label>
                             <CustomDropdown
-                              optionsList={serviceTime}
-                              selectedOptions={selectedTime}
-                              handleChange={handleServiceTimeChange}
-                              values={{ preferredTime: selectedTime }}
+                              optionsList={subOptions}
+                              selectedOptions={selectedSubcategories}
+                              handleChange={handleSubcategoryChange}
+                              values={{ subcategories: selectedSubcategories }}
                               isMultiSelect
-                              isSearchable={false}
-                              valueKey="preferredTime"
-                              fieldName="Time"
+                              isSearchable={true}
+                              valueKey="subcategories"
+                              fieldName="Subcategory"
                               isInvalid={
-                                !!errors.prefferedServiceTime &&
-                                touched.prefferedServiceTime
+                                !!errors.requestServiceSkills &&
+                                touched.requestServiceSkills
                               }
                             />
-                            {touched.prefferedServiceTime &&
-                              errors.prefferedServiceTime && (
-                                <div className="text-danger">
-                                  {errors.prefferedServiceTime}
-                                </div>
-                              )}
-                          </Form.Group>
-                        </Col>
-                      </Row>
-
-                      <Row className="mb-3">
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>
-                              From Date Time
-                              <span className="text-danger">*</span>
-                            </Form.Label>
-                            <Form.Control
-                              type="datetime-local"
-                              value={values.fromDateTime}
-                              onBlur={handleBlur("fromDateTime")}
-                              onChange={(e) => {
-                                handleChange("fromDateTime");
-                                handleTimeChange(e.target.value);
-                              }}
-                              min={disabledPreviousDateTime()}
-                              disabled={selectedTime.length === 0}
-                              isInvalid={
-                                !!errors.fromDateTime && touched.fromDateTime
-                              }
-                            />
-                            {selectedTime.length === 0 && (
+                            {touched.requestServiceSkills &&
+                            errors.requestServiceSkills ? (
                               <div className="text-danger">
-                                Please select a service time.
+                                {errors.requestServiceSkills}
                               </div>
-                            )}
-                            {touched.fromDateTime && errors.fromDateTime && (
-                              <div className="text-danger">
-                                {errors.fromDateTime}
-                              </div>
-                            )}
+                            ) : null}
                           </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label>
-                              To Date Time
-                              <span className="text-danger">*</span>
-                            </Form.Label>
-                            <Form.Control
-                              type="datetime-local"
-                              onBlur={handleBlur("toDateTime")}
-                              onChange={(e) => {
-                                handleChange("toDateTime");
-                                handleEndTime(e.target.value);
-                              }}
-                              value={values.toDateTime}
-                              min={disabledPreviousDateTime()}
-                              disabled={selectedTime.length === 0}
-                              isInvalid={
-                                !!errors.toDateTime && touched.toDateTime
-                              }
-                            />
-                            {touched.toDateTime && errors.toDateTime && (
-                              <div className="text-danger">
-                                {errors.toDateTime}
-                              </div>
-                            )}
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                    </>
-                  )}
+                        )}
 
-                  <Form.Group
-                    controlId="requestCategoryProblem"
-                    className="mb-3"
-                  >
-                    <Form.Label className="text-black">
-                      Categories of Problem{" "}
-                      <span className="text-danger">*</span>
-                    </Form.Label>
-                    <RadioCheckMultiple
-                      checkType="switch"
-                      inlineOrNot={true}
-                      options={problemOptions}
-                      selectedValue={values.categoriesOfProblems}
-                      onBlur={handleBlur("categoriesOfProblems")}
-                      className="mb-2"
-                      onChange={(e) => {
-                        handleCategoryChange(e.target.value);
-                      }}
-                      isInvalid={
-                        !!errors.categoriesOfProblems &&
-                        touched.categoriesOfProblems
-                      }
-                    />
-                    {touched.categoriesOfProblems &&
-                    errors.categoriesOfProblems ? (
-                      <div className="text-danger">
-                        {errors.categoriesOfProblems}
-                      </div>
-                    ) : null}
-                  </Form.Group>
+                        <ButtonGroup className="w-100">
+                          <Button
+                            onClick={prevStep}
+                            variant="secondary-secondary"
+                            className="w-100"
+                          >
+                            Back
+                          </Button>
+                          <Button
+                            onClick={nextStep}
+                            variant="primary-secondary"
+                            className="w-100"
+                          >
+                            Next
+                          </Button>
+                        </ButtonGroup>
+                      </>
+                    )}
 
-                  {selectedCategories.length > 0 && (
-                    <Form.Group controlId="subCategory" className="mb-3">
-                      <Form.Label>
-                        What best describes your problem
-                        <span className="text-danger">*</span>
-                      </Form.Label>
-                      <CustomDropdown
-                        optionsList={subOptions}
-                        selectedOptions={selectedSubcategories}
-                        handleChange={handleSubcategoryChange}
-                        values={{ subcategories: selectedSubcategories }}
-                        isMultiSelect
-                        isSearchable={true}
-                        valueKey="subcategories"
-                        fieldName="Subcategory"
-                        isInvalid={
-                          !!errors.requestServiceSkills &&
-                          touched.requestServiceSkills
-                        }
-                      />
-                      {touched.requestServiceSkills &&
-                      errors.requestServiceSkills ? (
-                        <div className="text-danger">
-                          {errors.requestServiceSkills}
+                    {step === 3 && (
+                      <>
+                        <Form.Group
+                          controlId="SelectIssuesFound"
+                          className="mb-3"
+                        >
+                          <Form.Label>
+                            Issues <span className="text-danger">*</span>
+                          </Form.Label>
+                          <CustomDropdown
+                            optionsList={issuesInCategories}
+                            selectedOptions={selectedIssue}
+                            handleChange={handleIssuesInCategoiesChange}
+                            values={{ issueFound: selectedIssue }}
+                            isSearchable={true}
+                            valueKey="issueFound"
+                            fieldName="Issues"
+                            isInvalid={
+                              !!errors.issuesInCategoriesSelected &&
+                              touched.issuesInCategoriesSelected
+                            }
+                          />
+                          {touched.issuesInCategoriesSelected &&
+                          errors.issuesInCategoriesSelected ? (
+                            <div className="text-danger">
+                              {errors.issuesInCategoriesSelected}
+                            </div>
+                          ) : null}
+                        </Form.Group>
+
+                        <Form.Group controlId="SelectLanguage" className="mb-3">
+                          <Form.Label>Preferred Language</Form.Label>
+                          <CustomDropdown
+                            optionsList={languageOptions}
+                            selectedOptions={selectedLanguage}
+                            handleChange={handleServiceLangaugeChange}
+                            values={{ preferredLanguage: selectedLanguage }}
+                            isMultiSelect
+                            isSearchable={true}
+                            valueKey="preferredLanguage"
+                            fieldName="Language"
+                            isInvalid={
+                              !!errors.serviceLanguage &&
+                              touched.serviceLanguage
+                            }
+                          />
+                          {touched.serviceLanguage && errors.serviceLanguage ? (
+                            <div className="text-danger">
+                              {errors.serviceLanguage}
+                            </div>
+                          ) : null}
+                        </Form.Group>
+
+                        <Form.Group
+                          controlId="serviceDescription"
+                          className="mb-3"
+                        >
+                          <Form.Label>
+                            Is there anything else we should know about?
+                          </Form.Label>
+                          <Form.Control
+                            as="textarea"
+                            rows={5}
+                            placeholder="Enter additional information"
+                            onBlur={handleBlur("serviceDescription")}
+                            onChange={handleChange("serviceDescription")}
+                            value={values.serviceDescription}
+                          />
+                          {touched.serviceDescription &&
+                          errors.serviceDescription ? (
+                            <div className="text-danger">
+                              {errors.serviceDescription}
+                            </div>
+                          ) : null}
+                        </Form.Group>
+                        <div className="text-danger text-end">
+                          {errors.prefferedServiceTime ||
+                            errors.fromDateTime ||
+                            errors.toDateTime ||
+                            errors.categoriesOfProblems ||
+                            errors.requestServiceSkills ||
+                            errors.issuesInCategoriesSelected ||
+                            errors.serviceLanguage ||
+                            (errors.serviceDescription && (
+                              <span>Must Fill Required Fields</span>
+                            ))}
                         </div>
-                      ) : null}
-                    </Form.Group>
-                  )}
-
-                  <Form.Group controlId="SelectIssuesFound" className="mb-3">
-                    <Form.Label>
-                      Issues <span className="text-danger">*</span>
-                    </Form.Label>
-                    <CustomDropdown
-                      optionsList={issuesInCategories}
-                      selectedOptions={selectedIssue}
-                      handleChange={handleIssuesInCategoiesChange}
-                      values={{ issueFound: selectedIssue }}
-                      isSearchable={true}
-                      valueKey="issueFound"
-                      fieldName="Issues"
-                      isInvalid={
-                        !!errors.issuesInCategoriesSelected &&
-                        touched.issuesInCategoriesSelected
-                      }
-                    />
-                    {touched.issuesInCategoriesSelected &&
-                    errors.issuesInCategoriesSelected ? (
-                      <div className="text-danger">
-                        {errors.issuesInCategoriesSelected}
-                      </div>
-                    ) : null}
-                  </Form.Group>
-
-                  <Form.Group controlId="SelectLanguage" className="mb-3">
-                    <Form.Label>Preferred Language</Form.Label>
-                    <CustomDropdown
-                      optionsList={languageOptions}
-                      selectedOptions={selectedLanguage}
-                      handleChange={handleServiceLangaugeChange}
-                      values={{ preferredLanguage: selectedLanguage }}
-                      isMultiSelect
-                      isSearchable={true}
-                      valueKey="preferredLanguage"
-                      fieldName="Language"
-                      isInvalid={
-                        !!errors.serviceLanguage && touched.serviceLanguage
-                      }
-                    />
-                    {touched.serviceLanguage && errors.serviceLanguage ? (
-                      <div className="text-danger">
-                        {errors.serviceLanguage}
-                      </div>
-                    ) : null}
-                  </Form.Group>
-
-                  <Form.Group controlId="serviceDescription" className="mb-3">
-                    <Form.Label>
-                      Is there anything else we should know about?
-                    </Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={5}
-                      placeholder="Enter additional information"
-                      onBlur={handleBlur("serviceDescription")}
-                      onChange={handleChange("serviceDescription")}
-                    />
-                    {touched.serviceDescription && errors.serviceDescription ? (
-                      <div className="text-danger">
-                        {errors.serviceDescription}
-                      </div>
-                    ) : null}
-                  </Form.Group>
-
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    className="w-100"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Submitting..." : "Submit Service"}
-                  </Button>
-                </Form>
+                        <ButtonGroup className="w-100">
+                          <Button
+                            onClick={prevStep}
+                            variant="secondary-secondary"
+                            className="w-100"
+                            disabled={isLoading}
+                          >
+                            Back
+                          </Button>
+                          <Button
+                            type="submit"
+                            variant="primary-secondary"
+                            className="w-100"
+                            disabled={isLoading}
+                          >
+                            {isLoading ? "Submitting..." : "Submit"}
+                          </Button>
+                        </ButtonGroup>
+                      </>
+                    )}
+                  </Form>
+                </CardBody>
               </CardBody>
-            </CardBody>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 };
 

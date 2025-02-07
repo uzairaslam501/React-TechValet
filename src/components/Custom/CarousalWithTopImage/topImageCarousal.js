@@ -41,69 +41,69 @@ const TopImageCarousal = ({ label, users = [] }) => {
       {users.length > 0 ? (
         users.map((user) => (
           <SwiperSlide key={user.userEncId}>
-            <div className="user-card-top">
+            <div className="user-card">
               <NavLink
                 to={`/preview-profile/${encodeURIComponent(user.userEncId)}`}
-                className="user-card-top__link"
+                className="user-card__link"
               >
-                <div className="user-card-top__image-wrapper">
+                <div className="user-card__image-wrapper">
                   <HandleImages
                     imagePath={user.profilePicture}
                     imageAlt={user.userName}
-                    className="user-card-top__image"
+                    className="user-card__image"
                   />
                 </div>
               </NavLink>
 
-              <div className="user-card-top__details">
-                <div className="user-card-top__header">
-                  <h4 className="user-card-top__name">
+              <div className="user-card__details">
+                <div className="user-card__header">
+                  <h4 className="user-card__name">
                     <NavLink
                       to={`/preview-profile/${encodeURIComponent(
                         user.userEncId
                       )}`}
-                      className="user-card-top__name-link"
+                      className="user-card__name-link"
                     >
                       {user.userName}
                     </NavLink>
                   </h4>
-                  <span className="user-card-top__location">{user.city}</span>
+                  <span className="user-card__location">
+                    <i className="bi bi-map-marker-alt"></i> {user.city}
+                  </span>
                 </div>
 
-                <div className="user-card-top__description">
+                <div className="user-card__description">
                   {user.description ? (
-                    <p>{truncateCharacters(user.description, 20)}</p>
+                    <p>{truncateCharacters(user.description, 40)}</p>
                   ) : (
-                    <p className="user-card-top__no-description">
-                      Description not available
+                    <p className="user-card__no-description">
+                      No description available
                     </p>
                   )}
                 </div>
 
-                <div className="user-card-top__rating">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 1792 1792"
-                    width="15"
-                    height="15"
-                    className="user-card-top__rating-star"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M1728 647q0 22-26 48l-363 354 86 500q1 7 1 20 0 21-10.5 35.5t-30.5 14.5q-19 0-40-12l-449-236-449 236q-22 12-40 12-21 0-31.5-14.5t-10.5-35.5q0-6 2-20l86-500-364-354q-25-27-25-48 0-37 56-46l502-73 225-455q19-41 49-41t49 41l225 455 502 73q56 9 56 46z"
-                    />
-                  </svg>
+                <div className="user-card__rating">
+                  <div className="stars">
+                    {[...Array(5)].map((_, i) => (
+                      <i
+                        key={i}
+                        className={`bi bi-${
+                          i < user.userRating ? "star-fill" : "star"
+                        }`}
+                      ></i>
+                    ))}
+                  </div>
                   <span>
-                    {user.userRating}/5 ({user.userRatingCount})
+                    {user.userRating}/5 ({user.userRatingCount} reviews)
                   </span>
                 </div>
 
-                <div className="user-card-top__footer">
-                  <div className="user-card-top__price">
-                    Starting at : <strong>${user.pricePerHour}</strong>
+                <div className="user-card__footer">
+                  <div className="user-card__price">
+                    Starting at: <strong>${user.pricePerHour}</strong>
                   </div>
-                  <button className="user-card-top__favorite-btn">
-                    <i className="fa fa-heart" aria-hidden="true"></i>
+                  <button className="user-card__favorite-btn">
+                    <i className="fa fa-heart"></i>
                   </button>
                 </div>
               </div>
