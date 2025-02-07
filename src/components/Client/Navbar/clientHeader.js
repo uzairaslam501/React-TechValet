@@ -34,7 +34,7 @@ const ClientNavbar = () => {
         return item; // Return other items as is
       });
       setMenuBar(updatedValetMenu);
-    } else if (userAuth?.role === "Customer") {
+    } else if (userAuth?.role === "Customer" || userAuth?.role === "Admin") {
       setMenuBar(customerMenu);
     } else if (userAuth?.role === "Seo") {
       setMenuBar(seoMenu);

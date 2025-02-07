@@ -1,6 +1,8 @@
 import {
+  getBlogsCount,
   addBlogs,
   updateBlogs,
+  getBlogBySlug,
   getBlogsList,
   addSkillBlog,
   updateSkillBlogs,
@@ -15,6 +17,7 @@ const initialState = {
   events: [],
   loading: false,
   error: null,
+  blogs: null,
 };
 
 const articleSlice = createSlice({
@@ -43,6 +46,20 @@ const articleSlice = createSlice({
         state.error = action.payload;
       });
 
+    // Handle getBlogsCount
+    builder
+      .addCase(getBlogsCount.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getBlogsCount.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(getBlogsCount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+
     // Handle updateBlogs
     builder
       .addCase(updateBlogs.pending, (state) => {
@@ -58,6 +75,21 @@ const articleSlice = createSlice({
       .addCase(updateBlogs.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      });
+
+    // Handle getBlogBySlug
+    builder
+      .addCase(getBlogBySlug.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getBlogBySlug.fulfilled, (state, action) => {
+        state.loading = false;
+        state.blogs = action.payload;
+      })
+      .addCase(getBlogBySlug.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
 
     // Handle getBlogsList

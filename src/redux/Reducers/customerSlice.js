@@ -9,6 +9,7 @@ import {
   requestService,
   getUserForSkills,
   requestGetUserPackages,
+  getOrderById,
 } from "../Actions/customerActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -18,6 +19,15 @@ const customerSlice = createSlice({
   initialState: {
     loading: false,
     error: null,
+    valetsList: null,
+    keywords: null,
+    searchResults: null,
+    appointments: null,
+    orderRecords: null,
+    packageConsumption: null,
+    serviceRequest: null,
+    userSkills: null,
+    userPackages: null,
   },
   reducers: {
     logout(state) {
@@ -172,6 +182,20 @@ const customerSlice = createSlice({
         state.userPackages = action.payload; // Save user packages
       })
       .addCase(requestGetUserPackages.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Handle getOrderById
+    builder
+      .addCase(getOrderById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getOrderById.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(getOrderById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

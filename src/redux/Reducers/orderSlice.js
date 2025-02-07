@@ -11,6 +11,8 @@ import {
   cancelOrder,
   extendOrderConfirmation,
   orderCancelConfirmation,
+  cancelOrderAndRevertStripe,
+  cancelOrderAndRevertSession,
 } from "../Actions/orderActions";
 
 const initialState = {
@@ -187,6 +189,34 @@ const orderSlice = createSlice({
       .addCase(orderCancelConfirmation.rejected, (state, action) => {
         state.loading = false;
         state.error = "Failed to confirm order cancellation";
+      });
+
+    // Handle cancelOrderAndRevertStripe
+    builder
+      .addCase(cancelOrderAndRevertStripe.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(cancelOrderAndRevertStripe.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(cancelOrderAndRevertStripe.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+
+    // Handle cancelOrderAndRevertSession
+    builder
+      .addCase(cancelOrderAndRevertSession.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(cancelOrderAndRevertSession.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(cancelOrderAndRevertSession.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
   },
 });

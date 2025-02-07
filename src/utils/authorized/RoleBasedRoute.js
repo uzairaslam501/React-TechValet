@@ -10,7 +10,7 @@ const RoleBasedRoute = ({ allowedRoles }) => {
   }
 
   if (!allowedRoles.includes(userAuth.role)) {
-    return <Navigate to="/unauthorized" />;
+    return <Navigate to="/not-found" />;
   }
 
   return <Outlet />;

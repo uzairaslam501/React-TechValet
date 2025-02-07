@@ -120,21 +120,29 @@ const createRoute = createBrowserRouter(
 
         <Route element={<ProtectedClient />}>
           {/* Global */}
-          <Route path="/account" element={<UserProfile />} />
-          <Route path="/appointment" element={<ManageAppointment />} />
           <Route
-            path="/scheduled-appointment"
-            element={<ScheduledAppointment />}
-          />
+            element={
+              <RoleBasedRoute allowedRoles={["Customer", "Admin", "Valet"]} />
+            }
+          >
+            <Route path="/account" element={<UserProfile />} />
+            <Route path="/appointment" element={<ManageAppointment />} />
+            <Route
+              path="/scheduled-appointment"
+              element={<ScheduledAppointment />}
+            />
 
-          <Route path="/preview-profile/:id" element={<PreviewProfile />} />
-          <Route path="/messages/:id?" element={<Messages />} />
-          <Route path="/orders" element={<ManageOrders />} />
-          <Route path="/preview-order" element={<OrderPreview />} />
-          <Route path="/order-details/:id" element={<OrderDetail />} />
-          <Route path="/update-password" element={<ClientUpdatePassword />} />
+            <Route path="/preview-profile/:id" element={<PreviewProfile />} />
+            <Route path="/messages/:id?" element={<Messages />} />
+            <Route path="/orders" element={<ManageOrders />} />
+            <Route path="/preview-order" element={<OrderPreview />} />
+            <Route path="/order-details/:id" element={<OrderDetail />} />
+            <Route path="/update-password" element={<ClientUpdatePassword />} />
+          </Route>
 
-          <Route element={<RoleBasedRoute allowedRoles={["Customer"]} />}>
+          <Route
+            element={<RoleBasedRoute allowedRoles={["Customer", "Admin"]} />}
+          >
             {/* Customer */}
             <Route path="/search/:value?" element={<Search />} />
             <Route path="/packages" element={<PackageSelection />} />
