@@ -6,6 +6,7 @@ import {
   updateSlotTimes,
   getAvailability,
   getUserEarnings,
+  getUserEarningRecords,
 } from "../Actions/serviceActions";
 
 const initialState = {
@@ -109,6 +110,21 @@ const servicesSlice = createSlice({
       .addCase(getUserEarnings.rejected, (state, action) => {
         state.loading = false;
         state.error = action.message;
+      });
+
+    // Handle getUserEarningRecords
+    builder
+      .addCase(getUserEarningRecords.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserEarningRecords.fulfilled, (state, action) => {
+        state.loading = false;
+        state.earningsData = action.payload;
+      })
+      .addCase(getUserEarningRecords.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
   },
 });

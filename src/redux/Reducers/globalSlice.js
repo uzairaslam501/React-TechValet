@@ -2,7 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   getRecordById,
   deleteRecords,
+  postUpdate,
   getTimezones,
+  postAddContact,
 } from "../Actions/globalActions";
 
 const initialState = {
@@ -46,6 +48,20 @@ const globalSlice = createSlice({
         state.error = action.payload || "Failed to delete the record";
       });
 
+    // postUpdate
+    builder
+      .addCase(postUpdate.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(postUpdate.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(postUpdate.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
     // getTimezones
     builder
       .addCase(getTimezones.pending, (state) => {
@@ -54,11 +70,25 @@ const globalSlice = createSlice({
       })
       .addCase(getTimezones.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload; // Update the state with the server response if needed
+        state.data = action.payload;
       })
       .addCase(getTimezones.rejected, (state, action) => {
         state.loading = false;
-        state.error = "Failed to delete the record";
+        state.error = action.payload;
+      });
+
+    // postAddContact
+    builder
+      .addCase(postAddContact.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(postAddContact.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(postAddContact.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

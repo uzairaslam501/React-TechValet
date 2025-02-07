@@ -3,11 +3,16 @@ import {
   postRegister,
   postUserUpdate,
   UpdateProfileImage,
+  postUpdatePassword,
   postUserActivity,
   postUserAvailable,
   postAddUserSkill,
   getUserSkills,
   postRenewToken,
+  sendVerificationEmail,
+  emailVerification,
+  requestForgotPassword,
+  postResetPassword,
 } from "../Actions/authActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -98,6 +103,20 @@ const authSlice = createSlice({
         state.error = action.payload;
       });
 
+    // Handle post Update Password actions
+    builder
+      .addCase(postUpdatePassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(postUpdatePassword.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(postUpdatePassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
     // Handle user activity update actions
     builder
       .addCase(postUserActivity.pending, (state) => {
@@ -178,6 +197,62 @@ const authSlice = createSlice({
         state.token = action.payload; // Update token in the state
       })
       .addCase(postRenewToken.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Handle send Verification Email actions
+    builder
+      .addCase(sendVerificationEmail.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(sendVerificationEmail.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(sendVerificationEmail.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Handle email Verification actions
+    builder
+      .addCase(emailVerification.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(emailVerification.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(emailVerification.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Handle request Forgot Password actions
+    builder
+      .addCase(requestForgotPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(requestForgotPassword.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(requestForgotPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Handle post Reset Password actions
+    builder
+      .addCase(postResetPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(postResetPassword.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(postResetPassword.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

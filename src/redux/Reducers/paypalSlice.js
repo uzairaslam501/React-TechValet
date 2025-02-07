@@ -6,6 +6,9 @@ import {
   checkPaymentStatusForPackage,
   chargeByPackage,
   addPayPalAccount,
+  cancelAndRefundOrder,
+  cancelOrderAndRevertSession,
+  cancelUnclaimedPayment,
 } from "../Actions/paypalActions";
 
 const initialState = {
@@ -100,6 +103,46 @@ const paypalSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(addPayPalAccount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      // Handle cancelAndRefundOrder
+      .addCase(cancelAndRefundOrder.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(cancelAndRefundOrder.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(cancelAndRefundOrder.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      // Handle cancelOrderAndRevertSession
+      .addCase(cancelOrderAndRevertSession.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(cancelOrderAndRevertSession.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(cancelOrderAndRevertSession.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      // Handle cancelUnclaimedPayment
+      .addCase(cancelUnclaimedPayment.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(cancelUnclaimedPayment.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(cancelUnclaimedPayment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

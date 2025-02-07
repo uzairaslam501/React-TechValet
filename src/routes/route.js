@@ -5,26 +5,23 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import Register from "../pages/Client/ClientAuth/Register/Register";
 import ProtectedLayout from "../components/Admin/Layouts/protected";
 import Dashboard from "../pages/Admin/Dashboard/Dashboard";
 import RootLayout from "../components/Admin/Layouts/rootLayout";
 import ProtectedClient from "../components/Client/Layouts/clientProtected";
 import ClientRoot from "../components/Client/Layouts/clientRoot";
-import Home from "../pages/Client/Home/home";
-import Welcome from "../pages/Client/Welcome/welcome";
-import About from "../pages/Client/About/about";
-import Contact from "../pages/Client/Contact/contact";
+import Home from "../pages/Public/Home/home";
+import Welcome from "../pages/Public/Welcome/welcome";
+import About from "../pages/Public/About/about";
+import Contact from "../pages/Public/Contact/contact";
 import Search from "../pages/Client/Search/filteredData";
 import Earnings from "../pages/Client/Manage/Earnings/Earnings";
-import ClientLogin from "../pages/Client/ClientAuth/Login/Login";
 import ManageAppointment from "../pages/Client/Manage/ManageAppointment/index";
 import PackageSelection from "../pages/Client/Manage/Packages/packageSelection";
 import ViewPackages from "../pages/Client/Manage/Packages/viewPackages";
 import ScheduledAppointment from "../pages/Client/Manage/Scheduled/scheduledAppointment";
 import RequestService from "../pages/Client/Manage/Request/requestService";
 import RequestedService from "../pages/Client/Manage/Request/requestedService";
-import Index from "../pages/Client/ClientAuth/Profile/index";
 import Messages from "../pages/Client/Messages/Messages";
 import PaymentSuccess from "../pages/Client/PaymentVerification/PayPal/PaymentSuccess";
 import PaymentCancelled from "../pages/Client/PaymentVerification/PaymentCancelled";
@@ -53,7 +50,6 @@ import UpdateProfile from "../pages/Admin/Auth/Profile/UpdateProfile";
 import PackagesList from "../pages/Admin/Packages/PackagesList";
 import OrdersRecord from "../pages/Admin/Orders";
 import AdminUpdatePassword from "../pages/Admin/Auth/Profile/UpdatePassword";
-import ClientUpdatePassword from "../pages/Client/ClientAuth/UpdatePassword/ClientUpdatePassword";
 import PrivacyPolicy from "../pages/Policies/PrivacyPolicy/privacy";
 import TermsAndConditions from "../pages/Policies/TermsAndCondition/TermsAndCondition";
 import PublicRoot from "../components/Public/Layout/publicRoot";
@@ -65,15 +61,20 @@ import PaypalOrderDetail from "../pages/Admin/Orders/PaypalOrders/PaypalOrder";
 import PaypalTransactionDetail from "../pages/Admin/Orders/PaypalOrders/PaypalTransaction";
 import PaypalUnclaimedDetail from "../pages/Admin/Orders/PaypalOrders/PaypalUnclaimed";
 import ViewFeedback from "../pages/Admin/Feedback/ViewFeedback";
-import ForgotPassword from "../pages/Client/ClientAuth/ForgotPassword/ForgotPassword";
-import ResetPassword from "../pages/Client/ClientAuth/ResetPassword/ResetPassword";
+import ProfileView from "../pages/Public/ProfileView/ProfileView";
+import UserRegisteration from "../pages/Auth/Register/Register";
+import UserLogin from "../pages/Auth/Login/Login";
+import ClientUpdatePassword from "../pages/Auth/UpdatePassword/ClientUpdatePassword";
+import ResetPassword from "../pages/Auth/ResetPassword/ResetPassword";
+import ForgotPassword from "../pages/Auth/ForgotPassword/ForgotPassword";
+import UserProfile from "../pages/Auth/Profile";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
     <>
       {/* Public Routes */}
-      <Route path="/login" element={<ClientLogin />} />
-      <Route path="/register/:value" element={<Register />} />
+      <Route path="/login" element={<UserLogin />} />
+      <Route path="/register/:value" element={<UserRegisteration />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route
         path="/reset-password/:value/:validity"
@@ -119,19 +120,29 @@ const createRoute = createBrowserRouter(
 
         <Route element={<ProtectedClient />}>
           {/* Global */}
-          <Route path="/account" element={<Index />} />
-          <Route path="/appointment" element={<ManageAppointment />} />
           <Route
-            path="/scheduled-appointment"
-            element={<ScheduledAppointment />}
-          />
-          <Route path="/messages/:id?" element={<Messages />} />
-          <Route path="/orders" element={<ManageOrders />} />
-          <Route path="/preview-order" element={<OrderPreview />} />
-          <Route path="/order-details/:id" element={<OrderDetail />} />
-          <Route path="/update-password" element={<ClientUpdatePassword />} />
+            element={
+              <RoleBasedRoute allowedRoles={["Customer", "Admin", "Valet"]} />
+            }
+          >
+            <Route path="/account" element={<UserProfile />} />
+            <Route path="/appointment" element={<ManageAppointment />} />
+            <Route
+              path="/scheduled-appointment"
+              element={<ScheduledAppointment />}
+            />
 
-          <Route element={<RoleBasedRoute allowedRoles={["Customer"]} />}>
+            <Route path="/preview-profile/:id" element={<PreviewProfile />} />
+            <Route path="/messages/:id?" element={<Messages />} />
+            <Route path="/orders" element={<ManageOrders />} />
+            <Route path="/preview-order" element={<OrderPreview />} />
+            <Route path="/order-details/:id" element={<OrderDetail />} />
+            <Route path="/update-password" element={<ClientUpdatePassword />} />
+          </Route>
+
+          <Route
+            element={<RoleBasedRoute allowedRoles={["Customer", "Admin"]} />}
+          >
             {/* Customer */}
             <Route path="/search/:value?" element={<Search />} />
             <Route path="/packages" element={<PackageSelection />} />
@@ -175,7 +186,7 @@ const createRoute = createBrowserRouter(
         <Route path="/skill/:skill" element={<SkillProfiles />} />
         <Route path="/blogs" element={<PublicArticles />} />
         <Route path="/:slug" element={<ArticleDetail />} />
-        <Route path="/preview-profile/:id" element={<PreviewProfile />} />
+        <Route path="/view-profile/:id" element={<ProfileView />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
       </Route>

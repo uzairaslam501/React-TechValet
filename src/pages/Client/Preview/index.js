@@ -12,12 +12,12 @@ import {
 import { useDispatch } from "react-redux";
 import { getRecordById } from "../../../redux/Actions/globalActions";
 import { useParams } from "react-router";
-import UserProfileImage from "../ClientAuth/Profile/ProfileImage/UserProfileImage";
-import SkillsAndEndorsements from "../ClientAuth/Profile/ValetProfile/Skills/SkillsAndEndorsements";
-import Services from "../ClientAuth/Profile/ValetProfile/Services/Services";
-import Education from "../ClientAuth/Profile/ValetProfile/Education/Education";
-import Slots from "../ClientAuth/Profile/ValetProfile/Slots/Slots";
 import ReviewList from "../../../components/Custom/Reviews/ReviewList";
+import UserProfileImage from "../../Auth/Profile/ProfileImage/UserProfileImage";
+import SkillsAndEndorsements from "../../Auth/Profile/ValetProfile/Skills/SkillsAndEndorsements";
+import Services from "../../Auth/Profile/ValetProfile/Services/Services";
+import Education from "../../Auth/Profile/ValetProfile/Education/Education";
+import Slots from "../../Auth/Profile/ValetProfile/Slots/Slots";
 import CalenderOrders from "./Calender/ViewOrders";
 
 const PreviewProfile = () => {
