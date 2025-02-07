@@ -211,7 +211,7 @@ export const cancelOrderAndRevertSession = createAsyncThunk(
 );
 
 export const cancelUnclaimedPayment = createAsyncThunk(
-  "paypal/cancelOrderAndRevertSession",
+  "paypal/cancelUnclaimedPayment",
   async (payOutItemId, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
