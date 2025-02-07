@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Spinner from "react-bootstrap/Spinner";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import UserProfileImage from "../../../Client/ClientAuth/Profile/ProfileImage/UserProfileImage";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
@@ -11,6 +9,7 @@ import {
 } from "../../../../redux/Actions/globalActions";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { postUserUpdate } from "../../../../redux/Actions/authActions";
+import UserProfileImage from "../../../Auth/Profile/ProfileImage/UserProfileImage";
 
 const UpdateProfile = () => {
   const dispatch = useDispatch();
@@ -127,57 +126,6 @@ const UpdateProfile = () => {
     <>
       <div className="row px-5 pb-5" style={{ marginTop: "4rem" }}>
         <div className="col-md-4">
-          {/* <div className="card">
-            <div className="card-body">
-              <div className="text-center mt-4">
-                {selectedImage ? (
-                  <img
-                    src={URL.createObjectURL(selectedImage)}
-                    className="rounded-circle"
-                    width={210}
-                    height={170}
-                    alt="Selected"
-                  />
-                ) : (
-                  <img
-                    src={values.profileImage ? values.profileImage : userIcon}
-                    className="rounded-circle"
-                    width={210}
-                    height={170}
-                    alt="user-profile"
-                  />
-                )}
-                <div className="my-3 d-md-flex justify-content-md-center">
-                  <input
-                    className="form-control w-75"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                  />
-                </div>
-              </div>
-
-              <div className="mt-3 gap-2 d-md-flex justify-content-md-center">
-                <button
-                  type="button"
-                  className="btn-sm btn-danger"
-                  onClick={handleDeleteImage}
-                  disabled={isDeleteDisabled || isUploading}
-                >
-                  Delete Image
-                </button>
-
-                <button
-                  className="btn-sm btn-primary"
-                  type="submit"
-                  onClick={handleUpdateImage}
-                  disabled={isUpdateDisabled || isUploading || !selectedImage}
-                >
-                  Update Image
-                </button>
-              </div>
-            </div>
-          </div> */}
           <Row>
             <Col xl={12} lg={12} md={12} sm={12} xs={12}>
               <UserProfileImage userRecord={userRecords} />
