@@ -69,7 +69,7 @@ const ClientNavbar = () => {
                       menuBar.map((link, index) => {
                         return (
                           link.label === "Home" && (
-                            <Nav className="me-auto">
+                            <Nav className="me-auto" key={index}>
                               <Nav.Link
                                 as={NavLink}
                                 to={link.href}

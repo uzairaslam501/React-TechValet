@@ -203,6 +203,11 @@ export const truncateDate = (date) => {
   return isoString.slice(0, 10); // Extract the format yyyy-MM-dd
 };
 
+export const truncateTime = (dateTime) => {
+  const isoString = new Date(dateTime).toISOString();
+  return isoString.slice(11, 16); // Extract the format HH:mm
+};
+
 export const setDateRestrictions = (mode, referenceDate) => {
   if (!["min", "max"].includes(mode)) {
     throw new Error(

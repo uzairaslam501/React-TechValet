@@ -56,6 +56,11 @@ const Education = ({ userRecord, preview = false }) => {
 
   // Handle service update
   const handleUpdateService = (education) => {
+    console.log("Updating education:", education); // :mag: Debugging log
+    if (!education?.educationId) {
+      console.log("Education object is missing `educationId`.");
+      return;
+    }
     setEditItem(true);
     setFieldValue("educationId", encodeURIComponent(education?.educationId));
     setFieldValue("degreeName", education?.degreeName);
@@ -109,14 +114,16 @@ const Education = ({ userRecord, preview = false }) => {
         if (values.educationId) {
           dispatch(updateEducation(values))
             .then((response) => {
-              setEducationList((prev) =>
-                prev.map((education) => {
-                  return education.educationId === response.payload.educationId
-                    ? { ...education, ...response.payload }
-                    : education;
-                })
-              );
-
+              if (response?.payload) {
+                setEducationList((prev) =>
+                  prev.map((education) => {
+                    return education.educationId ===
+                      response.payload.educationId
+                      ? { ...education, ...response.payload }
+                      : education;
+                  })
+                );
+              }
               setButtonDisabled(false);
               setEditItem(false);
               resetForm();

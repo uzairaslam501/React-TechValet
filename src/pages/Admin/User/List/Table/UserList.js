@@ -7,7 +7,7 @@ import Dialogue from "../../../../../components/Custom/Modal/modal";
 import { getUserRecords } from "../../../../../redux/Actions/adminActions";
 import { deleteRecords } from "../../../../../redux/Actions/globalActions";
 
-const UserList = ({ userRole }) => {
+const UserList = ({ userRole, userType }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -76,7 +76,7 @@ const UserList = ({ userRole }) => {
   };
 
   const onView = (row) => {
-    navigate(`/add-user/${params?.type}`, { state: row });
+    navigate(`/add-user/${userType}`, { state: row });
   };
 
   const handleOnDelete = (id) => {

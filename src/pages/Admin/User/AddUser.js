@@ -31,7 +31,7 @@ function AddUser() {
 
   const params = useParams();
   const location = useLocation();
-  const getRecord = location.state;
+  const getRecord = location?.state;
 
   useEffect(() => {
     if (getRecord) {
@@ -77,7 +77,8 @@ function AddUser() {
   };
 
   const initialValues = {
-    id: getRecord?.userEncId || "",
+    id: getRecord?.id || "",
+    userEncId: getRecord?.userEncId || "",
     role: capitalizeFirstLetter(params?.type) || "", //chooseRole(params.type) || "",
     firstname: getRecord?.firstName || "",
     lastname: getRecord?.lastName || "",
@@ -151,7 +152,7 @@ function AddUser() {
         setShowSpinner(true);
         if (isUpdateCall) {
           await dispatch(
-            postUpdateUser({ userId: values.id, userData: values })
+            postUpdateUser({ userId: values.userEncId, userData: values })
           );
         } else {
           await dispatch(postAddUser(values));
@@ -185,7 +186,7 @@ function AddUser() {
                       </h1>
                     </div>
                     <form className="user" onSubmit={handleSubmit}>
-                      <input type="hidden" value={values.id} />
+                      <input type="hidden" value={values.userEncId} />
                       <input type="hidden" value={values.role} />
 
                       <Row>

@@ -120,12 +120,23 @@ const createRoute = createBrowserRouter(
 
         <Route element={<ProtectedClient />}>
           {/* Global */}
+
+          <Route
+            element={
+              <RoleBasedRoute
+                allowedRoles={["Customer", "Admin", "Valet", "Seo"]}
+              />
+            }
+          >
+            <Route path="/account" element={<UserProfile />} />
+            <Route path="/update-password" element={<ClientUpdatePassword />} />
+          </Route>
+
           <Route
             element={
               <RoleBasedRoute allowedRoles={["Customer", "Admin", "Valet"]} />
             }
           >
-            <Route path="/account" element={<UserProfile />} />
             <Route path="/appointment" element={<ManageAppointment />} />
             <Route
               path="/scheduled-appointment"
@@ -137,7 +148,6 @@ const createRoute = createBrowserRouter(
             <Route path="/orders" element={<ManageOrders />} />
             <Route path="/preview-order" element={<OrderPreview />} />
             <Route path="/order-details/:id" element={<OrderDetail />} />
-            <Route path="/update-password" element={<ClientUpdatePassword />} />
           </Route>
 
           <Route

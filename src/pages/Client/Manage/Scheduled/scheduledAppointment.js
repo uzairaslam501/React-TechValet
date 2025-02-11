@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { getOrderEventsByUserId } from "../../../../redux/Actions/calenderActions";
 import MyCalendar from "../../../../components/Custom/Calendar/calender";
-import { Card, CardBody, Col, Row } from "react-bootstrap";
+import { Container, Card, CardBody, Col, Row } from "react-bootstrap";
 
 const ScheduledAppointment = () => {
   const dispatch = useDispatch();
@@ -49,9 +49,9 @@ const ScheduledAppointment = () => {
 
   return (
     <>
-      <section>
-        <Row>
-          <Col md={{ span: 10, offset: 1 }}>
+      <Container className="py-5">
+        <Row className="text-center">
+          <Col xl={12} lg={12} md={12} sm={12} xs={12}>
             <Card>
               <CardBody className="text-center">
                 <h1>User Calendar</h1>
@@ -69,7 +69,7 @@ const ScheduledAppointment = () => {
             </Card>
           </Col>
         </Row>
-      </section>
+      </Container>
     </>
   );
 };

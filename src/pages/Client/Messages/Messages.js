@@ -13,6 +13,7 @@ import {
   getFirstAndLastDayOfMonth,
   setDateRestrictions,
   truncateCharacters,
+  truncateTime,
 } from "../../../utils/_helpers";
 import RenderOfferStatus from "./RendersCard/RenderOfferStatus";
 import "./style.css";
@@ -500,50 +501,69 @@ const Messages = () => {
                       <Spinner animation="grow" />
                     </div>
                   ) : (
-                    <ul className="chatbox-list">
-                      {messages &&
-                        messages.map((message) => (
-                          <li
-                            key={message.id}
-                            className={`chatbox-message ${
-                              message.senderId === String(userAuth?.id)
-                                ? "sent"
-                                : "received"
-                            }`}
-                          >
-                            <div className="profile-image">
-                              <HandleImages
-                                imagePath={message.profileImage}
-                                imageAlt={message.name}
-                                imageStyle={{ width: "100%", height: "100%" }}
-                              />
-                            </div>
-                            <div className="message-content">
-                              <div className="sender-name">{message.name}</div>
-                              {message.offerTitle ? (
-                                <div>
-                                  {RenderOfferStatus(
-                                    message.offerStatus,
-                                    message,
-                                    userAuth,
-                                    handleOfferStatus,
-                                    handlePaymentModal
-                                  )}
+                    <>
+                      <ul className="chatbox-list">
+                        {messages &&
+                          Object.entries(messages).map(
+                            ([date, messagesOnDate]) => (
+                              <div key={date}>
+                                <div className="d-flex justify-content-center fixed-date">
+                                  <h2 className="message-date">{date}</h2>
                                 </div>
-                              ) : (
-                                <div>
-                                  <div className="message-text">
-                                    {message.messageDescription}
-                                  </div>
-                                </div>
-                              )}
-                              <div className="message-time">
-                                {message.messageTime}
+                                {/* Group header */}
+                                {messagesOnDate.map((message) => (
+                                  <li
+                                    key={message.id}
+                                    className={`chatbox-message ${
+                                      message.senderId === String(userAuth?.id)
+                                        ? "sent"
+                                        : "received"
+                                    }`}
+                                  >
+                                    <div className="profile-image">
+                                      <HandleImages
+                                        imagePath={message.profileImage}
+                                        imageAlt={message.name}
+                                        imageStyle={{
+                                          width: "100%",
+                                          height: "100%",
+                                        }}
+                                      />
+                                    </div>
+                                    <div className="message-content">
+                                      <div className="sender-name">
+                                        {message.name}
+                                      </div>
+                                      {message.offerTitle ? (
+                                        <div>
+                                          {RenderOfferStatus(
+                                            message.offerStatus,
+                                            message,
+                                            userAuth,
+                                            handleOfferStatus,
+                                            handlePaymentModal
+                                          )}
+                                        </div>
+                                      ) : (
+                                        <div>
+                                          <div className="message-text">
+                                            {message.messageDescription}
+                                          </div>
+                                        </div>
+                                      )}
+                                      <div className="message-time">
+                                        {console.log(date)}
+                                        {console.log(message.messageTime)}
+                                        {message.time}
+                                      </div>
+                                    </div>
+                                  </li>
+                                ))}
                               </div>
-                            </div>
-                          </li>
-                        ))}
-                    </ul>
+                            )
+                          )}
+                      </ul>
+                    </>
                   )}
                 </div>
                 <div className="chat-message clearfix">

@@ -3,7 +3,9 @@ import {
   getNotificationsCount,
   getNotifications,
   markNotifications,
+  markAllNotificationsAsRead,
   deleteNotification,
+  deleteAllNotifications,
 } from "../Actions/notificationActions";
 
 const initialState = {
@@ -63,6 +65,20 @@ const notificationsSlice = createSlice({
         state.error = action.error.message;
       })
 
+      // Handle markAllAsRead
+      .addCase(markAllNotificationsAsRead.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(markAllNotificationsAsRead.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally update notification state based on response
+      })
+      .addCase(markAllNotificationsAsRead.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
       // Handle deleteNotification
       .addCase(deleteNotification.pending, (state) => {
         state.loading = true;
@@ -76,6 +92,23 @@ const notificationsSlice = createSlice({
         );
       })
       .addCase(deleteNotification.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      // Handle deleteAll
+      .addCase(deleteAllNotifications.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteAllNotifications.fulfilled, (state, action) => {
+        state.loading = false;
+        // Optionally filter out the deleted notification from the state
+        state.notifications = state.notifications.filter(
+          (notification) => notification.id !== action.meta.arg
+        );
+      })
+      .addCase(deleteAllNotifications.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

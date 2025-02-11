@@ -263,14 +263,14 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
                   <div className="custom-control custom-switch my-2">
                     <label>{status ? "Online" : "Offline"}</label>
                     <div>
-                      <label class="switch">
+                      <label className="switch">
                         <input
                           type="checkbox"
                           checked={status}
                           onChange={handleStatusChange}
                           disabled={preview}
                         />
-                        <span class="slider"></span>
+                        <span className="slider"></span>
                       </label>
                     </div>
                   </div>
@@ -279,14 +279,14 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
                   <div className="custom-control custom-switch my-2">
                     <label>{availability ? "Available" : "Unavailable"}</label>
                     <div>
-                      <label class="switch">
+                      <label className="switch">
                         <input
                           type="checkbox"
                           checked={availability}
                           onChange={handleAvailabilityChange}
                           disabled={preview}
                         />
-                        <span class="slider"></span>
+                        <span className="slider"></span>
                       </label>
                     </div>
                   </div>
