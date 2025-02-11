@@ -42,6 +42,29 @@ export const getOrderDetails = createAsyncThunk(
   }
 );
 
+//Handle getOrderSlots
+export const getTimeSlots = createAsyncThunk(
+  "orders/getTimeSlots",
+  async ({ userId, date }, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.get(
+        `User/GetSlots/${encodeURIComponent(userId)}?date=${date}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    } finally {
+    }
+  }
+);
+
 // Handle getOrderMessages
 export const getOrderMessages = createAsyncThunk(
   "orders/getOrderMessages",

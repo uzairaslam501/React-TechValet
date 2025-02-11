@@ -10,6 +10,7 @@
     "@fullcalendar/timegrid": "^6.1.15",
     "@lottiefiles/react-lottie-player": "^3.5.4",
     "@microsoft/signalr": "^8.0.7",
+    "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.2.7",
     "@stripe/react-stripe-js": "^3.0.0",
     "@stripe/stripe-js": "^5.2.0",

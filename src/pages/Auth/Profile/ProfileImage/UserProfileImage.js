@@ -95,6 +95,18 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
     }
   };
 
+  const handleShareProfile = () => {
+    const currentUrl = window.location.href; // Get the current page URL
+    navigator.clipboard
+      .writeText(currentUrl) // Copy to clipboard
+      .then(() => {
+        toast.success("URL copied to clipboard!"); // Show success message
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+      });
+  };
+
   useEffect(() => {
     setStatus(userRecord?.status === "1" && true);
     setAvailability(userRecord?.availability === "1" && true);
@@ -111,7 +123,7 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
         <div className="pt-4 px-3">
           <div className="text-end">
             <Button
-              onClick={handleCopyReferral}
+              onClick={handleShareProfile}
               className="rounded-circle border-0 text-black"
               title="Share User Referral"
               style={{
@@ -123,7 +135,7 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
           </div>
 
           <div>
-            <div className="position-relative d-inline-block">
+            <div className="position-relative d-inline-block w-100 px-4">
               {/* Profile Image */}
               <HandleImages
                 imagePath={
@@ -133,49 +145,38 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
                 }
                 imageAlt={`${userRecord?.firstName} ${userRecord?.lastName}`}
                 imageStyle={{
-                  width: "250px",
-                  height: "250px",
+                  width: "100%",
+                  height: "100%",
                   border: "5px solid #000",
                 }}
                 className="mb-3 rounded-circle shadow"
               />
 
-              {/* Camera Icon as Upload Button */}
-              <label
-                htmlFor="fileAttachmentBtn"
-                className="camera-icon"
-                id="imageLoadSection"
-              >
-                <i className="bi bi-camera-fill"></i>
-                <input
-                  id="fileAttachmentBtn"
-                  name="ImagePath"
-                  type="file"
-                  className="d-none"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                />
-              </label>
+              {!preview && (
+                <>
+                  {/* Camera Icon as Upload Button */}
+                  <label
+                    htmlFor="fileAttachmentBtn"
+                    className="camera-icon"
+                    id="imageLoadSection"
+                  >
+                    <i className="bi bi-camera-fill"></i>
+                    <input
+                      id="fileAttachmentBtn"
+                      name="ImagePath"
+                      type="file"
+                      className="d-none"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                    />
+                  </label>
+                </>
+              )}
             </div>
 
             <h2 className="fw-bold text-dark mb-3">
               {userRecord?.firstName} {userRecord?.lastName}
             </h2>
-
-            {preview === true && (
-              <>
-                {status ? (
-                  <p className="mb-0 text-success">Online</p>
-                ) : (
-                  <p className="mb-0 text-danger">Offline</p>
-                )}
-                {availability ? (
-                  <p className="mb-0 text-success">Available</p>
-                ) : (
-                  <p className="mb-0 text-danger">Unavailable</p>
-                )}
-              </>
-            )}
           </div>
 
           {preview === true ? (
@@ -194,7 +195,7 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
                   Contact Me
                 </Button>
               </div>
-              <div>
+              {/* <div>
                 <Button
                   variant="outline-danger"
                   onClick={handleCopyReferral}
@@ -203,7 +204,7 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
                 >
                   <i className="bi bi-solid bi-gift"></i>
                 </Button>
-              </div>
+              </div> */}
             </div>
           ) : (
             <>
@@ -267,6 +268,7 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
                           type="checkbox"
                           checked={status}
                           onChange={handleStatusChange}
+                          disabled={preview}
                         />
                         <span class="slider"></span>
                       </label>
@@ -282,6 +284,7 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
                           type="checkbox"
                           checked={availability}
                           onChange={handleAvailabilityChange}
+                          disabled={preview}
                         />
                         <span class="slider"></span>
                       </label>

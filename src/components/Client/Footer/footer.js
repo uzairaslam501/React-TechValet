@@ -1,10 +1,9 @@
 import "./style.css";
 import "../css/main.css";
 import React from "react";
-import { NavLink } from "react-router-dom";
 import logo from "../../../assets/images/welcome-logo.png";
 import HandleImages from "../../Custom/Avatars/HandleImages";
-import { Container, Row, Col, ListGroup } from "react-bootstrap";
+import { Container, Row, Col, ListGroup, NavLink } from "react-bootstrap";
 const Footer = () => {
   return (
     <Container fluid className="bg-white">
@@ -49,19 +48,19 @@ const Footer = () => {
             <h4 className="text-white">Pages</h4>
             <ListGroup className="footer-pages-list">
               <ListGroup.Item>
-                <NavLink to={"/"}>Home</NavLink>
+                <NavLink href={"/"}>Home</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink to={"/about"}>About</NavLink>
+                <NavLink href={"/about"}>About</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink to={"/contact"}>Contact</NavLink>
+                <NavLink href={"/contact"}>Contact</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink to={"/account"}>Profile</NavLink>
+                <NavLink href={"/account"}>Profile</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink to={"/register/valet"}>Valet Registeration</NavLink>
+                <NavLink href={"/register/valet"}>Valet Registeration</NavLink>
               </ListGroup.Item>
             </ListGroup>
           </Col>
@@ -71,16 +70,16 @@ const Footer = () => {
             <h4 className="text-white">Company</h4>
             <ListGroup className="footer-pages-list">
               <ListGroup.Item>
-                <NavLink to={"/skills"}>Skills</NavLink>
+                <NavLink href={"/skills"}>Skills</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink to={"/blogs"}>Blogs</NavLink>
+                <NavLink href={"/blogs"}>Blogs</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink to={"/privacy-policy"}>Privacy Policy</NavLink>
+                <NavLink href={"/privacy-policy"}>Privacy Policy</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink to={"/terms-and-conditions"}>
+                <NavLink href={"/terms-and-conditions"}>
                   Terms And Conditon
                 </NavLink>
               </ListGroup.Item>
@@ -92,13 +91,13 @@ const Footer = () => {
             <h4 className="text-white">Contact</h4>
             <ListGroup className="footer-pages-list">
               <ListGroup.Item>
-                <NavLink to={"/login"}>Login</NavLink>
+                <NavLink href={"/login"}>Login</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink to={"/register/customer"}>Register</NavLink>
+                <NavLink href={"/register/customer"}>Register</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink to={"/forgot-password"}>Forgot Password</NavLink>
+                <NavLink href={"/forgot-password"}>Forgot Password</NavLink>
               </ListGroup.Item>
             </ListGroup>
           </Col>

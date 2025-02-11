@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { FloatingLabel, Form } from "react-bootstrap";
 import Dialogue from "../../../../components/Custom/Modal/modal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   disabledPreviousDateTime,
   getFirstAndLastDayOfMonth,
   setDateTimeRestrictions,
+  truncateDate,
 } from "../../../../utils/_helpers";
+import { getTimeSlots } from "../../../../redux/Actions/orderActions";
 
 const validateLogin = Yup.object().shape({
   offerTitle: Yup.string().required("This Field is Required"),
@@ -39,7 +41,9 @@ const OfferDialogue = ({
   loader,
   selectedDateTime,
   restrictions,
+  valetId,
 }) => {
+  const dispatch = useDispatch();
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const initialValues = {
@@ -72,6 +76,14 @@ const OfferDialogue = ({
     },
   });
 
+  const handleGetSlots = (valetId, selectedDateTime) => {
+    dispatch(getTimeSlots({ userId: valetId, date: selectedDateTime })).then(
+      (response) => {
+        console.log(response?.payload);
+      }
+    );
+  };
+
   const handleDateTimeMatch = (value, field) => {
     if (field === "startedDateTime" && !value) {
       setFieldValue("endedDateTime", "");
@@ -83,6 +95,11 @@ const OfferDialogue = ({
     start: getFirstAndLastDayOfMonth().currentDay,
     end: getFirstAndLastDayOfMonth().monthEnd,
   };
+
+  // useEffect(() => {
+  //   handleGetSlots(valetId, truncateDate(selectedDateTime));
+  // }, selectedDateTime);
+
   return (
     <>
       <Dialogue

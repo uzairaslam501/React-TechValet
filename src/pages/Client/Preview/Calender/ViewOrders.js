@@ -151,6 +151,7 @@ const CalenderOrders = ({ id, pricePerHour }) => {
           handleSendOffer={handleConfirmedOrder}
           selectedDateTime={selectedDateTime}
           restrictions={setDateTimeRestrictions("max", validRange.end)}
+          valetId={encodeURIComponent(id)}
         />
       )}
 

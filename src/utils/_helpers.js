@@ -198,6 +198,11 @@ export const formatDateTimeForInput = (date) => {
   return isoString.slice(0, 16); // Extract the format yyyy-MM-ddTHH:mm
 };
 
+export const truncateDate = (date) => {
+  const isoString = new Date(date).toISOString();
+  return isoString.slice(0, 10); // Extract the format yyyy-MM-dd
+};
+
 export const setDateRestrictions = (mode, referenceDate) => {
   if (!["min", "max"].includes(mode)) {
     throw new Error(

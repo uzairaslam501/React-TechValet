@@ -1,5 +1,6 @@
 import {
   postLogin,
+  postLoginWithGoogle,
   postRegister,
   postUserUpdate,
   UpdateProfileImage,
@@ -55,6 +56,21 @@ const authSlice = createSlice({
       .addCase(postLogin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload; // Save error message
+      });
+
+    // Handle Google login actions
+    builder
+      .addCase(postLoginWithGoogle.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(postLoginWithGoogle.fulfilled, (state, action) => {
+        state.loading = false;
+        //state.userAuth = action.payload; // Save user data in the state
+      })
+      .addCase(postLoginWithGoogle.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message; // Save error message
       });
 
     // Handle registration actions

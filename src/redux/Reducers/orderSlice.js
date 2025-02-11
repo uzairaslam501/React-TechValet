@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   getOrderDetails,
+  getTimeSlots,
   getOrderMessages,
   sendMessages,
   deliverOrder,
@@ -37,6 +38,21 @@ const orderSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(getOrderDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+
+    // Handle getTimeSlots
+    builder
+      .addCase(getTimeSlots.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getTimeSlots.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(getTimeSlots.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });
