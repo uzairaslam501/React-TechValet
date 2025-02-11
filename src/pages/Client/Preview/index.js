@@ -19,6 +19,7 @@ import Services from "../../Auth/Profile/ValetProfile/Services/Services";
 import Education from "../../Auth/Profile/ValetProfile/Education/Education";
 import Slots from "../../Auth/Profile/ValetProfile/Slots/Slots";
 import CalenderOrders from "./Calender/ViewOrders";
+import { languageOptions } from "../../../utils/client/data/requestedData";
 
 const PreviewProfile = () => {
   const { id } = useParams();
@@ -181,17 +182,26 @@ const PreviewProfile = () => {
                         <div>
                           {userRecords?.language
                             ?.split(",")
-                            .map((lang, index) => (
-                              <Badge
-                                className="bg-secondary"
-                                style={{
-                                  padding: "4px 8px",
-                                  fontSize: "12px",
-                                }}
-                              >
-                                <span className="fw-normal">{lang.trim()}</span>
-                              </Badge>
-                            ))}
+                            .map((lang, index) => {
+                              const matchedLanguage = languageOptions.find(
+                                (option) => option.id === lang.trim()
+                              );
+
+                              return matchedLanguage ? (
+                                <Badge
+                                  key={index} // Add a unique key
+                                  className="bg-secondary"
+                                  style={{
+                                    padding: "4px 8px",
+                                    fontSize: "12px",
+                                  }}
+                                >
+                                  <span className="fw-normal">
+                                    {matchedLanguage.value}
+                                  </span>
+                                </Badge>
+                              ) : null; // Avoid rendering empty elements
+                            })}
                         </div>
                       </li>
                       <li>

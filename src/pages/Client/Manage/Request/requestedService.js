@@ -12,12 +12,16 @@ import {
   Button,
 } from "react-bootstrap";
 import RadioCheck from "../../../../components/Custom/RadioChecks/radioChecks";
-import { options } from "../../../../utils/client/data/requestedData";
+import {
+  languageOptions,
+  options,
+} from "../../../../utils/client/data/requestedData";
 import { formatDateTimeWithAmPm } from "../../../../utils/_helpers";
 import LabeledDisplay from "../../../../components/Custom/LabeledDisplay/LabeledDisplay";
 import BadgeDisplay from "../../../../components/Custom/BadgeDisplay/BadgeDisplay";
 import RequestedUsers from "./requestedUsers";
 import "./style.css";
+import SingleBadge from "../../../../components/Custom/BadgeDisplay/SingleBadge";
 
 const RequestedService = () => {
   const { state } = useLocation();
@@ -67,9 +71,8 @@ const RequestedService = () => {
                           controlId="requestServiceType"
                           className="mb-3"
                         >
-                          <Form.Label className="text-black">
-                            When do you want help from your Tech Valet
-                            <span className="text-danger"> *</span>
+                          <Form.Label className="fs-5 fw-semibold">
+                            When do you want help from your Tech Valet?
                           </Form.Label>
                           <RadioCheck
                             checkType="radio"
@@ -78,6 +81,7 @@ const RequestedService = () => {
                             name="requestServiceType"
                             selectedValue={recordForUpdate.requestServiceType}
                             disabled
+                            className="fs-5"
                           />
                         </Form.Group>
 
@@ -87,16 +91,19 @@ const RequestedService = () => {
                             <Row className="mb-3">
                               <Col>
                                 <Form.Group controlId="Time">
-                                  <Form.Label>
+                                  <Form.Label className="fs-5 fw-semibold">
                                     Preferred Service Time
-                                    <span className="text-danger">*</span>
                                   </Form.Label>
                                   <LabeledDisplay
                                     preferredServiceTime={
                                       recordForUpdate.prefferedServiceTime
                                     }
                                     background={"black"}
-                                    className={""}
+                                    className=""
+                                    badgeClassName="fw-normal"
+                                    style={{
+                                      fontSize: "15px",
+                                    }}
                                   />
                                 </Form.Group>
                               </Col>
@@ -105,9 +112,8 @@ const RequestedService = () => {
                             <Row className="mb-3">
                               <Col md={6}>
                                 <Form.Group>
-                                  <Form.Label>
+                                  <Form.Label className="fs-5 fw-semibold">
                                     From Date Time
-                                    <span className="text-danger">*</span>
                                   </Form.Label>
                                   <Form.Control
                                     type="text"
@@ -121,9 +127,8 @@ const RequestedService = () => {
                               </Col>
                               <Col md={6}>
                                 <Form.Group>
-                                  <Form.Label>
+                                  <Form.Label className="fs-5 fw-semibold">
                                     To Date Time
-                                    <span className="text-danger">*</span>
                                   </Form.Label>
                                   <Form.Control
                                     type="text"
@@ -144,9 +149,8 @@ const RequestedService = () => {
                           controlId="requestCategoryProblem"
                           className="mb-3"
                         >
-                          <Form.Label className="text-black">
-                            Categories of Problem{" "}
-                            <span className="text-danger">*</span>
+                          <Form.Label className="fs-5 fw-semibold">
+                            Categories of Problem
                           </Form.Label>
                           <Row>
                             {recordForUpdate.categoriesOfProblems &&
@@ -160,6 +164,9 @@ const RequestedService = () => {
                                     sm={12}
                                     xs={12}
                                     key={index}
+                                    style={{
+                                      fontSize: "18px",
+                                    }}
                                   >
                                     <i className="bi bi-check"></i>{" "}
                                     {problem.trim()}
@@ -172,7 +179,7 @@ const RequestedService = () => {
                         {recordForUpdate.requestServiceSkills && (
                           <Form.Group className="mb-3">
                             <BadgeDisplay
-                              label="What best describes your problem"
+                              label="What best describes your problem?"
                               values={recordForUpdate.requestServiceSkills}
                               background={"success"}
                             />
@@ -197,26 +204,44 @@ const RequestedService = () => {
                           />
                         )}
 
-                        {recordForUpdate.serviceLanguage && (
-                          <BadgeDisplay
-                            label="Preferred Language"
-                            values={recordForUpdate.serviceLanguage}
-                            background={"black"}
-                            className={"mb-3"}
-                          />
-                        )}
+                        <Form.Group className="mb-3">
+                          <Form.Label className="fs-5 fw-semibold">
+                            Preferred Languages
+                          </Form.Label>
+                          <div>
+                            {recordForUpdate?.serviceLanguage
+                              ?.split(",")
+                              .map((lang, index) => {
+                                const matchedLanguage = languageOptions.find(
+                                  (option) => option.id === lang.trim()
+                                );
+
+                                return matchedLanguage ? (
+                                  <SingleBadge
+                                    value={matchedLanguage.value}
+                                    background={"black"}
+                                    className={"mb-3 fw-normal px-3 py-1"}
+                                    index={matchedLanguage.value}
+                                    style={{
+                                      fontSize: "15px",
+                                    }}
+                                  />
+                                ) : null;
+                              })}
+                          </div>
+                        </Form.Group>
 
                         {/* Additional Information */}
                         <Form.Group
                           controlId="serviceDescription"
                           className="mb-3"
                         >
-                          <Form.Label>
+                          <Form.Label className="fs-5 fw-semibold">
                             Is there anything else we should know about?
                           </Form.Label>
                           <Form.Control
                             as="textarea"
-                            rows={9}
+                            rows={5}
                             value={recordForUpdate.serviceDescription}
                             disabled
                             className="border-0"

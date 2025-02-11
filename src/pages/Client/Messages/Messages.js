@@ -306,9 +306,6 @@ const Messages = () => {
         }
       } else {
         if (userAuth?.id === receiverId) {
-          console.log("activeChat", activeChat);
-          console.log("senderId", senderId);
-          console.log("receiverId", receiverId);
           if (activeChatRef.current?.userDecId === String(senderId)) {
             setMessages((prev) => {
               if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
@@ -448,7 +445,7 @@ const Messages = () => {
               <div className="chat">
                 <div className="chat-header clearfix">
                   <div className="row">
-                    <div className="col-sm-10">
+                    <div className="col-sm-12">
                       <div>
                         {activeChat && (
                           <div>
@@ -485,14 +482,13 @@ const Messages = () => {
                       </div>
                       <div className="text-end">
                         <button
-                          className="btn btn-light d-md-none" // Visible on mobile only
+                          className="btn btn-light d-lg-none" // Visible on mobile only
                           onClick={toggleSidebar}
                         >
                           <i className="bi bi-list"></i>
                         </button>
                       </div>
                     </div>
-                    <div className="col-sm-2"></div>
                   </div>
                 </div>
                 <div className="chatbox-container" ref={chatContainerRef}>
@@ -552,8 +548,6 @@ const Messages = () => {
                                         </div>
                                       )}
                                       <div className="message-time">
-                                        {console.log(date)}
-                                        {console.log(message.messageTime)}
                                         {message.time}
                                       </div>
                                     </div>

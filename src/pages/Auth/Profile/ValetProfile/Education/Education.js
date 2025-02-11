@@ -56,13 +56,8 @@ const Education = ({ userRecord, preview = false }) => {
 
   // Handle service update
   const handleUpdateService = (education) => {
-    console.log("Updating education:", education); // :mag: Debugging log
-    if (!education?.educationId) {
-      console.log("Education object is missing `educationId`.");
-      return;
-    }
     setEditItem(true);
-    setFieldValue("educationId", encodeURIComponent(education?.educationId));
+    setFieldValue("educationId", education?.educationId);
     setFieldValue("degreeName", education?.degreeName);
     setFieldValue("instituteName", education?.instituteName);
     setFieldValue("startDate", education?.startDate);

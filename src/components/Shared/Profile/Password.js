@@ -29,7 +29,9 @@ const Password = () => {
     },
     validationSchema: Yup.object({
       oldPassword: Yup.string().required("Old Password is required"),
-      newPassword: Yup.string().required("Password is required"),
+      newPassword: Yup.string()
+        .required("Password is required")
+        .min(6, "Must be at least 6 characters"),
       confirmPassword: Yup.string().required("Confirm Password is required"),
     }),
     onSubmit: async (values) => {

@@ -4,7 +4,9 @@ import { serviceTime } from "../../../utils/client/data/requestedData";
 const LabeledDisplay = ({
   preferredServiceTime,
   background = "secondary",
-  className,
+  className = "",
+  badgeClassName = "p-2 fw-normal",
+  style,
 }) => {
   return (
     <div className={className}>
@@ -14,7 +16,12 @@ const LabeledDisplay = ({
             (option) => option.id === time.trim()
           );
           return (
-            <Badge bg={background} className="p-2 fw-normal" key={time}>
+            <Badge
+              bg={background}
+              className={badgeClassName}
+              key={time}
+              style={style}
+            >
               {matchedOption && matchedOption.value}
             </Badge>
           );

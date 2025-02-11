@@ -9,6 +9,7 @@ function RadioCheck({
   name,
   selectedValue,
   onChange,
+  className = "",
 }) {
   return (
     <Row>
@@ -23,6 +24,7 @@ function RadioCheck({
             onChange={onChange}
             inline={inlineOrNot}
             id={`${name}-${option.value}`}
+            className={className}
           />
         </Col>
       ))}

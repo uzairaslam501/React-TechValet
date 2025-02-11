@@ -47,6 +47,7 @@ const OrderDetail = () => {
     dispatch(getOrderDetails(params.id)).then((response) => {
       setOrderDetails(response?.payload);
       if (
+        userAuth?.role === "Admin" ||
         response?.payload?.customerEncId === userAuth?.userEncId ||
         response?.payload?.valetEncId === userAuth?.userEncId
       ) {
