@@ -81,7 +81,7 @@
 
 .people-list .status {
   color: #999;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .chat .chat-header {
@@ -135,7 +135,7 @@
 .chatbox-list .fixed-date {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 2;
 }
 
 .chatbox-message {
@@ -241,30 +241,56 @@
   }
 
   .chat-app .people-list.open {
+    left: 0; /* Make it visible */
     display: block;
-    left: 0; /* Visible when open */
   }
 
-  .chat-app .people-list.open {
-    left: 0;
-  }
   .chat-app .chat {
     margin: 0;
   }
+
   .chat-app .chat .chat-header {
     border-radius: 0.55rem 0.55rem 0 0;
   }
+
   .chat-app .chat-history {
     height: 300px;
     overflow-x: auto;
   }
+
+  .message-content {
+    max-width: 85%;
+  }
+
+  .custom-paragraphs > p {
+    font-size: 15px;
+  }
 }
 
 @media only screen and (min-width: 768px) and (max-width: 992px) {
+  .chat-app .people-list {
+    display: none;
+    left: -400px; /* Hidden by default */
+    width: 250px;
+    overflow-x: auto;
+    background: #fff;
+    height: 100%;
+  }
+
+  .chat-app .people-list.open {
+    left: 0; /* Make it visible */
+    display: block;
+  }
+
+  .chat-app .chat {
+    margin: 0;
+  }
+
   .chat-app .chat-list {
     height: 650px;
     overflow-x: auto;
   }
+
   .chat-app .chat-history {
     height: 600px;
     overflow-x: auto;

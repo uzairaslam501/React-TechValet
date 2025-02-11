@@ -57,22 +57,19 @@ const CalenderOrders = ({ id, pricePerHour }) => {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      dispatch(profileOrdersPreview(encodeURIComponent(id))).then(
-        (response) => {
-          console.log(response?.payload);
-          const events = response?.payload?.data?.map((eventData, index) => ({
-            id: eventData.orderEncId,
-            title: "Event Booked",
-            start: moment(eventData.startDateTime).toISOString(),
-            end: eventData.endDateTime
-              ? moment(eventData.endDateTime).toISOString()
-              : null,
-            color: eventColors[index % eventColors.length],
-            extendedProps: { description: eventData.orderStatusDescription },
-          }));
-          setOrderRecords(events);
-        }
-      );
+      dispatch(profileOrdersPreview(id)).then((response) => {
+        const events = response?.payload?.data?.map((eventData, index) => ({
+          id: eventData.orderEncId,
+          title: "Event Booked",
+          start: moment(eventData.startDateTime).toISOString(),
+          end: eventData.endDateTime
+            ? moment(eventData.endDateTime).toISOString()
+            : null,
+          color: eventColors[index % eventColors.length],
+          extendedProps: { description: eventData.orderStatusDescription },
+        }));
+        setOrderRecords(events);
+      });
     } catch (error) {
       console.error("Error fetching orders:", error);
     } finally {

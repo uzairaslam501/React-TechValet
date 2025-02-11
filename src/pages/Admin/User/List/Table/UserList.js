@@ -6,6 +6,7 @@ import { Card, Col, Container, Row } from "react-bootstrap";
 import Dialogue from "../../../../../components/Custom/Modal/modal";
 import { getUserRecords } from "../../../../../redux/Actions/adminActions";
 import { deleteRecords } from "../../../../../redux/Actions/globalActions";
+import { capitalizeFirstLetter } from "../../../../../utils/_helpers";
 
 const UserList = ({ userRole, userType }) => {
   const dispatch = useDispatch();
@@ -151,7 +152,9 @@ const UserList = ({ userRole, userType }) => {
           <Col xl={12} lg={12} md={12} sm={12} xs={12}>
             <Card>
               <Card.Body>
-                <h1 className="text-center h3 fw-bold">Manage Customer</h1>
+                <h1 className="text-center h3 fw-bold">
+                  Manage {capitalizeFirstLetter(userType)}
+                </h1>
                 <CustomTable
                   headers={headers}
                   records={records}

@@ -9,12 +9,17 @@ const BadgeDisplay = ({
 }) => {
   return (
     <>
-      <Form.Label>
-        {label} <span className="text-danger">*</span>
-      </Form.Label>
+      <Form.Label className="fs-5 fw-semibold">{label}</Form.Label>
       <div className={className}>
         {values.split(",").map((value, index) => (
-          <Badge bg={background} key={index} className="p-2 fw-normal">
+          <Badge
+            bg={background}
+            key={index}
+            className="py-2 px-4 fw-normal mx-1"
+            style={{
+              fontSize: "17px",
+            }}
+          >
             {value.trim()}
           </Badge>
         ))}

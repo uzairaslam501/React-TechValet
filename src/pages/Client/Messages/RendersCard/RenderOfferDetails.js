@@ -4,7 +4,7 @@ const RenderOfferDetails = (message, userAuth) => {
   return (
     <div>
       <div
-        className="p-3 border-bottom text-dark"
+        className="p-3 border-bottom text-dark custom-paragraphs"
         style={{ maxWidth: "310px" }}
       >
         <h6>

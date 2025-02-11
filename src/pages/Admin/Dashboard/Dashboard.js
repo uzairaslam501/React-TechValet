@@ -73,7 +73,7 @@ const Dashboard = () => {
                 }}
               >
                 <Card.Text className="pt-4 h5 text-white">
-                  Customers Verfication Pending
+                  Customers Verification Pending
                 </Card.Text>
                 <Card.Body>
                   <Card.Text className="text-white h4">2</Card.Text>
@@ -94,7 +94,7 @@ const Dashboard = () => {
                 }}
               >
                 <Card.Text className="pt-4 h5 text-white">
-                  Valet Verfication Pending
+                  Valet Verification Pending
                 </Card.Text>
                 <Card.Body>
                   <Card.Text className="text-white h4">1</Card.Text>
