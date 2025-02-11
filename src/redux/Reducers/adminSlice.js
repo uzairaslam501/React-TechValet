@@ -1,4 +1,5 @@
 import {
+  getAdminDashboardCount,
   postAddUser,
   postUpdateUser,
   getUserRecords,
@@ -21,6 +22,20 @@ const adminSlice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
+    // Handle Dashboard Count
+    builder
+      .addCase(getAdminDashboardCount.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAdminDashboardCount.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(getAdminDashboardCount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+
     // Handle postAddUser actions
     builder
       .addCase(postAddUser.pending, (state) => {

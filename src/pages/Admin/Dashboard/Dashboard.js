@@ -1,8 +1,24 @@
-import React from "react";
-import { Button, Card, CardHeader, Col, Container, Row } from "react-bootstrap";
+import React, { useCallback, useEffect, useState } from "react";
+import { Card, Col, Container, Row } from "react-bootstrap";
 import "./dashboard.css";
+import { getAdminDashboardCount } from "../../../redux/Actions/adminActions";
+import { useDispatch } from "react-redux";
 
 const Dashboard = () => {
+  const dispatch = useDispatch();
+  const [isCount, setIsCount] = useState([]);
+  const fetchCount = useCallback(() => {
+    dispatch(getAdminDashboardCount()).then((response) => {
+      console.log(response?.payload);
+      setIsCount(response?.payload || []);
+    });
+  });
+
+  useEffect(() => {
+    fetchCount();
+  }, [dispatch]);
+
+  console.log("isCount ::", isCount);
   return (
     <>
       <section className="section">
@@ -34,7 +50,9 @@ const Dashboard = () => {
                   Total Active Customers
                 </Card.Text>
                 <Card.Body>
-                  <Card.Text className="text-white h4">10</Card.Text>
+                  <Card.Text className="text-white h4">
+                    {isCount && isCount.customer}
+                  </Card.Text>
                 </Card.Body>
               </Card>
             </Col>
@@ -55,7 +73,9 @@ const Dashboard = () => {
                   Total Active Tech Valet
                 </Card.Text>
                 <Card.Body>
-                  <Card.Text className="text-white h4">15</Card.Text>
+                  <Card.Text className="text-white h4">
+                    {isCount && isCount.valet}
+                  </Card.Text>
                 </Card.Body>
               </Card>
             </Col>
@@ -76,7 +96,9 @@ const Dashboard = () => {
                   Customers Verification Pending
                 </Card.Text>
                 <Card.Body>
-                  <Card.Text className="text-white h4">2</Card.Text>
+                  <Card.Text className="text-white h4">
+                    {isCount && isCount.customersVerificationPending}
+                  </Card.Text>
                 </Card.Body>
               </Card>
             </Col>
@@ -97,7 +119,9 @@ const Dashboard = () => {
                   Valet Verification Pending
                 </Card.Text>
                 <Card.Body>
-                  <Card.Text className="text-white h4">1</Card.Text>
+                  <Card.Text className="text-white h4">
+                    {isCount && isCount.valetVerificationPending}
+                  </Card.Text>
                 </Card.Body>
               </Card>
             </Col>
@@ -118,7 +142,9 @@ const Dashboard = () => {
                   Customers Under Review
                 </Card.Text>
                 <Card.Body>
-                  <Card.Text className="text-white h4">0</Card.Text>
+                  <Card.Text className="text-white h4">
+                    {isCount && isCount.customersUnderReview}
+                  </Card.Text>
                 </Card.Body>
               </Card>
             </Col>
@@ -139,7 +165,9 @@ const Dashboard = () => {
                   Tech Valet Under Review
                 </Card.Text>
                 <Card.Body>
-                  <Card.Text className="text-white h4">3</Card.Text>
+                  <Card.Text className="text-white h4">
+                    {isCount && isCount.valetUnderReview}
+                  </Card.Text>
                 </Card.Body>
               </Card>
             </Col>

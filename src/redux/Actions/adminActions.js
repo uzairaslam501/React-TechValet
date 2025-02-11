@@ -15,6 +15,29 @@ const api = axios.create({
   baseURL: baseUrl,
 });
 
+//Handle Dashbaord
+export const getAdminDashboardCount = createAsyncThunk(
+  "admin/getAdminDashboardCount",
+  async (_, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      dispatch(setLoading({ key: "adminLoading", value: true }));
+      const response = await api.get(`/Admin/get-admin-dashboard-detail`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      rejectWithValue(error);
+    } finally {
+      dispatch(setLoading({ key: "adminLoading", value: false }));
+    }
+  }
+);
+
 // Add User
 export const postAddUser = createAsyncThunk(
   "admin/postAddUser",
