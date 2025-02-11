@@ -75,7 +75,7 @@ const ViewFeedback = () => {
                     <div className="p-3">
                       <div className="text-center">
                         <h1 className="h3 text-gray-900 m-4 text-bold">
-                          Contact Us FeedBacks
+                          Contact Us Feedbacks
                         </h1>
                       </div>
                       <CustomTable
