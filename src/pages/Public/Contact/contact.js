@@ -124,7 +124,9 @@ const Contact = () => {
                   <Row className="gy-4">
                     <Col xl={6} lg={6} md={6} sm={12} xs={12}>
                       <Form.Group controlId="name-field" className="pb-2">
-                        <Form.Label>First Name</Form.Label>
+                        <Form.Label>
+                          First Name <span className="text-danger">*</span>
+                        </Form.Label>
                         <Form.Control
                           type="text"
                           name="firstName"
@@ -142,7 +144,9 @@ const Contact = () => {
 
                     <Col xl={6} lg={6} md={6} sm={12} xs={12}>
                       <Form.Group controlId="name-field" className="pb-2">
-                        <Form.Label>Last Name</Form.Label>
+                        <Form.Label>
+                          Last Name <span className="text-danger">*</span>
+                        </Form.Label>
                         <Form.Control
                           type="text"
                           name="lastName"
@@ -159,7 +163,9 @@ const Contact = () => {
 
                     <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                       <Form.Group controlId="email-field" className="pb-2">
-                        <Form.Label>Your Email</Form.Label>
+                        <Form.Label>
+                          Your Email <span className="text-danger">*</span>
+                        </Form.Label>
                         <Form.Control
                           type="email"
                           name="email"
@@ -176,7 +182,9 @@ const Contact = () => {
 
                     <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                       <Form.Group controlId="subject-field" className="pb-2">
-                        <Form.Label>Subject</Form.Label>
+                        <Form.Label>
+                          Subject <span className="text-danger">*</span>
+                        </Form.Label>
                         <Form.Control
                           type="text"
                           name="subject"
@@ -193,7 +201,9 @@ const Contact = () => {
 
                     <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                       <Form.Group controlId="message-field" className="pb-2">
-                        <Form.Label>Message</Form.Label>
+                        <Form.Label>
+                          Message <span className="text-danger">*</span>
+                        </Form.Label>
                         <Form.Control
                           placeholder="Write your message"
                           as="textarea"

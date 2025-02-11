@@ -11,9 +11,11 @@ import "./NotificationCard.css";
 import { truncateCharacters } from "../../../utils/_helpers";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  deleteAllNotifications,
   deleteNotification,
   getNotifications,
   getNotificationsCount,
+  markAllNotificationsAsRead,
   markNotifications,
 } from "../../../redux/Actions/notificationActions";
 import signalRService from "../../../services/SignalR";
@@ -51,20 +53,6 @@ const NotificationCard = () => {
     }
   };
 
-  // Delete notification
-  const handleDelete = (id) => {
-    try {
-      dispatch(deleteNotification(id)).then((response) => {
-        fetchNotificationsCount();
-        fetchNotificationsList();
-      });
-    } catch (error) {
-      console.error("Error fetching notifications:", error);
-    } finally {
-    }
-    setNotifications(notifications.filter((n) => n.id !== id));
-  };
-
   // Mark notification as read
   const handleMarkAsRead = (id) => {
     try {
@@ -79,6 +67,46 @@ const NotificationCard = () => {
           );
           setUnReadCount(unReadCount - 1);
         }
+      });
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    } finally {
+    }
+  };
+
+  const handleMarkAll = () => {
+    try {
+      setNotificationLoader(true);
+      dispatch(markAllNotificationsAsRead()).then((response) => {
+        fetchNotificationsCount();
+        fetchNotificationsList();
+      });
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    } finally {
+    }
+  };
+
+  // Delete notification
+  const handleDelete = (id) => {
+    try {
+      dispatch(deleteNotification(id)).then((response) => {
+        fetchNotificationsCount();
+        fetchNotificationsList();
+      });
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    } finally {
+    }
+    setNotifications(notifications.filter((n) => n.id !== id));
+  };
+
+  const handleDeleteAll = () => {
+    try {
+      setNotificationLoader(true);
+      dispatch(deleteAllNotifications()).then((response) => {
+        fetchNotificationsCount();
+        fetchNotificationsList();
       });
     } catch (error) {
       console.error("Error fetching notifications:", error);
@@ -148,7 +176,7 @@ const NotificationCard = () => {
         title={
           <div style={{ position: "relative" }}>
             <i className="bi bi-bell-fill"></i>
-            {unReadCount && (
+            {unReadCount ? (
               <Badge
                 bg="danger"
                 pill
@@ -162,7 +190,7 @@ const NotificationCard = () => {
               >
                 {unReadCount > 9 ? `9+` : unReadCount}
               </Badge>
-            )}
+            ) : null}
           </div>
         }
         id="notification-dropdown"
@@ -243,12 +271,22 @@ const NotificationCard = () => {
               )}
               <div className="notification-footer">
                 {notifications.length > 0 && (
-                  <Button type="button" size="sm" variant="danger">
+                  <Button
+                    onClick={() => handleDeleteAll()}
+                    type="button"
+                    size="sm"
+                    variant="danger"
+                  >
                     Delete All
                   </Button>
                 )}
                 {notifications.some((n) => n.isRead === 0) && (
-                  <Button type="button" size="sm" variant="primary">
+                  <Button
+                    onClick={() => handleMarkAll()}
+                    type="button"
+                    size="sm"
+                    variant="primary"
+                  >
                     Read All
                   </Button>
                 )}

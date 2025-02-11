@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Card, CardBody, Col, Row } from "react-bootstrap";
+import { Card, CardBody, Col, Container, Row } from "react-bootstrap";
 import CustomTable from "../../../../components/Custom/Datatable/table";
 import { userPackageByUserId } from "../../../../redux/Actions/customerActions";
 import Dialogue from "../../../../components/Custom/Modal/modal";
@@ -112,9 +112,9 @@ const ViewPackages = () => {
 
   return (
     <>
-      <section id="AppointmentTable" className="">
+      <Container className="py-5">
         <Row className="text-center">
-          <Col lg={{ span: 10, offset: 1 }}>
+          <Col xl={12} lg={12} md={12} sm={12} xs={12}>
             <Card>
               <CardBody>
                 <h2 className="fw-bold">Manage Packages</h2>
@@ -134,7 +134,7 @@ const ViewPackages = () => {
             </Card>
           </Col>
         </Row>
-      </section>
+      </Container>
 
       <Dialogue
         show={showConsumptionModal}

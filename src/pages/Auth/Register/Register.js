@@ -47,13 +47,20 @@ const UserRegisteration = () => {
   };
 
   const validateLogin = Yup.object().shape({
-    firstname: Yup.string().required("Please enter First Name"),
-    lastname: Yup.string().required("Please enter Last Name"),
+    firstname: Yup.string()
+      .min(3, "First Name must be at least 3 characters")
+      .required("Please enter First Name"),
+    lastname: Yup.string()
+      .min(3, "Last Name must be at least 3 characters")
+      .required("Please enter Last Name"),
     username: Yup.string()
       .min(3, "Username must be at least 3 characters")
       .required("Please enter Username"),
     email: Yup.string()
-      .email("Invalid email format")
+      .matches(
+        /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$/,
+        "Please enter a valid email"
+      )
       .required("Please enter Email"),
     password: Yup.string()
       .min(6, "Password must be at least 6 characters")
@@ -61,12 +68,12 @@ const UserRegisteration = () => {
     confirmPassword: Yup.string()
       .oneOf([Yup.ref("password"), null], "Passwords must match")
       .required("Please confirm your Password"),
-    state: Yup.string().required("Please enter State"),
-    city: Yup.string().required("Please enter City"),
+    state: Yup.string().optional(),
+    city: Yup.string().optional(),
     postalCode: Yup.string()
       .matches(/^\d{4,10}$/, "Zip Code must be 4-10 digits")
-      .required("Please enter Zip Code"),
-    country: Yup.string().required("Please enter Country"),
+      .optional(),
+    country: Yup.string().optional(),
     timezone: Yup.string().required("Please enter Timezone"),
   });
 
@@ -312,7 +319,7 @@ const UserRegisteration = () => {
                 </Col>
 
                 {/* State */}
-                <Col xl={4} lg={4} md={4} sm={12} xs={12}>
+                {/* <Col xl={4} lg={4} md={4} sm={12} xs={12}>
                   <Form.Group className="mb-2">
                     <Form.Label>
                       State <span className="text-danger">*</span>
@@ -330,9 +337,9 @@ const UserRegisteration = () => {
                       {touched.state && errors.state}
                     </Form.Control.Feedback>
                   </Form.Group>
-                </Col>
+                </Col> */}
                 {/* City */}
-                <Col xl={4} lg={4} md={4} sm={12} xs={12}>
+                {/* <Col xl={4} lg={4} md={4} sm={12} xs={12}>
                   <Form.Group className="mb-2">
                     <Form.Label>
                       City <span className="text-danger">*</span>
@@ -350,9 +357,9 @@ const UserRegisteration = () => {
                       {touched.city && errors.city}
                     </Form.Control.Feedback>
                   </Form.Group>
-                </Col>
+                </Col> */}
                 {/* Postal Code/Zip Code */}
-                <Col xl={4} lg={4} md={4} sm={12} xs={12}>
+                {/* <Col xl={4} lg={4} md={4} sm={12} xs={12}>
                   <Form.Group className="mb-2">
                     <Form.Label>
                       Zip Code
@@ -371,9 +378,29 @@ const UserRegisteration = () => {
                       {touched.postalCode && errors.postalCode}
                     </Form.Control.Feedback>
                   </Form.Group>
-                </Col>
+                </Col> */}
+                {/* Country */}
+                {/* <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                  <Form.Group className="mb-4">
+                    <Form.Label>
+                      Country <span className="text-danger">*</span>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="country"
+                      placeholder="Enter Country"
+                      value={values.country}
+                      onBlur={handleBlur("country")}
+                      onChange={handleChange("country")}
+                      isInvalid={touched.country && !!errors.country}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {touched.country && errors.country}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col> */}
                 {/* Timezone */}
-                <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                   <Form.Group className="mb-2">
                     <Form.Label>
                       Timezone <span className="text-danger">*</span>
@@ -396,26 +423,6 @@ const UserRegisteration = () => {
                     </Form.Control>
                     <Form.Control.Feedback type="invalid">
                       {touched.timezone && errors.timezone}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                {/* Country */}
-                <Col xl={6} lg={6} md={6} sm={12} xs={12}>
-                  <Form.Group className="mb-4">
-                    <Form.Label>
-                      Country <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="country"
-                      placeholder="Enter Country"
-                      value={values.country}
-                      onBlur={handleBlur("country")}
-                      onChange={handleChange("country")}
-                      isInvalid={touched.country && !!errors.country}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {touched.country && errors.country}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>

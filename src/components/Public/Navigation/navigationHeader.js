@@ -58,7 +58,7 @@ function NavigationBar() {
           <Nav>
             <Nav.Link
               as={NavLink}
-              to={userAuth ? "/account" : "/login"}
+              to={"/login"}
               className={`px-5 py-2 ${
                 !navBackground ? "bg-white text-dark" : "bg-dark text-white"
               }`}

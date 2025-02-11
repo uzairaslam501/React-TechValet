@@ -31,15 +31,15 @@ const Footer = () => {
               </p>
             </div>
             <div className="footer-social-icons d-flex">
-              <a href="#">
+              <NavLink href="facebook.com" target="_blank">
                 <i className="bi bi-facebook"></i>
-              </a>
-              <a href="#">
+              </NavLink>
+              <NavLink href="instagram.com" target="_blank">
                 <i className="bi bi-instagram"></i>
-              </a>
-              <a href="#" className="">
+              </NavLink>
+              <NavLink href="twitter.com" target="_blank">
                 <i className="bi bi-twitter"></i>
-              </a>
+              </NavLink>
             </div>
           </Col>
 

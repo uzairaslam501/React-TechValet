@@ -101,7 +101,7 @@ const UserProfile = () => {
               <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                 <UserProfileImage userRecord={userRecords} />
               </Col>
-              {userAuth?.isActive === "Active" && (
+              {userAuth?.role !== "Seo" && userAuth?.isActive === "Active" && (
                 <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
                   <Card className="shadow">
                     <Card.Header>
