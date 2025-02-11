@@ -9,6 +9,8 @@ import makeAppointment from "../../../assets/images/icons/make-an-appointment.sv
 import { useDispatch } from "react-redux";
 import { getBlogsList } from "../../../redux/Actions/seoActions";
 import BlogSlider from "../../../components/Custom/BlogSlider/BlogSlider";
+import { NavLink } from "react-router-dom";
+
 const Welcome = () => {
   const dispatch = useDispatch();
   const [isLoading, setLoader] = useState(false);
@@ -64,6 +66,8 @@ const Welcome = () => {
                 </p>
                 <div className="mt-4 d-flex">
                   <Button
+                    as={NavLink}
+                    to={"/register/customer"}
                     variant="secondary"
                     size="md"
                     className="border-1 border-dark me-3 px-4 py-2 mb-3"
@@ -71,6 +75,8 @@ const Welcome = () => {
                     Need Service
                   </Button>
                   <Button
+                    as={NavLink}
+                    to={"/register/valet"}
                     variant="primary"
                     size="md"
                     className="border-1 border-dark px-4 py-2 mb-3"
@@ -199,10 +205,12 @@ const Welcome = () => {
                       </p>
 
                       <Button
+                        as={NavLink}
                         className="mt-3 mb-3 btn-white-secondary"
                         size="lg"
+                        to={"/about"}
                       >
-                        Get Started <span className="bi bi-arrow-right"></span>
+                        About Us <span className="bi bi-arrow-right"></span>
                       </Button>
                     </Col>
 

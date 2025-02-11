@@ -460,7 +460,9 @@ const UserRegisteration = () => {
                     {loading ? (
                       <Spinner animation="border" size="sm" />
                     ) : (
-                      "Create Account"
+                      `Sign Up as ${
+                        value === "valet" ? "Tech Valet" : "a Customer"
+                      }`
                     )}
                   </Button>
                 </Col>

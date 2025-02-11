@@ -30,6 +30,25 @@ export const postLogin = createAsyncThunk(
   }
 );
 
+// Async thunk for Google login
+export const postLoginWithGoogle = createAsyncThunk(
+  "user/postLoginWithGoogle",
+  async (idToken, { rejectWithValue, getState, dispatch }) => {
+    try {
+      dispatch(setLoading({ key: "authLoading", value: true }));
+      const url = "https://losttealstone56.conveyor.cloud/api/";
+      const response = await api.post(`${url}auth/google/callback/${idToken}`);
+
+      const { data } = processApiResponse(response, dispatch);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch);
+    } finally {
+      dispatch(setLoading({ key: "authLoading", value: false }));
+    }
+  }
+);
+
 // Async thunk for registration
 export const postRegister = createAsyncThunk(
   "user/postRegister",

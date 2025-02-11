@@ -21,6 +21,7 @@ import HandleImages from "../../../components/Custom/Avatars/HandleImages";
 import loginPage from "../../../assets/images/login-page.png";
 import background from "../../../assets/images/Background.svg";
 import PasswordField from "../../../components/Custom/PasswordInput/PasswordInput";
+import GoogleLoginButton from "../../../components/Custom/GoogleAuth/GoogleLoginButton";
 
 const initialValues = {
   email: "",
@@ -216,7 +217,14 @@ const UserLogin = () => {
               </div>
 
               <Row>
-                <Col sm={12} className="text-center">
+                <Col
+                  xl={12}
+                  lg={12}
+                  md={12}
+                  sm={12}
+                  xs={12}
+                  className="text-center"
+                >
                   <Button
                     className="btn-md w-100 text-uppercase mb-3"
                     variant="primary"
@@ -228,6 +236,16 @@ const UserLogin = () => {
                       "Login"
                     )}
                   </Button>
+                  {/* <Col
+                    xl={12}
+                    lg={12}
+                    md={12}
+                    sm={12}
+                    xs={12}
+                    className="text-center"
+                  >
+                    <GoogleLoginButton />
+                  </Col> */}
 
                   {sendEmail && (
                     <p className="text-danger">
