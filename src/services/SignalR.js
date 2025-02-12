@@ -1,5 +1,12 @@
 import * as signalR from "@microsoft/signalr";
+import { logout } from "../redux/Reducers/authSlice";
+import { toast } from "react-toastify";
 
+let globalDispatch = null;
+
+export const setGlobalDispatch = (dispatch) => {
+  globalDispatch = dispatch; // dispatch function assigned globally from the App.js component
+};
 class SignalRService {
   constructor() {
     this.connection = null;
@@ -13,6 +20,40 @@ class SignalRService {
       return;
     }
     this.connection = new signalR.HubConnectionBuilder().withUrl(url).build();
+
+    this.connection.on("LogOutDeletedUser", (deletedUserId) => {
+      try {
+        if (deletedUserId === userId) {
+          toast.warning(
+            "Your account has been deleted by the administrator. If you've any query, feel free to contact support team."
+          );
+          if (globalDispatch) {
+            globalDispatch(logout());
+          } else {
+            console.error("Redux dispatch is not available.");
+          }
+        }
+      } catch (error) {
+        console.error("Error processing received message:", error);
+      }
+    });
+
+    this.connection.on("LogOutWhenAccountOnHold", (deletedUserId) => {
+      try {
+        if (deletedUserId === userId) {
+          toast.warning(
+            "Your account has been set to OnHold by the administrator. If you've any query, feel free to contact support team."
+          );
+          if (globalDispatch) {
+            globalDispatch(logout());
+          } else {
+            console.error("Redux dispatch is not available.");
+          }
+        }
+      } catch (error) {
+        console.error("Error processing received message:", error);
+      }
+    });
 
     this.connection.on(
       "ReceiveMessage",

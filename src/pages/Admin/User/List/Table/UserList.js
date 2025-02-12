@@ -4,7 +4,11 @@ import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import Dialogue from "../../../../../components/Custom/Modal/modal";
-import { getUserRecords } from "../../../../../redux/Actions/adminActions";
+import {
+  getUserRecords,
+  setAccountOnHold,
+  userAccountActivation,
+} from "../../../../../redux/Actions/adminActions";
 import { deleteRecords } from "../../../../../redux/Actions/globalActions";
 import { capitalizeFirstLetter } from "../../../../../utils/_helpers";
 
@@ -19,15 +23,17 @@ const UserList = ({ userRole, userType }) => {
   const [pageLength, setPageLength] = useState(5);
   const [loader, setLoader] = useState(false);
   const [totalRecord, setTotalRecords] = useState(0);
-  const [deleteLoader, setDeleteLoader] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [isDelete, setIsDelete] = useState("");
+  const [showAAModal, setShowAAModal] = useState(false);
+  const [showAOHModal, setShowAOHModal] = useState(false);
+  const [actionLoader, setActionLoader] = useState(false);
+  const [rowForAction, setRowForAction] = useState(null);
 
   const buttons = [
     {
       id: 1,
       title: "Delete",
-      onClick: (row) => handleOnDelete(row.userEncId),
+      onClick: (row) => handleOnDelete(row),
       variant: "outline-danger",
       icon: "bi bi-trash",
     },
@@ -41,11 +47,22 @@ const UserList = ({ userRole, userType }) => {
     {
       id: 3,
       title: "Activate Account",
-      onClick: (row) => onView(row),
+      onClick: (row) => onAccountActivation(row),
       variant: "outline-dark",
       icon: "bi bi-check2",
       show: (row) =>
-        row.isActive === "AdminVerificationPending" ? true : false,
+        row.isActive === "AdminVerificationPending" ||
+        row.isActive === "AccountOnHold"
+          ? true
+          : false,
+    },
+    {
+      id: 4,
+      title: "Set Account On Hold",
+      onClick: (row) => onHoldAccount(row),
+      variant: "outline-secondary",
+      icon: "bi bi-ban",
+      show: (row) => (row.isActive === "Active" ? true : false),
     },
   ];
 
@@ -58,13 +75,16 @@ const UserList = ({ userRole, userType }) => {
     { id: "0", label: "Status", column: "gender" },
   ];
 
+  //#region Delete
   const handleDelete = async () => {
-    setDeleteLoader(true);
-    const endpoint = `Admin/DeleteUser?id=${encodeURIComponent(isDelete)}`;
+    setActionLoader(true);
+    const endpoint = `Admin/DeleteUser?id=${encodeURIComponent(
+      rowForAction.userEncId
+    )}`;
 
     dispatch(deleteRecords(endpoint))
       .then((response) => {
-        setDeleteLoader(false);
+        setActionLoader(false);
         handleClose();
         fetchRecords();
       })
@@ -76,19 +96,70 @@ const UserList = ({ userRole, userType }) => {
       });
   };
 
+  const handleOnDelete = (row) => {
+    setRowForAction(row);
+    setShowDeleteModal(true);
+  };
+  //#endregion Delete
+
   const onView = (row) => {
     navigate(`/add-user/${userType}`, { state: row });
   };
 
-  const handleOnDelete = (id) => {
-    setIsDelete(id);
-    setShowDeleteModal(true);
+  //#region Account Activation
+  const onAccountActivation = (row) => {
+    setRowForAction(row);
+    setShowAAModal(true);
   };
 
+  const handleAccountActivate = async () => {
+    setActionLoader(true);
+
+    dispatch(userAccountActivation(rowForAction))
+      .then((response) => {
+        setActionLoader(false);
+        handleClose();
+        fetchRecords();
+      })
+      .catch((error) => {
+        console.log(
+          " error from Admin side on userlist while activate record :: ",
+          error
+        );
+      });
+  };
+  //#endregion  Account Activation
+
+  //#region Account On Hold
+  const onHoldAccount = (row) => {
+    setRowForAction(row);
+    setShowAOHModal(true);
+  };
+
+  const handleAccountOnHold = async () => {
+    setActionLoader(true);
+
+    dispatch(setAccountOnHold(rowForAction.userEncId))
+      .then((response) => {
+        setActionLoader(false);
+        handleClose();
+        fetchRecords();
+      })
+      .catch((error) => {
+        console.log(
+          " error from Admin side on userlist while set account on hold :: ",
+          error
+        );
+      });
+  };
+  //#endregion  Account On Hold
+
   const handleClose = () => {
-    setDeleteLoader(false);
-    setIsDelete("");
+    setActionLoader(false);
+    setRowForAction(null);
     setShowDeleteModal(false);
+    setShowAAModal(false);
+    setShowAOHModal(false);
   };
 
   const fetchRecords = async (
@@ -115,9 +186,11 @@ const UserList = ({ userRole, userType }) => {
           if (response?.payload) {
             const data = response.payload?.data.map((user) => {
               if (user.isActive === "EmailVerificationPending") {
-                user.gender = "Pending Activation";
+                user.gender = "Pending Email Activation";
               } else if (user.isActive === "AdminVerificationPending") {
-                user.gender = "Pending Approval";
+                user.gender = "Pending Admin Approval";
+              } else if (user.isActive === "AccountOnHold") {
+                user.gender = "On Hold";
               } else if (user.isActive === "Active") {
                 user.gender = "Activated";
               } else {
@@ -192,7 +265,69 @@ const UserList = ({ userRole, userType }) => {
             text: "Confirm",
             variant: "danger",
             onClick: handleDelete,
-            loader: deleteLoader,
+            loader: actionLoader,
+          },
+          {
+            text: "Cancel",
+            className: "btn-secondary-secondary",
+            onClick: handleClose,
+          },
+        ]}
+      />
+
+      <Dialogue
+        show={showAAModal}
+        centered={true}
+        onHide={handleClose}
+        headerClass=""
+        title="Warning"
+        bodyContent={
+          <>
+            <span>
+              <span className="fw-bold">Attention:</span> Are you sure you want
+              to activate this account.
+            </span>
+            <p>Double-check before confirming. 💾</p>
+          </>
+        }
+        backdrop="static"
+        customFooterButtons={[
+          {
+            text: "Confirm",
+            variant: "danger",
+            onClick: handleAccountActivate,
+            loader: actionLoader,
+          },
+          {
+            text: "Cancel",
+            className: "btn-secondary-secondary",
+            onClick: handleClose,
+          },
+        ]}
+      />
+
+      <Dialogue
+        show={showAOHModal}
+        centered={true}
+        onHide={handleClose}
+        headerClass=""
+        title="Warning"
+        bodyContent={
+          <>
+            <span>
+              <span className="fw-bold">Attention:</span> Are you sure you want
+              to set this account 'On Hold'.
+            </span>
+            <p>Double-check before confirming. 💾</p>
+          </>
+        }
+        backdrop="static"
+        customFooterButtons={[
+          {
+            text: "Confirm",
+            variant: "danger",
+            onClick: handleAccountOnHold,
+            loader: actionLoader,
           },
           {
             text: "Cancel",

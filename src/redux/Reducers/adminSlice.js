@@ -1,5 +1,7 @@
 import {
   getAdminDashboardCount,
+  userAccountActivation,
+  setAccountOnHold,
   postAddUser,
   postUpdateUser,
   getUserRecords,
@@ -32,6 +34,34 @@ const adminSlice = createSlice({
         state.loading = false;
       })
       .addCase(getAdminDashboardCount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+
+    // Handle userAccountActivation actions
+    builder
+      .addCase(userAccountActivation.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(userAccountActivation.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(userAccountActivation.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+
+    // Handle setAccountOnHold actions
+    builder
+      .addCase(setAccountOnHold.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(setAccountOnHold.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(setAccountOnHold.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });
