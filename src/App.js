@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import AppRoutes from "./routes/route";
 import { ToastContainer } from "react-toastify";
 import { ThemeContextProvider } from "./theme/themeSettings";
-import signalRService from "./services/SignalR"; // Import the SignalR service
-import { useSelector } from "react-redux";
+import signalRService, { setGlobalDispatch } from "./services/SignalR"; // Import the SignalR service
+import { useDispatch, useSelector } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -17,7 +17,12 @@ import { LoaderProvider } from "./context/LoaderContext";
 import GlobalLoader from "./components/Custom/GlobalLoader/GlobalLoader";
 
 const App = () => {
+  const dispatch = useDispatch();
   const { userAuth } = useSelector((state) => state.authentication); // Get user info from Redux store
+
+  useEffect(() => {
+    setGlobalDispatch(dispatch); // dispatch globally set, used in SignalR.js
+  }, [dispatch]);
 
   // Initialize AOS and SignalR inside useEffect
   useEffect(() => {

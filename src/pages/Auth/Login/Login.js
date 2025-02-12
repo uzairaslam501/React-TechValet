@@ -55,7 +55,10 @@ const UserLogin = () => {
           if (redirectPath) {
             navigate(redirectPath);
           }
-        } else {
+        } else if (
+          response?.payload &&
+          response?.payload === "EmailVerfication"
+        ) {
           setSendEmail(true);
         }
       });
