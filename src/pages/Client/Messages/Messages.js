@@ -11,9 +11,7 @@ import HandleImages from "../../../components/Custom/Avatars/HandleImages";
 import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import {
   getFirstAndLastDayOfMonth,
-  setDateRestrictions,
   truncateCharacters,
-  truncateTime,
 } from "../../../utils/_helpers";
 import RenderOfferStatus from "./RendersCard/RenderOfferStatus";
 import "./style.css";
@@ -206,7 +204,23 @@ const Messages = () => {
       dispatch(sendUsersMessages(data)).then((response) => {
         if (response?.payload) {
           const newMessage = response.payload;
-          setMessages((prev) => [...prev, newMessage?.model]);
+          setMessages((prev) => {
+            const messageDate = newMessage?.model?.messageDate;
+
+            // Clone previous state
+            const newMessages = { ...prev };
+
+            if (newMessages[messageDate]) {
+              newMessages[messageDate] = [
+                ...newMessages[messageDate],
+                newMessage?.model,
+              ];
+            } else {
+              newMessages[messageDate] = [newMessage?.model];
+            }
+
+            return newMessages;
+          });
 
           handleSignalRCall(newMessage);
         }
@@ -228,13 +242,38 @@ const Messages = () => {
       dispatch(handleOrderOffer(data)).then((response) => {
         if (response?.payload) {
           const newMessage = response.payload;
-          setMessages((prev) =>
-            prev.map((msg) =>
-              msg.offerTitleId === newMessage?.model?.offerTitleId
-                ? { ...msg, ...newMessage?.model }
-                : msg
-            )
-          );
+
+          setMessages((prev) => {
+            const messageDate = newMessage?.model?.messageDate;
+            const newMessages = { ...prev };
+
+            if (newMessages[messageDate]) {
+              const index = newMessages[messageDate].findIndex(
+                (msg) => msg.offerTitleId === newMessage?.model?.offerTitleId
+              );
+
+              if (index !== -1) {
+                // Update the existing message instead of adding a new one
+                newMessages[messageDate] = newMessages[messageDate].map(
+                  (msg, i) =>
+                    i === index ? { ...msg, ...newMessage?.model } : msg
+                );
+              } else {
+                // If the message does not exist, add it
+                newMessages[messageDate] = [
+                  ...newMessages[messageDate],
+                  newMessage?.model,
+                ];
+              }
+            } else {
+              // Create a new date entry if it doesn't exist
+              newMessages[messageDate] = [newMessage?.model];
+            }
+
+            return newMessages;
+          });
+
+          // Ensure the receiver gets the rejected status
           if (userAuth?.id !== newMessage.senderId) {
             handleSignalRCall(newMessage);
           }
@@ -296,22 +335,55 @@ const Messages = () => {
     const handleIncomingData = (senderId, receiverId, model) => {
       if (model.messageDescription === "Reject") {
         if (userAuth?.id !== receiverId) {
-          setMessages((prev) =>
-            prev.map((msg) =>
-              msg.offerTitleId === model?.offerTitleId
-                ? { ...msg, ...model }
-                : msg
-            )
-          );
+          setMessages((prev) => {
+            const messageDate = model.messageDate;
+            const newMessages = { ...prev };
+
+            if (newMessages[messageDate]) {
+              const existsIndex = newMessages[messageDate].findIndex(
+                (msg) => msg.offerTitleId === model?.offerTitleId
+              );
+
+              if (existsIndex !== -1) {
+                // ✅ Update the existing message by replacing it
+                newMessages[messageDate] = newMessages[messageDate].map(
+                  (msg, index) =>
+                    index === existsIndex ? { ...msg, ...model } : msg
+                );
+              } else {
+                // ✅ Add new message if it doesn't exist
+                newMessages[messageDate] = [...newMessages[messageDate], model];
+              }
+            } else {
+              // ✅ Create new date entry if it doesn't exist
+              newMessages[messageDate] = [model];
+            }
+
+            return newMessages;
+          });
         }
       } else {
         if (userAuth?.id === receiverId) {
           if (activeChatRef.current?.userDecId === String(senderId)) {
             setMessages((prev) => {
-              if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
-                return [...prev, model];
+              const messageDate = model.messageDate;
+              const newMessages = { ...prev };
+
+              if (newMessages[messageDate]) {
+                const exists = newMessages[messageDate].some(
+                  (msg) => msg.id === model.id
+                );
+                if (!exists) {
+                  newMessages[messageDate] = [
+                    ...newMessages[messageDate],
+                    model,
+                  ];
+                }
+              } else {
+                newMessages[messageDate] = [model];
               }
-              return prev;
+
+              return newMessages;
             });
 
             setUsersList((prev) =>

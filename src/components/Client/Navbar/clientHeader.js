@@ -154,6 +154,12 @@ const ClientNavbar = () => {
                   </Nav>
                 </Navbar.Collapse>
               </>
+            ) : userAuth?.isActive === "AccountCompletion" ? (
+              <h5 className="text-center" style={{ color: "#fcd609" }}>
+                Please complete your account information to access all features
+                and use your account properly. Incomplete details may limit your
+                experience.
+              </h5>
             ) : (
               <>
                 <h5 className="text-center" style={{ color: "#fcd609" }}>

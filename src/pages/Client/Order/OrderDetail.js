@@ -191,7 +191,11 @@ const OrderDetail = () => {
     if (!userAuth?.id) return;
 
     const handleIncomingData = (senderId, receiverId, model) => {
-      if (userAuth?.id === receiverId && orderDetails?.id === model.orderId) {
+      console.log(model);
+      if (
+        userAuth?.id === receiverId &&
+        String(params?.id) === String(model.orderEncId)
+      ) {
         setActiveChat((prev) => {
           if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
             return [...prev, model];

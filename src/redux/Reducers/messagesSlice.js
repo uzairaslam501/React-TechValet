@@ -73,7 +73,7 @@ const messagesSlice = createSlice({
       .addCase(sendUsersMessages.fulfilled, (state, action) => {
         state.loading = false;
         // Optionally append new messages to the existing list
-        state.userMessages = [...state.userMessages, action.payload];
+        //state.userMessages = [...state.userMessages, action.payload];
       })
       .addCase(sendUsersMessages.rejected, (state, action) => {
         state.loading = false;
