@@ -273,67 +273,76 @@ const ChatContainer = ({
   return (
     <ul className="chatbox-list">
       {messages &&
-        messages.length > 0 &&
-        messages.map((message) => (
-          <li
-            key={message.id}
-            className={`chatbox-message ${
-              message.senderId === String(userAuth?.id) ? "sent" : "received"
-            }`}
-          >
-            <div className="profile-image">
-              <HandleImages
-                imagePath={
-                  message.profileImage || "../frontAssets/images/user/s1.png"
-                }
-                imageAlt={message.name}
-                imageStyle={{ width: "100%" }}
-              />
+        Object.entries(messages).map(([date, messagesOnDate]) => (
+          <div key={date}>
+            <div className="d-flex justify-content-center fixed-date">
+              <h2 className="message-date">{date}</h2>
             </div>
-            <div className="message-content">
-              <div className="sender-name">{message.name}</div>
-              {message.orderReasonIsActive ? (
-                <div>
-                  {renderStatusType(
-                    message.orderReasonType,
-                    message.orderReasonIsActive,
-                    message.senderId,
-                    message.messageDescription,
-                    message
-                  )}
-                </div>
-              ) : message.isZoomMeeting === 1 ? (
-                <div>
-                  {renderZoomMeeting(
-                    message.orderReasonType,
-                    message.isZoomMeeting,
-                    message.senderId,
-                    message.joinUrl,
-                    message.messageDescription
-                  )}
-                </div>
-              ) : (
-                <div>
-                  <div className="message-text">
-                    {message.messageDescription}
-                  </div>
-                  {getFileElement(message.filePath)}
-                </div>
-              )}
-
-              <div
-                className={`message-time `}
-                style={{
-                  color:
-                    message.senderId === String(userAuth?.id)
-                      ? "#f9f9f9"
-                      : "#111111",
-                }}
+            {messagesOnDate.map((message) => (
+              <li
+                key={message.id}
+                className={`chatbox-message ${
+                  message.senderId === String(userAuth?.id)
+                    ? "sent"
+                    : "received"
+                }`}
               >
-                {message.messageTime}
-              </div>
-            </div>
-          </li>
+                <div className="profile-image">
+                  <HandleImages
+                    imagePath={
+                      message.profileImage ||
+                      "../frontAssets/images/user/s1.png"
+                    }
+                    imageAlt={message.name}
+                    imageStyle={{ width: "100%" }}
+                  />
+                </div>
+                <div className="message-content">
+                  <div className="sender-name">{message.name}</div>
+                  {message.orderReasonIsActive ? (
+                    <div>
+                      {renderStatusType(
+                        message.orderReasonType,
+                        message.orderReasonIsActive,
+                        message.senderId,
+                        message.messageDescription,
+                        message
+                      )}
+                    </div>
+                  ) : message.isZoomMeeting === 1 ? (
+                    <div>
+                      {renderZoomMeeting(
+                        message.orderReasonType,
+                        message.isZoomMeeting,
+                        message.senderId,
+                        message.joinUrl,
+                        message.messageDescription
+                      )}
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="message-text">
+                        {message.messageDescription}
+                      </div>
+                      {getFileElement(message.filePath)}
+                    </div>
+                  )}
+
+                  <div
+                    className={`message-time `}
+                    style={{
+                      color:
+                        message.senderId === String(userAuth?.id)
+                          ? "#f9f9f9"
+                          : "#111111",
+                    }}
+                  >
+                    {message.messageTime}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </div>
         ))}
     </ul>
   );

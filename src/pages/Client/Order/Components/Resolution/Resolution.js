@@ -74,7 +74,24 @@ const OrderResolution = ({
     dispatch(cancelOrder(payload)).then((response) => {
       if (response?.payload) {
         const newMessage = response.payload;
-        setActiveChat((prev) => [...prev, newMessage]);
+        setActiveChat((prev) => {
+          const messageDate = newMessage?.messageDate;
+
+          // Clone previous state
+          const newMessages = { ...prev };
+
+          if (newMessages[messageDate]) {
+            newMessages[messageDate] = [
+              ...newMessages[messageDate],
+              newMessage,
+            ];
+          } else {
+            newMessages[messageDate] = [newMessage];
+          }
+
+          return newMessages;
+        });
+
         handleSignalRCall(newMessage);
       }
       setSendLoader(false);
@@ -88,7 +105,23 @@ const OrderResolution = ({
     dispatch(extendOrderRequest(extendedPayload)).then((response) => {
       if (response?.payload) {
         const newMessage = response.payload;
-        setActiveChat((prev) => [...prev, newMessage]);
+        setActiveChat((prev) => {
+          const messageDate = newMessage?.messageDate;
+
+          // Clone previous state
+          const newMessages = { ...prev };
+
+          if (newMessages[messageDate]) {
+            newMessages[messageDate] = [
+              ...newMessages[messageDate],
+              newMessage,
+            ];
+          } else {
+            newMessages[messageDate] = [newMessage];
+          }
+
+          return newMessages;
+        });
         handleSignalRCall(newMessage);
       }
       setSendLoader(false);
