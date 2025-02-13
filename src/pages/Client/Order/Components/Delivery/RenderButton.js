@@ -12,7 +12,7 @@ const RenderButton = ({ isDelivered, userRole, openDialogue, showSpinner }) => {
           size="sm"
           disabled={showSpinner}
         >
-          ORDER YOUR DELIVER
+          DELIVER YOUR ORDER
         </Button>
       );
     }

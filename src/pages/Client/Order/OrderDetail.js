@@ -91,7 +91,23 @@ const OrderDetail = () => {
       dispatch(sendMessages(data)).then((response) => {
         if (response?.payload) {
           const newMessage = response.payload;
-          setActiveChat((prev) => [...prev, newMessage]);
+          setActiveChat((prev) => {
+            const messageDate = newMessage?.messageDate;
+
+            // Clone previous state
+            const newMessages = { ...prev };
+
+            if (newMessages[messageDate]) {
+              newMessages[messageDate] = [
+                ...newMessages[messageDate],
+                newMessage,
+              ];
+            } else {
+              newMessages[messageDate] = [newMessage];
+            }
+
+            return newMessages;
+          });
           handleSignalRCall(newMessage);
         }
 
@@ -136,7 +152,23 @@ const OrderDetail = () => {
     dispatch(orderZoomMeeting(data)).then((response) => {
       if (response?.payload) {
         const newMessage = response.payload;
-        setActiveChat((prev) => [...prev, newMessage]);
+        setActiveChat((prev) => {
+          const messageDate = newMessage?.messageDate;
+
+          // Clone previous state
+          const newMessages = { ...prev };
+
+          if (newMessages[messageDate]) {
+            newMessages[messageDate] = [
+              ...newMessages[messageDate],
+              newMessage,
+            ];
+          } else {
+            newMessages[messageDate] = [newMessage];
+          }
+
+          return newMessages;
+        });
 
         console.log("orderZoomMeeting newMessage ::: ", newMessage);
         handleSignalRCall(newMessage);
@@ -155,14 +187,40 @@ const OrderDetail = () => {
     setSendLoader(true);
     dispatch(extendOrderConfirmation(data)).then((response) => {
       const newMessage = response?.payload;
-      setActiveChat((prev) =>
-        prev.map((msg) =>
-          msg.orderReasonId === newMessage?.orderReasonId
-            ? { ...msg, orderReasonIsActive: newMessage.orderReasonIsActive }
-            : msg
-        )
-      );
-      setActiveChat((prev) => [...prev, newMessage]);
+
+      setActiveChat((prev) => {
+        const messageDate = newMessage?.messageDate;
+        const newMessages = { ...prev };
+
+        if (newMessages[messageDate]) {
+          const index = newMessages[messageDate].findIndex(
+            (msg) => msg.orderReasonId === newMessage?.orderReasonId
+          );
+
+          if (index !== -1) {
+            // Update the existing message instead of adding a new one
+            newMessages[messageDate] = newMessages[messageDate].map((msg, i) =>
+              i === index
+                ? {
+                    ...msg,
+                    orderReasonIsActive: newMessage.orderReasonIsActive,
+                  }
+                : msg
+            );
+          } else {
+            // If the message does not exist, add it
+            newMessages[messageDate] = [
+              ...newMessages[messageDate],
+              newMessage,
+            ];
+          }
+        } else {
+          // Create a new date entry if it doesn't exist
+          newMessages[messageDate] = [newMessage];
+        }
+
+        return newMessages;
+      });
       setSendLoader(false);
     });
   };
@@ -171,14 +229,39 @@ const OrderDetail = () => {
     setSendLoader(true);
     dispatch(orderCancelConfirmation(data)).then((response) => {
       const newMessage = response?.payload;
-      setActiveChat((prev) =>
-        prev.map((msg) =>
-          msg.orderReasonId === newMessage?.orderReasonId
-            ? { ...msg, orderReasonIsActive: newMessage.orderReasonIsActive }
-            : msg
-        )
-      );
-      setActiveChat((prev) => [...prev, newMessage]);
+      setActiveChat((prev) => {
+        const messageDate = newMessage?.messageDate;
+        const newMessages = { ...prev };
+
+        if (newMessages[messageDate]) {
+          const index = newMessages[messageDate].findIndex(
+            (msg) => msg.orderReasonId === newMessage?.orderReasonId
+          );
+
+          if (index !== -1) {
+            // Update the existing message instead of adding a new one
+            newMessages[messageDate] = newMessages[messageDate].map((msg, i) =>
+              i === index
+                ? {
+                    ...msg,
+                    orderReasonIsActive: newMessage.orderReasonIsActive,
+                  }
+                : msg
+            );
+          } else {
+            // If the message does not exist, add it
+            newMessages[messageDate] = [
+              ...newMessages[messageDate],
+              newMessage,
+            ];
+          }
+        } else {
+          // Create a new date entry if it doesn't exist
+          newMessages[messageDate] = [newMessage];
+        }
+
+        return newMessages;
+      });
       setSendLoader(false);
     });
   };
@@ -191,12 +274,27 @@ const OrderDetail = () => {
     if (!userAuth?.id) return;
 
     const handleIncomingData = (senderId, receiverId, model) => {
-      if (userAuth?.id === receiverId && orderDetails?.id === model.orderId) {
+      console.log(model);
+      if (
+        userAuth?.id === receiverId &&
+        String(params?.id) === String(model.orderEncId)
+      ) {
         setActiveChat((prev) => {
-          if (!prev.some((msg) => msg.messageTime === model.messageTime)) {
-            return [...prev, model];
+          const messageDate = model.messageDate;
+          const newMessages = { ...prev };
+
+          if (newMessages[messageDate]) {
+            const exists = newMessages[messageDate].some(
+              (msg) => msg.id === model.id
+            );
+            if (!exists) {
+              newMessages[messageDate] = [...newMessages[messageDate], model];
+            }
+          } else {
+            newMessages[messageDate] = [model];
           }
-          return prev;
+
+          return newMessages;
         });
         setOrderDetails((prev) => ({
           ...prev,
