@@ -24,7 +24,9 @@ export const getOrderDetails = createAsyncThunk(
       dispatch(setLoading({ key: "orderLoading", value: true }));
 
       const response = await api.get(
-        `User/GetOrderById/${encodeURIComponent(orderId)}`,
+        `User/GetOrderById/${encodeURIComponent(
+          orderId
+        )}?userId=${encodeURIComponent(userId)}`,
         {
           headers: {
             Authorization: `${token}`,

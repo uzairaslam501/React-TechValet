@@ -83,15 +83,15 @@ const UserProfile = () => {
   }, []);
 
   useEffect(() => {
-    if (
-      (userAuth &&
-        userAuth?.role === "Valet" &&
-        userAuth.isStripeAccountComplete === false) ||
-      userAuth.isPaypalAccountComplete === false ||
-      userAuth.isProfileComplete === false ||
-      userAuth.isSkillsComplete === false
-    ) {
-      setShowModal(true);
+    if (userAuth && userAuth?.role === "Valet") {
+      if (
+        userAuth.isStripeAccountComplete === false ||
+        userAuth.isPaypalAccountComplete === false ||
+        userAuth.isProfileComplete === false ||
+        userAuth.isSkillsComplete === false
+      ) {
+        setShowModal(true);
+      }
     }
   }, []);
 
@@ -99,6 +99,7 @@ const UserProfile = () => {
     if (
       userAuth &&
       userAuth?.role === "Valet" &&
+      userAuth?.isActive === "AccountCompletion" &&
       userAuth.isStripeAccountComplete === true &&
       userAuth.isPaypalAccountComplete === true &&
       userAuth.isProfileComplete === true &&

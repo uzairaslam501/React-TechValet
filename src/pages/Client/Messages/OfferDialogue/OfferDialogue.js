@@ -140,6 +140,7 @@ const OfferDialogue = ({
                   restrictions || setDateTimeRestrictions("max", validRange.end)
                 }
                 isInvalid={touched.startedDateTime && !!errors.startedDateTime}
+                onKeyDown={(e) => e.preventDefault()}
               />
               {touched.startedDateTime && !!errors.startedDateTime && (
                 <Form.Control.Feedback type="invalid">
@@ -163,6 +164,7 @@ const OfferDialogue = ({
                   restrictions || setDateTimeRestrictions("max", validRange.end)
                 }
                 isInvalid={touched.endedDateTime && !!errors.endedDateTime}
+                onKeyDown={(e) => e.preventDefault()}
               />
               {touched.endedDateTime && !!errors.endedDateTime && (
                 <Form.Control.Feedback type="invalid">

@@ -131,7 +131,9 @@ const OrderResolution = ({
 
   return (
     <>
-      {orderDetails && orderDetails?.isDelivered === "2" ? (
+      {orderDetails &&
+      orderDetails?.isDelivered === "2" &&
+      userAuth?.role === "Valet" ? (
         <>
           <Button
             className="w-100 mb-2"
@@ -148,16 +150,17 @@ const OrderResolution = ({
         </>
       ) : (
         <>
-          <Button
-            onClick={() => openDialogue("Extend")}
-            className="w-100 mb-2"
-            variant="outline-primary"
-            size="sm"
-            disabled={showSpinner}
-          >
-            Extend Deadline
-          </Button>
-
+          {userAuth?.role === "Valet" && (
+            <Button
+              onClick={() => openDialogue("Extend")}
+              className="w-100 mb-2"
+              variant="outline-primary"
+              size="sm"
+              disabled={showSpinner}
+            >
+              Extend Deadline
+            </Button>
+          )}
           <Button
             onClick={() => openDialogue("Cancel")}
             className="w-100"
@@ -186,6 +189,7 @@ const OrderResolution = ({
                   min={disabledPreviousDateTime()}
                   max={setDateTimeRestrictions("max", validDateRange.end)}
                   isInvalid={!extensionDate}
+                  onKeyDown={(e) => e.preventDefault()}
                 />
                 <Form.Control.Feedback type="invalid">
                   This field is required.

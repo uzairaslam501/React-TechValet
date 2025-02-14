@@ -99,12 +99,8 @@ const Messages = () => {
   const fetchUserStatus = (userId) => {
     try {
       dispatch(getUserStatus(userId)).then((response) => {
-        if (response?.payload) {
-          setUserOnlineStatus(response?.payload);
-          fetchMessages(userId);
-        } else {
-          console.error("No payload received");
-        }
+        setUserOnlineStatus(response?.payload);
+        fetchMessages(userId);
       });
     } catch (error) {
       console.error("Error fetching sidebar:", error);

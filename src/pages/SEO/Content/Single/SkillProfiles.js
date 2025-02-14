@@ -97,7 +97,8 @@ const SkillProfiles = () => {
                         </div>
                         <h3 className="profile-name">{`${user.firstName} ${user.lastName}`}</h3>
                         <p className="profile-description">
-                          {truncateCharacters(user.userDescription, 70)}
+                          {user?.userDescription &&
+                            truncateCharacters(user.userDescription, 70)}
                         </p>
                         <Link
                           to={`/preview-profile/${user.encUserId}`}
