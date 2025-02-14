@@ -41,6 +41,21 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    valetProfileComplitionStateUpdate(state, payload) {
+      state.userAuth.isActive = payload?.payload;
+    },
+    stripeAccountStateUpdate(state, payload) {
+      state.userAuth.isStripeAccountComplete = payload?.payload;
+    },
+    paypalAccountStateUpdate(state, payload) {
+      state.userAuth.isPaypalAccountComplete = payload?.payload;
+    },
+    skillsStateUpdate(state, payload) {
+      state.userAuth.isSkillsComplete = payload?.payload;
+    },
+    profileStateUpdate(state, payload) {
+      state.userAuth.isProfileComplete = payload?.payload;
+    },
   },
   extraReducers: (builder) => {
     // Handle login actions
@@ -276,5 +291,13 @@ const authSlice = createSlice({
 });
 
 // Export the reducer and actions
-export const { logout, renewToken } = authSlice.actions;
+export const {
+  logout,
+  renewToken,
+  valetProfileComplitionStateUpdate,
+  stripeAccountStateUpdate,
+  paypalAccountStateUpdate,
+  skillsStateUpdate,
+  profileStateUpdate,
+} = authSlice.actions;
 export default authSlice.reducer;

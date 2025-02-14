@@ -5,6 +5,7 @@ import {
   postUpdate,
   getTimezones,
   postAddContact,
+  putUpdate,
 } from "../Actions/globalActions";
 
 const initialState = {
@@ -58,6 +59,20 @@ const globalSlice = createSlice({
         state.loading = false;
       })
       .addCase(postUpdate.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //putUpdate
+    builder
+      .addCase(putUpdate.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(putUpdate.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(putUpdate.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

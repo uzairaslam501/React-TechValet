@@ -70,7 +70,7 @@ const UserList = ({ userRole, userType }) => {
     { id: "0", label: "Action", column: "Action" },
     { id: "0", label: "First Name", column: "firstName" },
     { id: "0", label: "Last Name", column: "lastName" },
-    { id: "0", label: "User Name", column: "userName" },
+    { id: "0", label: "Username", column: "userName" },
     { id: "0", label: "Email", column: "email" },
     { id: "0", label: "Status", column: "gender" },
   ];
@@ -191,6 +191,8 @@ const UserList = ({ userRole, userType }) => {
                 user.gender = "Pending Admin Approval";
               } else if (user.isActive === "AccountOnHold") {
                 user.gender = "On Hold";
+              } else if (user.isActive === "AccountCompletion") {
+                user.gender = "Profile Account Completion";
               } else if (user.isActive === "Active") {
                 user.gender = "Activated";
               } else {
@@ -225,7 +227,7 @@ const UserList = ({ userRole, userType }) => {
           <Col xl={12} lg={12} md={12} sm={12} xs={12}>
             <Card>
               <Card.Body>
-                <h1 className="text-center h3 fw-bold">
+                <h1 className="text-center fw-bold">
                   Manage {capitalizeFirstLetter(userType)}
                 </h1>
                 <CustomTable

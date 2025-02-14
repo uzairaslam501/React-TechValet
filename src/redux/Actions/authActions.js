@@ -8,8 +8,13 @@ import {
 import { baseUrl } from "../../utils/_envConfig";
 import { toast } from "react-toastify";
 import { getToken } from "../../utils/_apiConfig";
-import { logout, renewToken } from "../Reducers/authSlice";
 import { setLoading } from "../Reducers/loadingSlice";
+import {
+  logout,
+  profileStateUpdate,
+  renewToken,
+  skillsStateUpdate,
+} from "../Reducers/authSlice";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -26,6 +31,7 @@ export const postLogin = createAsyncThunk(
       return data;
     } catch (error) {
       handleApiError(error, dispatch);
+      return rejectWithValue(error?.response?.data?.data || "Error occurred");
     }
   }
 );
@@ -88,6 +94,7 @@ export const postUserUpdate = createAsyncThunk(
       if (data) {
         localStorage.setItem("userInfo", JSON.stringify(data));
       }
+      dispatch(profileStateUpdate(true));
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
@@ -239,6 +246,7 @@ export const postAddUserSkill = createAsyncThunk(
       if (message) {
         toast.success(message);
       }
+      dispatch(skillsStateUpdate(true));
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
