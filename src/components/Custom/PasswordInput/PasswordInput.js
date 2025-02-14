@@ -46,9 +46,9 @@ const PasswordField = ({
           aria-label="Toggle password visibility"
         >
           {showPassword ? (
-            <i className="bi bi-eye-slash"></i>
-          ) : (
             <i className="bi bi-eye"></i>
+          ) : (
+            <i className="bi bi-eye-slash"></i>
           )}
         </Button>
         <Form.Control.Feedback type="invalid">

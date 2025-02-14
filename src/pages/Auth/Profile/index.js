@@ -99,6 +99,7 @@ const UserProfile = () => {
     if (
       userAuth &&
       userAuth?.role === "Valet" &&
+      userAuth?.isActive === "AccountCompletion" &&
       userAuth.isStripeAccountComplete === true &&
       userAuth.isPaypalAccountComplete === true &&
       userAuth.isProfileComplete === true &&
