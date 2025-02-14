@@ -369,7 +369,9 @@ const Account = ({ userRecord }) => {
             <Row>
               <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mb-2">
                 <FormGroup>
-                  <FormLabel>Preferred Language</FormLabel>
+                  <FormLabel>
+                    Preferred Language <span className="text-danger">*</span>
+                  </FormLabel>
                   <CustomDropdown
                     optionsList={languageOptions}
                     selectedOptions={selectedPreferredLanguage || []}

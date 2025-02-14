@@ -6,6 +6,7 @@ const Dialogue = ({
   onHide,
   headerClass,
   title,
+  titleClass = "",
   bodyContent,
   footerContent,
   modalBodyClass,
@@ -25,7 +26,7 @@ const Dialogue = ({
       centered={centered}
     >
       <Modal.Header className={headerClass} closeButton={closeButton}>
-        <Modal.Title>{title}</Modal.Title>
+        <Modal.Title className={titleClass}>{title}</Modal.Title>
       </Modal.Header>
       <Modal.Body className={modalBodyClass}>{bodyContent}</Modal.Body>
 

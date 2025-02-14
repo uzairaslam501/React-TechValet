@@ -62,38 +62,47 @@ const logAndToastError = (statusCode, errorMessage, response) => {
         response?.data?.message || "Bad Request. Please check your input.";
       break;
     case 401:
-      userFriendlyMessage = "Unauthorized. Please log in to continue.";
+      userFriendlyMessage =
+        response?.data?.message || "Unauthorized. Please log in to continue.";
       break;
     case 403:
       userFriendlyMessage =
+        response?.data?.message ||
         "Forbidden. You don't have permission to access this resource.";
       break;
     case 404:
       userFriendlyMessage =
+        response?.data?.message ||
         "The requested resource was not found. Please try again.";
       break;
     case 408:
       userFriendlyMessage =
+        response?.data?.message ||
         "The request timed out. Please check your connection and try again.";
       break;
     case 429:
       userFriendlyMessage =
+        response?.data?.message ||
         "Too many requests. Please slow down and try again later.";
       break;
     case 500:
       userFriendlyMessage =
+        response?.data?.message ||
         "Internal server error. Something went wrong on our side. Please try again later.";
       break;
     case 502:
       userFriendlyMessage =
+        response?.data?.message ||
         "Bad Gateway. The server received an invalid response. Please try again later.";
       break;
     case 503:
       userFriendlyMessage =
+        response?.data?.message ||
         "Service Unavailable. The server is temporarily overloaded or under maintenance.";
       break;
     case 504:
       userFriendlyMessage =
+        response?.data?.message ||
         "Gateway Timeout. The server took too long to respond. Please try again later.";
       break;
     default:

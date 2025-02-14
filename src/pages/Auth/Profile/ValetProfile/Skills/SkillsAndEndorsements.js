@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Button, Card, Badge, Col, Row } from "react-bootstrap";
+import { Form, Button, Card, Badge, Col, Row, Spinner } from "react-bootstrap";
 import { skillsOptions } from "../../../../../utils/client/data/requestedData";
 import { useDispatch } from "react-redux";
 import CustomDropdown from "../../../../../components/Custom/Dropdown/Dropdown";
@@ -13,6 +13,7 @@ import DeleteComponent from "../../../../../components/Custom/DeleteDialoge/Dele
 const SkillsAndEndorsements = ({ userRecord, preview = false }) => {
   const dispatch = useDispatch();
   const [userSkills, setUserSkills] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [skillsUpdated, setSkillsUpdated] = useState(false);
@@ -38,6 +39,7 @@ const SkillsAndEndorsements = ({ userRecord, preview = false }) => {
   };
 
   const addUpdateUserSkills = () => {
+    setIsLoading(true);
     const userSkillsCommaSeparated = selectedUserSkills.join(",");
     dispatch(
       postAddUserSkill({
@@ -48,11 +50,16 @@ const SkillsAndEndorsements = ({ userRecord, preview = false }) => {
       .then(() => {
         setSelectedUserSkills([]);
         setSkillsUpdated(true);
+        setIsLoading(false);
       })
-      .catch((error) => console.log("PostAddUserSkill Error", error));
+      .catch((error) => {
+        console.log("PostAddUserSkill Error", error);
+        setIsLoading(false);
+      });
   };
 
   const fetchUserSkills = () => {
+    setIsLoading(true);
     dispatch(getUserSkills(userRecord?.userEncId))
       .then((response) => {
         if (response?.payload.length <= 1) {
@@ -65,8 +72,12 @@ const SkillsAndEndorsements = ({ userRecord, preview = false }) => {
           }
         }
         setUserSkills(response.payload);
+        setIsLoading(false);
       })
-      .catch((error) => console.log("Fetch User Skills Error", error));
+      .catch((error) => {
+        console.log("Fetch User Skills Error", error);
+        setIsLoading(false);
+      });
   };
 
   // Handle deleting a skills
@@ -78,6 +89,7 @@ const SkillsAndEndorsements = ({ userRecord, preview = false }) => {
   const confirmDelete = (skillId) => {
     const endpoint = skillId && `/User/Delete/${encodeURIComponent(skillId)}`;
 
+    setIsLoading(true);
     dispatch(deleteRecords(endpoint))
       .then((response) => {
         if (response?.payload) {
@@ -89,8 +101,13 @@ const SkillsAndEndorsements = ({ userRecord, preview = false }) => {
           }
         }
         setShowDialog(false);
+
+        setIsLoading(false);
       })
-      .catch((error) => console.log("Delete Skills Error", error));
+      .catch((error) => {
+        console.log("Delete Skills Error", error);
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -168,7 +185,9 @@ const SkillsAndEndorsements = ({ userRecord, preview = false }) => {
                   variant="primary"
                   id="updateSkillsBtn"
                   className="w-100"
+                  size="sm"
                   onClick={handleAddSkills}
+                  disabled={isLoading}
                 >
                   Add Skills
                 </Button>

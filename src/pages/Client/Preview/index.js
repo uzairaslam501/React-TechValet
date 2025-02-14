@@ -170,14 +170,26 @@ const PreviewProfile = () => {
                   <CardBody
                     style={{
                       height: "245px",
+                      overflow: "scroll",
                     }}
                   >
                     <ul className="list">
                       <li>
+                        <span className="fw-bold me-1">
+                          Valet's Current Time:
+                        </span>
+
+                        <div>
+                          <span className="text-success">
+                            {userRecords?.currentTime}
+                          </span>
+                        </div>
+                      </li>
+                      <li className="my-2">
                         <span className="fw-bold me-1">From:</span>
                         <span>{userRecords?.country}</span>
                       </li>
-                      <li className="my-2">
+                      <li>
                         <span className="fw-bold"> Languages: </span>
                         <div>
                           {userRecords?.language
@@ -190,10 +202,10 @@ const PreviewProfile = () => {
                               return matchedLanguage ? (
                                 <Badge
                                   key={index} // Add a unique key
-                                  className="bg-secondary"
+                                  className="bg-secondary mx-1 my-1"
                                   style={{
-                                    padding: "4px 8px",
-                                    fontSize: "12px",
+                                    padding: "6px 12px",
+                                    fontSize: "15px",
                                   }}
                                 >
                                   <span className="fw-normal">
@@ -202,17 +214,6 @@ const PreviewProfile = () => {
                                 </Badge>
                               ) : null; // Avoid rendering empty elements
                             })}
-                        </div>
-                      </li>
-                      <li>
-                        <span className="fw-bold me-1">
-                          Valet's Current Time:
-                        </span>
-
-                        <div>
-                          <span className="text-success">
-                            {userRecords?.currentTime}
-                          </span>
                         </div>
                       </li>
                     </ul>

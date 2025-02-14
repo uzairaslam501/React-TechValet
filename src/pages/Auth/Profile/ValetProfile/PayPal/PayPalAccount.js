@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Form, InputGroup, ButtonGroup } from "react-bootstrap";
+import {
+  Card,
+  Button,
+  Form,
+  InputGroup,
+  ButtonGroup,
+  Spinner,
+} from "react-bootstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
@@ -9,10 +16,15 @@ import {
   getRecordById,
 } from "../../../../../redux/Actions/globalActions";
 import DeleteComponent from "../../../../../components/Custom/DeleteDialoge/DeleteDialoge";
+import {
+  paypalAccountStateUpdate,
+  valetProfileComplitionStateUpdate,
+} from "../../../../../redux/Reducers/authSlice";
 
 const PayPalAccount = ({ userRecord }) => {
   const dispatch = useDispatch();
   const [paypalEmail, setPayPalEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState(null);
 
@@ -43,13 +55,22 @@ const PayPalAccount = ({ userRecord }) => {
   };
 
   const confirmDelete = (userId) => {
+    setIsLoading(true);
     dispatch(
       deleteRecords(`/PayPalGateWay/Delete/${encodeURIComponent(userId)}`)
     )
-      .then(() => {
+      .then((response) => {
         setPayPalEmail("");
+        console.log("AccountCompletion ::", response?.payload);
+        dispatch(paypalAccountStateUpdate(false));
+        dispatch(valetProfileComplitionStateUpdate("AccountCompletion"));
+
+        setIsLoading(false);
       })
-      .catch((error) => console.log("Delete Skills Error", error));
+      .catch((error) => {
+        console.log("Delete Skills Error", error);
+        setIsLoading(false);
+      });
   };
 
   const { values, touched, errors, handleBlur, handleChange, handleSubmit } =
@@ -61,15 +82,18 @@ const PayPalAccount = ({ userRecord }) => {
       enableReinitialize: true,
       onSubmit: (values) => {
         try {
+          setIsLoading(true);
           dispatch(
             addPayPalAccount({ userId: userRecord?.userEncId, paypal: values })
           ).then((response) => {
             if (response?.payload) {
               setPayPalEmail(response?.payload?.payPalEmail);
             }
+            setIsLoading(false);
           });
         } catch (error) {
           console.error("Error:", error);
+          setIsLoading(false);
         }
       },
     });
@@ -112,6 +136,7 @@ const PayPalAccount = ({ userRecord }) => {
                   variant="link"
                   className="text-danger"
                   onClick={deletePayPalAccount}
+                  disabled={isLoading}
                 >
                   Remove Account!
                 </Button>
@@ -138,11 +163,22 @@ const PayPalAccount = ({ userRecord }) => {
                     type="button"
                     variant="outline-secondary"
                     onClick={() => setPayPalEmail("")}
+                    size="sm"
+                    disabled={isLoading}
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" variant="success">
-                    Add
+                  <Button
+                    type="submit"
+                    variant="success"
+                    size="sm"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <Spinner animation="border" size="sm" />
+                    ) : (
+                      "Add"
+                    )}
                   </Button>
                 </ButtonGroup>
               </Form>

@@ -45,7 +45,11 @@ export const userAccountActivation = createAsyncThunk(
     const { token, expired } = getToken(getState);
     try {
       const type =
-        userRecord.isActive === "AccountOnHold" ? "RemoveFromHold" : "";
+        userRecord.isActive === "AccountOnHold"
+          ? "RemoveFromHold"
+          : userRecord.isActive === "AdminVerificationPending"
+          ? "AdminVerificationPending"
+          : "";
 
       const response = await api.put(
         `/Admin/VerifyUserAccount/${String(

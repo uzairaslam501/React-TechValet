@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   handleApiError,
@@ -6,7 +7,7 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { getAuthUserId, getToken } from "../../utils/_apiConfig";
-import { toast } from "react-toastify";
+import { stripeAccountStateUpdate } from "../Reducers/authSlice";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -51,6 +52,7 @@ export const getAccountVerified = createAsyncThunk(
       if (message) {
         toast.success(message);
       }
+      dispatch(stripeAccountStateUpdate(true));
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);

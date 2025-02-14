@@ -179,25 +179,16 @@ const StripeAccount = ({ userRecord }) => {
                   </Button>
                 </Col>
               ) : !isBankAccountAdded ? (
-                <Col xl={6} lg={6} md={6} sm={6} xs={6}>
+                <Col xl={12} lg={12} md={6} sm={12} xs={12}>
                   <BankDetails userRecord={userRecord} stripeId={stripeId} />
                 </Col>
               ) : (
-                <Col xl={6} lg={6} md={6} sm={6} xs={6}>
+                <Col xl={12} lg={12} md={6} sm={12} xs={12}>
                   <Button variant="link" className="text-success pl-0">
                     Verified!
                   </Button>
                 </Col>
               )}
-              <Col xl={6} lg={6} md={6} sm={6} xs={6} className="text-end">
-                <Button
-                  variant="link p-0"
-                  onClick={deleteStripeAccount}
-                  className="text-danger"
-                >
-                  Remove Account!
-                </Button>
-              </Col>
             </Row>
           ) : (
             <p>
@@ -251,7 +242,6 @@ const StripeAccount = ({ userRecord }) => {
               text: "Cancel",
               className: "btn-secondary-secondary",
               onClick: hideModal,
-              loader: buttonDisabled,
             },
             {
               text: "Connect",

@@ -1,12 +1,13 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import {
   handleApiError,
   processApiResponse,
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { getToken } from "../../utils/_apiConfig";
-import { toast } from "react-toastify";
+import { paypalAccountStateUpdate } from "../Reducers/authSlice";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -152,6 +153,9 @@ export const addPayPalAccount = createAsyncThunk(
       const { data, message } = processApiResponse(response, dispatch, expired);
       if (message) {
         toast.success(message);
+      }
+      if (data?.isPayPalAuthorized === true) {
+        dispatch(paypalAccountStateUpdate(data?.isPayPalAuthorized));
       }
       return data;
     } catch (error) {
