@@ -84,7 +84,23 @@ const OrderDelivery = ({
     dispatch(deliverOrder(payload)).then((response) => {
       if (response?.payload) {
         const newMessage = response.payload;
-        setActiveChat((prev) => [...prev, newMessage]);
+        setActiveChat((prev) => {
+          const messageDate = newMessage?.messageDate;
+
+          // Clone previous state
+          const newMessages = { ...prev };
+
+          if (newMessages[messageDate]) {
+            newMessages[messageDate] = [
+              ...newMessages[messageDate],
+              newMessage,
+            ];
+          } else {
+            newMessages[messageDate] = [newMessage];
+          }
+
+          return newMessages;
+        });
         handleSignalRCall(newMessage);
       }
       setSendLoader(false);
@@ -96,7 +112,23 @@ const OrderDelivery = ({
     dispatch(orderRevision(payload)).then((response) => {
       if (response?.payload) {
         const newMessage = response.payload;
-        setActiveChat((prev) => [...prev, newMessage]);
+        setActiveChat((prev) => {
+          const messageDate = newMessage?.messageDate;
+
+          // Clone previous state
+          const newMessages = { ...prev };
+
+          if (newMessages[messageDate]) {
+            newMessages[messageDate] = [
+              ...newMessages[messageDate],
+              newMessage,
+            ];
+          } else {
+            newMessages[messageDate] = [newMessage];
+          }
+
+          return newMessages;
+        });
         handleSignalRCall(newMessage);
       }
       setSendLoader(false);
@@ -120,7 +152,20 @@ const OrderDelivery = ({
       // dispatch(orderRevision(extraPayload)).then((response) => {
       //   if (response?.payload) {
       //     const newMessage = response.payload;
-      //     setActiveChat((prev) => [...prev, newMessage]);
+      //     setActiveChat((prev) => {
+      //   const messageDate = newMessage?.messageDate;
+      //   // Clone previous state
+      //   const newMessages = { ...prev };
+      //   if (newMessages[messageDate]) {
+      //     newMessages[messageDate] = [
+      //       ...newMessages[messageDate],
+      //       newMessage,
+      //     ];
+      //   } else {
+      //     newMessages[messageDate] = [newMessage];
+      //   }
+      //   return newMessages;
+      // });
       //     handleSignalRCall(newMessage);
       //   }
       //   setSendLoader(false);
