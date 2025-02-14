@@ -318,6 +318,7 @@ const Education = ({ userRecord, preview = false }) => {
                         value={values.startDate}
                         placeholder="Degree Name"
                         isInvalid={touched.startDate && !!errors.startDate}
+                        onKeyDown={(e) => e.preventDefault()}
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.startDate}
@@ -338,6 +339,7 @@ const Education = ({ userRecord, preview = false }) => {
                         value={values.endDate}
                         placeholder="End Name"
                         isInvalid={touched.endDate && !!errors.endDate}
+                        onKeyDown={(e) => e.preventDefault()}
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.endDate}

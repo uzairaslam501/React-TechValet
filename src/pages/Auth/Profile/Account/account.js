@@ -267,6 +267,7 @@ const Account = ({ userRecord }) => {
                     onBlur={handleBlur("birthDate")}
                     isInvalid={!!errors.birthDate && touched.birthDate}
                     max={calculateMaxDate(18).toISOString().split("T")[0]}
+                    onKeyDown={(e) => e.preventDefault()}
                   />
                 </FormGroup>
               </Col>

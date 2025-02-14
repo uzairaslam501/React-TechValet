@@ -361,6 +361,7 @@ const RequestService = () => {
                                       !!errors.fromDateTime &&
                                       touched.fromDateTime
                                     }
+                                    onKeyDown={(e) => e.preventDefault()}
                                   />
                                   {selectedTime.length === 0 && (
                                     <div className="text-danger">
@@ -394,6 +395,7 @@ const RequestService = () => {
                                     isInvalid={
                                       !!errors.toDateTime && touched.toDateTime
                                     }
+                                    onKeyDown={(e) => e.preventDefault()}
                                   />
                                   {touched.toDateTime && errors.toDateTime && (
                                     <div className="text-danger">

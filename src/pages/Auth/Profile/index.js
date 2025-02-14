@@ -83,15 +83,15 @@ const UserProfile = () => {
   }, []);
 
   useEffect(() => {
-    if (
-      (userAuth &&
-        userAuth?.role === "Valet" &&
-        userAuth.isStripeAccountComplete === false) ||
-      userAuth.isPaypalAccountComplete === false ||
-      userAuth.isProfileComplete === false ||
-      userAuth.isSkillsComplete === false
-    ) {
-      setShowModal(true);
+    if (userAuth && userAuth?.role === "Valet") {
+      if (
+        userAuth.isStripeAccountComplete === false ||
+        userAuth.isPaypalAccountComplete === false ||
+        userAuth.isProfileComplete === false ||
+        userAuth.isSkillsComplete === false
+      ) {
+        setShowModal(true);
+      }
     }
   }, []);
 

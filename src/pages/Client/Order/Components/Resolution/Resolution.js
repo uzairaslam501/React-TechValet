@@ -186,6 +186,7 @@ const OrderResolution = ({
                   min={disabledPreviousDateTime()}
                   max={setDateTimeRestrictions("max", validDateRange.end)}
                   isInvalid={!extensionDate}
+                  onKeyDown={(e) => e.preventDefault()}
                 />
                 <Form.Control.Feedback type="invalid">
                   This field is required.
