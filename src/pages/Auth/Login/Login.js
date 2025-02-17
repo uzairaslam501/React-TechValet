@@ -171,7 +171,9 @@ const UserLogin = () => {
             <Form onSubmit={formikSubmit}>
               <input type="hidden" name="way" value="user" />
               <Form.Group className="mb-2">
-                <Form.Label>Email / Username</Form.Label>
+                <Form.Label>
+                  Email / Username <span className="text-danger">*</span>
+                </Form.Label>
                 <InputGroup>
                   <Form.Control
                     type="text"
@@ -208,13 +210,13 @@ const UserLogin = () => {
 
               <div className="d-flex justify-content-between">
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                  <Form.Check
+                  {/* <Form.Check
                     type="checkbox"
                     label="Remember me"
                     className="text-dark"
-                  />
+                  /> */}
                 </Form.Group>
-                <NavLink to="/forgot-password" className="text-dark">
+                <NavLink to="/forgot-password" className="text-dark mb-3">
                   Forgot password?
                 </NavLink>
               </div>

@@ -20,6 +20,7 @@ import {
   paypalAccountStateUpdate,
   valetProfileComplitionStateUpdate,
 } from "../../../../../redux/Reducers/authSlice";
+import { checkIfStringIsValid } from "../../../../../utils/_helpers";
 
 const PayPalAccount = ({ userRecord }) => {
   const dispatch = useDispatch();
@@ -99,7 +100,9 @@ const PayPalAccount = ({ userRecord }) => {
     });
 
   useEffect(() => {
-    getPayPalAccount();
+    if (checkIfStringIsValid(userRecord?.userEncId)) {
+      getPayPalAccount();
+    }
   }, [paypalEmail]);
 
   return (

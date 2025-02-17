@@ -393,7 +393,7 @@ function CustomTable({
           <Button
             variant="primary-secondary"
             onClick={handleNextPage}
-            disabled={page === totalPages - 1}
+            disabled={totalPages <= 0 || page == totalPages - 1}
             className="m-1"
           >
             <i className="bi bi-arrow-right"></i>

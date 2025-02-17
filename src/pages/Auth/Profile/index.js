@@ -107,7 +107,7 @@ const UserProfile = () => {
     ) {
       setValetProfileComplete();
     }
-  }, []);
+  }, [userAuth]);
 
   const setValetProfileComplete = async () => {
     try {

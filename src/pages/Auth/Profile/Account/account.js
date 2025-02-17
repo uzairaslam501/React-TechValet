@@ -132,23 +132,11 @@ const Account = ({ userRecord }) => {
           <Card.Body>
             <div className="border-bottom mb-3">
               <Row>
-                <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                   <h4>
                     Welcome <b>{values?.userName || "User"}!</b>
                   </h4>
                 </Col>
-                {userRecord && userRecord?.role === "Valet" && (
-                  <Col
-                    xl={6}
-                    lg={6}
-                    md={6}
-                    sm={12}
-                    xs={12}
-                    className="text-end"
-                  >
-                    <Slots userRecord={userRecord} />
-                  </Col>
-                )}
               </Row>
               <Row>
                 <Col>
@@ -350,7 +338,7 @@ const Account = ({ userRecord }) => {
                   </FormLabel>
                   <Form.Control
                     as="select"
-                    value={userRecord?.country || ""}
+                    value={values.country}
                     onChange={(e) => {
                       const selectedCountry = e.target.value;
                       setFieldValue("country", selectedCountry);
@@ -393,10 +381,10 @@ const Account = ({ userRecord }) => {
                   </FormLabel>
                   <Form.Control
                     as="select"
-                    value={userRecord?.timezone || ""}
+                    value={values.timezone}
                     onChange={(e) => {
                       const selectedZone = e.target.value;
-                      setFieldValue("timeZone", selectedZone);
+                      setFieldValue("timezone", selectedZone);
                     }}
                   >
                     <option value="" disabled>

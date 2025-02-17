@@ -249,7 +249,7 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
                   borderTop: "2px solid #eee",
                 }}
               >
-                <Col
+                {/* <Col
                   xl={6}
                   lg={6}
                   md={6}
@@ -274,9 +274,13 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
                       </label>
                     </div>
                   </div>
-                </Col>
-                <Col xl={6} lg={6} md={6} sm={6} xs={6} className="p-0">
-                  <div className="custom-control custom-switch my-2">
+                </Col> */}
+
+                <Col xl={12} lg={12} md={12} sm={12} xs={12} className="p-2">
+                  <div
+                    className="custom-control custom-switch my-2"
+                    style={{ display: "flex", justifyContent: "space-around" }}
+                  >
                     <label>{availability ? "Available" : "Unavailable"}</label>
                     <div>
                       <label className="switch">
