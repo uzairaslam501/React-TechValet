@@ -181,7 +181,7 @@ export const orderRevision = createAsyncThunk(
   }
 );
 
-// Handle deliverOrderAccept
+// Handle deliverOrderAcce pt
 export const deliverOrderAccept = createAsyncThunk(
   "order/deliverOrderAccept",
   async (obj, { rejectWithValue, getState, dispatch }) => {
@@ -190,6 +190,29 @@ export const deliverOrderAccept = createAsyncThunk(
     try {
       const response = await api.post(
         `/Message/AcceptOrder/${obj.orderId}`,
+        obj,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
+export const deliverPaypalOrderAccept = createAsyncThunk(
+  "order/deliverPaypalOrderAccept",
+  async (obj, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+
+    try {
+      const response = await api.post(
+        `/Message/PaypalAcceptOrder/${obj.orderId}`,
         obj,
         {
           headers: {
