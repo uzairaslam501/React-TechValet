@@ -102,6 +102,7 @@ const StripeAccount = ({ userRecord }) => {
           if (response?.payload) {
             window.open(response?.payload[0], "_self");
           }
+          setButtonDisabled(false);
         });
       } catch (error) {
         console.error("Error:", error);

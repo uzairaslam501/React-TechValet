@@ -51,7 +51,8 @@ const CalenderOrders = ({ id, pricePerHour }) => {
 
   const handleDateClick = (selectedDate, view) => {
     setSelectedDateTime(formatDateTimeForInput(selectedDate)); // Store the clicked datetime
-    if (view !== "dayGridMonth") setShowOrderDialogue(true); // Open the dialogue when a date is clicked
+    //if (view !== "dayGridMonth") setShowOrderDialogue(true); // Open the dialogue when a date is clicked
+    console.log(view, formatDateTimeForInput(selectedDate));
   };
 
   const fetchOrders = async () => {
@@ -127,18 +128,14 @@ const CalenderOrders = ({ id, pricePerHour }) => {
       <MyCalendar
         events={orderRecords}
         permissions={{
-          canViewDetails:
-            userAuth && userAuth.role === "Customer" ? true : false,
-          canEditEvents: userAuth && userAuth.role === "Customer" && false,
-          canNavigate: userAuth && userAuth.role === "Customer" ? true : false,
-          canChangeView:
-            userAuth && userAuth.role === "Customer" ? true : false,
-          canDateClick: userAuth && userAuth.role === "Customer" ? true : false,
+          canViewDetails: false,
+          canEditEvents: false,
+          canNavigate: true,
+          canChangeView: true,
+          canDateClick: false,
         }}
         validRange={validRange}
-        handleDateClick={
-          userAuth && userAuth.role === "Customer" && handleDateClick
-        }
+        handleDateClick={handleDateClick}
       />
       {showOrderDialogue && (
         <OfferDialogue

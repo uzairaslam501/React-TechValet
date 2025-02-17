@@ -274,3 +274,17 @@ export const scrollToBottom = (id) => {
   var area = document.querySelector(`#${id}`);
   area.scrollTop = area.scrollHeight;
 };
+
+export const checkIfStringIsValid = (value) => {
+  const invalidValues = [
+    null,
+    undefined,
+    "",
+    "null",
+    "NULL",
+    "undefined",
+    "Undefined",
+    "UNDEFINED",
+  ];
+  return !invalidValues.includes(value);
+};
