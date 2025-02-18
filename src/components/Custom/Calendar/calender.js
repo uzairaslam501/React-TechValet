@@ -53,6 +53,7 @@ const MyCalendar = ({
         navLinks={permissions.canNavigate}
         selectable={permissions.canEditEvents}
         validRange={validRange}
+        dayMaxEvents={4}
         dateClick={(info) => {
           if (permissions.canDateClick) {
             info.view.calendar.gotoDate(info.date);
@@ -66,6 +67,12 @@ const MyCalendar = ({
               handleDateClick(info.dateStr);
             },
           },
+        }}
+        displayEventTime={false} // Hide time from events
+        eventTimeFormat={{
+          hour: "numeric",
+          minute: "2-digit",
+          meridiem: false, // Ensures the time format doesn't appear
         }}
         eventMouseEnter={(info) => {
           if (permissions.canViewDetails) {

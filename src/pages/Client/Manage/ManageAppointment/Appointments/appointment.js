@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { Card, CardBody, Col, Container, Row } from "react-bootstrap";
 import Dialogue from "../../../../../components/Custom/Modal/modal";
+import { deleteRecords } from "../../../../../redux/Actions/globalActions";
 
 const Appointment = ({ onComplete }) => {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ const Appointment = ({ onComplete }) => {
     {
       id: 1,
       title: "Delete",
-      onClick: (row) => handleOpen(row.id),
+      onClick: (row) => handleOpen(row.encId),
       variant: "outline-danger",
       icon: "bi bi-trash",
     },
@@ -57,8 +58,18 @@ const Appointment = ({ onComplete }) => {
 
   const handleDelete = async () => {
     setDeleteLoader(true);
-    const endpoint = `User/DeleteRecord?id=${isDelete}`;
-    handleClose();
+    const endpoint = `Customer/DeleteRequest/${encodeURIComponent(isDelete)}`;
+    dispatch(deleteRecords(endpoint))
+      .then((response) => {
+        handleClose();
+        fetchRecords(0, pageLength);
+      })
+      .catch((error) => {
+        console.log(
+          " error from Admin side on userlist while deleting the record :: ",
+          error
+        );
+      });
   };
 
   const onView = (row) => {
@@ -91,7 +102,7 @@ const Appointment = ({ onComplete }) => {
     },
   ];
 
-  const fetchUsers = async (
+  const fetchRecords = async (
     pageNumber = 0,
     pageLength = 5,
     sortColumn = "",
@@ -126,7 +137,7 @@ const Appointment = ({ onComplete }) => {
   };
 
   useEffect(() => {
-    fetchUsers(0, pageLength);
+    fetchRecords(0, pageLength);
   }, [pageLength]);
 
   return (
@@ -143,7 +154,7 @@ const Appointment = ({ onComplete }) => {
                   totalRecords={totalRecord}
                   pageLength={pageLength}
                   buttons={buttons}
-                  onPageChange={fetchUsers}
+                  onPageChange={fetchRecords}
                   onPageLengthChange={setPageLength}
                   loader={loader}
                   searchFunctionality={false}

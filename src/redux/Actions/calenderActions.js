@@ -47,7 +47,7 @@ export const profileOrdersPreview = createAsyncThunk(
   async (userId, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     const role = getUserRole(getState);
-    const currentDate = getFirstAndLastDayOfMonth().currentDay;
+    const currentDate = getFirstAndLastDayOfMonth().monthStart;
     try {
       const response = await api.get(
         `/User/order-events/${encodeURIComponent(

@@ -132,7 +132,11 @@ class SignalRService {
 
     this.connection.on("SendOrderMessage", (model, senderId, receiverId) => {
       try {
-        if (receiverId === userId) {
+        if (model?.isDelivered === "2") {
+          if (receiverId === userId || senderId === userId) {
+            this.broadcastOrderMessage(senderId, receiverId, model);
+          }
+        } else if (receiverId === userId) {
           this.broadcastOrderMessage(senderId, receiverId, model);
         }
       } catch (error) {

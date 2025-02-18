@@ -215,6 +215,14 @@ const ClientTopbar = () => {
                     <NavDropdown.Item as={NavLink} to="/update-password">
                       Update Password
                     </NavDropdown.Item>
+                    {userAuth?.role === "Admin" && (
+                      <>
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item as={NavLink} to="/dashboard">
+                          Admin Dashboard
+                        </NavDropdown.Item>
+                      </>
+                    )}
                     <NavDropdown.Divider />
                     <NavDropdown.Item onClick={handleLogout}>
                       Logout

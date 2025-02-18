@@ -42,10 +42,7 @@ const CalenderOrders = ({ id, pricePerHour }) => {
   });
 
   const validRange = {
-    start:
-      userAuth && userAuth.role === "Customer"
-        ? getFirstAndLastDayOfMonth().currentDay
-        : getFirstAndLastDayOfMonth().monthStart,
+    start: getFirstAndLastDayOfMonth().monthStart,
     end: getFirstAndLastDayOfMonth().monthEnd,
   };
 
