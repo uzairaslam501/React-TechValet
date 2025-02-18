@@ -337,7 +337,7 @@ const ChatContainer = ({
                           : "#111111",
                     }}
                   >
-                    {message.messageTime}
+                    {message.time}
                   </div>
                 </div>
               </li>

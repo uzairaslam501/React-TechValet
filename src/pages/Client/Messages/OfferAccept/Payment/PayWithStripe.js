@@ -6,7 +6,11 @@ import { createStripeCharge } from "../../../../../redux/Actions/stripeActions";
 import { useNavigate } from "react-router";
 import "./style.css";
 
-const PayWithStripe = ({ selectedOfferValues }) => {
+const PayWithStripe = ({
+  selectedOfferValues,
+  setButtonDisabled,
+  buttonDisabled,
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -44,17 +48,21 @@ const PayWithStripe = ({ selectedOfferValues }) => {
   };
 
   const handleSubmitPayment = (values) => {
-    console.log("Payment", values);
+    setButtonDisabled(true);
     try {
       dispatch(createStripeCharge(values)).then((response) => {
-        const values = {
-          id: response?.payload,
-          type: "Order",
-        };
-        navigate("/payment-success", { state: values });
+        if (response?.payload) {
+          const values = {
+            id: response?.payload,
+            type: "Order",
+          };
+          navigate("/payment-success", { state: values });
+        }
+        setButtonDisabled(false);
       });
     } catch (error) {
       console.log("handle Submit Payment", error);
+      setButtonDisabled(false);
     } finally {
       setLoading(false);
     }
@@ -66,7 +74,7 @@ const PayWithStripe = ({ selectedOfferValues }) => {
     <Button
       className="w-100 my-2"
       style={{ backgroundColor: "#36A5E5", borderColor: "#36A5E5" }}
-      disabled={loading}
+      disabled={loading || buttonDisabled}
     >
       <StripeCheckout
         name="Order"

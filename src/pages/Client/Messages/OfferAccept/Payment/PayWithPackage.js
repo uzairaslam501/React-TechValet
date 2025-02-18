@@ -20,6 +20,8 @@ const PayWithPackage = ({
   selectedOfferValues,
   fetchMessages,
   setShowAcceptOrderDialogue,
+  setButtonDisabled,
+  buttonDisabled,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -59,6 +61,7 @@ const PayWithPackage = ({
   const handleCheckout = () => {
     setLoading(true);
     setShowModal(true);
+    setButtonDisabled(true);
 
     dispatch(getUserPackageByUserId())
       .then((response) => {
@@ -73,6 +76,7 @@ const PayWithPackage = ({
   const handleCloseModal = () => {
     setLoading(false);
     setShowModal(false);
+    setButtonDisabled(false);
     setPackageSubmitButton(false);
   };
 
@@ -142,6 +146,7 @@ const PayWithPackage = ({
       <Button
         onClick={handleCheckout}
         className="btn-secondary-secondary w-100"
+        disabled={buttonDisabled}
       >
         Pay With Package
       </Button>

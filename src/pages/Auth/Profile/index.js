@@ -152,7 +152,7 @@ const UserProfile = () => {
                 <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                   <UserProfileImage userRecord={userRecords} />
                 </Col>
-                {userAuth?.role !== "Seo" &&
+                {/* {userAuth?.role !== "Seo" &&
                   userAuth?.isActive === "Active" && (
                     <Col
                       xl={12}
@@ -185,7 +185,7 @@ const UserProfile = () => {
                         </Card.Body>
                       </Card>
                     </Col>
-                  )}
+                  )} */}
                 {columns && (
                   <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mt-4">
                     <SkillsAndEndorsements userRecord={userRecords} />
@@ -216,9 +216,9 @@ const UserProfile = () => {
                     <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                       <StripeAccount userRecord={userRecords} />
                     </Col>
-                    <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                    {/* <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                       <Services userRecord={userRecords} />
-                    </Col>
+                    </Col> */}
                   </Row>
                 </Col>
                 <Col

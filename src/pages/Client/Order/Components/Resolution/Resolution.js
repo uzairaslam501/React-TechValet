@@ -166,7 +166,9 @@ const OrderResolution = ({
             className="w-100"
             variant="outline-danger"
             size="sm"
-            disabled={showSpinner}
+            disabled={
+              showSpinner || (orderDetails && orderDetails?.isDelivered === "2")
+            }
           >
             Cancel Order
           </Button>

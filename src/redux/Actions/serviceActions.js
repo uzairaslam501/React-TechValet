@@ -7,6 +7,7 @@ import {
 import { baseUrl } from "../../utils/_envConfig";
 import { getToken } from "../../utils/_apiConfig";
 import { toast } from "react-toastify";
+import { setLoading } from "../Reducers/loadingSlice";
 
 const api = axios.create({
   baseURL: baseUrl,
@@ -128,6 +129,7 @@ export const getUserEarnings = createAsyncThunk(
   async (userId, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
+      dispatch(setLoading({ key: "serviceLoading", value: true }));
       const response = await api.get(
         `User/get-earnings/${encodeURIComponent(userId)}`,
         {
@@ -137,8 +139,10 @@ export const getUserEarnings = createAsyncThunk(
         }
       );
       const { data } = processApiResponse(response, dispatch, expired);
+      dispatch(setLoading({ key: "serviceLoading", value: false }));
       return data;
     } catch (error) {
+      dispatch(setLoading({ key: "serviceLoading", value: false }));
       handleApiError(error, dispatch, expired);
     }
   }

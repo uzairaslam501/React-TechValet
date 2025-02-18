@@ -6,12 +6,15 @@ import { postCheckoutForOrder } from "../../../../../redux/Actions/paypalActions
 const PayWithPaypal = ({
   selectedOfferValues,
   selectedOfferPayPalValues,
+  setButtonDisabled,
+  buttonDisabled,
   setShowAcceptOrderDialogue,
 }) => {
   const dispatch = useDispatch();
   const { userAuth } = useSelector((state) => state?.authentication);
+
   let initialValues = {};
-  console.log(selectedOfferPayPalValues);
+
   if (selectedOfferValues) {
     initialValues = {
       ClientId: parseInt(userAuth?.id, 10),
@@ -44,6 +47,7 @@ const PayWithPaypal = ({
 
   const handleCheckout = () => {
     try {
+      setButtonDisabled(true);
       const numericOfferPrices =
         selectedOfferValues?.offerPrice ||
         selectedOfferValues?.totalWorkCharges;
@@ -59,14 +63,18 @@ const PayWithPaypal = ({
         if (response?.payload?.url) {
           window.location.href = response?.payload?.url;
         }
+        setButtonDisabled(false);
       });
-    } catch (error) {}
+    } catch (error) {
+      setButtonDisabled(false);
+    }
   };
 
   return (
     <Button
       onClick={() => handleCheckout()}
       className="btn-primary-secondary w-100"
+      disabled={buttonDisabled}
     >
       Pay With Paypal
     </Button>

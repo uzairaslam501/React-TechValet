@@ -23,6 +23,7 @@ import DeleteComponent from "../../../../../components/Custom/DeleteDialoge/Dele
 const Services = ({ userRecord, preview = false }) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [showLoader, setShowLoader] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [userServices, setUserServices] = useState([]);
   const [serviceToDelete, setServiceToDelete] = useState(null);
@@ -109,6 +110,7 @@ const Services = ({ userRecord, preview = false }) => {
     }),
     onSubmit: (values) => {
       try {
+        setShowLoader(true);
         if (values.serviceId) {
           // Update existing service
           dispatch(updateServicesOrExperience(values))
@@ -124,9 +126,11 @@ const Services = ({ userRecord, preview = false }) => {
                 );
                 handleHideServiceForm();
               }
+              setShowLoader(false);
             })
             .catch((error) => {
               console.error("Error:", error);
+              setShowLoader(false);
             });
         } else {
           // Add new service
@@ -135,8 +139,10 @@ const Services = ({ userRecord, preview = false }) => {
             handleHideServiceForm();
           });
         }
+        setShowLoader(false);
       } catch (error) {
         console.error("Error:", error);
+        setShowLoader(false);
       }
     },
   });
@@ -196,13 +202,20 @@ const Services = ({ userRecord, preview = false }) => {
                       <Button
                         variant="danger"
                         className="w-100"
+                        size="sm"
                         onClick={handleHideServiceForm}
                       >
                         Cancel
                       </Button>
                     </Col>
                     <Col xs={6}>
-                      <Button type="submit" variant="success" className="w-100">
+                      <Button
+                        type="submit"
+                        variant="success"
+                        className="w-100"
+                        size="sm"
+                        disabled={showLoader}
+                      >
                         Submit
                       </Button>
                     </Col>

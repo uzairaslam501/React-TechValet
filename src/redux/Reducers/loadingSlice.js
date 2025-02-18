@@ -13,6 +13,7 @@ const initialState = {
   paypalLoading: false,
   stripeLoading: false,
   seoLoading: false,
+  serviceLoading: false,
 };
 
 const loadingSlice = createSlice({

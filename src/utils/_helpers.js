@@ -280,6 +280,7 @@ export const checkIfStringIsValid = (value) => {
     null,
     undefined,
     "",
+    " ",
     "null",
     "NULL",
     "undefined",
@@ -287,4 +288,23 @@ export const checkIfStringIsValid = (value) => {
     "UNDEFINED",
   ];
   return !invalidValues.includes(value);
+};
+
+export const parseStringToFloat = (value) => {
+  const invalidValues = [
+    null,
+    undefined,
+    "",
+    " ",
+    "null",
+    "NULL",
+    "undefined",
+    "Undefined",
+    "UNDEFINED",
+  ];
+  if (invalidValues.includes(value)) {
+    return 0;
+  } else {
+    return parseFloat(value);
+  }
 };

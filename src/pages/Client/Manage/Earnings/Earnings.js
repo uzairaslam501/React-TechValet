@@ -1,14 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  Container,
-  Row,
-  Col,
-  Nav,
-  Tab,
-  Card,
-  Button,
-  Spinner,
-} from "react-bootstrap";
+import { Container, Row, Col, Card } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import {
@@ -18,6 +9,7 @@ import {
 import CustomTable from "../../../../components/Custom/Datatable/table";
 import { useNavigate } from "react-router";
 import EarningsDashboard from "./EarningsDashboard";
+import { parseStringToFloat } from "../../../../utils/_helpers";
 
 const headers = [
   { id: "0", label: "Action", column: "Action" },
@@ -59,27 +51,26 @@ const Earnings = () => {
   const [totalRecord, setTotalRecords] = useState(0);
   const { userAuth } = useSelector((state) => state?.authentication);
 
-  // const earningsData = {
-  //   "Total Earnings": earnings?.payPalEarning?.stripeTotalBalance,
-  //   "Completed Orders": earnings?.payPalEarning?.stripeCompletedOrderBalance,
-  //   "Available for Withdrawal": earnings?.balanceAvailable,
-  // };
-
-  // const earningsPaypalData = {
-  //   "Total Earnings": earnings?.payPalEarning?.totalEarnedAmount,
-  //   "Pending Clearance": earnings?.payPalEarning?.pendingClearance,
-  //   "Available for Withdrawal": earnings?.payPalEarning?.availableIncomeForWithDrawl,
-  // };
   const earningsData = {
-    "Total Earnings": 863.99,
-    "Completed Orders": 1256.99,
-    "Available for Withdrawal": 210.63,
+    "Total Earnings": parseStringToFloat(
+      earnings?.payPalEarning?.stripeTotalBalance
+    ),
+    "Completed Orders": parseStringToFloat(
+      earnings?.payPalEarning?.stripeCompletedOrderBalance
+    ),
+    "Available for Withdrawal": parseStringToFloat(earnings?.balanceAvailable),
   };
 
   const earningsPaypalData = {
-    "Total Earnings": 863.99,
-    "Pending Clearance": 1256.99,
-    "Available for Withdrawal": 210.63,
+    "Total Earnings": parseStringToFloat(
+      earnings?.payPalEarning?.totalEarnedAmount
+    ),
+    "Pending Clearance": parseStringToFloat(
+      earnings?.payPalEarning?.pendingClearance
+    ),
+    "Available for Withdrawal": parseStringToFloat(
+      earnings?.payPalEarning?.availableIncomeForWithDrawl
+    ),
   };
 
   const buttons = [
