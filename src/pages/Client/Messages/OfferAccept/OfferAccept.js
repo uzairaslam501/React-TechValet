@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import Dialogue from "../../../../components/Custom/Modal/modal";
 import PayWithPaypal from "./Payment/PayWithPaypal";
@@ -13,6 +13,7 @@ const OfferAccept = ({
   fetchMessages,
   setShowAcceptOrderDialogue,
 }) => {
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const initialStripeValues = {
@@ -43,14 +44,20 @@ const OfferAccept = ({
             selectedOfferValues={selectedOfferValues}
             fetchMessages={fetchMessages}
             setShowAcceptOrderDialogue={setShowAcceptOrderDialogue}
+            setButtonDisabled={setButtonDisabled}
+            buttonDisabled={buttonDisabled}
           />
           <PayWithStripe
             selectedOfferValues={initialStripeValues}
             fetchMessages={fetchMessages}
+            setButtonDisabled={setButtonDisabled}
+            buttonDisabled={buttonDisabled}
           />
           <PayWithPaypal
             selectedOfferValues={selectedOfferValues}
             fetchMessages={fetchMessages}
+            setButtonDisabled={setButtonDisabled}
+            buttonDisabled={buttonDisabled}
           />
         </Container>
       }

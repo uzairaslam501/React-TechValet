@@ -275,27 +275,26 @@ const OrderDetail = () => {
 
     const handleIncomingData = (senderId, receiverId, model) => {
       console.log(model);
-      if (
-        userAuth?.id === receiverId &&
-        String(params?.id) === String(model.orderEncId)
-      ) {
-        setActiveChat((prev) => {
-          const messageDate = model.messageDate;
-          const newMessages = { ...prev };
+      if (String(params?.id) === String(model.orderEncId)) {
+        if (userAuth?.id === receiverId) {
+          setActiveChat((prev) => {
+            const messageDate = model.messageDate;
+            const newMessages = { ...prev };
 
-          if (newMessages[messageDate]) {
-            const exists = newMessages[messageDate].some(
-              (msg) => msg.id === model.id
-            );
-            if (!exists) {
-              newMessages[messageDate] = [...newMessages[messageDate], model];
+            if (newMessages[messageDate]) {
+              const exists = newMessages[messageDate].some(
+                (msg) => msg.id === model.id
+              );
+              if (!exists) {
+                newMessages[messageDate] = [...newMessages[messageDate], model];
+              }
+            } else {
+              newMessages[messageDate] = [model];
             }
-          } else {
-            newMessages[messageDate] = [model];
-          }
 
-          return newMessages;
-        });
+            return newMessages;
+          });
+        }
         setOrderDetails((prev) => ({
           ...prev,
           isDelivered: model.isDelivered,

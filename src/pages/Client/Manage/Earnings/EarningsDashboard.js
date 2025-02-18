@@ -155,7 +155,7 @@ const EarningsDashboard = ({
         className="p-2 border border-gray-300 rounded"
       >
         <option value="Bar">Bar Chart</option>
-        <option value="Pie">Pie Chart</option>
+        {/* <option value="Pie">Pie Chart</option> */}
         <option value="Line">Line Chart</option>
       </select>
 
@@ -167,7 +167,7 @@ const EarningsDashboard = ({
           sm={12}
           xs={12}
           style={{
-            height: "400px",
+            height: "300px",
           }}
           className="align-items-center pt-5"
         >

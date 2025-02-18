@@ -118,7 +118,7 @@ const Password = () => {
                         <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                           <Form.Group className="mb-2">
                             <PasswordField
-                              label="Confirm Password"
+                              label="Confirm New Password"
                               name="confirmPassword"
                               placeholder="*****"
                               required={true}

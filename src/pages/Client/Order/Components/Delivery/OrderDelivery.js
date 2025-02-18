@@ -5,6 +5,7 @@ import Dialogue from "../../../../../components/Custom/Modal/modal";
 import {
   deliverOrder,
   deliverOrderAccept,
+  deliverPaypalOrderAccept,
   orderRevision,
 } from "../../../../../redux/Actions/orderActions";
 import FileUploadButton from "../../../../../components/Custom/Button/fileUploadButton";
@@ -149,28 +150,28 @@ const OrderDelivery = ({
       orderDetails?.packageBuyFrom == "PAYPAL"
     ) {
       //For PayPal
-      // dispatch(orderRevision(extraPayload)).then((response) => {
-      //   if (response?.payload) {
-      //     const newMessage = response.payload;
-      //     setActiveChat((prev) => {
-      //   const messageDate = newMessage?.messageDate;
-      //   // Clone previous state
-      //   const newMessages = { ...prev };
-      //   if (newMessages[messageDate]) {
-      //     newMessages[messageDate] = [
-      //       ...newMessages[messageDate],
-      //       newMessage,
-      //     ];
-      //   } else {
-      //     newMessages[messageDate] = [newMessage];
-      //   }
-      //   return newMessages;
-      // });
-      //     handleSignalRCall(newMessage);
-      //   }
-      //   setSendLoader(false);
-      //   closeDialogue();
-      // });
+      dispatch(deliverPaypalOrderAccept(extraPayload)).then((response) => {
+        if (response?.payload) {
+          const newMessage = response.payload;
+          setActiveChat((prev) => {
+            const messageDate = newMessage?.messageDate;
+            // Clone previous state
+            const newMessages = { ...prev };
+            if (newMessages[messageDate]) {
+              newMessages[messageDate] = [
+                ...newMessages[messageDate],
+                newMessage,
+              ];
+            } else {
+              newMessages[messageDate] = [newMessage];
+            }
+            return newMessages;
+          });
+          handleSignalRCall(newMessage);
+        }
+        setSendLoader(false);
+        closeDialogue();
+      });
     } else {
       dispatch(deliverOrderAccept(extraPayload)).then((response) => {
         if (response?.payload) {
