@@ -21,6 +21,7 @@ import {
   postAddUser,
   postUpdateUser,
 } from "../../../redux/Actions/adminActions";
+import { countries } from "../../../utils/client/data/countries";
 
 function AddUser() {
   const dispatch = useDispatch();
@@ -437,14 +438,21 @@ function AddUser() {
                               Country <span className="text-danger">*</span>
                             </Form.Label>
                             <Form.Control
-                              type="text"
-                              name="country"
-                              placeholder="Enter Country"
-                              value={values.country}
-                              onBlur={handleBlur("country")}
-                              onChange={handleChange("country")}
-                              isInvalid={touched.country && !!errors.country}
-                            />
+                              as="select"
+                              value={values?.country}
+                              onChange={(e) => {
+                                const selectedCountry = e.target.value;
+                                setFieldValue("country", selectedCountry);
+                              }}
+                            >
+                              {countries.map((value, key) => {
+                                return (
+                                  <option key={key} value={value.value}>
+                                    {value.name}
+                                  </option>
+                                );
+                              })}
+                            </Form.Control>
                             <Form.Control.Feedback type="invalid">
                               {touched.country && errors.country}
                             </Form.Control.Feedback>
