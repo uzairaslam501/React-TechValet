@@ -49,7 +49,6 @@ const OfferAccept = ({
           />
           <PayWithStripe
             selectedOfferValues={initialStripeValues}
-            fetchMessages={fetchMessages}
             setButtonDisabled={setButtonDisabled}
             buttonDisabled={buttonDisabled}
           />
