@@ -47,7 +47,7 @@ const Dashboard = () => {
                 }}
               >
                 <Card.Text className="pt-4 h5 text-white">
-                  Total Active Customers
+                  Active Customers
                 </Card.Text>
                 <Card.Body>
                   <Card.Text className="text-white h4">
@@ -70,7 +70,7 @@ const Dashboard = () => {
                 }}
               >
                 <Card.Text className="pt-4 h5 text-white">
-                  Total Active Tech Valet
+                  Active Tech Valet's
                 </Card.Text>
                 <Card.Body>
                   <Card.Text className="text-white h4">
@@ -93,7 +93,8 @@ const Dashboard = () => {
                 }}
               >
                 <Card.Text className="pt-4 h5 text-white">
-                  Customers Verification Pending
+                  Customers <br />
+                  Pending Verification
                 </Card.Text>
                 <Card.Body>
                   <Card.Text className="text-white h4">
@@ -116,7 +117,7 @@ const Dashboard = () => {
                 }}
               >
                 <Card.Text className="pt-4 h5 text-white">
-                  Valet Verification Pending
+                  Valet's <br /> Verification Pending
                 </Card.Text>
                 <Card.Body>
                   <Card.Text className="text-white h4">
@@ -139,7 +140,8 @@ const Dashboard = () => {
                 }}
               >
                 <Card.Text className="pt-4 h5 text-white">
-                  Customers Under Review
+                  Customer's <br />
+                  Under Review
                 </Card.Text>
                 <Card.Body>
                   <Card.Text className="text-white h4">
@@ -162,7 +164,8 @@ const Dashboard = () => {
                 }}
               >
                 <Card.Text className="pt-4 h5 text-white">
-                  Tech Valet Under Review
+                  Valet's <br />
+                  Under Review
                 </Card.Text>
                 <Card.Body>
                   <Card.Text className="text-white h4">

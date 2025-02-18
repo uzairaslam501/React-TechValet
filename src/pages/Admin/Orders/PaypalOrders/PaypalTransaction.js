@@ -211,8 +211,8 @@ const PaypalTransactionDetail = () => {
                   <Col lg={12}>
                     <div className="p-3">
                       <div className="text-center">
-                        <h1 className="h3 text-gray-900 mb-4 text-bold">
-                          PayPal Transactions Record
+                        <h1 className="fw-bold text-center">
+                          Manage PayPal Transactions Record
                         </h1>
                       </div>
                       <CustomTable
