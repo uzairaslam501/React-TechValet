@@ -227,7 +227,7 @@ const UserList = ({ userRole, userType }) => {
           <Col xl={12} lg={12} md={12} sm={12} xs={12}>
             <Card>
               <Card.Body>
-                <h1 className="text-center fw-bold">
+                <h1 className="fw-bold text-center">
                   Manage {capitalizeFirstLetter(userType)}
                 </h1>
                 <CustomTable
