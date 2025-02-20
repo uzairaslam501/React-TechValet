@@ -8,6 +8,7 @@ import {
   paymentSuccess,
   createStripeCharge,
   stripeCheckOutForPackages,
+  postWithdrawStripePayment,
 } from "../Actions/stripeActions";
 import { toast } from "react-toastify";
 
@@ -142,6 +143,20 @@ const stripeSlice = createSlice({
         state.packageCheckout = action.payload;
       })
       .addCase(stripeCheckOutForPackages.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+        toast.error(action.error.message);
+      })
+
+      // Handle postWithdrawStripePayment
+      .addCase(postWithdrawStripePayment.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(postWithdrawStripePayment.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(postWithdrawStripePayment.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
         toast.error(action.error.message);

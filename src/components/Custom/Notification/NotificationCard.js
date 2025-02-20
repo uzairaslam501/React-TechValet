@@ -6,6 +6,8 @@ import {
   ListGroup,
   Button,
   Spinner,
+  Row,
+  Col,
 } from "react-bootstrap";
 import "./NotificationCard.css";
 import { truncateCharacters } from "../../../utils/_helpers";
@@ -34,6 +36,7 @@ const NotificationCard = () => {
   const fetchNotificationsList = async () => {
     try {
       dispatch(getNotifications(userAuth?.id)).then((response) => {
+        console.log(response?.payload);
         setNotifications(response?.payload);
         setNotificationLoader(false);
       });
@@ -197,102 +200,125 @@ const NotificationCard = () => {
         className="custom-notification-dropdown"
         onClick={handleNotificationPanel}
       >
-        <div className="notification-dropdown">
-          <h6 className="dropdown-header text-center mb-3">
+        <div className="notifications-panel">
+          <h6
+            className="m-0 text-center px-0 rounded py-3"
+            style={{
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+            }}
+          >
             Notification Center
           </h6>
-          {notificationLoader ? (
-            <div className="text-center">
-              <Spinner animation="grow" />
-            </div>
-          ) : (
-            <>
-              {notifications.length > 0 ? (
-                <ListGroup>
-                  {notifications.map((notification) => (
-                    <ListGroup.Item
-                      key={notification.notificationId}
-                      className={`d-flex justify-content-between align-items-start shadow-sm`}
-                      style={{
-                        borderRadius: "8px",
-                        marginBottom: "10px",
-                        backgroundColor:
-                          notification.isRead === 0 ? "#ebeaea" : "",
-                      }}
-                    >
-                      <div>
-                        <NavLink
-                          to={notification.url}
-                          target="_blank"
-                          className="text-decoration-none"
-                        >
-                          <div
-                            className="fw-bold"
-                            style={{
-                              wordBreak: "break-all",
-                            }}
-                          >
-                            {truncateCharacters(notification.title, 33)}
-                          </div>
-                          <small
-                            style={{
-                              wordBreak: "break-all",
-                            }}
-                          >
-                            {truncateCharacters(notification.description, 76)}
-                          </small>
-                        </NavLink>
-                      </div>
-                      <div className="d-flex flex-column">
-                        {notification.isRead === 0 && (
-                          <Button
-                            variant="outline-primary bg-light text-primary border-0"
-                            size="sm"
-                            onClick={() =>
-                              handleMarkAsRead(notification.notificationId)
-                            }
-                            className="bi bi-circle-fill"
-                          ></Button>
-                        )}
-                        <Button
-                          variant="outline-danger border-0"
-                          size="sm"
-                          onClick={() =>
-                            handleDelete(notification.notificationId)
-                          }
-                          className="bi bi-trash"
-                        ></Button>
-                      </div>
-                    </ListGroup.Item>
-                  ))}
-                </ListGroup>
-              ) : (
-                <p className="text-center">No notifications</p>
-              )}
-              <div className="notification-footer">
-                {notifications.length > 0 && (
-                  <Button
-                    onClick={() => handleDeleteAll()}
-                    type="button"
-                    size="sm"
-                    variant="danger"
-                  >
-                    Delete All
-                  </Button>
-                )}
-                {notifications.some((n) => n.isRead === 0) && (
-                  <Button
-                    onClick={() => handleMarkAll()}
-                    type="button"
-                    size="sm"
-                    variant="primary"
-                  >
-                    Read All
-                  </Button>
-                )}
+          <div className="notification-dropdown px-3 pt-2">
+            {notificationLoader ? (
+              <div className="text-center">
+                <Spinner animation="grow" />
               </div>
-            </>
-          )}
+            ) : (
+              <>
+                {notifications.length > 0 ? (
+                  <>
+                    <ListGroup>
+                      {notifications.map((notification) => (
+                        <Row
+                          key={notification.notificationId}
+                          className="mx-0 mb-2 py-2 px-2 rounded align-items-center"
+                          style={{
+                            backgroundColor:
+                              notification.isRead === 0 ? "#ebeaea" : "#fff",
+                            cursor: "pointer",
+                          }}
+                        >
+                          {/* Left Column - Notification Content (Clickable) */}
+                          <Col xl={10} lg={10} md={10} sm={10} xs={10}>
+                            <NavLink
+                              to={notification.url}
+                              target="_blank"
+                              className="text-decoration-none text-dark d-block w-100 h-100 p-2"
+                            >
+                              <div
+                                className="fw-bold"
+                                style={{ wordBreak: "break-word" }}
+                              >
+                                {truncateCharacters(notification.title, 33)}
+                              </div>
+                              <small style={{ wordBreak: "break-word" }}>
+                                {truncateCharacters(
+                                  notification.description,
+                                  76
+                                )}
+                              </small>
+                              <div
+                                className="text-start mt-1"
+                                style={{ fontSize: "13px" }}
+                              >
+                                {notification.createdAt}
+                              </div>
+                            </NavLink>
+                          </Col>
+
+                          {/* Right Column - Buttons (Not Clickable as a Link) */}
+                          <Col
+                            xl={2}
+                            lg={2}
+                            md={2}
+                            sm={2}
+                            xs={2}
+                            className="text-end"
+                          >
+                            {notification.isRead === 0 && (
+                              <Button
+                                variant="outline-primary bg-light text-primary border-0"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.preventDefault(); // Stop NavLink from triggering
+                                  handleMarkAsRead(notification.notificationId);
+                                }}
+                                className="bi bi-circle-fill"
+                              ></Button>
+                            )}
+                            <Button
+                              variant="outline-danger border-0"
+                              size="sm"
+                              onClick={(e) => {
+                                e.preventDefault(); // Stop NavLink from triggering
+                                handleDelete(notification.notificationId);
+                              }}
+                              className="bi bi-trash"
+                            ></Button>
+                          </Col>
+                        </Row>
+                      ))}
+                    </ListGroup>
+                  </>
+                ) : (
+                  <p className="text-center">No notifications</p>
+                )}
+              </>
+            )}
+          </div>
+          <div className="notification-footer py-2 px-3 rounded">
+            {notifications.length > 0 && (
+              <Button
+                onClick={() => handleDeleteAll()}
+                type="button"
+                size="sm"
+                variant="danger"
+              >
+                Delete All
+              </Button>
+            )}
+            {notifications.some((n) => n.isRead === 0) && (
+              <Button
+                onClick={() => handleMarkAll()}
+                type="button"
+                size="sm"
+                variant="primary"
+              >
+                Read All
+              </Button>
+            )}
+          </div>
         </div>
       </NavDropdown>
     </Nav>

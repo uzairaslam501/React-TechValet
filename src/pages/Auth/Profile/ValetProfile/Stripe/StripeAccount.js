@@ -41,9 +41,13 @@ const StripeAccount = ({ userRecord }) => {
     )
       .then((response) => {
         if (response?.payload) {
-          setIsVerified(
-            response?.payload?.isVerify_StripeAccount === 1 && true
-          );
+          if (response?.payload.includes("https://connect.stripe.com")) {
+            window.open(response?.payload, "_self");
+          } else {
+            setIsVerified(
+              response?.payload?.isVerify_StripeAccount === 1 && true
+            );
+          }
         } else {
           setIsVerified(false);
         }

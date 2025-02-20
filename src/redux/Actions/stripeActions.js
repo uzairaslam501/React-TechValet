@@ -210,3 +210,28 @@ export const stripeCheckOutForPackages = createAsyncThunk(
     }
   }
 );
+
+export const postWithdrawStripePayment = createAsyncThunk(
+  "stripe/postWithdrawStripePayment",
+  async (userId, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.post(
+        `StripePayment/StripeWithdrawAsync/${userId}`,
+        null,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data, message } = processApiResponse(response, dispatch, expired);
+      if (message) {
+        toast.success(message);
+      }
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
