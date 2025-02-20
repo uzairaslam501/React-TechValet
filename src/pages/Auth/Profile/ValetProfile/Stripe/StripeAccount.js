@@ -11,6 +11,7 @@ import {
 import BankDetails from "./BankDetails";
 import { deleteRecords } from "../../../../../redux/Actions/globalActions";
 import DeleteComponent from "../../../../../components/Custom/DeleteDialoge/DeleteDialoge";
+import { stripeAccountStateUpdate } from "../../../../../redux/Reducers/authSlice";
 
 const validationSchema = Yup.object().shape({
   stripeEmail: Yup.string()
@@ -44,6 +45,7 @@ const StripeAccount = ({ userRecord }) => {
           if (response?.payload.includes("https://connect.stripe.com")) {
             window.open(response?.payload, "_self");
           } else {
+            dispatch(stripeAccountStateUpdate(true));
             setIsVerified(
               response?.payload?.isVerify_StripeAccount === 1 && true
             );
