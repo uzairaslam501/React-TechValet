@@ -185,6 +185,7 @@ const Appointment = ({ onComplete }) => {
             text: "Cancel",
             className: "btn-secondary-secondary",
             onClick: handleClose,
+            loader: deleteLoader,
           },
         ]}
       />

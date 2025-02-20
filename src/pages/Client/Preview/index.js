@@ -69,7 +69,6 @@ const PreviewProfile = () => {
         ),
         () => <Slots userRecord={userRecord} preview={true} />,
         () => <SkillsAndEndorsements userRecord={userRecord} preview={true} />,
-        () => <Services userRecord={userRecord} preview={true} />,
       ];
 
       for (const fetchFunction of fetchFunctions) {
@@ -226,10 +225,6 @@ const PreviewProfile = () => {
                   userRecord={userRecords}
                   preview={true}
                 />
-              </Col>
-
-              <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                <Services userRecord={userRecords} preview={true} />
               </Col>
             </Row>
           </Col>

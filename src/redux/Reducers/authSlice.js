@@ -56,6 +56,9 @@ const authSlice = createSlice({
     profileStateUpdate(state, payload) {
       state.userAuth.isProfileComplete = payload?.payload;
     },
+    valetBankAccountDetailStateUpdate(state, payload) {
+      state.userAuth.isBankAccountAdded = payload?.payload;
+    },
   },
   extraReducers: (builder) => {
     // Handle login actions
@@ -299,5 +302,6 @@ export const {
   paypalAccountStateUpdate,
   skillsStateUpdate,
   profileStateUpdate,
+  valetBankAccountDetailStateUpdate,
 } = authSlice.actions;
 export default authSlice.reducer;
