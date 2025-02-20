@@ -52,7 +52,6 @@ export const getAccountVerified = createAsyncThunk(
       if (message) {
         toast.success(message);
       }
-      dispatch(stripeAccountStateUpdate(true));
       return data;
     } catch (error) {
       handleApiError(error, dispatch, expired);
