@@ -225,7 +225,7 @@ const NotificationCard = () => {
                           className="mx-0 mb-2 py-2 px-2 rounded align-items-center"
                           style={{
                             backgroundColor:
-                              notification.isRead === 0 ? "#ebeaea" : "#fff",
+                              notification.isRead === 0 ? "#ebeaea" : "#e7e7e7",
                             cursor: "pointer",
                           }}
                         >

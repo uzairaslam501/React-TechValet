@@ -68,6 +68,7 @@ import ClientUpdatePassword from "../pages/Auth/UpdatePassword/ClientUpdatePassw
 import ResetPassword from "../pages/Auth/ResetPassword/ResetPassword";
 import ForgotPassword from "../pages/Auth/ForgotPassword/ForgotPassword";
 import UserProfile from "../pages/Auth/Profile";
+import Index from "../pages/Auth/Profile/TabIndex";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -128,7 +129,8 @@ const createRoute = createBrowserRouter(
               />
             }
           >
-            <Route path="/account" element={<UserProfile />} />
+            {/* <Route path="/account" element={<UserProfile />} /> */}
+            <Route path="/account" element={<Index />} />
             <Route path="/update-password" element={<ClientUpdatePassword />} />
           </Route>
 

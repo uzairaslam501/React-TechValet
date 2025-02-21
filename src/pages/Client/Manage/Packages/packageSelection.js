@@ -9,6 +9,7 @@ const PackageSelection = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [totalRemainings, setTotalRemainings] = useState();
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const handleShowModal = (pkg) => {
     setSelectedPackage(pkg);
@@ -110,6 +111,8 @@ const PackageSelection = () => {
         selectedPackage={selectedPackage}
         showModal={showModal}
         handleClose={handleClose}
+        setIsDisabled={setIsDisabled}
+        isDisabled={isDisabled}
       />
     </>
   );

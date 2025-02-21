@@ -383,3 +383,22 @@ export const postResetPassword = createAsyncThunk(
   }
 );
 //#endregion
+
+// Async thunk for logout
+export const postLogout = createAsyncThunk(
+  "user/postLogout",
+  async (userData, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    try {
+      const response = await api.patch("/auth/logout", null, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      const { data, message } = processApiResponse(response, dispatch, expired);
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+      return rejectWithValue(error?.response?.data?.data || "Error occurred");
+    }
+  }
+);

@@ -34,6 +34,7 @@ const StripeAccount = ({ userRecord }) => {
   };
 
   const verifyStripeAccount = () => {
+    setButtonDisabled(true);
     dispatch(
       getAccountVerified({
         userId: userRecord?.userEncId,
@@ -42,20 +43,28 @@ const StripeAccount = ({ userRecord }) => {
     )
       .then((response) => {
         if (response?.payload) {
-          if (response?.payload.includes("https://connect.stripe.com")) {
-            window.open(response?.payload, "_self");
+          var getAccountVerified = response?.payload?.getUser;
+          if (
+            getAccountVerified?.isVerify_StripeAccount !== 1 &&
+            response?.payload?.verificationResult
+          ) {
+            window.open(response?.payload?.verificationResult, "_self");
+            setButtonDisabled(false);
           } else {
             dispatch(stripeAccountStateUpdate(true));
             setIsVerified(
-              response?.payload?.isVerify_StripeAccount === 1 && true
+              getAccountVerified?.isVerify_StripeAccount === 1 && true
             );
+            setButtonDisabled(false);
           }
         } else {
           setIsVerified(false);
+          setButtonDisabled(false);
         }
       })
       .catch((error) => {
         setIsVerified(false);
+        setButtonDisabled(false);
         console.error("Verification failed:", error);
       });
   };
@@ -130,7 +139,7 @@ const StripeAccount = ({ userRecord }) => {
   console.log(buttonDisabled);
   return (
     <>
-      <Card className="shadow-sm rounded bg-white mb-3">
+      <Card className="shadow rounded bg-white mb-3">
         <Card.Header className="border-bottom">
           <div className="d-flex align-items-center justify-content-between">
             <h6 className="m-0">Stripe Account</h6>
@@ -176,21 +185,43 @@ const StripeAccount = ({ userRecord }) => {
           {stripeId ? (
             <Row>
               {!isVerified ? (
-                <Col xl={6} lg={6} md={6} sm={6} xs={6}>
+                <Col
+                  xl={12}
+                  lg={12}
+                  md={12}
+                  sm={12}
+                  xs={12}
+                  className="text-end"
+                >
                   <Button
                     variant="link p-0"
                     onClick={verifyStripeAccount}
                     className="text-success"
+                    disabled={buttonDisabled}
                   >
                     Verify Account
                   </Button>
                 </Col>
               ) : !isBankAccountAdded ? (
-                <Col xl={12} lg={12} md={6} sm={12} xs={12}>
+                <Col
+                  xl={12}
+                  lg={12}
+                  md={6}
+                  sm={12}
+                  xs={12}
+                  className="text-end"
+                >
                   <BankDetails userRecord={userRecord} stripeId={stripeId} />
                 </Col>
               ) : (
-                <Col xl={12} lg={12} md={6} sm={12} xs={12}>
+                <Col
+                  xl={12}
+                  lg={12}
+                  md={6}
+                  sm={12}
+                  xs={12}
+                  className="text-end"
+                >
                   <Button variant="link" className="text-success pl-0">
                     Verified!
                   </Button>

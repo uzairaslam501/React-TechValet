@@ -21,6 +21,7 @@ import HandleImages from "../../../components/Custom/Avatars/HandleImages";
 import PasswordField from "../../../components/Custom/PasswordInput/PasswordInput";
 import { getTimezones } from "../../../redux/Actions/globalActions";
 import { capitalizeFirstLetter } from "../../../utils/_helpers";
+import UsernameInput from "../../../components/Custom/Username/HandleUsername";
 
 const UserRegisteration = () => {
   const { value } = useParams();
@@ -55,6 +56,10 @@ const UserRegisteration = () => {
       .required("Please enter Last Name"),
     username: Yup.string()
       .min(3, "Username must be at least 3 characters")
+      .matches(
+        /^[a-zA-Z0-9_]+$/,
+        "Only letters, numbers, and underscores are allowed"
+      )
       .required("Please enter Username"),
     email: Yup.string()
       .matches(
@@ -129,13 +134,13 @@ const UserRegisteration = () => {
   }, [value]);
 
   return (
-    <Container fluid>
-      <Row className="bg-white">
+    <Container fluid className="vh-100">
+      <Row className="bg-white h-100">
         {/* Image Column */}
         <Col
           xl={6}
           lg={6}
-          className="d-none d-lg-flex justify-content-center align-items-center p-5"
+          className="d-none d-lg-flex justify-content-center align-items-center p-5 h-100"
           style={{
             backgroundImage: `url(${background})`,
             backgroundSize: "cover",
@@ -191,7 +196,7 @@ const UserRegisteration = () => {
           md={12}
           sm={12}
           xs={12}
-          className="d-flex flex-column justify-content-center align-items-center"
+          className="d-flex flex-column justify-content-center align-items-center h-100"
         >
           {/* Form */}
           <div className="w-75 py-5">
@@ -241,21 +246,13 @@ const UserRegisteration = () => {
                 {/* Username */}
                 <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                   <Form.Group className="mb-2">
-                    <Form.Label>
-                      Username <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="username"
-                      placeholder="Enter Username"
+                    <UsernameInput
                       value={values.username}
-                      onBlur={handleBlur("username")}
                       onChange={handleChange("username")}
-                      isInvalid={touched.username && !!errors.username}
+                      onBlur={handleBlur("username")}
+                      error={errors.username}
+                      touched={touched.username}
                     />
-                    <Form.Control.Feedback type="invalid">
-                      {touched.username && errors.username}
-                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
                 {/* Email */}

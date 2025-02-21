@@ -125,7 +125,7 @@ const SkillsAndEndorsements = ({ userRecord, preview = false }) => {
           <div
             className="py-3 border-bottom"
             style={{
-              maxHeight: preview === false ? "75px" : "200px",
+              maxHeight: preview === false ? "190px" : "200px",
               height: preview === true && "200px",
               overflowY: "scroll",
             }}

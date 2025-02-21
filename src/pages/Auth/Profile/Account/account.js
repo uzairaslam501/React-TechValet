@@ -21,6 +21,7 @@ import CustomDropdown from "../../../../components/Custom/Dropdown/Dropdown";
 import { calculateMaxDate } from "../../../../utils/_helpers";
 import { postUserUpdate } from "../../../../redux/Actions/authActions";
 import Slots from "../ValetProfile/Slots/Slots";
+import UsernameInput from "../../../../components/Custom/Username/HandleUsername";
 
 const validation = Yup.object().shape({
   firstName: Yup.string()
@@ -31,6 +32,10 @@ const validation = Yup.object().shape({
     .required("Last Name is required"),
   userName: Yup.string()
     .min(3, "Username must be at least 5 characters")
+    .matches(
+      /^[a-zA-Z0-9_]+$/,
+      "Only letters, numbers, and underscores are allowed"
+    )
     .required("Username is required"),
   email: Yup.string()
     .email("Invalid email format")
@@ -179,17 +184,12 @@ const Account = ({ userRecord }) => {
             <Row>
               <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-2">
                 <FormGroup>
-                  <FormLabel>
-                    Username <span className="text-danger">*</span>
-                  </FormLabel>
-                  <FormControl
-                    type="text"
-                    placeholder="Username"
-                    disabled
+                  <UsernameInput
                     value={values.userName}
                     onChange={handleChange("userName")}
                     onBlur={handleBlur("userName")}
-                    isInvalid={!!errors.userName && touched.userName}
+                    error={errors.userName}
+                    touched={touched.userName}
                   />
                 </FormGroup>
               </Col>
@@ -344,6 +344,7 @@ const Account = ({ userRecord }) => {
                       setFieldValue("country", selectedCountry);
                     }}
                   >
+                    <option value="">Select Country</option>
                     {countries.map((value, key) => {
                       return (
                         <option key={key} value={value.value}>

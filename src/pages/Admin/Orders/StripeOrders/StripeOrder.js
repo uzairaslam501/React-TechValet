@@ -122,7 +122,7 @@ const StripeOrder = ({ handleOpen, refreshKey }) => {
           <Col xl={12} lg={12} md={12} sm={12} xs={12}>
             <Card>
               <CardBody>
-                <h1 className="fw-bold text-center">Manage Orders</h1>
+                <h1 className="fw-bold text-center">Manage Stripe Orders</h1>
                 <CustomTable
                   headers={headers}
                   records={records}

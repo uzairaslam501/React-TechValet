@@ -175,7 +175,7 @@ const ResetPassword = () => {
 
               <Form.Group className="mb-2">
                 <PasswordField
-                  label="Confirm Password"
+                  label="Confirm New Password"
                   placeholder="********"
                   value={values.confirmPassword}
                   onBlur={handleBlur("confirmPassword")}

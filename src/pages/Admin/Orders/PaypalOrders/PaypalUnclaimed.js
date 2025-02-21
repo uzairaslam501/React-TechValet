@@ -95,7 +95,7 @@ const PaypalUnclaimedDetail = () => {
                     <div className="p-3">
                       <div className="text-center">
                         <h1 className="fw-bold text-center">
-                          Manage PayPal Transactions Record
+                          Manage Unclaimed Records
                         </h1>
                       </div>
                       <CustomTable

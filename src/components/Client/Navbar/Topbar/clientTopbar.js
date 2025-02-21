@@ -3,11 +3,11 @@ import { NavLink } from "react-router-dom";
 import logo from "../../../../assets/images/logo.svg";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useRef, useState } from "react";
-import { logout } from "../../../../redux/Reducers/authSlice";
 import HandleImages from "../../../Custom/Avatars/HandleImages";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import NotificationCard from "../../../Custom/Notification/NotificationCard";
 import SearchBar from "../../../../pages/Public/Home/Search/SearchBar/SearchBar";
+import { postLogout } from "../../../../redux/Actions/authActions";
 
 const ClientTopbar = () => {
   const dispatch = useDispatch();
@@ -20,7 +20,7 @@ const ClientTopbar = () => {
   };
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(postLogout());
     localStorage.removeItem("userInfo");
   };
 
