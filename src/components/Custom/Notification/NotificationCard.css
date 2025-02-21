@@ -10,7 +10,7 @@
 }
 
 .notification-dropdown {
-  max-height: 300px;
+  height: 300px;
   padding-right: 7px;
   overflow-y: auto;
 }
@@ -29,7 +29,6 @@
 .notification-footer {
   display: flex;
   justify-content: space-between;
-  position: sticky;
   bottom: 0;
   background-color: #fff;
   border-top: 1px solid #ddd;

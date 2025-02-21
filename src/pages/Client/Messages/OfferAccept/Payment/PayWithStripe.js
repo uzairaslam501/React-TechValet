@@ -1,10 +1,12 @@
+import "./style.css";
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import StripeCheckout from "react-stripe-checkout";
-import { createStripeCharge } from "../../../../../redux/Actions/stripeActions";
 import { useNavigate } from "react-router";
-import "./style.css";
+import { stripePublishableKey } from "../../../../../utils/_envConfig";
+import { calculateWorkingHours } from "../../../../../utils/_helpers";
+import { createStripeCharge } from "../../../../../redux/Actions/stripeActions";
 
 const PayWithStripe = ({
   selectedOfferValues,
@@ -24,7 +26,10 @@ const PayWithStripe = ({
     toDateTime: selectedOfferValues.toDateTime,
     actualOrderPrice: String(selectedOfferValues.actualOrderPrice),
     totalWorkCharges: String(selectedOfferValues.totalWorkCharges),
-    workingHours: String(selectedOfferValues.workingHours),
+    workingHours: calculateWorkingHours(
+      selectedOfferValues.fromDateTime,
+      selectedOfferValues.toDateTime
+    ),
     offerId: String(selectedOfferValues.offerId) || "",
   };
 
@@ -81,7 +86,7 @@ const PayWithStripe = ({
         description={initialValues?.paymentDescription}
         amount={fromPriceToCent}
         token={!loading && onToken}
-        stripeKey="pk_test_51Li8cOFgcaKUXyX31ffq4fo71006mzK5Um1fOqEDXARFoExd8ucm5yf7htkY7DYAgNZRhtMzmhBgKRATqIaJMO3B00zwvVefw5"
+        stripeKey={stripePublishableKey}
         style={{
           display: "block",
           width: "100%",

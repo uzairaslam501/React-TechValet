@@ -13,7 +13,7 @@ import DeleteComponent from "../../../../../components/Custom/DeleteDialoge/Dele
 
 const Education = ({ userRecord, preview = false }) => {
   const dispatch = useDispatch();
-  const [editItem, setEditItem] = useState(true);
+  const [editItem, setEditItem] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [educationList, setEducationList] = useState([]);

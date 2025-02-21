@@ -3,7 +3,7 @@ export const notificationURL = process.env.REACT_APP_API_Notification_URL;
 export const Key = process.env.REACT_APP_API_MAP_KEY;
 export const CKEditorLicense = process.env.REACT_APP_API_CKEditor_License;
 export const googleCliendId = process.env.REACT_APP_Google_Auth_Client_Id;
+export const stripePublishableKey = process.env.REACT_APP_Stripe_PublishableKey;
 
 console.log(baseUrl);
 console.log(notificationURL);
-console.log(googleCliendId);

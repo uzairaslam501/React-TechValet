@@ -4,7 +4,13 @@ import { Container } from "react-bootstrap";
 import PackagePaymentWithPaypal from "./PayPal";
 import PackagePaymentWithStripe from "./Stripe";
 
-const PaymentDialogue = ({ selectedPackage, showModal, handleClose }) => {
+const PaymentDialogue = ({
+  selectedPackage,
+  showModal,
+  handleClose,
+  setIsDisabled,
+  isDisabled,
+}) => {
   return (
     <Dialogue
       show={showModal}
@@ -17,8 +23,16 @@ const PaymentDialogue = ({ selectedPackage, showModal, handleClose }) => {
       size="md"
       bodyContent={
         <Container className="py-3 px-4">
-          <PackagePaymentWithStripe selectedPackage={selectedPackage} />
-          <PackagePaymentWithPaypal selectedPackage={selectedPackage} />
+          <PackagePaymentWithStripe
+            selectedPackage={selectedPackage}
+            setIsDisabled={setIsDisabled}
+            isDisabled={isDisabled}
+          />
+          <PackagePaymentWithPaypal
+            selectedPackage={selectedPackage}
+            setIsDisabled={setIsDisabled}
+            isDisabled={isDisabled}
+          />
         </Container>
       }
       backdrop="static"

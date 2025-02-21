@@ -3,7 +3,7 @@ import { Navbar, NavDropdown, Button, Container, Nav } from "react-bootstrap";
 import { useThemeContext } from "../../../theme/themeSettings";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { logout } from "../../../redux/Reducers/authSlice";
+import { postLogout } from "../../../redux/Actions/authActions";
 import "./navbar.css";
 import HandleImages from "../../Custom/Avatars/HandleImages";
 
@@ -13,7 +13,7 @@ const CustomNavbar = ({ toggleSidebar }) => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(postLogout());
   };
 
   return (

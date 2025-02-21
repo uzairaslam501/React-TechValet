@@ -1,0 +1,8 @@
+.nav-justified > li > button {
+  border: 1px solid #dee2e6 !important;
+}
+
+.nav-pills .nav-link.active {
+  background-color: #131313 !important;
+  color: #fff !important;
+}

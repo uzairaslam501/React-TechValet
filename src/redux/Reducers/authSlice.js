@@ -14,6 +14,7 @@ import {
   emailVerification,
   requestForgotPassword,
   postResetPassword,
+  postLogout,
 } from "../Actions/authActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -288,6 +289,22 @@ const authSlice = createSlice({
       })
       .addCase(postResetPassword.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Handle post Logout actions
+    builder
+      .addCase(postLogout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(postLogout.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userAuth = null;
+      })
+      .addCase(postLogout.rejected, (state, action) => {
+        state.loading = false;
+        state.userAuth = null;
         state.error = action.payload;
       });
   },

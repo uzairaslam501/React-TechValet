@@ -107,7 +107,7 @@ const PayPalAccount = ({ userRecord }) => {
 
   return (
     <>
-      <Card className="shadow-sm rounded bg-white mb-3">
+      <Card className="shadow rounded bg-white mb-3">
         <Card.Header className="border-bottom">
           <div className="d-flex align-items-center justify-content-between">
             <h6 className="m-0">PayPal Account</h6>

@@ -22,6 +22,7 @@ import {
   postUpdateUser,
 } from "../../../redux/Actions/adminActions";
 import { countries } from "../../../utils/client/data/countries";
+import UsernameInput from "../../../components/Custom/Username/HandleUsername";
 
 function AddUser() {
   const dispatch = useDispatch();
@@ -106,6 +107,10 @@ function AddUser() {
       .required("Please enter last name"),
     username: Yup.string()
       .min(3, "Username must be at least 3 characters")
+      .matches(
+        /^[a-zA-Z0-9_]+$/,
+        "Only letters, numbers, and underscores are allowed"
+      )
       .required("Please enter Username"),
     email: Yup.string()
       // .email("Please enter valid email")
@@ -236,22 +241,13 @@ function AddUser() {
                         {/* Username */}
                         <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                           <Form.Group className="mb-2">
-                            <Form.Label>
-                              Username <span className="text-danger">*</span>
-                            </Form.Label>
-                            <Form.Control
-                              disabled={isUpdateCall}
-                              type="text"
-                              name="username"
-                              placeholder="Enter Username"
+                            <UsernameInput
                               value={values.username}
-                              onBlur={handleBlur("username")}
                               onChange={handleChange("username")}
-                              isInvalid={touched.username && !!errors.username}
+                              onBlur={handleBlur("username")}
+                              error={errors.username}
+                              touched={touched.username}
                             />
-                            <Form.Control.Feedback type="invalid">
-                              {touched.username && errors.username}
-                            </Form.Control.Feedback>
                           </Form.Group>
                         </Col>
                         {/* Email */}
@@ -445,6 +441,7 @@ function AddUser() {
                                 setFieldValue("country", selectedCountry);
                               }}
                             >
+                              <option value="">Select Country</option>
                               {countries.map((value, key) => {
                                 return (
                                   <option key={key} value={value.value}>

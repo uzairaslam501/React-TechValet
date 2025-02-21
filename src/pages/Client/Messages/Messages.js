@@ -10,6 +10,7 @@ import {
 import HandleImages from "../../../components/Custom/Avatars/HandleImages";
 import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import {
+  checkIfStringIsValid,
   getFirstAndLastDayOfMonth,
   truncateCharacters,
 } from "../../../utils/_helpers";
@@ -21,6 +22,7 @@ import { notificationURL } from "../../../utils/_envConfig";
 import { debounce, set } from "lodash";
 import OfferAccept from "./OfferAccept/OfferAccept";
 import { useParams } from "react-router";
+import { toast } from "react-toastify";
 
 const Messages = () => {
   const { id } = useParams();
@@ -179,7 +181,7 @@ const Messages = () => {
         CustomerId:
           userAuth?.role === "Customer"
             ? String(userAuth?.id)
-            : String(values?.CustomerId),
+            : String(values?.customerId),
         valetId:
           userAuth?.role === "Valet"
             ? String(userAuth?.id)
@@ -191,7 +193,19 @@ const Messages = () => {
         EndedDateTime: values.endedDateTime,
         OfferDescription: values.offerDescription,
       };
-      handleResponse(data);
+      if (
+        checkIfStringIsValid(data.SenderId) &&
+        checkIfStringIsValid(data.CustomerId) &&
+        checkIfStringIsValid(data.valetId) &&
+        checkIfStringIsValid(data.ReceiverId)
+      ) {
+        handleResponse(data);
+      } else {
+        setSendLoader(false);
+        toast.info(
+          "Cann't create offer right now, System is going in under process. Try again after sometime or contact support team!"
+        );
+      }
     }
   };
 
