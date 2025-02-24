@@ -8,6 +8,7 @@ import {
   Spinner,
   Row,
   Col,
+  ButtonGroup,
 } from "react-bootstrap";
 import "./NotificationCard.css";
 import { truncateCharacters } from "../../../utils/_helpers";
@@ -35,7 +36,7 @@ const NotificationCard = () => {
 
   const fetchNotificationsList = async () => {
     try {
-      dispatch(getNotifications(userAuth?.id)).then((response) => {
+      dispatch(getNotifications(20)).then((response) => {
         console.log(response?.payload);
         setNotifications(response?.payload);
         setNotificationLoader(false);
@@ -59,6 +60,7 @@ const NotificationCard = () => {
   // Mark notification as read
   const handleMarkAsRead = (id) => {
     try {
+      setNotificationLoader(true);
       dispatch(markNotifications(id)).then((response) => {
         if (response?.payload === true) {
           setNotifications((prev) =>
@@ -70,9 +72,11 @@ const NotificationCard = () => {
           );
           setUnReadCount(unReadCount - 1);
         }
+        setNotificationLoader(false);
       });
     } catch (error) {
       console.error("Error fetching notifications:", error);
+      setNotificationLoader(false);
     } finally {
     }
   };
@@ -93,12 +97,15 @@ const NotificationCard = () => {
   // Delete notification
   const handleDelete = (id) => {
     try {
+      setNotificationLoader(true);
       dispatch(deleteNotification(id)).then((response) => {
         fetchNotificationsCount();
         fetchNotificationsList();
+        setNotificationLoader(false);
       });
     } catch (error) {
       console.error("Error fetching notifications:", error);
+      setNotificationLoader(false);
     } finally {
     }
     setNotifications(notifications.filter((n) => n.id !== id));
@@ -139,7 +146,7 @@ const NotificationCard = () => {
         receivedNotifications.add(notificationKey);
         setReceivedNotifications(new Set(receivedNotifications));
         setUnReadCount((prev) => prev + 1); // Only increment if notification is unique
-        toast.success(description);
+        toast.success(`${title} - ${description}`);
       }
     },
     [receivedNotifications]
@@ -216,7 +223,7 @@ const NotificationCard = () => {
               </div>
             ) : (
               <>
-                {notifications.length > 0 ? (
+                {notifications && notifications.length > 0 ? (
                   <>
                     <ListGroup>
                       {notifications.map((notification) => (
@@ -225,7 +232,7 @@ const NotificationCard = () => {
                           className="mx-0 mb-2 py-2 px-2 rounded align-items-center"
                           style={{
                             backgroundColor:
-                              notification.isRead === 0 ? "#ebeaea" : "#e7e7e7",
+                              notification.isRead === 0 ? "#ebeaea" : "#f7f7f7",
                             cursor: "pointer",
                           }}
                         >
@@ -268,13 +275,16 @@ const NotificationCard = () => {
                           >
                             {notification.isRead === 0 && (
                               <Button
-                                variant="outline-primary bg-light text-primary border-0"
+                                variant="outline-primary text-primary border-0"
                                 size="sm"
                                 onClick={(e) => {
                                   e.preventDefault(); // Stop NavLink from triggering
                                   handleMarkAsRead(notification.notificationId);
                                 }}
-                                className="bi bi-circle-fill"
+                                style={{
+                                  backgroundColor: "#ebeaea",
+                                }}
+                                className="bi bi-check-circle-fill"
                               ></Button>
                             )}
                             <Button
@@ -297,28 +307,44 @@ const NotificationCard = () => {
               </>
             )}
           </div>
-          <div className="notification-footer py-2 px-3 rounded">
-            {notifications.length > 0 && (
-              <Button
-                onClick={() => handleDeleteAll()}
-                type="button"
-                size="sm"
-                variant="danger"
-              >
-                Delete All
-              </Button>
-            )}
-            {notifications.some((n) => n.isRead === 0) && (
-              <Button
-                onClick={() => handleMarkAll()}
-                type="button"
-                size="sm"
-                variant="primary"
-              >
-                Read All
-              </Button>
-            )}
-          </div>
+          {notifications.length > 0 && (
+            <div className="notification-footer py-2 px-3 rounded">
+              <ButtonGroup className="w-100">
+                <Button
+                  onClick={() => handleDeleteAll()}
+                  type="button"
+                  size="sm"
+                  variant="danger"
+                  className="w-100"
+                >
+                  Delete All
+                </Button>
+
+                <Button
+                  as={NavLink}
+                  to="/notifications"
+                  type="button"
+                  size="sm"
+                  variant="success"
+                  className="w-100"
+                >
+                  View All
+                </Button>
+
+                {notifications.some((n) => n.isRead === 0) && (
+                  <Button
+                    onClick={() => handleMarkAll()}
+                    type="button"
+                    size="sm"
+                    variant="primary"
+                    className="w-100"
+                  >
+                    Read All
+                  </Button>
+                )}
+              </ButtonGroup>
+            </div>
+          )}
         </div>
       </NavDropdown>
     </Nav>

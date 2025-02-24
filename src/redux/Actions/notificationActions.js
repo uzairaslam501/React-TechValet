@@ -38,11 +38,12 @@ export const getNotificationsCount = createAsyncThunk(
 
 export const getNotifications = createAsyncThunk(
   "notifications/getNotifications",
-  async (id, { rejectWithValue, getState, dispatch }) => {
+  async (take, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
+    const userId = getUserId(getState);
     try {
       const response = await api.get(
-        `Notification/GetNotifications?UserId=${id}&isRead=-1`,
+        `Notification/GetNotifications/${userId}?isRead=-1&NotificationType=-1&take=${take}`,
         {
           headers: {
             Authorization: `${token}`,

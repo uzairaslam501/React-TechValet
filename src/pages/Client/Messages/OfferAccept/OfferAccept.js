@@ -4,7 +4,8 @@ import Dialogue from "../../../../components/Custom/Modal/modal";
 import PayWithPaypal from "./Payment/PayWithPaypal";
 import PayWithStripe from "./Payment/PayWithStripe";
 import PayWithPackage from "./Payment/PayWithPackage";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getPackageByUserId } from "../../../../redux/Actions/packageActions";
 
 const OfferAccept = ({
   showAcceptOrderDialogue,
@@ -13,7 +14,9 @@ const OfferAccept = ({
   fetchMessages,
   setShowAcceptOrderDialogue,
 }) => {
+  const dispatch = useDispatch();
   const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [userHasPackageOptions, setUserHasPackageOptions] = useState(false);
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const initialStripeValues = {
@@ -30,6 +33,18 @@ const OfferAccept = ({
     fromDateTime: selectedOfferValues.startedDateTime,
     toDateTime: selectedOfferValues.endedDateTime,
   };
+
+  const fetchPackageDetails = () => {
+    dispatch(getPackageByUserId()).then((response) => {
+      if (response?.payload) {
+        setUserHasPackageOptions(true);
+      }
+    });
+  };
+
+  useEffect(() => {
+    fetchPackageDetails();
+  }, [dispatch]);
   console.log("initialStripeValues", initialStripeValues);
 
   return (
@@ -40,13 +55,15 @@ const OfferAccept = ({
       title="Create Offer"
       bodyContent={
         <Container>
-          <PayWithPackage
-            selectedOfferValues={selectedOfferValues}
-            fetchMessages={fetchMessages}
-            setShowAcceptOrderDialogue={setShowAcceptOrderDialogue}
-            setButtonDisabled={setButtonDisabled}
-            buttonDisabled={buttonDisabled}
-          />
+          {userHasPackageOptions && (
+            <PayWithPackage
+              selectedOfferValues={selectedOfferValues}
+              fetchMessages={fetchMessages}
+              setShowAcceptOrderDialogue={setShowAcceptOrderDialogue}
+              setButtonDisabled={setButtonDisabled}
+              buttonDisabled={buttonDisabled}
+            />
+          )}
           <PayWithStripe
             selectedOfferValues={initialStripeValues}
             setButtonDisabled={setButtonDisabled}

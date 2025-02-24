@@ -69,6 +69,7 @@ import ResetPassword from "../pages/Auth/ResetPassword/ResetPassword";
 import ForgotPassword from "../pages/Auth/ForgotPassword/ForgotPassword";
 import UserProfile from "../pages/Auth/Profile";
 import Index from "../pages/Auth/Profile/TabIndex";
+import NotificationList from "../pages/Client/Notification/NotificationList";
 
 const createRoute = createBrowserRouter(
   createRoutesFromElements(
@@ -150,6 +151,7 @@ const createRoute = createBrowserRouter(
             <Route path="/orders" element={<ManageOrders />} />
             <Route path="/preview-order" element={<OrderPreview />} />
             <Route path="/order-details/:id" element={<OrderDetail />} />
+            <Route path="/notifications" element={<NotificationList />} />
           </Route>
 
           <Route
