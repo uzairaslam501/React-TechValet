@@ -343,82 +343,87 @@ const Messages = () => {
     signalRService.initializeConnection(notificationURL, userAuth?.id);
 
     const handleIncomingData = (senderId, receiverId, model) => {
-      if (model.messageDescription === "Reject") {
-        if (userAuth?.id !== receiverId) {
-          setMessages((prev) => {
-            const messageDate = model.messageDate;
-            const newMessages = { ...prev };
-
-            if (newMessages[messageDate]) {
-              const existsIndex = newMessages[messageDate].findIndex(
-                (msg) => msg.offerTitleId === model?.offerTitleId
-              );
-
-              if (existsIndex !== -1) {
-                // ✅ Update the existing message by replacing it
-                newMessages[messageDate] = newMessages[messageDate].map(
-                  (msg, index) =>
-                    index === existsIndex ? { ...msg, ...model } : msg
-                );
-              } else {
-                // ✅ Add new message if it doesn't exist
-                newMessages[messageDate] = [...newMessages[messageDate], model];
-              }
-            } else {
-              // ✅ Create new date entry if it doesn't exist
-              newMessages[messageDate] = [model];
-            }
-
-            return newMessages;
-          });
-        }
-      } else {
-        if (userAuth?.id === receiverId) {
-          if (activeChatRef.current?.userDecId === String(senderId)) {
+      if (!checkIfStringIsValid(model.orderId)) {
+        if (model.messageDescription === "Reject") {
+          if (userAuth?.id !== receiverId) {
             setMessages((prev) => {
               const messageDate = model.messageDate;
               const newMessages = { ...prev };
 
               if (newMessages[messageDate]) {
-                const exists = newMessages[messageDate].some(
-                  (msg) => msg.id === model.id
+                const existsIndex = newMessages[messageDate].findIndex(
+                  (msg) => msg.offerTitleId === model?.offerTitleId
                 );
-                if (!exists) {
+
+                if (existsIndex !== -1) {
+                  // ✅ Update the existing message by replacing it
+                  newMessages[messageDate] = newMessages[messageDate].map(
+                    (msg, index) =>
+                      index === existsIndex ? { ...msg, ...model } : msg
+                  );
+                } else {
+                  // ✅ Add new message if it doesn't exist
                   newMessages[messageDate] = [
                     ...newMessages[messageDate],
                     model,
                   ];
                 }
               } else {
+                // ✅ Create new date entry if it doesn't exist
                 newMessages[messageDate] = [model];
               }
 
               return newMessages;
             });
+          }
+        } else {
+          if (userAuth?.id === receiverId) {
+            if (activeChatRef.current?.userDecId === String(senderId)) {
+              setMessages((prev) => {
+                const messageDate = model.messageDate;
+                const newMessages = { ...prev };
 
-            setUsersList((prev) =>
-              prev.map((u) => {
-                return u.userDecId === String(senderId)
-                  ? {
-                      ...u,
-                      messageDescription: model.messageDescription,
-                      hasNewMessage: false,
-                    }
-                  : u;
-              })
-            );
-          } else {
-            setUsersList((prev) =>
-              prev.map((u) => {
-                return u.userDecId === String(senderId)
-                  ? {
-                      ...u,
-                      messageDescription: model.messageDescription,
-                      hasNewMessage: true,
-                    }
-                  : u;
-              })
-            );
+                if (newMessages[messageDate]) {
+                  const exists = newMessages[messageDate].some(
+                    (msg) => msg.id === model.id
+                  );
+                  if (!exists) {
+                    newMessages[messageDate] = [
+                      ...newMessages[messageDate],
+                      model,
+                    ];
+                  }
+                } else {
+                  newMessages[messageDate] = [model];
+                }
+
+                return newMessages;
+              });
+
+              setUsersList((prev) =>
+                prev.map((u) => {
+                  return u.userDecId === String(senderId)
+                    ? {
+                        ...u,
+                        messageDescription: model.messageDescription,
+                        hasNewMessage: false,
+                      }
+                    : u;
+                })
+              );
+            } else {
+              setUsersList((prev) =>
+                prev.map((u) => {
+                  return u.userDecId === String(senderId)
+                    ? {
+                        ...u,
+                        messageDescription: model.messageDescription,
+                        hasNewMessage: true,
+                      }
+                    : u;
+                })
+              );
+            }
           }
         }
       }

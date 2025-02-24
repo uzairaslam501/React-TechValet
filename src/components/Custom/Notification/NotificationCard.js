@@ -11,7 +11,10 @@ import {
   ButtonGroup,
 } from "react-bootstrap";
 import "./NotificationCard.css";
-import { truncateCharacters } from "../../../utils/_helpers";
+import {
+  checkIfStringIsValid,
+  truncateCharacters,
+} from "../../../utils/_helpers";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteAllNotifications,
@@ -146,7 +149,9 @@ const NotificationCard = () => {
         receivedNotifications.add(notificationKey);
         setReceivedNotifications(new Set(receivedNotifications));
         setUnReadCount((prev) => prev + 1); // Only increment if notification is unique
-        toast.success(`${title} - ${description}`);
+        if (checkIfStringIsValid(description)) {
+          toast.success(`${title} - ${description}`);
+        }
       }
     },
     [receivedNotifications]

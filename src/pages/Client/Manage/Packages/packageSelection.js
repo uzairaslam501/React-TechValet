@@ -42,9 +42,12 @@ const PackageSelection = () => {
         <h1 className="fw-bold">Hi Customer,</h1>
         <h3 className="fw-semi-bold">Choose a Package</h3>
         <p className="lead text-dark">
-          <strong>Note:</strong> Once a 1-Year or 2-Year Package has been
-          bought, the option to buy a new package will be disabled until the
-          previous packages have been utilized.
+          <strong className="text-primary">Note:</strong> Once a 1-Year or
+          2-Year Package has been bought,{" "}
+          <span className="text-primary">
+            the option to buy a new package will be disabled until the previous
+            packages have been utilized.
+          </span>
         </p>
 
         <Row className="pt-5 d-flex justify-content-center">
@@ -53,10 +56,25 @@ const PackageSelection = () => {
               <div className="pb-3 display-4">
                 <i className="bi bi-calendar3" aria-hidden="true"></i>
               </div>
-              <h5 className="fw-bold">One Year Package</h5>
-              <p className="text-muted">
-                6 sessions available anytime within a year
-              </p>
+              <h5 className="text-primary">1-Year Valet Package</h5>
+              <ul className="text-start">
+                <li>
+                  Valid for <strong>1 year</strong> from the date of purchase.
+                </li>
+                <li>
+                  Includes <strong>6 valet sessions</strong>, each lasting{" "}
+                  <strong>1 hour</strong> (total <strong>6 hours</strong>).
+                </li>
+                <li>Can be used as payment when booking a valet.</li>
+                <li>
+                  Sessions can be scheduled at any time within the validity
+                  period, subject to availability.
+                </li>
+                <li>
+                  Ideal for users who require valet services occasionally
+                  throughout the year.
+                </li>
+              </ul>
               <h6 style={{ fontSize: "30px" }} className="fw-bold">
                 $100
               </h6>
@@ -86,10 +104,25 @@ const PackageSelection = () => {
               <div className="pb-3 display-4">
                 <i className="bi bi-calendar3" aria-hidden="true"></i>
               </div>
-              <h5 className="fw-bold">Two Year Package</h5>
-              <p className="text-muted">
-                12 sessions available anytime within 2 years
-              </p>
+              <h5 className="text-primary">2-Year Valet Package</h5>
+              <ul className="text-start">
+                <li>
+                  Valid for <strong>2 years</strong> from the date of purchase.
+                </li>
+                <li>
+                  Includes <strong>12 valet sessions</strong>, each lasting{" "}
+                  <strong>1 hour</strong> (total <strong>12 hours</strong>).
+                </li>
+                <li>Can be used as payment when booking a valet.</li>
+                <li>
+                  Provides extended flexibility for long-term valet service
+                  needs.
+                </li>
+                <li>
+                  A cost-effective choice for users who need regular valet
+                  assistance over a longer period.
+                </li>
+              </ul>
               <h6 style={{ fontSize: "30px" }} className="fw-bold">
                 $200
               </h6>

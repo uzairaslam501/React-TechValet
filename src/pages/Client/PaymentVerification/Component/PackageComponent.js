@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Col, Row, Tab, Table } from "react-bootstrap";
+import { Button, Col, Row, Table } from "react-bootstrap";
 
 const PackageComponent = ({ packageDetails, boughtBy }) => {
   return (
@@ -11,39 +11,27 @@ const PackageComponent = ({ packageDetails, boughtBy }) => {
             <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
               Pakcage Type:
             </td>
-            <td>
-              {packageDetails?.packageType === "IYear" ? "1 Year" : "2 Year"}
-            </td>
+            <td>{packageDetails?.packageType === 1 ? "1 Year" : "2 Year"}</td>
           </tr>
           <tr>
             <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
               Sessions Included:
             </td>
             <td>
-              {packageDetails?.packageType === "IYear"
-                ? "6 Sessions"
-                : "12 Sessions"}
+              {packageDetails?.packageType === 1 ? "6 Sessions" : "12 Sessions"}
             </td>
           </tr>
           <tr>
             <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
               Package Price:
             </td>
-            <td>{`$${
-              packageDetails?.packageType === "IYear" ? "100" : "200"
-            }`}</td>
-          </tr>
-          <tr>
-            <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
-              Payment Id:
-            </td>
-            <td>{`${packageDetails?.paymentId}`}</td>
+            <td>{`$${packageDetails?.packageType === 1 ? "100" : "200"}`}</td>
           </tr>
           <tr>
             <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
               Payment Method:
             </td>
-            <td>{boughtBy}</td>
+            <td>{`${packageDetails?.packagePaidBy}`}</td>
           </tr>
         </Table>
       </div>
