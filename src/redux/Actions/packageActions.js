@@ -13,7 +13,7 @@ const api = axios.create({
 });
 
 export const getUserPackageByUserId = createAsyncThunk(
-  "package/getUserPackageByUserId",
+  "packageRedux/getUserPackageByUserId",
   async (_, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
@@ -35,7 +35,7 @@ export const getUserPackageByUserId = createAsyncThunk(
 );
 
 export const getPackageById = createAsyncThunk(
-  "pakcage/gePackageById",
+  "packageRedux/gePackageById",
   async (id, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {
@@ -52,8 +52,30 @@ export const getPackageById = createAsyncThunk(
   }
 );
 
+export const getPackageByUserId = createAsyncThunk(
+  "packageRedux/getPackageByUserId",
+  async (_, { rejectWithValue, getState, dispatch }) => {
+    const { token, expired } = getToken(getState);
+    const userId = getUserId(getState);
+    try {
+      const response = await api.get(
+        `Customer/GetPackageByUserId/${encodeURIComponent(userId)}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
+      const { data } = processApiResponse(response, dispatch, expired);
+      return data;
+    } catch (error) {
+      handleApiError(error, dispatch, expired);
+    }
+  }
+);
+
 export const paymentWithPackage = createAsyncThunk(
-  "package/paymentWithPackage",
+  "packageRedux/paymentWithPackage",
   async (checkoutDto, { rejectWithValue, getState, dispatch }) => {
     const { token, expired } = getToken(getState);
     try {

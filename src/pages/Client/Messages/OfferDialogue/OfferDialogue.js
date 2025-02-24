@@ -136,9 +136,9 @@ const OfferDialogue = ({
                   handleDateTimeMatch(e.target.value, "startedDateTime");
                 }}
                 min={disabledPreviousDateTime()}
-                max={
-                  restrictions || setDateTimeRestrictions("max", validRange.end)
-                }
+                // max={
+                //   restrictions || setDateTimeRestrictions("max", validRange.end)
+                // }
                 isInvalid={touched.startedDateTime && !!errors.startedDateTime}
                 onKeyDown={(e) => e.preventDefault()}
               />
@@ -160,9 +160,9 @@ const OfferDialogue = ({
                 }}
                 disabled={!values.startedDateTime}
                 min={disabledPreviousDateTime()}
-                max={
-                  restrictions || setDateTimeRestrictions("max", validRange.end)
-                }
+                // max={
+                //   restrictions || setDateTimeRestrictions("max", validRange.end)
+                // }
                 isInvalid={touched.endedDateTime && !!errors.endedDateTime}
                 onKeyDown={(e) => e.preventDefault()}
               />

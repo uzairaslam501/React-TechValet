@@ -411,6 +411,7 @@ const UserRegisteration = () => {
                       }}
                       isInvalid={touched.timezone && !!errors.timezone}
                     >
+                      <option value="">Select Timezone</option>
                       {timeZones.length > 0 &&
                         timeZones.map((zone) => (
                           <option key={zone} value={zone}>

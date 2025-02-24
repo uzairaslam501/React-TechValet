@@ -10,7 +10,7 @@ import {
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Dialogue from "../../../../../components/Custom/Modal/modal";
-import { getUserPackageByUserId } from "../../../../../redux/Actions/packageActions";
+import { getPackageByUserId } from "../../../../../redux/Actions/packageActions";
 import { convertToISO, toFixedTruncate } from "../../../../../utils/_helpers";
 import { createStripeCharge } from "../../../../../redux/Actions/stripeActions";
 import { chargeByPackage } from "../../../../../redux/Actions/paypalActions";
@@ -23,6 +23,7 @@ const PayWithPackage = ({
   setButtonDisabled,
   buttonDisabled,
 }) => {
+  console.log("Pay With Pacakge selectedOfferValues", selectedOfferValues);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -63,7 +64,7 @@ const PayWithPackage = ({
     setShowModal(true);
     setButtonDisabled(true);
 
-    dispatch(getUserPackageByUserId())
+    dispatch(getPackageByUserId())
       .then((response) => {
         setUserPackageDetails(response?.payload);
         setLoading(false);
@@ -202,12 +203,19 @@ const PayWithPackage = ({
         }
         backdrop="static"
         customFooterButtons={[
-          {
-            text: "Confirm Order",
-            className: "btn-primary-secondary",
-            onClick: handleSubmitPayment,
-            loader: packageSubmitButton,
-          },
+          calculatedValues.sessionsAfterConfirmation < 0
+            ? {
+                text: "Confirm Order",
+                className: "btn-primary-secondary disabled",
+                size: "sm",
+              }
+            : {
+                text: "Confirm Order",
+                className: "btn-primary-secondary text-center",
+                onClick: handleSubmitPayment,
+                loader: packageSubmitButton,
+                size: "sm",
+              },
         ]}
       />
     </>

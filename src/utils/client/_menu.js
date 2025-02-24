@@ -88,13 +88,13 @@ export const customerMenu = [
     label: "Requests",
     title: "My Requests",
   },
-  {
-    href: "/register/valet",
-    iconClass: "bi bi-tropical-storm me-2",
-    className: "",
-    label: "Switch to Valet",
-    title: "Switch to Valet",
-  },
+  // {
+  //   href: "/register/valet",
+  //   iconClass: "bi bi-tropical-storm me-2",
+  //   className: "",
+  //   label: "Switch to Valet",
+  //   title: "Switch to Valet",
+  // },
   {
     href: "#referal",
     iconClass: "",

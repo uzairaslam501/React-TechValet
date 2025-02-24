@@ -41,6 +41,7 @@ const Dialogue = ({
                   className={button.className}
                   onClick={button.onClick}
                   disabled={button.loader}
+                  size={button.size || "md"}
                 >
                   {button.loader && (
                     <Spinner animation="border" size="sm" className="me-1" />
