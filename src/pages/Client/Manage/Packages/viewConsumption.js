@@ -3,6 +3,8 @@ import { useDispatch } from "react-redux";
 import { Card, CardBody } from "react-bootstrap";
 import CustomTable from "../../../../components/Custom/Datatable/table";
 import { getUserPackagesConsumptionRecords } from "../../../../redux/Actions/customerActions";
+import BadgeStatus from "../../../../components/Custom/StatusBadge/StatusBadge";
+import { NavLink } from "react-router-dom";
 
 const ViewConsumption = ({ packageId }) => {
   const dispatch = useDispatch();
@@ -60,7 +62,52 @@ const ViewConsumption = ({ packageId }) => {
         setConsumptionLoader(true);
         dispatch(getUserPackagesConsumptionRecords(params)).then((response) => {
           if (response?.payload) {
-            setConsumptionRecords(response.payload?.data);
+            const data = response.payload.data.map((obj) => {
+              const orderPaidByBadge =
+                obj.orderReasonType &&
+                obj.orderReasonType === "3" &&
+                obj.orderReasonIsActive === "1" ? (
+                  <NavLink to={`/order-details/${obj.encId}`}>
+                    <BadgeStatus status="Cancelled" />
+                  </NavLink>
+                ) : obj.isDelivered?.toString() === "0" ? (
+                  <NavLink to={`/order-details/${obj.encId}`}>
+                    <BadgeStatus status="In Progress" />
+                  </NavLink>
+                ) : obj.isDelivered?.toString() === "1" ? (
+                  <NavLink to={`/order-details/${obj.encId}`}>
+                    <BadgeStatus status="Delivered" />
+                  </NavLink>
+                ) : obj.isDelivered?.toString() === "2" ? (
+                  <NavLink to={`/order-details/${obj.encId}`}>
+                    <BadgeStatus status="Completed" />
+                  </NavLink>
+                ) : (
+                  <NavLink to={`/order-details/${obj.encId}`}>
+                    <BadgeStatus status="Unknown" />
+                  </NavLink>
+                );
+
+              return {
+                ...obj,
+                orderTitle: (
+                  <NavLink
+                    to={`/order-details/${obj.encId}`}
+                    className="text-dark"
+                  >
+                    {obj.orderTitle}
+                  </NavLink>
+                ),
+                orderPrice: (
+                  <>
+                    <span className="fw-bold">$</span> {obj.orderPrice}
+                  </>
+                ),
+                orderReasonType: orderPaidByBadge,
+              };
+            });
+
+            setConsumptionRecords(data);
             setTotalConsumptionRecords(response.payload?.recordsTotal);
           } else {
             setConsumptionRecords([]);
@@ -89,6 +136,7 @@ const ViewConsumption = ({ packageId }) => {
             loader={consumptionLoader}
             searchFunctionality={false}
             pageLengthFunctionality={true}
+            tableClassName="text-center"
           />
         </CardBody>
       </Card>

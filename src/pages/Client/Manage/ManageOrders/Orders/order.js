@@ -3,8 +3,18 @@ import CustomTable from "../../../../../components/Custom/Datatable/table";
 import { getOrderRecords } from "../../../../../redux/Actions/customerActions";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { Card, CardBody, Col, Container, Row, Spinner } from "react-bootstrap";
+import {
+  Badge,
+  Card,
+  CardBody,
+  Col,
+  Container,
+  Row,
+  Spinner,
+} from "react-bootstrap";
 import Dialogue from "../../../../../components/Custom/Modal/modal";
+import BadgeStatus from "../../../../../components/Custom/StatusBadge/StatusBadge";
+import { NavLink } from "react-router-dom";
 
 const Order = ({ isLoading }) => {
   console.log("isLoading", isLoading);
@@ -94,8 +104,41 @@ const Order = ({ isLoading }) => {
       setOrdersLoader(true);
       dispatch(getOrderRecords(params))
         .then((response) => {
-          setOrderRecords(response.payload?.data);
-          setOrdersTotalRecords(response.payload?.recordsTotal);
+          if (response.payload) {
+            const data = response.payload.data.map((obj) => {
+              const orderPaidByBadge =
+                obj.orderReasonType &&
+                obj.orderReasonType === "3" &&
+                obj.orderReasonIsActive === "1" ? (
+                  <BadgeStatus status="Cancelled" />
+                ) : obj.isDelivered?.toString() === "0" ? (
+                  <BadgeStatus status="In Progress" />
+                ) : obj.isDelivered?.toString() === "1" ? (
+                  <BadgeStatus status="Delivered" />
+                ) : obj.isDelivered?.toString() === "2" ? (
+                  <BadgeStatus status="Completed" />
+                ) : (
+                  <BadgeStatus status="Unknown" />
+                );
+
+              return {
+                ...obj,
+                orderTitle: (
+                  <NavLink to={`/order-details/${obj.encId}`}>
+                    {obj.orderTitle}
+                  </NavLink>
+                ),
+                orderPrice: (
+                  <>
+                    <span className="fw-bold">$</span> {obj.orderPrice}
+                  </>
+                ),
+                orderReasonType: orderPaidByBadge,
+              };
+            });
+            setOrderRecords(data);
+            setOrdersTotalRecords(response.payload?.recordsTotal);
+          }
         })
         .catch((error) => {
           setOrderRecords([]);

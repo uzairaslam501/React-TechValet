@@ -5,6 +5,7 @@ import CustomTable from "../../../../components/Custom/Datatable/table";
 import { userPackageByUserId } from "../../../../redux/Actions/customerActions";
 import Dialogue from "../../../../components/Custom/Modal/modal";
 import ViewConsumption from "./viewConsumption";
+import BadgeStatus from "../../../../components/Custom/StatusBadge/StatusBadge";
 
 const ViewPackages = () => {
   const dispatch = useDispatch();
@@ -41,18 +42,18 @@ const ViewPackages = () => {
     },
     {
       id: "0",
-      label: "Package Type",
+      label: "Package",
       column: "packageType",
     },
     {
       id: "0",
-      label: "Total Sessions",
+      label: "Sessions",
       column: "totalSessions",
     },
 
     {
       id: "0",
-      label: "Remaining Sessions",
+      label: " Used",
       column: "remainingSessions",
     },
 
@@ -92,9 +93,28 @@ const ViewPackages = () => {
       setLoader(true);
       dispatch(userPackageByUserId(params))
         .then((response) => {
-          console.log(response.payload);
-          setRecords(response.payload?.data);
-          setTotalRecords(response.payload?.recordsTotal);
+          if (response?.payload) {
+            const data = response.payload.data.map((obj) => {
+              return {
+                ...obj,
+                packageType:
+                  obj.packageType === 1 ? (
+                    <BadgeStatus status="OneYear" />
+                  ) : (
+                    <BadgeStatus status="TwoYear" />
+                  ),
+                status:
+                  obj.remainingSessions >= 1 ? (
+                    <BadgeStatus status="Activate" />
+                  ) : (
+                    <BadgeStatus status="Expired" />
+                  ),
+              };
+            });
+
+            setRecords(data);
+            setTotalRecords(response.payload?.recordsTotal);
+          }
         })
         .catch((error) => {
           setRecords([]);
@@ -129,6 +149,7 @@ const ViewPackages = () => {
                   loader={loader}
                   searchFunctionality={false}
                   pageLengthFunctionality={true}
+                  tableClassName="text-center"
                 />
               </CardBody>
             </Card>

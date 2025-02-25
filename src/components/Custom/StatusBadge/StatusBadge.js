@@ -11,9 +11,14 @@ const BadgeStatus = ({ status }) => {
     5: { label: "Completed", color: "#198754" }, // Dark Green (Best)
     6: { label: "Refunded", color: "#007bff" }, // Blue (Informational)
     7: { label: "Failed", color: "#ff073a" }, // Bright Red (Critical)
-    8: { label: "Disputed", color: "#6c757d" }, // Gray (Uncertain)
+
+    //For Packages
+    8: { label: "Activate", color: "#6c757d" }, // Gray (Uncertain)
     9: { label: "Expired", color: "#d63384" }, // Pinkish-Red (Expired/Bad)
-    10: { label: "Under Review", color: "#6610f2" }, // Purple (Waiting for Approval)
+    10: { label: "1 Year", color: "#ff7f50" }, // Coral Orange (1 Year)
+    11: { label: "2 Year", color: "#8a2be2" }, // Blue-Violet (2 Years)
+
+    12: { label: "Under Review", color: "#6610f2" }, // Purple (Waiting for Approval)
 
     "In Progress": { label: "In Progress", color: "#17a2b8" }, // Teal (Active)
     Open: { label: "Open", color: "#28a745" }, // Green (Good)
@@ -23,8 +28,13 @@ const BadgeStatus = ({ status }) => {
     Completed: { label: "Completed", color: "#198754" }, // Dark Green (Best)
     Refunded: { label: "Refunded", color: "#007bff" }, // Blue (Informational)
     Failed: { label: "Failed", color: "#ff073a" }, // Bright Red (Critical)
-    Disputed: { label: "Disputed", color: "#6c757d" }, // Gray (Uncertain)
+
+    //For Packages
+    Activate: { label: "Activate", color: "#6c757d" }, // Gray (Uncertain)
     Expired: { label: "Expired", color: "#d63384" }, // Pinkish-Red (Expired/Bad)
+    OneYear: { label: "1 Year", color: "#ff7f50" }, // Coral Orange (1 Year)
+    TwoYear: { label: "2 Year", color: "#8a2be2" }, // Blue-Violet (2 Years)
+
     "Under Review": { label: "Under Review", color: "#6610f2" }, // Purple (Waiting for Approval)
   };
 
