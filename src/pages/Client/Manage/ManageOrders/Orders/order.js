@@ -110,13 +110,21 @@ const Order = ({ isLoading }) => {
                 obj.orderReasonType &&
                 obj.orderReasonType === "3" &&
                 obj.orderReasonIsActive === "1" ? (
-                  <BadgeStatus status="Cancelled" />
+                  <NavLink to={`/order-details/${obj.encId}`}>
+                    <BadgeStatus status="Cancelled" />
+                  </NavLink>
                 ) : obj.isDelivered?.toString() === "0" ? (
-                  <BadgeStatus status="In Progress" />
+                  <NavLink to={`/order-details/${obj.encId}`}>
+                    <BadgeStatus status="In Progress" />
+                  </NavLink>
                 ) : obj.isDelivered?.toString() === "1" ? (
-                  <BadgeStatus status="Delivered" />
+                  <NavLink to={`/order-details/${obj.encId}`}>
+                    <BadgeStatus status="Delivered" />
+                  </NavLink>
                 ) : obj.isDelivered?.toString() === "2" ? (
-                  <BadgeStatus status="Completed" />
+                  <NavLink to={`/order-details/${obj.encId}`}>
+                    <BadgeStatus status="Completed" />
+                  </NavLink>
                 ) : (
                   <BadgeStatus status="Unknown" />
                 );
@@ -124,7 +132,10 @@ const Order = ({ isLoading }) => {
               return {
                 ...obj,
                 orderTitle: (
-                  <NavLink to={`/order-details/${obj.encId}`}>
+                  <NavLink
+                    to={`/order-details/${obj.encId}`}
+                    className={"text-dark"}
+                  >
                     {obj.orderTitle}
                   </NavLink>
                 ),

@@ -10,7 +10,10 @@ import {
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Dialogue from "../../../../../components/Custom/Modal/modal";
-import { getPackageByUserId } from "../../../../../redux/Actions/packageActions";
+import {
+  getPackageByUserId,
+  paymentWithPackage,
+} from "../../../../../redux/Actions/packageActions";
 import { convertToISO, toFixedTruncate } from "../../../../../utils/_helpers";
 import { createStripeCharge } from "../../../../../redux/Actions/stripeActions";
 import { chargeByPackage } from "../../../../../redux/Actions/paypalActions";
@@ -111,7 +114,7 @@ const PayWithPackage = ({
 
     if (packageDetails.paidBy === "STRIPE") {
       console.log(values);
-      dispatch(createStripeCharge(values))
+      dispatch(paymentWithPackage(values))
         .then((response) => {
           if (response?.payload) {
             const values = {
