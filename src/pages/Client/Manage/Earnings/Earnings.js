@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Badge } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import {
@@ -12,9 +12,9 @@ import EarningsDashboard from "./EarningsDashboard";
 import { parseStringToFloat } from "../../../../utils/_helpers";
 import Dialogue from "../../../../components/Custom/Modal/modal";
 import { postWithdrawStripePayment } from "../../../../redux/Actions/stripeActions";
+import { NavLink } from "react-router-dom";
 
 const headers = [
-  { id: "0", label: "Action", column: "Action" },
   { id: "0", label: "Order #", column: "encOrderId" },
   {
     id: "0",
@@ -117,8 +117,81 @@ const Earnings = () => {
       setIsLoading(true);
       dispatch(getUserEarningRecords(params))
         .then((response) => {
-          setRecords(response.payload?.data);
-          setTotalRecords(response.payload?.recordsTotal);
+          if (response?.payload) {
+            const data = response.payload.data.map((obj) => {
+              return {
+                ...obj,
+                orderTitle: (
+                  <NavLink to={`/order-details/${obj.encOrderId}`}>
+                    {obj.orderTitle}
+                  </NavLink>
+                ),
+                orderPrice: (
+                  <>
+                    <span className="fw-bold">$</span>
+                    {obj.orderPrice}
+                  </>
+                ),
+                earnedFromOrder: (
+                  <>
+                    <span className="">{obj.earnedFromOrder}</span>
+                  </>
+                ),
+                orderPaidBy:
+                  obj.orderPaidBy === "STRIPE" ? (
+                    <Badge
+                      style={{
+                        display: "inline-block",
+                        padding: "5px 12px",
+                        borderRadius: "30px",
+                        fontSize: "13px",
+                        fontWeight: "normal",
+                        textAlign: "center",
+                        minWidth: "80px",
+                      }}
+                      bg="success"
+                    >
+                      STRIPE
+                    </Badge>
+                  ) : obj.orderPaidBy === "PAYPAL" ? (
+                    <Badge
+                      style={{
+                        display: "inline-block",
+                        padding: "5px 12px",
+                        borderRadius: "30px",
+                        fontSize: "13px",
+                        fontWeight: "normal",
+                        textAlign: "center",
+                        minWidth: "80px",
+                      }}
+                      className="p-2"
+                      bg="warning"
+                    >
+                      PAYPAL
+                    </Badge>
+                  ) : obj.orderPaidBy === "Package" ? (
+                    <Badge
+                      style={{
+                        display: "inline-block",
+                        padding: "5px 12px",
+                        borderRadius: "30px",
+                        fontSize: "13px",
+                        fontWeight: "normal",
+                        textAlign: "center",
+                        minWidth: "80px",
+                      }}
+                      className="p-2"
+                      bg="primary"
+                    >
+                      Package
+                    </Badge>
+                  ) : null,
+              };
+            });
+
+            setRecords(data); // Make sure you're setting the updated 'data' instead of response.payload.data
+            setTotalRecords(response.payload?.recordsTotal);
+          }
         })
         .catch((error) => {
           setRecords([]);
@@ -236,6 +309,7 @@ const Earnings = () => {
                           loader={isloading}
                           searchFunctionality={false}
                           pageLengthFunctionality={true}
+                          tableClassName="text-center"
                         />
                       </div>
                     </Card.Body>

@@ -3,6 +3,8 @@ import { useDispatch } from "react-redux";
 import { Card, CardBody, Col, Container, Row } from "react-bootstrap";
 import CustomTable from "../../../../components/Custom/Datatable/table";
 import { getStripeRecords } from "../../../../redux/Actions/adminActions";
+import BadgeStatus from "../../../../components/Custom/StatusBadge/StatusBadge";
+import { NavLink } from "react-router-dom";
 
 const StripeOrder = ({ handleOpen, refreshKey }) => {
   const dispatch = useDispatch();
@@ -97,9 +99,47 @@ const StripeOrder = ({ handleOpen, refreshKey }) => {
       setLoader(true);
       dispatch(getStripeRecords(params))
         .then((response) => {
-          console.log(response.payload);
-          setRecords(response.payload?.data || []);
-          setTotalRecords(response.payload?.recordsTotal || 0);
+          console.log("stripeORders", response.payload);
+          if (response?.payload) {
+            const data = response.payload.data.map((obj) => {
+              obj.paymentStatus =
+                obj.paymentStatus.toUpperCase() === "COMPLETED" ? (
+                  <BadgeStatus status="Completed" />
+                ) : obj.paymentStatus.toUpperCase() === "REFUNDED" ? (
+                  <BadgeStatus status="Refunded" />
+                ) : obj.paymentStatus.toUpperCase() === "PAID-BY-PACKAGE" ? (
+                  <BadgeStatus status="Package" />
+                ) : (
+                  <BadgeStatus status="N/A" />
+                );
+
+              obj.orderStatus = obj.orderStatus && (
+                <NavLink to={`/order-details/${obj.orderEncId}`}>
+                  <BadgeStatus status={parseInt(obj.orderStatus)} />
+                </NavLink>
+              );
+
+              return {
+                ...obj,
+                orderTitle: (
+                  <NavLink
+                    to={`/order-details/${obj.orderEncId}`}
+                    className="text-dark"
+                  >
+                    {obj.orderTitle}
+                  </NavLink>
+                ),
+                orderPrice: (
+                  <>
+                    <span className="fw-bold">$</span> {obj.orderPrice}
+                  </>
+                ),
+              };
+            });
+
+            setRecords(data);
+            setTotalRecords(response.payload?.recordsTotal);
+          }
         })
         .catch((error) => {
           setRecords([]);

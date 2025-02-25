@@ -23,6 +23,7 @@ function CustomTable({
   loader,
   searchFunctionality,
   pageLengthFunctionality,
+  tableClassName,
 }) {
   const [rowsPerPage, setRowsPerPage] = useState(pageLength);
   const [page, setPage] = useState(0);
@@ -189,6 +190,7 @@ function CustomTable({
         hover
         responsive
         style={{ verticalAlign: "middle" }}
+        className={tableClassName}
       >
         <thead style={{ backgroundColor: "#000" }}>
           <tr>
@@ -240,100 +242,6 @@ function CustomTable({
                             imageStyle={{ width: "50px", height: "50px" }}
                           />
                         </a>
-                      ) : header.column === "orderPrice" ? (
-                        <>
-                          <p>
-                            <span className="fw-bold">$</span>
-                            {row[header.column]}
-                          </p>
-                        </>
-                      ) : header.column === "encOrderId" ? (
-                        <>
-                          <Button
-                            as={NavLink}
-                            to={`/order-details/${row.encOrderId}`}
-                            className="text-primary bg-transparent border-0 p-0"
-                          >
-                            <u>{row.encOrderId}</u>
-                          </Button>
-                        </>
-                      ) : header.column === "orderReasonType" ? (
-                        <>
-                          {row.orderReasonType === "3" &&
-                          row.orderReasonIsActive === "1" ? (
-                            <Button
-                              size="sm"
-                              as={NavLink}
-                              to={`/order-details/${row.encId}`}
-                              variant="danger"
-                            >
-                              Cancelled
-                            </Button>
-                          ) : row.isDelivered === "0" ? (
-                            <Button
-                              size="sm"
-                              as={NavLink}
-                              to={`/order-details/${row.encId}`}
-                              className="btn-secondary-secondary"
-                            >
-                              In Progress
-                            </Button>
-                          ) : row.isDelivered === "1" ? (
-                            <Button
-                              size="sm"
-                              as={NavLink}
-                              to={`/order-details/${row.encId}`}
-                              variant="success"
-                            >
-                              Delivered
-                            </Button>
-                          ) : (
-                            <Button
-                              size="sm"
-                              as={NavLink}
-                              to={`/order-details/${row.encId}`}
-                              className="btn-primary-secondary"
-                            >
-                              Completed
-                            </Button>
-                          )}
-                        </>
-                      ) : header.column === "status" ? (
-                        <>
-                          {row.remainingSessions > 0 ? (
-                            <span>Activate</span>
-                          ) : (
-                            <span>Expired</span>
-                          )}
-                        </>
-                      ) : header.column == "orderStatus" ? (
-                        <>
-                          {row.orderStatus !== "" ? (
-                            <NavLink
-                              to={`/order-details/${
-                                row.encOrderId || row.orderEncId
-                              }`}
-                            >
-                              <BadgeStatus status={parseInt(row.orderStatus)} />
-                            </NavLink>
-                          ) : (
-                            <BadgeStatus status="N/A" />
-                          )}
-                          {}
-                        </>
-                      ) : header.column == "paymentStatus" ? (
-                        <>
-                          {row.paymentStatus.toUpperCase() === "COMPLETED" ? (
-                            <BadgeStatus status="Completed" />
-                          ) : row.paymentStatus.toUpperCase() === "REFUNDED" ? (
-                            <BadgeStatus status="Refunded" />
-                          ) : row.paymentStatus.toUpperCase() ===
-                            "PAID-BY-PACKAGE" ? (
-                            <BadgeStatus status="Package" />
-                          ) : (
-                            <BadgeStatus status="N/A" />
-                          )}
-                        </>
                       ) : header.column == "stripeStatus" ? (
                         <>
                           {row.orderStatus === "0" ? (
@@ -348,8 +256,7 @@ function CustomTable({
                         </>
                       ) : (
                         <span title={row[header.column]}>
-                          {row[header.column] &&
-                            truncateCharacters(row[header.column], 25)}
+                          {row[header.column] && row[header.column]}
                         </span>
                       )}
                     </td>

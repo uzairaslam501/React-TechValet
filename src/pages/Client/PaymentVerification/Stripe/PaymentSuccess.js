@@ -32,7 +32,7 @@ const StripePaymentSuccess = () => {
       });
     } catch (error) {}
   };
-
+  console.log(record);
   useEffect(() => {
     if (record?.type === "Package") {
       fetchPackageDetails(record?.id);
@@ -62,7 +62,7 @@ const StripePaymentSuccess = () => {
           successfully.
         </Card.Text>
         {orderDetails && (
-          <OrderComponent orderDetails={orderDetails} boughtBy={"STRIPE"} />
+          <OrderComponent orderDetails={orderDetails} boughtBy={boughtBy} />
         )}
         {packageDetails && (
           <PackageComponent

@@ -9,6 +9,8 @@ import {
   cancelAndRefundOrder,
   cancelOrderAndRevertSession,
 } from "../../../../redux/Actions/paypalActions";
+import BadgeStatus from "../../../../components/Custom/StatusBadge/StatusBadge";
+import { NavLink } from "react-router-dom";
 
 const PaypalOrderDetail = () => {
   const dispatch = useDispatch();
@@ -49,9 +51,14 @@ const PaypalOrderDetail = () => {
       onClick: (row) => handleOnCancel(row),
       variant: "outline-danger",
       icon: "bi bi-x-circle",
-      show: (row) =>
-        (row.orderStatus === "0" && row.paymentStatus === "completed") ||
-        (row.orderStatus === "1" && row.paymentStatus === "completed"),
+      show: (row) => {
+        const orderStatus = row.orderStatus?.props?.children?.props?.status;
+        const paymentStatus = row.paymentStatus?.props?.status;
+        return (
+          (orderStatus === 0 && paymentStatus === "Completed") ||
+          (orderStatus === 1 && paymentStatus === "Completed")
+        );
+      },
     },
     {
       id: 2,
@@ -59,8 +66,11 @@ const PaypalOrderDetail = () => {
       onClick: (row) => handleOnCancel(row),
       variant: "outline-dark",
       icon: "bi bi-arrow-counterclockwise",
-      show: (row) =>
-        row.orderStatus === "4" && row.paymentStatus === "completed",
+      show: (row) => {
+        const orderStatus = row.orderStatus?.props?.children?.props?.status;
+        const paymentStatus = row.paymentStatus?.props?.status;
+        return orderStatus === 4 && paymentStatus === "Completed";
+      },
     },
     {
       id: 3,
@@ -68,10 +78,15 @@ const PaypalOrderDetail = () => {
       onClick: (row) => handleCancelAndRevertSession(row),
       variant: "outline-secondary",
       icon: "bi bi-arrow-counterclockwise",
-      show: (row) =>
-        ["0", "1", "2"].includes(row.orderStatus) &&
-        row.paymentStatus === "USED_SESSION" &&
-        row.paidByPackage === true,
+      show: (row) => {
+        const orderStatus = row.orderStatus?.props?.children?.props?.status;
+        const paymentStatus = row.paymentStatus?.props?.status;
+        return (
+          ["0", "1", "2"].includes(orderStatus?.toString()) &&
+          paymentStatus === "USED_SESSION" &&
+          row.paidByPackage === true
+        );
+      },
     },
     {
       id: 4,
@@ -79,11 +94,16 @@ const PaypalOrderDetail = () => {
       variant: "outline-success",
       icon: "bi bi-check-circle",
       disabled: true,
-      show: (row) =>
-        (row.orderStatus === "4" &&
-          row.paymentStatus === "USED_SESSION" &&
-          row.paidByPackage === true) ||
-        (row.orderStatus === "2" && row.paymentStatus === "completed"),
+      show: (row) => {
+        const orderStatus = row.orderStatus?.props?.children?.props?.status;
+        const paymentStatus = row.paymentStatus?.props?.status;
+        return (
+          (orderStatus === 4 &&
+            paymentStatus === "USED_SESSION" &&
+            row.paidByPackage === true) ||
+          (orderStatus === 2 && paymentStatus === "Completed")
+        );
+      },
     },
     {
       id: 5,
@@ -91,8 +111,11 @@ const PaypalOrderDetail = () => {
       variant: "outline-danger",
       icon: "bi bi-x-circle",
       disabled: true,
-      show: (row) =>
-        row.orderStatus === "4" && row.paymentStatus === "REFUNDED",
+      show: (row) => {
+        const orderStatus = row.orderStatus?.props?.children?.props?.status;
+        const paymentStatus = row.paymentStatus?.props?.status;
+        return orderStatus === 4 && paymentStatus === "REFUNDED";
+      },
     },
     {
       id: 6,
@@ -100,8 +123,11 @@ const PaypalOrderDetail = () => {
       variant: "outline-info",
       icon: "bi bi-x-circle",
       disabled: true,
-      show: (row) =>
-        row.orderStatus === "4" && row.paymentStatus === "SESSION_REVERTED",
+      show: (row) => {
+        const orderStatus = row.orderStatus?.props?.children?.props?.status;
+        const paymentStatus = row.paymentStatus?.props?.status;
+        return orderStatus === 4 && paymentStatus === "SESSION_REVERTED";
+      },
     },
   ];
 
@@ -196,10 +222,40 @@ const PaypalOrderDetail = () => {
       setLoader(true);
       dispatch(getPaypalOrderDetailRecords(params))
         .then((response) => {
-          const data = response.payload?.data;
-          setRecords(data);
-          console.log(data);
-          setTotalRecords(response.payload?.recordsTotal);
+          if (response?.payload) {
+            const data = response.payload.data.map((obj) => {
+              obj.paymentStatus =
+                obj.paymentStatus.toUpperCase() === "COMPLETED" ? (
+                  <BadgeStatus status="Completed" />
+                ) : obj.paymentStatus.toUpperCase() === "REFUNDED" ? (
+                  <BadgeStatus status="Refunded" />
+                ) : obj.paymentStatus.toUpperCase() === "PAID-BY-PACKAGE" ? (
+                  <BadgeStatus status="Package" />
+                ) : (
+                  <BadgeStatus status="N/A" />
+                );
+
+              obj.orderStatus = obj.orderStatus && (
+                <NavLink to={`/order-details/${obj.orderEncId}`}>
+                  <BadgeStatus status={parseInt(obj.orderStatus)} />
+                </NavLink>
+              );
+
+              return {
+                ...obj,
+                orderPrice: (
+                  <>
+                    <span className="fw-bold">$</span>
+                    {obj.orderPrice}
+                  </>
+                ),
+              };
+            });
+            //const data = response.payload?.data;
+            setRecords(data);
+            console.log("data", data);
+            setTotalRecords(response.payload?.recordsTotal);
+          }
         })
         .catch((error) => {
           setRecords([]);

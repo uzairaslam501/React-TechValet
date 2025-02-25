@@ -10,7 +10,10 @@ import {
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Dialogue from "../../../../../components/Custom/Modal/modal";
-import { getPackageByUserId } from "../../../../../redux/Actions/packageActions";
+import {
+  getPackageByUserId,
+  paymentWithPackage,
+} from "../../../../../redux/Actions/packageActions";
 import { convertToISO, toFixedTruncate } from "../../../../../utils/_helpers";
 import { createStripeCharge } from "../../../../../redux/Actions/stripeActions";
 import { chargeByPackage } from "../../../../../redux/Actions/paypalActions";
@@ -66,6 +69,7 @@ const PayWithPackage = ({
 
     dispatch(getPackageByUserId())
       .then((response) => {
+        console.log(response?.payload);
         setUserPackageDetails(response?.payload);
         setLoading(false);
       })
@@ -103,14 +107,14 @@ const PayWithPackage = ({
       ),
       fromDateTime: selectedOfferValues.startedDateTime,
       toDateTime: selectedOfferValues.endedDateTime,
-      packagePaidBy: packageDetails?.packagePaidBy,
+      packagePaidBy: packageDetails?.paidBy,
       packageId: String(packageDetails?.id),
       messageId: String(selectedOfferValues.id),
     };
 
-    if (packageDetails.packagePaidBy === "STRIPE") {
+    if (packageDetails.paidBy === "STRIPE") {
       console.log(values);
-      dispatch(createStripeCharge(values))
+      dispatch(paymentWithPackage(values))
         .then((response) => {
           if (response?.payload) {
             const values = {
@@ -123,7 +127,7 @@ const PayWithPackage = ({
         .catch(() => {
           handleCloseModal();
         });
-    } else {
+    } else if (packageDetails.paidBy === "PAYPAL") {
       dispatch(chargeByPackage(values))
         .then((response) => {
           handleCloseModal();
