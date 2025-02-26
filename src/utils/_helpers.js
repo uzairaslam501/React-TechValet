@@ -309,46 +309,54 @@ export const parseStringToFloat = (value) => {
   }
 };
 
-export const calculateWorkingHours = (fromDateTime, toDateTime) => {
-  if (!fromDateTime || !toDateTime) {
-    console.error(
-      "Invalid date values: fromDateTime or toDateTime is missing."
-    );
-    return null;
+export const calculateWorkingHours = (startDateStr, endDateStr) => {
+  try {
+    if (!startDateStr || !endDateStr) {
+      throw new Error("Both startDate and endDate are required.");
+    }
+
+    // Convert date strings to Date objects (DD/MM/YYYY HH:mm:ss AM/PM)
+    const parseDate = (dateStr) => {
+      const [datePart, timePart, meridian] = dateStr.split(" ");
+      if (!datePart || !timePart || !meridian)
+        throw new Error("Invalid date format.");
+
+      const [day, month, year] = datePart.split("/").map(Number);
+      let [hours, minutes, seconds] = timePart.split(":").map(Number);
+
+      // Convert 12-hour format to 24-hour format
+      if (meridian.toLowerCase() === "pm" && hours !== 12) {
+        hours += 12;
+      } else if (meridian.toLowerCase() === "am" && hours === 12) {
+        hours = 0;
+      }
+
+      return new Date(year, month - 1, day, hours, minutes, seconds);
+    };
+
+    // Parse the input dates
+    const startDate = parseDate(startDateStr);
+    const endDate = parseDate(endDateStr);
+
+    // Validate dates
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      throw new Error("Invalid date input.");
+    }
+
+    if (endDate <= startDate) {
+      throw new Error("End date must be after start date.");
+    }
+
+    // Calculate time difference in milliseconds
+    const diffMilliseconds = endDate - startDate;
+
+    // Convert to hours
+    const totalHours = diffMilliseconds / (1000 * 60 * 60);
+
+    // Round up to the nearest whole hour
+    return Math.ceil(totalHours);
+  } catch (error) {
+    console.error("Error:", error.message);
+    return null; // Ensure a return value
   }
-
-  const fromDate = new Date(fromDateTime);
-  const toDate = new Date(toDateTime);
-
-  if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) {
-    console.error("Invalid date format. Ensure proper datetime input.");
-    return undefined;
-  }
-
-  if (fromDate >= toDate) {
-    console.error(
-      "Invalid date range: fromDateTime must be before toDateTime."
-    );
-    return null;
-  }
-
-  // Calculate the total difference in milliseconds
-  let timeDiff = toDate - fromDate;
-
-  // Convert milliseconds to respective units
-  const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-  timeDiff -= days * (1000 * 60 * 60 * 24);
-
-  const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-  timeDiff -= hours * (1000 * 60 * 60);
-
-  const minutes = Math.floor(timeDiff / (1000 * 60));
-
-  // Construct output string
-  let result = [];
-  if (days > 0) result.push(`${days} Day${days > 1 ? "s" : ""}`);
-  if (hours > 0) result.push(`${hours} Hour${hours > 1 ? "s" : ""}`);
-  if (minutes > 0) result.push(`${minutes} Minute${minutes > 1 ? "s" : ""}`);
-
-  return result.length > 0 ? result.join(", ") : "0 Minutes";
 };

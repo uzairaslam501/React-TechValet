@@ -255,9 +255,7 @@ function CustomTable({
                           )}
                         </>
                       ) : (
-                        <span title={row[header.column]}>
-                          {row[header.column] && row[header.column]}
-                        </span>
+                        <span>{row[header.column] && row[header.column]}</span>
                       )}
                     </td>
                   ))}

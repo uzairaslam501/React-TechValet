@@ -14,10 +14,13 @@ import {
   getPackageByUserId,
   paymentWithPackage,
 } from "../../../../../redux/Actions/packageActions";
-import { convertToISO, toFixedTruncate } from "../../../../../utils/_helpers";
-import { createStripeCharge } from "../../../../../redux/Actions/stripeActions";
+import {
+  calculateWorkingHours,
+  toFixedTruncate,
+} from "../../../../../utils/_helpers";
 import { chargeByPackage } from "../../../../../redux/Actions/paypalActions";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 
 const PayWithPackage = ({
   selectedOfferValues,
@@ -42,24 +45,32 @@ const PayWithPackage = ({
     const stripeAmount = numericOfferPrice * (stripeChargePercentage / 100);
     const actualOfferPrice = selectedOfferValues?.offerPrice;
 
-    const startDate = new Date(
-      convertToISO(selectedOfferValues?.startedDateTime)
-    );
-    const endDate = new Date(convertToISO(selectedOfferValues?.endedDateTime));
-    const timeDifference = Math.round((endDate - startDate) / (1000 * 60 * 60)); // Hours
+    if (
+      selectedOfferValues.startedDateTime &&
+      selectedOfferValues.endedDateTime
+    ) {
+      const timeDifference = calculateWorkingHours(
+        selectedOfferValues.startedDateTime,
+        selectedOfferValues.endedDateTime
+      );
 
-    const remainingSessions = packageDetails?.remainingSessions || 0;
-    const sessionsAfterConfirmation = Math.round(
-      remainingSessions - timeDifference
-    );
+      const remainingSessions = packageDetails?.remainingSessions || 0;
+      const sessionsAfterConfirmation = Math.round(
+        remainingSessions - timeDifference
+      );
 
-    setCalculatedValues({
-      stripeAmount,
-      actualOfferPrice,
-      timeDifference,
-      remainingSessions,
-      sessionsAfterConfirmation,
-    });
+      setCalculatedValues({
+        stripeAmount,
+        actualOfferPrice,
+        timeDifference,
+        remainingSessions,
+        sessionsAfterConfirmation,
+      });
+    } else {
+      toast.warning(
+        "There is some issue while proceeding your order, please try again later or if the issue is persist contact support."
+      );
+    }
   };
 
   const handleCheckout = () => {
@@ -110,10 +121,11 @@ const PayWithPackage = ({
       packagePaidBy: packageDetails?.paidBy,
       packageId: String(packageDetails?.id),
       messageId: String(selectedOfferValues.id),
+      workingHours: String(calculatedValues.timeDifference),
     };
 
     if (packageDetails.paidBy === "STRIPE") {
-      console.log(values);
+      console.log("after clicked", values);
       dispatch(paymentWithPackage(values))
         .then((response) => {
           if (response?.payload) {
@@ -138,6 +150,7 @@ const PayWithPackage = ({
           handleCloseModal();
         });
     }
+    handleCloseModal();
   };
 
   useEffect(() => {
