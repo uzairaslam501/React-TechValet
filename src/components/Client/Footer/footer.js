@@ -3,7 +3,8 @@ import "../css/main.css";
 import React from "react";
 import logo from "../../../assets/images/welcome-logo.png";
 import HandleImages from "../../Custom/Avatars/HandleImages";
-import { Container, Row, Col, ListGroup, NavLink } from "react-bootstrap";
+import { Container, Row, Col, ListGroup } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
 const Footer = () => {
   return (
     <Container fluid className="bg-white">
@@ -31,13 +32,13 @@ const Footer = () => {
               </p>
             </div>
             <div className="footer-social-icons d-flex">
-              <NavLink href="facebook.com" target="_blank">
+              <NavLink to="facebook.com" target="_blank">
                 <i className="bi bi-facebook"></i>
               </NavLink>
-              <NavLink href="instagram.com" target="_blank">
+              <NavLink to="instagram.com" target="_blank">
                 <i className="bi bi-instagram"></i>
               </NavLink>
-              <NavLink href="twitter.com" target="_blank">
+              <NavLink to="twitter.com" target="_blank">
                 <i className="bi bi-twitter"></i>
               </NavLink>
             </div>
@@ -48,19 +49,19 @@ const Footer = () => {
             <h4 className="text-white">Pages</h4>
             <ListGroup className="footer-pages-list">
               <ListGroup.Item>
-                <NavLink href={"/"}>Home</NavLink>
+                <NavLink to={"/"}>Home</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink href={"/about"}>About</NavLink>
+                <NavLink to={"/about"}>About</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink href={"/contact"}>Contact</NavLink>
+                <NavLink to={"/contact"}>Contact</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink href={"/account"}>Profile</NavLink>
+                <NavLink to={"/account"}>Profile</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink href={"/register/valet"}>Valet Registeration</NavLink>
+                <NavLink to={"/register/valet"}>Valet Registeration</NavLink>
               </ListGroup.Item>
             </ListGroup>
           </Col>
@@ -70,16 +71,16 @@ const Footer = () => {
             <h4 className="text-white">Company</h4>
             <ListGroup className="footer-pages-list">
               <ListGroup.Item>
-                <NavLink href={"/skills"}>Skills</NavLink>
+                <NavLink to={"/skills"}>Skills</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink href={"/blogs"}>Blogs</NavLink>
+                <NavLink to={"/blogs"}>Blogs</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink href={"/privacy-policy"}>Privacy Policy</NavLink>
+                <NavLink to={"/privacy-policy"}>Privacy Policy</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink href={"/terms-and-conditions"}>
+                <NavLink to={"/terms-and-conditions"}>
                   Terms And Conditon
                 </NavLink>
               </ListGroup.Item>
@@ -91,13 +92,13 @@ const Footer = () => {
             <h4 className="text-white">Contact</h4>
             <ListGroup className="footer-pages-list">
               <ListGroup.Item>
-                <NavLink href={"/login"}>Login</NavLink>
+                <NavLink to={"/login"}>Login</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink href={"/register/customer"}>Register</NavLink>
+                <NavLink to={"/register/customer"}>Register</NavLink>
               </ListGroup.Item>
               <ListGroup.Item>
-                <NavLink href={"/forgot-password"}>Forgot Password</NavLink>
+                <NavLink to={"/forgot-password"}>Forgot Password</NavLink>
               </ListGroup.Item>
             </ListGroup>
           </Col>

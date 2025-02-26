@@ -6,6 +6,8 @@ import { useNavigate } from "react-router";
 import { Card, CardBody, Col, Container, Row } from "react-bootstrap";
 import Dialogue from "../../../../../components/Custom/Modal/modal";
 import { deleteRecords } from "../../../../../redux/Actions/globalActions";
+import BadgeDisplay from "../../../../../components/Custom/BadgeDisplay/BadgeDisplay";
+import SingleBadge from "../../../../../components/Custom/BadgeDisplay/SingleBadge";
 
 const Appointment = ({ onComplete }) => {
   const dispatch = useDispatch();
@@ -121,8 +123,51 @@ const Appointment = ({ onComplete }) => {
       setLoader(true);
       dispatch(getAppointments(params))
         .then((response) => {
-          setRecords(response.payload?.data);
-          setTotalRecords(response.payload?.recordsTotal);
+          if (response.payload) {
+            const data = response.payload.data.map((obj) => {
+              return {
+                ...obj,
+                categoriesOfProblems: (
+                  <BadgeDisplay
+                    values={obj.categoriesOfProblems}
+                    badgeStyle={{
+                      backgroundColor: `#17a2b81A`, // Transparent background (10%)
+                      color: "#17a2b8", // Text color matches border
+                      border: `2px solid #17a2b8`, // Solid border
+                      display: "inline-block",
+                      padding: "5px 12px",
+                      borderRadius: "30px",
+                      fontSize: "15px",
+                      fontWeight: "normal",
+                      textAlign: "center",
+                      minWidth: "80px",
+                      margin: "2px",
+                    }}
+                  />
+                ),
+                requestServiceSkills: (
+                  <BadgeDisplay
+                    values={obj.requestServiceSkills}
+                    badgeStyle={{
+                      backgroundColor: `#6c757d1A`, // Transparent background (10%)
+                      color: "#6c757d", // Text color matches border
+                      border: `2px solid #6c757d`, // Solid border
+                      display: "inline-block",
+                      padding: "5px 12px",
+                      borderRadius: "30px",
+                      fontSize: "15px",
+                      fontWeight: "normal",
+                      textAlign: "center",
+                      minWidth: "80px",
+                      margin: "2px",
+                    }}
+                  />
+                ),
+              };
+            });
+            setRecords(data);
+            setTotalRecords(response.payload?.recordsTotal);
+          }
         })
         .catch((error) => {
           setRecords([]);

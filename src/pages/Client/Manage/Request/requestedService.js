@@ -26,15 +26,6 @@ import SingleBadge from "../../../../components/Custom/BadgeDisplay/SingleBadge"
 const RequestedService = () => {
   const { state } = useLocation();
   const recordForUpdate = state?.recordForUpdate || state;
-  const [step, setStep] = useState(1);
-
-  // Handle Next & Previous
-  const nextStep = () => {
-    setStep(step + 1);
-  };
-  const prevStep = () => {
-    setStep(step - 1);
-  };
 
   return (
     <>
