@@ -98,6 +98,7 @@ const PayWithPackage = ({
 
   const handleSubmitPayment = () => {
     console.log("selectedOfferValues", selectedOfferValues);
+    setButtonDisabled(true);
     setPackageSubmitButton(true);
     const values = {
       customerId:
@@ -125,7 +126,6 @@ const PayWithPackage = ({
     };
 
     if (packageDetails.paidBy === "STRIPE") {
-      console.log("after clicked", values);
       dispatch(paymentWithPackage(values))
         .then((response) => {
           if (response?.payload) {
@@ -134,23 +134,29 @@ const PayWithPackage = ({
               type: "Order-Package",
             };
             navigate("/payment-success", { state: values });
+            handleCloseModal();
           }
         })
         .catch(() => {
           handleCloseModal();
         });
     } else if (packageDetails.paidBy === "PAYPAL") {
+      console.log("after clicked", values);
       dispatch(chargeByPackage(values))
         .then((response) => {
-          handleCloseModal();
-          fetchMessages(selectedOfferValues?.senderId);
-          setShowAcceptOrderDialogue(false);
+          if (response?.payload) {
+            const values = {
+              id: response?.payload,
+              type: "Order-Package",
+            };
+            navigate("/payment-success", { state: values });
+            handleCloseModal();
+          }
         })
         .catch(() => {
           handleCloseModal();
         });
     }
-    handleCloseModal();
   };
 
   useEffect(() => {
