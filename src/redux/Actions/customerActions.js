@@ -6,7 +6,7 @@ import {
 } from "../../utils/_handler/_exceptions";
 import { baseUrl } from "../../utils/_envConfig";
 import { toast } from "react-toastify";
-import { getAuthUserId, getToken, getUserId } from "../../utils/_apiConfig";
+import { getToken, getUserId } from "../../utils/_apiConfig";
 import { setLoading } from "../Reducers/loadingSlice";
 
 const api = axios.create({

@@ -184,6 +184,7 @@ const About = () => {
                           width: "40px",
                           height: "40px",
                         }}
+                        alt="tech-valet"
                       />
                     </div>
                     <div className="ms-3">
@@ -223,6 +224,7 @@ const About = () => {
                           width: "40px",
                           height: "40px",
                         }}
+                        alt="tech-valet"
                       />
                     </div>
                     <div className="ms-3">
@@ -262,6 +264,7 @@ const About = () => {
                           width: "40px",
                           height: "40px",
                         }}
+                        alt="tech-valet"
                       />
                     </div>
                     <div className="ms-3">
@@ -301,6 +304,7 @@ const About = () => {
                           width: "40px",
                           height: "40px",
                         }}
+                        alt="tech-valet"
                       />
                     </div>
                     <div className="ms-3">
@@ -340,6 +344,7 @@ const About = () => {
                           width: "40px",
                           height: "40px",
                         }}
+                        alt="tech-valet"
                       />
                     </div>
                     <div className="ms-3">
@@ -379,6 +384,7 @@ const About = () => {
                           width: "40px",
                           height: "40px",
                         }}
+                        alt="tech-valet"
                       />
                     </div>
                     <div className="ms-3">
