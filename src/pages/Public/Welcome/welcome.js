@@ -6,7 +6,7 @@ import joinMeeting from "../../../assets/images/icons/join-meeting.svg";
 import whatWeDoImage from "../../../assets/images/what-we-do-image.svg";
 import createAccount from "../../../assets/images/icons/create-your-account.svg";
 import makeAppointment from "../../../assets/images/icons/make-an-appointment.svg";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getBlogsList } from "../../../redux/Actions/seoActions";
 import BlogSlider from "../../../components/Custom/BlogSlider/BlogSlider";
 import { NavLink } from "react-router-dom";
@@ -15,6 +15,7 @@ const Welcome = () => {
   const dispatch = useDispatch();
   const [isLoading, setLoader] = useState(false);
   const [recentPosts, setRecentPosts] = useState(null);
+  const { userAuth } = useSelector((state) => state?.authentication);
 
   const fetchPosts = (pageNumber = 0, pageLength = 9) => {
     const params = {
@@ -64,26 +65,28 @@ const Welcome = () => {
                   We are a community of people with IT expertise in computers,
                   smartphones, and other devices. We are here to help you.
                 </p>
-                <div className="mt-4 d-flex">
-                  <Button
-                    as={NavLink}
-                    to={"/register/customer"}
-                    variant="secondary"
-                    size="md"
-                    className="border-1 border-dark me-3 px-4 py-2 mb-3"
-                  >
-                    Need Service
-                  </Button>
-                  <Button
-                    as={NavLink}
-                    to={"/register/valet"}
-                    variant="primary"
-                    size="md"
-                    className="border-1 border-dark px-4 py-2 mb-3"
-                  >
-                    Offering Service
-                  </Button>
-                </div>
+                {!userAuth && (
+                  <div className="mt-4 d-flex">
+                    <Button
+                      as={NavLink}
+                      to={"/register/customer"}
+                      variant="secondary"
+                      size="md"
+                      className="border-1 border-dark me-3 px-4 py-2 mb-3"
+                    >
+                      Need Service
+                    </Button>
+                    <Button
+                      as={NavLink}
+                      to={"/register/valet"}
+                      variant="primary"
+                      size="md"
+                      className="border-1 border-dark px-4 py-2 mb-3"
+                    >
+                      Offering Service
+                    </Button>
+                  </div>
+                )}
               </div>
             </Col>
 
