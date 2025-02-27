@@ -10,8 +10,11 @@ import helpIcon from "../../../assets/images/About/material-symbols_help-outline
 import informationIcon from "../../../assets/images/About/streamline_information-desk-customer.svg";
 import HandleImages from "../../../components/Custom/Avatars/HandleImages";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const About = () => {
+  const { userAuth } = useSelector((state) => state?.authentication);
+
   return (
     <>
       <Container fluid>
@@ -127,7 +130,7 @@ const About = () => {
                 as={NavLink}
                 to={"/login"}
               >
-                Need Service
+                {`${!userAuth ? "Need" : "Offer"} Service`}
               </Button>
             </Col>
           </Row>
