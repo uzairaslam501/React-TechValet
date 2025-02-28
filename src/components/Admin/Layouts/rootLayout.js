@@ -55,14 +55,16 @@ const RootLayout = () => {
         <Col
           xs={isSidebarOpen ? 2 : 0}
           style={{
-            position: "fixed",
+            position: "fixed", // Overlay on mobile
             left: 0,
             top: 56,
             width: isSidebarOpen ? drawerWidth : drawerWidthCollapsed,
             transition: "width 0.3s",
             backgroundColor: darkMode ? "#1F1F1F" : "#fff",
-            height: "calc(100vh - 56px)", // Adjust for navbar height
-            overflowY: "auto",
+            minHeight: "100%", // Makes sure sidebar expands with content
+            height: "auto", // Allows it to grow
+            maxHeight: "100vh", // Prevents it from being too tall
+            overflowY: "auto", // Enables scrolling if sidebar is too long
             display: isMobile ? (isSidebarOpen ? "block" : "none") : "block",
             zIndex: 999,
             textAlign: !isSidebarOpen ? "center" : "left",
@@ -77,11 +79,13 @@ const RootLayout = () => {
           style={{
             transition: "margin-left 0.3s ease",
             backgroundColor: darkMode ? "#121212" : "#f0f0f0",
-            marginLeft: isSidebarOpen
+            minHeight: "100vh", // Ensures the main content takes full screen height
+            height: "auto", // Allows it to expand dynamically
+            marginLeft: isMobile
+              ? "0px" // No shifting on mobile
+              : isSidebarOpen
               ? `${drawerWidth}px`
-              : !isMobile
-              ? `${drawerWidthCollapsed}px`
-              : "0px",
+              : `${drawerWidthCollapsed}px`,
           }}
         >
           <Outlet />

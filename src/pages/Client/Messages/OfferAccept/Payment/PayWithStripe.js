@@ -26,9 +26,11 @@ const PayWithStripe = ({
     toDateTime: selectedOfferValues.toDateTime,
     actualOrderPrice: String(selectedOfferValues.actualOrderPrice),
     totalWorkCharges: String(selectedOfferValues.totalWorkCharges),
-    workingHours: calculateWorkingHours(
-      selectedOfferValues.fromDateTime,
-      selectedOfferValues.toDateTime
+    workingHours: String(
+      calculateWorkingHours(
+        selectedOfferValues.fromDateTime,
+        selectedOfferValues.toDateTime
+      )
     ),
     offerId: String(selectedOfferValues.offerId) || "",
   };
