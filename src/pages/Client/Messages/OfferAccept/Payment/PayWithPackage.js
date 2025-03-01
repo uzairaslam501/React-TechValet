@@ -29,7 +29,6 @@ const PayWithPackage = ({
   setButtonDisabled,
   buttonDisabled,
 }) => {
-  console.log("Pay With Pacakge selectedOfferValues", selectedOfferValues);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -141,7 +140,6 @@ const PayWithPackage = ({
           handleCloseModal();
         });
     } else if (packageDetails.paidBy === "PAYPAL") {
-      console.log("after clicked", values);
       dispatch(chargeByPackage(values))
         .then((response) => {
           if (response?.payload) {
@@ -163,7 +161,7 @@ const PayWithPackage = ({
     if (packageDetails) {
       calculateDetails();
     }
-  }, [packageDetails]);
+  }, [selectedOfferValues, packageDetails]);
 
   return (
     <>

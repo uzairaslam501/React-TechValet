@@ -1,7 +1,7 @@
 import "./style.css";
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import StripeCheckout from "react-stripe-checkout";
 import { useNavigate } from "react-router";
 import { stripePublishableKey } from "../../../../../utils/_envConfig";
@@ -16,6 +16,7 @@ const PayWithStripe = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const { userAuth } = useSelector((state) => state?.authentication);
 
   const initialValues = {
     valetId: String(selectedOfferValues.valetId),
@@ -26,9 +27,11 @@ const PayWithStripe = ({
     toDateTime: selectedOfferValues.toDateTime,
     actualOrderPrice: String(selectedOfferValues.actualOrderPrice),
     totalWorkCharges: String(selectedOfferValues.totalWorkCharges),
-    workingHours: calculateWorkingHours(
-      selectedOfferValues.fromDateTime,
-      selectedOfferValues.toDateTime
+    workingHours: String(
+      calculateWorkingHours(
+        selectedOfferValues.fromDateTime,
+        selectedOfferValues.toDateTime
+      )
     ),
     offerId: String(selectedOfferValues.offerId) || "",
   };
@@ -46,7 +49,7 @@ const PayWithStripe = ({
       initialValues.actualOrderPrice || String(actualOfferPrice);
     const values = {
       ...initialValues,
-      StripeEmail: token.email,
+      StripeEmail: userAuth.email,
       StripeToken: token.id,
     };
     handleSubmitPayment(values);
@@ -83,6 +86,7 @@ const PayWithStripe = ({
     >
       <StripeCheckout
         name="Order"
+        email={userAuth?.email}
         description={initialValues?.paymentDescription}
         amount={fromPriceToCent}
         token={!loading && onToken}
