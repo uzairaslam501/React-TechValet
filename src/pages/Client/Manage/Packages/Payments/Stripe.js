@@ -26,7 +26,7 @@ const PackagePaymentWithStripe = ({
     setIsDisabled(true);
     const values = {
       ...initialValues,
-      StripeEmail: token.email,
+      StripeEmail: userAuth.email,
       StripeToken: token.id,
     };
     handleSubmitPayment(values);
@@ -60,6 +60,7 @@ const PackagePaymentWithStripe = ({
     >
       <StripeCheckout
         name="Package"
+        email={userAuth?.email}
         token={!loading && onToken}
         stripeKey={stripePublishableKey}
         style={{

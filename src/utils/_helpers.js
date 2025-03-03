@@ -321,7 +321,7 @@ export const calculateWorkingHours = (startDateStr, endDateStr) => {
       if (!datePart || !timePart || !meridian)
         throw new Error("Invalid date format.");
 
-      const [day, month, year] = datePart.split("/").map(Number);
+      const [month, day, year] = datePart.split("/").map(Number);
       let [hours, minutes, seconds] = timePart.split(":").map(Number);
 
       // Convert 12-hour format to 24-hour format
