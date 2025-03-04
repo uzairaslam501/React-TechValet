@@ -360,3 +360,26 @@ export const calculateWorkingHours = (startDateStr, endDateStr) => {
     return null; // Ensure a return value
   }
 };
+
+export const isOfferExpired = (dateString) => {
+  function convertToISO(dateStr) {
+    let [datePart, timePart, meridian] = dateStr.split(" ");
+    let [month, day, year] = datePart.split("/");
+    let [hours, minutes, seconds] = timePart.split(":");
+
+    hours = parseInt(hours, 10);
+    if (meridian === "PM" && hours !== 12) hours += 12;
+    if (meridian === "AM" && hours === 12) hours = 0;
+
+    return new Date(
+      `${year}-${month}-${day}T${hours
+        .toString()
+        .padStart(2, "0")}:${minutes}:${seconds}`
+    );
+  }
+
+  const offerTime = convertToISO(dateString);
+  const currentTime = new Date().getTime();
+
+  return currentTime > offerTime.getTime() + 10 * 60 * 1000;
+};
