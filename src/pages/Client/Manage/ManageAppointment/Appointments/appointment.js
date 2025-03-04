@@ -75,7 +75,13 @@ const Appointment = ({ onComplete }) => {
   };
 
   const onView = (row) => {
-    navigate("/requested-service", { state: row });
+    const serializableRow = {
+      ...row,
+      categoriesOfProblems: row.categoriesOfProblems?.props?.values || [],
+      requestServiceSkills: row.requestServiceSkills?.props?.values || [],
+    };
+
+    navigate("/requested-service", { state: serializableRow });
   };
 
   const handleOpen = (id) => {

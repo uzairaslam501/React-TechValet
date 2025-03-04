@@ -101,7 +101,7 @@ const PackagesList = () => {
               return {
                 ...obj,
                 packageType:
-                  obj.packageType === 1 ? (
+                  obj.packageType === "1" ? (
                     <BadgeStatus status="OneYear" />
                   ) : (
                     <BadgeStatus status="TwoYear" />

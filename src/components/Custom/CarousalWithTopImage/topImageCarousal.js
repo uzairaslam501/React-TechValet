@@ -74,7 +74,7 @@ const TopImageCarousal = ({ label, users = [] }) => {
 
                 <div className="user-card__description">
                   {user.description ? (
-                    <p>{truncateCharacters(user.description, 40)}</p>
+                    <p>{truncateCharacters(user.description, 30)}</p>
                   ) : (
                     <p className="user-card__no-description">
                       No description available

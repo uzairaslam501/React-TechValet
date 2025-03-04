@@ -53,7 +53,7 @@ const ViewPackages = () => {
 
     {
       id: "0",
-      label: " Used",
+      label: " Remainings",
       column: "remainingSessions",
     },
 
@@ -98,7 +98,7 @@ const ViewPackages = () => {
               return {
                 ...obj,
                 packageType:
-                  obj.packageType === 1 ? (
+                  obj.packageType === "1" ? (
                     <BadgeStatus status="OneYear" />
                   ) : (
                     <BadgeStatus status="TwoYear" />

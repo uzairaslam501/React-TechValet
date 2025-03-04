@@ -1,15 +1,6 @@
 import React, { useState } from "react";
-import {
-  Table,
-  Container,
-  Button,
-  FormGroup,
-  InputGroup,
-} from "react-bootstrap";
+import { Table, Container, Button, FormGroup } from "react-bootstrap";
 import CustomButtons from "../Button/buttons";
-import { NavLink } from "react-router-dom";
-import BadgeStatus from "../StatusBadge/StatusBadge";
-import { truncateCharacters } from "../../../utils/_helpers";
 import HandleImages from "../Avatars/HandleImages";
 
 function CustomTable({

@@ -1,6 +1,6 @@
 import React from "react";
 import RenderOfferDetails from "./RenderOfferDetails";
-import { convertToISO } from "../../../../utils/_helpers";
+import { isOfferExpired } from "../../../../utils/_helpers";
 
 const RenderOfferStatus = (
   status,
@@ -41,9 +41,7 @@ const RenderOfferStatus = (
         userAuth?.role === "Customer" && (
           <>
             {message.startedDateTime && message.endedDateTime ? (
-              new Date().getTime() >
-              new Date(convertToISO(message.startedDateTime)).getTime() +
-                10 * 60 * 1000 ? (
+              isOfferExpired(message.startedDateTime) ? (
                 <div className=" text-center">
                   <span className="text-danger fw-bold">
                     This Offer is already Expired
