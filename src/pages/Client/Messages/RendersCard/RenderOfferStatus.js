@@ -40,6 +40,7 @@ const RenderOfferStatus = (
         message.senderId !== String(userAuth?.id) &&
         userAuth?.role === "Customer" && (
           <>
+            {console.log("RenderOfferStatus :: ", message)}
             {message.startedDateTime && message.endedDateTime ? (
               isOfferExpired(message.startedDateTime) ? (
                 <div className=" text-center">

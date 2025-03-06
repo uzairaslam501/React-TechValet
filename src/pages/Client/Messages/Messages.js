@@ -113,6 +113,7 @@ const Messages = () => {
     try {
       dispatch(getUsersMessages(userId)).then((response) => {
         if (response?.payload) {
+          console.log("before setMessages ::", response?.payload);
           setMessages(response?.payload);
           setUserSideBarLoader(false);
           setMessagesLoader(false);

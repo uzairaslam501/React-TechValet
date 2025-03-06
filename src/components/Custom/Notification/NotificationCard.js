@@ -247,6 +247,15 @@ const NotificationCard = () => {
                               to={notification.url}
                               target="_blank"
                               className="text-decoration-none text-dark d-block w-100 h-100 p-2"
+                              onClick={(e) => {
+                                e.preventDefault(); // Stop default navigation first
+                                handleMarkAsRead(notification.notificationId);
+
+                                // Redirect after performing the function
+                                setTimeout(() => {
+                                  window.open(notification.url, "_blank");
+                                }, 500); // Delay to ensure `handleMarkAsRead` executes
+                              }}
                             >
                               <div
                                 className="fw-bold"

@@ -45,7 +45,7 @@ const OfferAccept = ({
   useEffect(() => {
     fetchPackageDetails();
   }, [dispatch]);
-  console.log("initialStripeValues", initialStripeValues);
+  console.log("initialStripeValues ::", initialStripeValues);
 
   return (
     <Dialogue
