@@ -22,6 +22,7 @@ const OrderDelivery = ({
   setActiveChat,
   handleSignalRCall,
   showSpinner,
+  allButtonDisabled,
 }) => {
   const dispatch = useDispatch();
 
@@ -208,6 +209,7 @@ const OrderDelivery = ({
         userRole={userRole}
         openDialogue={openDialogue}
         showSpinner={showSpinner}
+        allButtonDisabled={allButtonDisabled}
       />
       <Dialogue
         show={isDialogueVisible}

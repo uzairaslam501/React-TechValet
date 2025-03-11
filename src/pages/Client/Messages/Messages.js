@@ -459,7 +459,6 @@ const Messages = () => {
                     className="form-control"
                     placeholder="Search..."
                     onChange={(e) => handleSearchMessage(e.target.value)}
-                    disabled={noRecordToShow}
                   />
                 </div>
                 <ul className="list-unstyled chat-list mt-2 mb-0">

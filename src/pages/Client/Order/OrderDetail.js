@@ -40,6 +40,7 @@ const OrderDetail = () => {
   const [showSpinner, setShowSpinner] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const { userAuth } = useSelector((state) => state?.authentication);
+  const [allButtonDisabled, setAllButtonDisabled] = useState(false);
   const chatContainerId = "chatbox-container";
 
   const fetchOrderDetails = () => {
@@ -51,6 +52,7 @@ const OrderDetail = () => {
         response?.payload?.customerEncId === userAuth?.userEncId ||
         response?.payload?.valetEncId === userAuth?.userEncId
       ) {
+        console.log(response?.payload);
         fetchMessages();
       } else {
         navigate("/not-found");
@@ -170,7 +172,6 @@ const OrderDetail = () => {
           return newMessages;
         });
 
-        console.log("orderZoomMeeting newMessage ::: ", newMessage);
         handleSignalRCall(newMessage);
 
         if (String(userAuth.id) === newMessage.senderId) {
@@ -314,6 +315,12 @@ const OrderDetail = () => {
     scrollToBottom(chatContainerId);
   }, [activeChats]);
 
+  useEffect(() => {
+    if (orderDetails?.orderStatus === "4") {
+      setAllButtonDisabled(true);
+    }
+  }, [orderDetails?.orderStatus]);
+
   if (!params || !params.id) {
     return <Navigate to="/" />;
   }
@@ -380,7 +387,9 @@ const OrderDetail = () => {
                           onChange={(e) => handleTypeMessage(e.target.value)}
                           readOnly={showSpinner}
                           disabled={
-                            orderDetails && orderDetails?.isDelivered === "2"
+                            orderDetails &&
+                            (orderDetails?.isDelivered === "2" ||
+                              allButtonDisabled)
                           }
                         />
                       </div>
@@ -394,7 +403,8 @@ const OrderDetail = () => {
                                 sendLoader ||
                                 showSpinner ||
                                 (orderDetails &&
-                                  orderDetails?.isDelivered === "2" &&
+                                  (orderDetails?.isDelivered === "2" ||
+                                    allButtonDisabled) &&
                                   true)
                               }
                               classname="w-sm-100 btn-sm"
@@ -421,7 +431,8 @@ const OrderDetail = () => {
                                 sendLoader ||
                                 showSpinner ||
                                 (orderDetails &&
-                                  orderDetails?.isDelivered === "2" &&
+                                  (orderDetails?.isDelivered === "2" ||
+                                    allButtonDisabled) &&
                                   true)
                               }
                             >
@@ -456,7 +467,8 @@ const OrderDetail = () => {
                 <span className="badge fw-normal bg-success px-3">
                   Completed
                 </span>
-              ) : orderDetails?.isDelivered === "4" ? (
+              ) : orderDetails?.isDelivered === "4" ||
+                orderDetails?.orderStatus === "4" ? (
                 <span className="badge fw-normal bg-danger px-3">CANCELED</span>
               ) : null}
             </CardHeader>
@@ -494,6 +506,7 @@ const OrderDetail = () => {
                   setActiveChat={setActiveChat}
                   handleSignalRCall={handleSignalRCall}
                   showSpinner={showSpinner}
+                  allButtonDisabled={allButtonDisabled}
                 />
               </div>
             </CardBody>
@@ -503,7 +516,8 @@ const OrderDetail = () => {
             <CardBody>
               <div className="card-headers mb-1">Zoom Meeting</div>
 
-              {orderDetails && orderDetails?.isDelivered === "2" ? (
+              {(orderDetails && orderDetails?.isDelivered === "2") ||
+              allButtonDisabled ? (
                 <>
                   <Button
                     className="w-100"
@@ -540,6 +554,7 @@ const OrderDetail = () => {
                 setActiveChat={setActiveChat}
                 handleSignalRCall={handleSignalRCall}
                 showSpinner={showSpinner}
+                allButtonDisabled={allButtonDisabled}
               />
             </CardBody>
           </Card>

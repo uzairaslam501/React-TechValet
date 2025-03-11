@@ -20,6 +20,7 @@ const OrderResolution = ({
   setActiveChat,
   handleSignalRCall,
   showSpinner,
+  allButtonDisabled,
 }) => {
   const dispatch = useDispatch();
 
@@ -131,9 +132,10 @@ const OrderResolution = ({
 
   return (
     <>
-      {orderDetails &&
-      orderDetails?.isDelivered === "2" &&
-      userAuth?.role === "Valet" ? (
+      {allButtonDisabled ||
+      (orderDetails &&
+        orderDetails?.isDelivered === "2" &&
+        userAuth?.role === "Valet") ? (
         <>
           <Button
             className="w-100 mb-2"
@@ -156,7 +158,7 @@ const OrderResolution = ({
               className="w-100 mb-2"
               variant="outline-primary"
               size="sm"
-              disabled={showSpinner}
+              disabled={showSpinner || allButtonDisabled}
             >
               Extend Deadline
             </Button>
@@ -167,7 +169,9 @@ const OrderResolution = ({
             variant="outline-danger"
             size="sm"
             disabled={
-              showSpinner || (orderDetails && orderDetails?.isDelivered === "2")
+              showSpinner ||
+              allButtonDisabled ||
+              (orderDetails && orderDetails?.isDelivered === "2")
             }
           >
             Cancel Order

@@ -1,7 +1,13 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 
-const RenderButton = ({ isDelivered, userRole, openDialogue, showSpinner }) => {
+const RenderButton = ({
+  isDelivered,
+  userRole,
+  openDialogue,
+  showSpinner,
+  allButtonDisabled,
+}) => {
   const renderValetButtons = () => {
     if (isDelivered !== "2") {
       return (
@@ -10,7 +16,7 @@ const RenderButton = ({ isDelivered, userRole, openDialogue, showSpinner }) => {
           className="w-100"
           variant="success"
           size="sm"
-          disabled={showSpinner}
+          disabled={showSpinner || allButtonDisabled}
         >
           DELIVER YOUR ORDER
         </Button>
@@ -29,7 +35,7 @@ const RenderButton = ({ isDelivered, userRole, openDialogue, showSpinner }) => {
             className="w-100 mb-2 w-100"
             variant="success"
             size="sm"
-            disabled={showSpinner}
+            disabled={showSpinner || allButtonDisabled}
           >
             ACCEPT ORDER
           </Button>
@@ -41,7 +47,7 @@ const RenderButton = ({ isDelivered, userRole, openDialogue, showSpinner }) => {
               className="w-100 mb-2"
               variant="outline-primary"
               size="sm"
-              disabled={showSpinner}
+              disabled={showSpinner || allButtonDisabled}
             >
               SEND REVISION
             </Button>
