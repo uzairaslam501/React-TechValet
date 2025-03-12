@@ -102,56 +102,58 @@ const ClientTopbar = () => {
           {userAuth && (
             <>
               <Navbar className="justify-content-end">
-                {userAuth.isActive === "Active" && (
-                  <div
-                    className="d-flex w-100 justify-content-center d-md-none"
-                    ref={searchRef}
-                  >
-                    <i
-                      className="bi bi-search border border-secondary mx-1"
-                      style={{
-                        borderRadius: "50px",
-                        padding: "8px 12px",
-                        background: "#e1e1e1",
-                        color: "#000",
-                        position: "relative",
-                      }}
-                      onClick={() => toggleSearch()}
-                    ></i>
-
-                    {isSearchVisible && (
-                      <div
-                        className="p-3"
+                {userAuth.isActive === "Active" &&
+                  (userAuth.role === "Customer" ||
+                    userAuth.role === "Admin") && (
+                    <div
+                      className="d-flex w-100 justify-content-center d-md-none"
+                      ref={searchRef}
+                    >
+                      <i
+                        className="bi bi-search border border-secondary mx-1"
                         style={{
-                          backgroundColor: "transparent",
-                          position: "absolute", // Positions the search bar below the icon
-                          width: "320px", // Fixed width for the search bar
-                          top: "100%", // Make sure the search bar appears right below the icon
-                          left: "50%", // Center the search bar horizontally
-                          transform: "translateX(-50%)", // Ensure it is perfectly centered
-                          zIndex: 9998, // Ensure the search bar is above other elements
-                          boxSizing: "border-box", // Make sure padding doesn't cause overflow
+                          borderRadius: "50px",
+                          padding: "8px 12px",
+                          background: "#e1e1e1",
+                          color: "#000",
+                          position: "relative",
                         }}
-                      >
-                        <SearchBar
-                          boxClass="py-2"
-                          boxStyle={{
-                            width: "calc(100% - 60px)", // Adjust for button space if necessary
-                            borderRadius: "0",
-                            backgroundColor: "#f9f9f9",
-                            borderColor: "#999",
+                        onClick={() => toggleSearch()}
+                      ></i>
+
+                      {isSearchVisible && (
+                        <div
+                          className="p-3"
+                          style={{
+                            backgroundColor: "transparent",
+                            position: "absolute", // Positions the search bar below the icon
+                            width: "320px", // Fixed width for the search bar
+                            top: "100%", // Make sure the search bar appears right below the icon
+                            left: "50%", // Center the search bar horizontally
+                            transform: "translateX(-50%)", // Ensure it is perfectly centered
+                            zIndex: 9998, // Ensure the search bar is above other elements
+                            boxSizing: "border-box", // Make sure padding doesn't cause overflow
                           }}
-                          buttonClass=""
-                          buttonStyle={{
-                            borderRadius: "0",
-                            width: "60px",
-                            borderColor: "#999",
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
+                        >
+                          <SearchBar
+                            boxClass="py-2"
+                            boxStyle={{
+                              width: "calc(100% - 60px)", // Adjust for button space if necessary
+                              borderRadius: "0",
+                              backgroundColor: "#f9f9f9",
+                              borderColor: "#999",
+                            }}
+                            buttonClass=""
+                            buttonStyle={{
+                              borderRadius: "0",
+                              width: "60px",
+                              borderColor: "#999",
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                 {userAuth &&
                   userAuth?.role !== "Seo" &&

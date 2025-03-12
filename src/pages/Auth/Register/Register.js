@@ -28,6 +28,7 @@ const UserRegisteration = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [timeZones, setTimeZones] = useState([]);
+  const [isValidPassword, setIsPasswordValid] = useState(false);
   const { userAuth, loading, error } = useSelector(
     (state) => state.authentication
   );
@@ -134,14 +135,23 @@ const UserRegisteration = () => {
   }, [value]);
 
   return (
-    <Container fluid className="vh-100">
-      <Row className="bg-white h-100">
+    <Container
+      fluid
+      className=""
+      style={{
+        minHeight: "100vh",
+      }}
+    >
+      <Row className="bg-white">
         {/* Image Column */}
         <Col
           xl={6}
           lg={6}
           className="d-none d-lg-flex justify-content-center align-items-center p-5 h-100"
           style={{
+            position: "fixed",
+            width: "50%",
+            height: "100vh",
             backgroundImage: `url(${background})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
@@ -191,16 +201,17 @@ const UserRegisteration = () => {
 
         {/* Form Column */}
         <Col
-          xl={6}
-          lg={6}
+          xl={{ span: 6, offset: 6 }}
+          lg={{ span: 6, offset: 6 }}
           md={12}
           sm={12}
           xs={12}
-          className="d-flex flex-column justify-content-center align-items-center h-100"
+          className="d-flex flex-column justify-content-center align-items-center"
         >
           {/* Form */}
           <div className="w-75 py-5">
             <h2 className="text-center">Create your Account</h2>
+            <h6 className="text-danger">All * Fields are required</h6>
             <Form onSubmit={formikSubmit}>
               <Row>
                 {/* First Name */}
@@ -290,6 +301,8 @@ const UserRegisteration = () => {
                       touched={touched.password}
                       errors={errors.password}
                       size="md"
+                      instructions={true}
+                      setIsPasswordValid={setIsPasswordValid}
                     />
                   </Form.Group>
                 </Col>
@@ -452,6 +465,7 @@ const UserRegisteration = () => {
                           navigate("/register/customer");
                         }
                       }}
+                      className=""
                     />
                   </OverlayTrigger>
                 </Col>
@@ -461,6 +475,7 @@ const UserRegisteration = () => {
                     className="btn-md w-100 text-uppercase"
                     variant="primary"
                     type="submit"
+                    disabled={loading || !isValidPassword}
                   >
                     {loading ? (
                       <Spinner animation="border" size="sm" />
@@ -473,10 +488,10 @@ const UserRegisteration = () => {
                 </Col>
               </Row>
               <div className="d-flex justify-content-center">
-                <span className="text-muted">
+                <span className="text-muted fs-5">
                   Already have account?
                   <span>
-                    <NavLink to="/login" className="text-dark ms-1">
+                    <NavLink to="/login" className="text-dark ms-1 fs-4">
                       Login Here
                     </NavLink>
                   </span>

@@ -20,7 +20,7 @@
   color: #007bff;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
   .custom-navbar {
     margin-bottom: 0;
   }

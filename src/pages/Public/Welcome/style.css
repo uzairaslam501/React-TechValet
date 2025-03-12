@@ -1,6 +1,7 @@
 /* Default font sizes for larger screens */
 .text-responsive-heading {
-  font-size: 60px;
+  font-size: 70px;
+  font-weight: bolder;
 }
 
 .text-responsive-paragraph {
@@ -13,7 +14,7 @@
 }
 
 .custom-padding {
-  padding-top: 100px;
+  padding-top: 80px;
 }
 
 /* Responsive adjustments for smaller screens */
@@ -32,7 +33,7 @@
   }
 
   .custom-padding {
-    padding-top: 100px;
+    padding-top: 80px;
   }
 }
 

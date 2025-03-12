@@ -7,9 +7,10 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import PasswordField from "../../Custom/PasswordInput/PasswordInput";
 import { postUpdatePassword } from "../../../redux/Actions/authActions";
 const Password = () => {
-  const loggedInUser = useSelector((state) => state?.authentication?.userAuth);
   const dispatch = useDispatch();
   const [showSpinner, setShowSpinner] = useState(false);
+  const [isValidPassword, setIsPasswordValid] = useState(false);
+  const loggedInUser = useSelector((state) => state?.authentication?.userAuth);
 
   const {
     values,
@@ -111,6 +112,8 @@ const Password = () => {
                               touched={touched.newPassword}
                               errors={errors.newPassword}
                               size="md"
+                              instructions={true}
+                              setIsPasswordValid={setIsPasswordValid}
                             />
                           </Form.Group>
                         </Col>
@@ -149,7 +152,11 @@ const Password = () => {
                             variant="primary"
                             size="md"
                             className=""
-                            disabled={showSpinner || updateButtonDisabled}
+                            disabled={
+                              showSpinner ||
+                              updateButtonDisabled ||
+                              !isValidPassword
+                            }
                           >
                             Update Password{" "}
                             {showSpinner && (

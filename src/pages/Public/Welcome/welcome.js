@@ -57,13 +57,13 @@ const Welcome = () => {
               className="text-center text-lg-start mb-4 mb-lg-0"
             >
               <div>
-                <h4 className="text-responsive">Who We Are</h4>
-                <h1 className="fw-bold text-responsive-heading">
+                <h4 className="text-responsive text-uppercase">Who We Are</h4>
+                <h1 className="text-responsive-heading">
                   Community-Driven Tech Assistance
                 </h1>
-                <p className="fs-5 mt-3 text-responsive-paragraph">
+                <p className="fs-3 mt-3 text-responsive-paragraph">
                   We are a community of people with IT expertise in computers,
-                  smartphones, and other devices. We are here to help you.
+                  smartphones, and other devices – and we’re here to help..
                 </p>
                 {!userAuth && (
                   <div className="mt-4 d-flex">
@@ -108,7 +108,7 @@ const Welcome = () => {
         <Row>
           {/* Text Column */}
           <Col xl={12} lg={12} md={12} sm={12} xs={12} className="">
-            <h2 className="text-center fw-bold text-responsive-heading">
+            <h2 className="text-center fw-bold text-responsive-heading text-uppercase">
               How Does It Work
             </h2>
             <p className="text-center mt-3 text-black text-responsive-paragraph">
@@ -190,17 +190,26 @@ const Welcome = () => {
                 sm={{ span: 12 }}
                 xs={{ span: 12 }}
               >
-                <h4 className="text-center text-danger">
-                  * At the end of the appointment, our Valets will provide you
-                  with a 1-page overview of the solution, so you can use it any
-                  time you run into the same roadblock in the future!
+                <h4
+                  className="text-center"
+                  style={{
+                    color: "#B51D1D",
+                  }}
+                >
+                  <i>
+                    * At the end of the appointment, our Valets will provide you
+                    with a 1-page overview of the solution, so you can use it
+                    any time you run into the same roadblock in the future!
+                  </i>
                 </h4>
 
                 <Container className="pt-5">
                   <Row className="justify-content-center align-items-center">
                     <Col xl={6} lg={6} md={6} sm={12} xs={12}>
-                      <h1 className="fw-bold mb-3">What we Do</h1>
-                      <p className="mt-2 text-dark text-responsive-paragraph">
+                      <h1 className="fw-bold mb-3 text-uppercase">
+                        What we Do
+                      </h1>
+                      <p className="mt-2 text-dark text-responsive-paragraph fs-3 fw-normal">
                         We connect you with people who are IT savvy, so they can
                         help you solve your tech headaches, quickly, at an
                         affordable price, and at a time that's convenient for
@@ -211,9 +220,9 @@ const Welcome = () => {
                         as={NavLink}
                         className="mt-3 mb-3 btn-white-secondary"
                         size="lg"
-                        to={"/about"}
+                        to={"/login"}
                       >
-                        About Us <span className="bi bi-arrow-right"></span>
+                        Get Started <span className="bi bi-arrow-right"></span>
                       </Button>
                     </Col>
 

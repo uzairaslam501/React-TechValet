@@ -51,16 +51,16 @@ function NavigationBar() {
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="mx-auto navbar-center-links">
-            <Nav.Link as={NavLink} to="/" className="mx-2">
+            <Nav.Link as={NavLink} to="/" className="mx-2 fs-4">
               Home
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/about" className="mx-2">
+            <Nav.Link as={NavLink} to="/about" className="mx-2 fs-4">
               About Us
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/blogs" className="mx-2">
+            <Nav.Link as={NavLink} to="/blogs" className="mx-2 fs-4">
               Blogs
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/contact" className="mx-2">
+            <Nav.Link as={NavLink} to="/contact" className="mx-2 fs-4">
               Contact Us
             </Nav.Link>
           </Nav>
