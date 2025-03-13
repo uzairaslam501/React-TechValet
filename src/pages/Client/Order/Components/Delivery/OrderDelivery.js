@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Form, FloatingLabel } from "react-bootstrap";
+import { Form, FloatingLabel, FormGroup } from "react-bootstrap";
 import Dialogue from "../../../../../components/Custom/Modal/modal";
 import {
   deliverOrder,
@@ -219,10 +219,10 @@ const OrderDelivery = ({
         bodyContent={
           <Form>
             {isAcceptOrderDialogue && (
-              <>
+              <FormGroup className="mb-1">
                 <Form.Label className="mb-0">Ratings:</Form.Label>
                 <StarRating totalStars={5} onRatingSubmit={setRating} />
-              </>
+              </FormGroup>
             )}
 
             <Form.Label>Message</Form.Label>

@@ -22,7 +22,7 @@ const StarRating = ({ totalStars = 5, onRatingSubmit }) => {
     return (
       <div
         key={index}
-        style={{ cursor: "pointer", margin: "0 5px" }}
+        style={{ cursor: "pointer" }}
         onClick={() => handleRating(starValue)}
         onMouseEnter={() => setHover(starValue)}
         onMouseLeave={() => setHover(null)}

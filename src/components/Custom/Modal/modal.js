@@ -24,6 +24,9 @@ const Dialogue = ({
       size={size}
       backdrop={backdrop}
       centered={centered}
+      style={{
+        zIndex: 9999,
+      }}
     >
       <Modal.Header className={headerClass} closeButton={closeButton}>
         <Modal.Title className={titleClass}>{title}</Modal.Title>

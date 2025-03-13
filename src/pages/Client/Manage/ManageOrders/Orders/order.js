@@ -105,11 +105,10 @@ const Order = ({ isLoading }) => {
       dispatch(getOrderRecords(params))
         .then((response) => {
           if (response.payload) {
+            console.log(response?.payload);
             const data = response.payload.data.map((obj) => {
               const orderPaidByBadge =
-                obj.orderReasonType &&
-                obj.orderReasonType === "3" &&
-                obj.orderReasonIsActive === "1" ? (
+                obj.orderStatus === "4" || obj.isDelivered === "4" ? (
                   <NavLink to={`/order-details/${obj.encId}`}>
                     <BadgeStatus status="Cancelled" />
                   </NavLink>

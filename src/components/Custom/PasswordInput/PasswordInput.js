@@ -55,7 +55,9 @@ const PasswordField = ({
           onBlur={onBlur}
           value={value}
           size={size}
-          isInvalid={isInvalid || (touched && !isPasswordValid)}
+          isInvalid={
+            (isInvalid && touched) || (instructions && !isPasswordValid)
+          }
           aria-describedby={instructions ? `${name}-instructions` : undefined}
         />
         <Button

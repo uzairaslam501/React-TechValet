@@ -440,6 +440,7 @@ function AddUser() {
                                 const selectedCountry = e.target.value;
                                 setFieldValue("country", selectedCountry);
                               }}
+                              isInvalid={errors.country && touched.country}
                             >
                               <option value="">Select Country</option>
                               {countries.map((value, key) => {

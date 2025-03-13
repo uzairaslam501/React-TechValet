@@ -57,7 +57,7 @@ const PackagesList = () => {
     },
     {
       id: "0",
-      label: "Used",
+      label: "Remaining",
       column: "remainingSessions",
     },
     {

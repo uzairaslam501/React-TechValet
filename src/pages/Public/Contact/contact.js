@@ -105,13 +105,25 @@ const Contact = () => {
                   </div>
 
                   <div className="d-flex">
-                    <a href="#" className="icons ms-3">
+                    <a
+                      href="https://facebook.com"
+                      target="_blank"
+                      className="icons ms-3"
+                    >
                       <i className="bi bi-facebook"></i>
                     </a>
-                    <a href="#" className="icons mx-5">
+                    <a
+                      href="https://instagram.com"
+                      target="_blank"
+                      className="icons mx-5"
+                    >
                       <i className="bi bi-instagram"></i>
                     </a>
-                    <a href="#" className="icons">
+                    <a
+                      href="https://twitter.com"
+                      target="_blank"
+                      className="icons"
+                    >
                       <i className="bi bi-twitter"></i>
                     </a>
                   </div>
