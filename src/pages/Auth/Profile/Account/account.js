@@ -286,54 +286,6 @@ const Account = ({ userRecord }) => {
               <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-2">
                 <FormGroup>
                   <FormLabel>
-                    City <span className="text-danger">*</span>
-                  </FormLabel>
-                  <FormControl
-                    type="text"
-                    placeholder="City"
-                    value={values.city}
-                    onChange={handleChange("city")}
-                    onBlur={handleBlur("city")}
-                    isInvalid={!!errors.city && touched.city}
-                  />
-                </FormGroup>
-              </Col>
-
-              <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-2">
-                <FormGroup>
-                  <FormLabel>
-                    State <span className="text-danger">*</span>
-                  </FormLabel>
-                  <FormControl
-                    type="text"
-                    placeholder="State"
-                    value={values.state}
-                    onChange={handleChange("state")}
-                    onBlur={handleBlur("state")}
-                    isInvalid={!!errors.state && touched.state}
-                  />
-                </FormGroup>
-              </Col>
-
-              <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-2">
-                <FormGroup>
-                  <FormLabel>
-                    Postal Code/Zip Code <span className="text-danger">*</span>
-                  </FormLabel>
-                  <FormControl
-                    type="text"
-                    placeholder="Zip Code"
-                    value={values.zipCode}
-                    onChange={handleChange("zipCode")}
-                    onBlur={handleBlur("zipCode")}
-                    isInvalid={!!errors.zipCode && touched.zipCode}
-                  />
-                </FormGroup>
-              </Col>
-
-              <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-2">
-                <FormGroup>
-                  <FormLabel>
                     Country <span className="text-danger">*</span>
                   </FormLabel>
                   <Form.Control
@@ -353,6 +305,54 @@ const Account = ({ userRecord }) => {
                       );
                     })}
                   </Form.Control>
+                </FormGroup>
+              </Col>
+
+              <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-2">
+                <FormGroup>
+                  <FormLabel>
+                    State/Province <span className="text-danger">*</span>
+                  </FormLabel>
+                  <FormControl
+                    type="text"
+                    placeholder="State"
+                    value={values.state}
+                    onChange={handleChange("state")}
+                    onBlur={handleBlur("state")}
+                    isInvalid={!!errors.state && touched.state}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-2">
+                <FormGroup>
+                  <FormLabel>
+                    City <span className="text-danger">*</span>
+                  </FormLabel>
+                  <FormControl
+                    type="text"
+                    placeholder="City"
+                    value={values.city}
+                    onChange={handleChange("city")}
+                    onBlur={handleBlur("city")}
+                    isInvalid={!!errors.city && touched.city}
+                  />
+                </FormGroup>
+              </Col>
+
+              <Col xl={6} lg={6} md={6} sm={12} xs={12} className="mb-2">
+                <FormGroup>
+                  <FormLabel>
+                    Postal Code/Zip Code <span className="text-danger">*</span>
+                  </FormLabel>
+                  <FormControl
+                    type="text"
+                    placeholder="Zip Code"
+                    value={values.zipCode}
+                    onChange={handleChange("zipCode")}
+                    onBlur={handleBlur("zipCode")}
+                    isInvalid={!!errors.zipCode && touched.zipCode}
+                  />
                 </FormGroup>
               </Col>
             </Row>

@@ -62,8 +62,9 @@ const Welcome = () => {
                   Community-Driven Tech Assistance
                 </h1>
                 <p className="fs-3 mt-3 text-responsive-paragraph">
-                  We are a community of people with IT expertise in computers,
-                  smartphones, and other devices – and we’re here to help..
+                  We are a community of people who have IT know-how with
+                  computers, smartphones and other devices - and we’re here to
+                  help.
                 </p>
                 {!userAuth && (
                   <div className="mt-4 d-flex">
@@ -197,9 +198,10 @@ const Welcome = () => {
                   }}
                 >
                   <i>
-                    * At the end of the appointment, our Valets will provide you
-                    with a 1-page overview of the solution, so you can use it
-                    any time you run into the same roadblock in the future!
+                    <span className="fs-1">*</span> At the end of the
+                    appointment, our Valets will provide you with a 1-page
+                    overview of the solution, so you can use it any time you run
+                    into the same roadblock in the future!
                   </i>
                 </h4>
 

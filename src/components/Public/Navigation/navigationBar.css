@@ -25,3 +25,20 @@
     margin-bottom: 0;
   }
 }
+
+.animated-button {
+  font-size: 1.2rem; /* Bigger text for better readability */
+  padding: 15px 20px;
+  border-radius: 30px; /* Rounded for a cartoonish feel */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Soft shadows */
+  transition: all 0.3s ease-in-out;
+  border: none;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.animated-button:hover {
+  transform: translateY(-3px) scale(1.05); /* Subtle bounce effect */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}

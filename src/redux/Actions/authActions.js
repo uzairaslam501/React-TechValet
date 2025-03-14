@@ -72,6 +72,20 @@ export const postRegister = createAsyncThunk(
   }
 );
 
+// Username Suggestions
+export const validateUsernames = createAsyncThunk(
+  "auth/validateUsernames",
+  async (username, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const response = await api.get(`/auth/suggest-username/${username}`);
+      const { data } = processApiResponse(response, dispatch);
+      return data;
+    } catch (error) {
+      rejectWithError(error, dispatch);
+    }
+  }
+);
+
 //User Update Profile
 export const postUserUpdate = createAsyncThunk(
   "user/postUserUpdate",

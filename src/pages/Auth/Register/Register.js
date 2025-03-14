@@ -2,7 +2,10 @@ import * as Yup from "yup";
 import { useFormik } from "formik";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { postRegister } from "../../../redux/Actions/authActions";
+import {
+  postRegister,
+  validateUsernames,
+} from "../../../redux/Actions/authActions";
 import { Navigate, NavLink, useNavigate, useParams } from "react-router-dom";
 import {
   Button,
@@ -22,6 +25,7 @@ import PasswordField from "../../../components/Custom/PasswordInput/PasswordInpu
 import { getTimezones } from "../../../redux/Actions/globalActions";
 import { capitalizeFirstLetter } from "../../../utils/_helpers";
 import UsernameInput from "../../../components/Custom/Username/HandleUsername";
+import ScrollToTop from "../../../theme/scrollToTop";
 
 const UserRegisteration = () => {
   const { value } = useParams();
@@ -135,201 +139,204 @@ const UserRegisteration = () => {
   }, [value]);
 
   return (
-    <Container
-      fluid
-      className=""
-      style={{
-        minHeight: "100vh",
-      }}
-    >
-      <Row className="bg-white">
-        {/* Image Column */}
-        <Col
-          xl={6}
-          lg={6}
-          className="d-none d-lg-flex justify-content-center align-items-center p-5 h-100"
-          style={{
-            position: "fixed",
-            width: "50%",
-            height: "100vh",
-            backgroundImage: `url(${background})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          <div className="text-center">
-            <div className="position-relative mx-auto w-50">
-              <HandleImages
-                imagePath={
-                  value === "customer" ? customerRegisterImage : loginPage
-                }
-                imageAlt="login"
-                imageStyle={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  objectPosition: "top",
-                }}
-              />
+    <>
+      <ScrollToTop />
+      <Container
+        fluid
+        className=""
+        style={{
+          minHeight: "100vh",
+        }}
+      >
+        <Row className="bg-white">
+          {/* Image Column */}
+          <Col
+            xl={6}
+            lg={6}
+            className="d-none d-lg-flex justify-content-center align-items-center p-5 h-100"
+            style={{
+              position: "fixed",
+              width: "50%",
+              height: "100vh",
+              backgroundImage: `url(${background})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          >
+            <div className="text-center">
+              <div className="position-relative mx-auto w-50">
+                <HandleImages
+                  imagePath={
+                    value === "customer" ? customerRegisterImage : loginPage
+                  }
+                  imageAlt="login"
+                  imageStyle={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    objectPosition: "top",
+                  }}
+                />
+              </div>
+
+              {/* Heading and Paragraph */}
+              <div className="mt-4">
+                <h3 className="text-dark fw-bold">
+                  Welcome to TechValet!
+                  <br /> You are registering as a {capitalizeFirstLetter(value)}
+                  .
+                </h3>
+
+                {value === "customer" ? (
+                  <>
+                    <p className="text-dark">
+                      Need help? Create an account to get your issues resolved
+                      instantly.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-dark">
+                      Don't waste your skills. Create an account to provide your
+                      services
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
+          </Col>
 
-            {/* Heading and Paragraph */}
-            <div className="mt-4">
-              <h3 className="text-dark fw-bold">
-                Welcome to TechValet!
-                <br /> You are registering as a {capitalizeFirstLetter(value)}.
-              </h3>
+          {/* Form Column */}
+          <Col
+            xl={{ span: 6, offset: 6 }}
+            lg={{ span: 6, offset: 6 }}
+            md={12}
+            sm={12}
+            xs={12}
+            className="d-flex flex-column justify-content-center align-items-center"
+          >
+            {/* Form */}
+            <div className="w-75 py-5">
+              <h2 className="text-center">Create your Account</h2>
+              <h6 className="text-danger">All * Fields are required</h6>
+              <Form onSubmit={formikSubmit}>
+                <Row>
+                  {/* First Name */}
+                  <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                    <Form.Group className="mb-2">
+                      <Form.Label>
+                        First Name <span className="text-danger">*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="firstname"
+                        placeholder="First Name"
+                        value={values.firstname}
+                        onBlur={handleBlur("firstname")}
+                        onChange={handleChange("firstname")}
+                        isInvalid={touched.firstname && !!errors.firstname}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {touched.firstname && errors.firstname}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  {/* Last Name */}
+                  <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                    <Form.Group as={Col} className="mb-2">
+                      <Form.Label>
+                        Last Name <span className="text-danger">*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="lastname"
+                        placeholder="Last Name"
+                        value={values.lastname}
+                        onBlur={handleBlur("lastname")}
+                        onChange={handleChange("lastname")}
+                        isInvalid={touched.lastname && !!errors.lastname}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {touched.lastname && errors.lastname}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  {/* Username */}
+                  <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                    <Form.Group className="mb-2">
+                      <UsernameInput
+                        value={values.username}
+                        onChange={handleChange("username")}
+                        onBlur={handleBlur("username")}
+                        error={errors.username}
+                        touched={touched.username}
+                      />
+                    </Form.Group>
+                  </Col>
+                  {/* Email */}
+                  <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                    <Form.Group className="mb-2">
+                      <Form.Label>
+                        Email <span className="text-danger">*</span>
+                      </Form.Label>
+                      <Form.Control
+                        type="email"
+                        name="email"
+                        placeholder="Enter Email"
+                        value={values.email}
+                        onBlur={handleBlur("email")}
+                        onChange={handleChange("email")}
+                        isInvalid={touched.email && !!errors.email}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {touched.email && errors.email}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  {/* Password */}
+                  <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                    <Form.Group className="mb-2">
+                      <PasswordField
+                        label="Password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required={true}
+                        value={values.password}
+                        onBlur={handleBlur("password")}
+                        onChange={handleChange("password")}
+                        isInvalid={touched.password && !!errors.password}
+                        touched={touched.password}
+                        errors={errors.password}
+                        size="md"
+                        instructions={true}
+                        setIsPasswordValid={setIsPasswordValid}
+                      />
+                    </Form.Group>
+                  </Col>
 
-              {value === "customer" ? (
-                <>
-                  <p className="text-dark">
-                    Need help? Create an account to get your issues resolved
-                    instantly.
-                  </p>
-                </>
-              ) : (
-                <>
-                  <p className="text-dark">
-                    Don't waste your skills. Create an account to provide your
-                    services
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
-        </Col>
+                  {/* Confirm Password */}
+                  <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                    <Form.Group className="mb-2">
+                      <PasswordField
+                        label="Confirm Password"
+                        name="confirmPassword"
+                        placeholder="Re-enter password"
+                        required={true}
+                        value={values.confirmPassword}
+                        onBlur={handleBlur("confirmPassword")}
+                        onChange={handleChange("confirmPassword")}
+                        isInvalid={
+                          touched.confirmPassword && !!errors.confirmPassword
+                        }
+                        touched={touched.confirmPassword}
+                        errors={errors.confirmPassword}
+                        size="md"
+                      />
+                    </Form.Group>
+                  </Col>
 
-        {/* Form Column */}
-        <Col
-          xl={{ span: 6, offset: 6 }}
-          lg={{ span: 6, offset: 6 }}
-          md={12}
-          sm={12}
-          xs={12}
-          className="d-flex flex-column justify-content-center align-items-center"
-        >
-          {/* Form */}
-          <div className="w-75 py-5">
-            <h2 className="text-center">Create your Account</h2>
-            <h6 className="text-danger">All * Fields are required</h6>
-            <Form onSubmit={formikSubmit}>
-              <Row>
-                {/* First Name */}
-                <Col xl={6} lg={6} md={6} sm={12} xs={12}>
-                  <Form.Group className="mb-2">
-                    <Form.Label>
-                      First Name <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="firstname"
-                      placeholder="Email / Username"
-                      value={values.firstname}
-                      onBlur={handleBlur("firstname")}
-                      onChange={handleChange("firstname")}
-                      isInvalid={touched.firstname && !!errors.firstname}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {touched.firstname && errors.firstname}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                {/* Last Name */}
-                <Col xl={6} lg={6} md={6} sm={12} xs={12}>
-                  <Form.Group as={Col} className="mb-2">
-                    <Form.Label>
-                      Last Name <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="lastname"
-                      placeholder="Last Name"
-                      value={values.lastname}
-                      onBlur={handleBlur("lastname")}
-                      onChange={handleChange("lastname")}
-                      isInvalid={touched.lastname && !!errors.lastname}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {touched.lastname && errors.lastname}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                {/* Username */}
-                <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                  <Form.Group className="mb-2">
-                    <UsernameInput
-                      value={values.username}
-                      onChange={handleChange("username")}
-                      onBlur={handleBlur("username")}
-                      error={errors.username}
-                      touched={touched.username}
-                    />
-                  </Form.Group>
-                </Col>
-                {/* Email */}
-                <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                  <Form.Group className="mb-2">
-                    <Form.Label>
-                      Email <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      type="email"
-                      name="email"
-                      placeholder="Enter Email"
-                      value={values.email}
-                      onBlur={handleBlur("email")}
-                      onChange={handleChange("email")}
-                      isInvalid={touched.email && !!errors.email}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {touched.email && errors.email}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                {/* Password */}
-                <Col xl={6} lg={6} md={6} sm={12} xs={12}>
-                  <Form.Group className="mb-2">
-                    <PasswordField
-                      label="Password"
-                      name="password"
-                      placeholder="Enter your password"
-                      required={true}
-                      value={values.password}
-                      onBlur={handleBlur("password")}
-                      onChange={handleChange("password")}
-                      isInvalid={touched.password && !!errors.password}
-                      touched={touched.password}
-                      errors={errors.password}
-                      size="md"
-                      instructions={true}
-                      setIsPasswordValid={setIsPasswordValid}
-                    />
-                  </Form.Group>
-                </Col>
-
-                {/* Confirm Password */}
-                <Col xl={6} lg={6} md={6} sm={12} xs={12}>
-                  <Form.Group className="mb-2">
-                    <PasswordField
-                      label="Confirm Password"
-                      name="confirmPassword"
-                      placeholder="Re-enter password"
-                      required={true}
-                      value={values.confirmPassword}
-                      onBlur={handleBlur("confirmPassword")}
-                      onChange={handleChange("confirmPassword")}
-                      isInvalid={
-                        touched.confirmPassword && !!errors.confirmPassword
-                      }
-                      touched={touched.confirmPassword}
-                      errors={errors.confirmPassword}
-                      size="md"
-                    />
-                  </Form.Group>
-                </Col>
-
-                {/* State */}
-                {/* <Col xl={4} lg={4} md={4} sm={12} xs={12}>
+                  {/* State */}
+                  {/* <Col xl={4} lg={4} md={4} sm={12} xs={12}>
                   <Form.Group className="mb-2">
                     <Form.Label>
                       State <span className="text-danger">*</span>
@@ -348,8 +355,8 @@ const UserRegisteration = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col> */}
-                {/* City */}
-                {/* <Col xl={4} lg={4} md={4} sm={12} xs={12}>
+                  {/* City */}
+                  {/* <Col xl={4} lg={4} md={4} sm={12} xs={12}>
                   <Form.Group className="mb-2">
                     <Form.Label>
                       City <span className="text-danger">*</span>
@@ -368,8 +375,8 @@ const UserRegisteration = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col> */}
-                {/* Postal Code/Zip Code */}
-                {/* <Col xl={4} lg={4} md={4} sm={12} xs={12}>
+                  {/* Postal Code/Zip Code */}
+                  {/* <Col xl={4} lg={4} md={4} sm={12} xs={12}>
                   <Form.Group className="mb-2">
                     <Form.Label>
                       Zip Code
@@ -389,8 +396,8 @@ const UserRegisteration = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col> */}
-                {/* Country */}
-                {/* <Col xl={6} lg={6} md={6} sm={12} xs={12}>
+                  {/* Country */}
+                  {/* <Col xl={6} lg={6} md={6} sm={12} xs={12}>
                   <Form.Group className="mb-4">
                     <Form.Label>
                       Country <span className="text-danger">*</span>
@@ -409,99 +416,100 @@ const UserRegisteration = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col> */}
-                {/* Timezone */}
-                <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-                  <Form.Group className="mb-2">
-                    <Form.Label>
-                      Timezone <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      as="select"
-                      value={values?.timezone || ""}
-                      onChange={(e) => {
-                        const selectedZone = e.target.value;
-                        setFieldValue("timezone", selectedZone);
-                      }}
-                      isInvalid={touched.timezone && !!errors.timezone}
-                    >
-                      <option value="">Select Timezone</option>
-                      {timeZones.length > 0 &&
-                        timeZones.map((zone) => (
-                          <option key={zone} value={zone}>
-                            {zone}
-                          </option>
-                        ))}
-                    </Form.Control>
-                    <Form.Control.Feedback type="invalid">
-                      {touched.timezone && errors.timezone}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
+                  {/* Timezone */}
+                  <Col xl={12} lg={12} md={12} sm={12} xs={12}>
+                    <Form.Group className="mb-2">
+                      <Form.Label>
+                        Timezone <span className="text-danger">*</span>
+                      </Form.Label>
+                      <Form.Control
+                        as="select"
+                        value={values?.timezone || ""}
+                        onChange={(e) => {
+                          const selectedZone = e.target.value;
+                          setFieldValue("timezone", selectedZone);
+                        }}
+                        isInvalid={touched.timezone && !!errors.timezone}
+                      >
+                        <option value="">Select Timezone</option>
+                        {timeZones.length > 0 &&
+                          timeZones.map((zone) => (
+                            <option key={zone} value={zone}>
+                              {zone}
+                            </option>
+                          ))}
+                      </Form.Control>
+                      <Form.Control.Feedback type="invalid">
+                        {touched.timezone && errors.timezone}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
 
-                <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mb-3">
-                  <OverlayTrigger
-                    placement="top"
-                    overlay={
-                      <Tooltip id="switch-tooltip">
-                        {value === "valet"
-                          ? "You are registering as a valet."
-                          : "You are registering as a customer."}
-                      </Tooltip>
-                    }
-                  >
-                    <Form.Check
-                      type="switch"
-                      id="custom-switch"
-                      label={
-                        value === "valet"
-                          ? "Registering as Valet"
-                          : "Registering as Customer"
+                  <Col xl={12} lg={12} md={12} sm={12} xs={12} className="mb-3">
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={
+                        <Tooltip id="switch-tooltip">
+                          {value === "valet"
+                            ? "You are registering as a valet."
+                            : "You are registering as a customer."}
+                        </Tooltip>
                       }
-                      checked={value === "valet"}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          navigate("/register/valet");
-                        } else {
-                          navigate("/register/customer");
+                    >
+                      <Form.Check
+                        type="switch"
+                        id="custom-switch"
+                        label={
+                          value === "valet"
+                            ? "Registering as Valet"
+                            : "Registering as Customer"
                         }
-                      }}
-                      className=""
-                    />
-                  </OverlayTrigger>
-                </Col>
+                        checked={value === "valet"}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            navigate("/register/valet");
+                          } else {
+                            navigate("/register/customer");
+                          }
+                        }}
+                        className="fs-5"
+                      />
+                    </OverlayTrigger>
+                  </Col>
 
-                <Col sm={12} className="text-center">
-                  <Button
-                    className="btn-md w-100 text-uppercase"
-                    variant="primary"
-                    type="submit"
-                    disabled={loading || !isValidPassword}
-                  >
-                    {loading ? (
-                      <Spinner animation="border" size="sm" />
-                    ) : (
-                      `Sign Up as ${
-                        value === "valet" ? "Tech Valet" : "a Customer"
-                      }`
-                    )}
-                  </Button>
-                </Col>
-              </Row>
-              <div className="d-flex justify-content-center">
-                <span className="text-muted fs-5">
-                  Already have account?
-                  <span>
-                    <NavLink to="/login" className="text-dark ms-1 fs-4">
-                      Login Here
-                    </NavLink>
+                  <Col sm={12} className="text-center">
+                    <Button
+                      className="btn-md w-100 text-uppercase fs-5"
+                      variant="primary"
+                      type="submit"
+                      disabled={loading || !isValidPassword}
+                    >
+                      {loading ? (
+                        <Spinner animation="border" size="sm" />
+                      ) : (
+                        `Sign Up as ${
+                          value === "valet" ? "Tech Valet" : "a Customer"
+                        }`
+                      )}
+                    </Button>
+                  </Col>
+                </Row>
+                <div className="d-flex justify-content-center">
+                  <span className="text-muted fs-5">
+                    Already have account?
+                    <span>
+                      <NavLink to="/login" className="text-dark ms-1 fs-4">
+                        Login Here
+                      </NavLink>
+                    </span>
                   </span>
-                </span>
-              </div>
-            </Form>
-          </div>
-        </Col>
-      </Row>
-    </Container>
+                </div>
+              </Form>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 };
 
