@@ -21,13 +21,12 @@ import HandleImages from "../../../components/Custom/Avatars/HandleImages";
 import loginPage from "../../../assets/images/login-page.png";
 import background from "../../../assets/images/Background.svg";
 import PasswordField from "../../../components/Custom/PasswordInput/PasswordInput";
-import { toast } from "react-toastify";
 
 const ResetPassword = () => {
   const dispatch = useDispatch();
   const { value, validity } = useParams();
   const [showSpinner, setShowSpinner] = useState(false);
-
+  const [isValidPassword, setIsPasswordValid] = useState(false);
   const { userAuth, loading, error } = useSelector(
     (state) => state.authentication
   );
@@ -170,6 +169,8 @@ const ResetPassword = () => {
                   isInvalid={touched.newPassword && !!errors.newPassword}
                   touched={touched.newPassword}
                   errors={errors.newPassword}
+                  instructions={true}
+                  setIsPasswordValid={setIsPasswordValid}
                 />
               </Form.Group>
 
@@ -196,7 +197,9 @@ const ResetPassword = () => {
                     className="btn-md w-100 text-uppercase mb-3"
                     variant="primary"
                     type="submit"
-                    disabled={showSpinner || updateButtonDisabled}
+                    disabled={
+                      showSpinner || updateButtonDisabled || !isValidPassword
+                    }
                   >
                     {loading ? (
                       <Spinner animation="border" size="sm" />

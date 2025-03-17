@@ -160,7 +160,12 @@ const ChatContainer = ({
       const buttons = status.buttons || [];
       return (
         <div>
-          <Card style={{ width: "20rem" }}>
+          <Card
+            style={{
+              width: "100%",
+              maxWidth: "310px",
+            }}
+          >
             <Card.Header>
               <div className="font-weight-bold">{status.type} Request:</div>
             </Card.Header>
