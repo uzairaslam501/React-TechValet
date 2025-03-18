@@ -1,21 +1,13 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  postLogin,
   postResetPassword,
+  checkUrlValidity,
 } from "../../../redux/Actions/authActions";
-import { NavLink, Navigate, useParams } from "react-router-dom";
-import {
-  Button,
-  Col,
-  Container,
-  Form,
-  InputGroup,
-  Row,
-  Spinner,
-} from "react-bootstrap";
+import { NavLink, Navigate, useNavigate, useParams } from "react-router-dom";
+import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import logo from "../../../assets/images/logo-for-white-bg.svg";
 import HandleImages from "../../../components/Custom/Avatars/HandleImages";
 import loginPage from "../../../assets/images/login-page.png";
@@ -24,6 +16,7 @@ import PasswordField from "../../../components/Custom/PasswordInput/PasswordInpu
 
 const ResetPassword = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { value, validity } = useParams();
   const [showSpinner, setShowSpinner] = useState(false);
   const [isValidPassword, setIsPasswordValid] = useState(false);
@@ -42,6 +35,18 @@ const ResetPassword = () => {
     newPassword: Yup.string().required("Password is required"),
     confirmPassword: Yup.string().required("Confirm Password is required"),
   });
+
+  const checkValidity = useCallback(() => {
+    dispatch(checkUrlValidity(validity))
+      .then((response) => {
+        if (!response?.payload) {
+          navigate("/login");
+        }
+      })
+      .catch((response) => {
+        console.log(response);
+      });
+  }, [validity]);
 
   const {
     values,
@@ -67,6 +72,10 @@ const ResetPassword = () => {
       } catch (error) {}
     },
   });
+
+  useEffect(() => {
+    checkValidity();
+  }, [validity]);
 
   const isPasswordMatch = values.newPassword === values.confirmPassword;
   const updateButtonDisabled = !isPasswordMatch;

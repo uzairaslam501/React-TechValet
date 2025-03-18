@@ -379,6 +379,20 @@ export const requestForgotPassword = createAsyncThunk(
   }
 );
 
+export const checkUrlValidity = createAsyncThunk(
+  "auth/checkUrlValidity",
+  async (validity, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const response = await api.get(`/auth/Validity/${validity}`);
+      const { data } = processApiResponse(response, dispatch);
+      return data;
+    } catch (error) {
+      console.log("postResetPassword error ::", error);
+      handleApiError(error, dispatch);
+    }
+  }
+);
+
 // Async thunk for reset-password
 export const postResetPassword = createAsyncThunk(
   "auth/postResetPassword",
