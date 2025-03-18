@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Badge, Form } from "react-bootstrap";
+import { Badge, Form, Spinner } from "react-bootstrap";
 import { validateUsernames } from "../../../redux/Actions/authActions";
 import { useDispatch } from "react-redux";
 import { debounce } from "lodash";
@@ -15,6 +15,7 @@ const UsernameInput = ({
   const dispatch = useDispatch();
   let timeout;
   const [suggestions, setSuggestions] = useState([]);
+  const [suggestionsLoader, setSuggestionsLoader] = useState(false);
 
   const handleInputChange = (e, newValue = null) => {
     const inputValue = newValue !== null ? newValue : e.target.value;
@@ -27,18 +28,20 @@ const UsernameInput = ({
 
   const fetchSuggestions = async (username) => {
     if (!username) return;
-
+    setSuggestionsLoader(true);
     try {
       await dispatch(validateUsernames(username))
         .then((response) => {
-          console.log("usernames", response?.payload);
           setSuggestions(response.payload);
+          setSuggestionsLoader(false);
         })
         .catch((error) => {
           console.log(error);
+          setSuggestionsLoader(false);
         });
     } catch (error) {
       console.error("Error fetching suggestions:", error);
+      setSuggestionsLoader(false);
     }
   };
 
@@ -57,7 +60,7 @@ const UsernameInput = ({
         Username <span className="text-danger">*</span>
       </Form.Label>
       <Form.Control
-        disabled={disabled}
+        disabled={disabled || suggestionsLoader}
         type="text"
         name="username"
         placeholder="Enter Username"
@@ -72,25 +75,30 @@ const UsernameInput = ({
       </Form.Control.Feedback>
 
       {/* Render suggestions */}
-      {suggestions && suggestions.length > 0 && (
-        <div className="mt-2">
-          {suggestions.map((suggestion, index) => (
-            <Badge
-              key={index}
-              pill
-              bg="primary"
-              className="me-2 cursor-pointer"
-              style={{
-                cursor: "pointer",
-                padding: "8px 12px",
-                fontSize: "14px",
-              }}
-              onClick={() => handleInputChange(null, suggestion)}
-            >
-              {suggestion}
-            </Badge>
-          ))}
-        </div>
+      {!suggestionsLoader ? (
+        suggestions &&
+        suggestions.length > 0 && (
+          <div className="mt-2">
+            {suggestions.map((suggestion, index) => (
+              <Badge
+                key={index}
+                pill
+                bg="primary"
+                className="me-2 cursor-pointer"
+                style={{
+                  cursor: "pointer",
+                  padding: "8px 12px",
+                  fontSize: "14px",
+                }}
+                onClick={() => handleInputChange(null, suggestion)}
+              >
+                {suggestion}
+              </Badge>
+            ))}
+          </div>
+        )
+      ) : (
+        <Spinner animation="border" size="sm" className="me-1" />
       )}
     </Form.Group>
   );

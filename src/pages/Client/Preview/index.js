@@ -126,7 +126,7 @@ const PreviewProfile = () => {
               <Col xl={12} lg={12} md={12} sm={12} xs={12}>
                 <Card className="shadow">
                   <CardHeader>
-                    <h4 className="mb-0">Appointment Booking Scheduler</h4>
+                    <h4 className="mb-0">Appointment Booking</h4>
                   </CardHeader>
                   <CardBody
                     style={{

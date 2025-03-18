@@ -23,6 +23,7 @@ const Search = () => {
     setLoading(true);
     try {
       const response = await dispatch(getValetsBySearch(value));
+      console.log(response?.payload);
       setSearchedUserList(response?.payload || []);
     } catch (error) {
       console.error("Error fetching keywords:", error);
@@ -51,7 +52,7 @@ const Search = () => {
                   >
                     <div className="user-card__image-wrapper">
                       <HandleImages
-                        imagePath={user.UserProfile}
+                        imagePath={user.userProfile}
                         imageAlt={`${user.firstName} ${user.lastName}`}
                         className={"top user-card__image"}
                       />

@@ -139,9 +139,7 @@ const UserProfileImage = ({ userRecord, preview = false }) => {
               {/* Profile Image */}
               <HandleImages
                 imagePath={
-                  preview !== true
-                    ? imagePreview || profileImage
-                    : userRecord?.profileImage
+                  preview !== true ? imagePreview || profileImage : profileImage
                 }
                 imageAlt={`${userRecord?.firstName} ${userRecord?.lastName}`}
                 imageStyle={{
