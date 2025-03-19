@@ -712,7 +712,7 @@ const Messages = () => {
       {showOrderDialogue && (
         <OfferDialogue
           handleOrderClose={handleOrderClose}
-          messageObject={defaultMessage}
+          messageObject={activeChat}
           showOrderDialogue={showOrderDialogue}
           handleSendOffer={handleSendOffer}
           loader={sendLoader}

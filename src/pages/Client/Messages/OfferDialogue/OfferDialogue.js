@@ -1,16 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { FloatingLabel, Form } from "react-bootstrap";
 import Dialogue from "../../../../components/Custom/Modal/modal";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  disabledPreviousDateTime,
-  getFirstAndLastDayOfMonth,
-  setDateTimeRestrictions,
-  truncateDate,
-} from "../../../../utils/_helpers";
-import { getTimeSlots } from "../../../../redux/Actions/orderActions";
+import { useSelector } from "react-redux";
+import { disabledPreviousDateTime } from "../../../../utils/_helpers";
 
 const validateLogin = Yup.object().shape({
   offerTitle: Yup.string().required("This Field is Required"),
@@ -40,10 +34,7 @@ const OfferDialogue = ({
   handleSendOffer,
   loader,
   selectedDateTime,
-  restrictions,
-  valetId,
 }) => {
-  const dispatch = useDispatch();
   const { userAuth } = useSelector((state) => state?.authentication);
 
   const initialValues = {
@@ -76,29 +67,12 @@ const OfferDialogue = ({
     },
   });
 
-  const handleGetSlots = (valetId, selectedDateTime) => {
-    dispatch(getTimeSlots({ userId: valetId, date: selectedDateTime })).then(
-      (response) => {
-        console.log(response?.payload);
-      }
-    );
-  };
-
   const handleDateTimeMatch = (value, field) => {
     if (field === "startedDateTime" && !value) {
       setFieldValue("endedDateTime", "");
     }
     setFieldValue(field, value);
   };
-
-  const validRange = {
-    start: getFirstAndLastDayOfMonth().currentDay,
-    end: getFirstAndLastDayOfMonth().monthEnd,
-  };
-
-  // useEffect(() => {
-  //   handleGetSlots(valetId, truncateDate(selectedDateTime));
-  // }, selectedDateTime);
 
   return (
     <>
@@ -136,9 +110,6 @@ const OfferDialogue = ({
                   handleDateTimeMatch(e.target.value, "startedDateTime");
                 }}
                 min={disabledPreviousDateTime()}
-                // max={
-                //   restrictions || setDateTimeRestrictions("max", validRange.end)
-                // }
                 isInvalid={touched.startedDateTime && !!errors.startedDateTime}
                 onKeyDown={(e) => e.preventDefault()}
               />
@@ -160,9 +131,6 @@ const OfferDialogue = ({
                 }}
                 disabled={!values.startedDateTime}
                 min={disabledPreviousDateTime()}
-                // max={
-                //   restrictions || setDateTimeRestrictions("max", validRange.end)
-                // }
                 isInvalid={touched.endedDateTime && !!errors.endedDateTime}
                 onKeyDown={(e) => e.preventDefault()}
               />
