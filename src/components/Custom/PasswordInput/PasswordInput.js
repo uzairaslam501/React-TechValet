@@ -15,6 +15,9 @@ const PasswordField = ({
   size = "sm",
   instructions = false,
   setIsPasswordValid,
+  formlabelClass = "",
+  inputFieldClass = "",
+  style = {},
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -43,7 +46,7 @@ const PasswordField = ({
 
   return (
     <Form.Group className="mb-3">
-      <Form.Label>
+      <Form.Label className={formlabelClass}>
         {label} {required && <span className="text-danger">*</span>}
       </Form.Label>
       <InputGroup>
@@ -55,6 +58,8 @@ const PasswordField = ({
           onBlur={onBlur}
           value={value}
           size={size}
+          className={inputFieldClass}
+          style={style}
           isInvalid={
             (isInvalid && touched) || (instructions && !isPasswordValid)
           }

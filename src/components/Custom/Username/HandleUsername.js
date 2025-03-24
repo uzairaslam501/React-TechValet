@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Badge, Form, Spinner } from "react-bootstrap";
 import { validateUsernames } from "../../../redux/Actions/authActions";
 import { useDispatch } from "react-redux";
@@ -11,6 +11,11 @@ const UsernameInput = ({
   error,
   touched,
   disabled,
+  formLabelClass = "",
+  firstName,
+  lastName,
+  inputFieldClass = "",
+  style = {},
 }) => {
   const dispatch = useDispatch();
   let timeout;
@@ -27,8 +32,8 @@ const UsernameInput = ({
   };
 
   const fetchSuggestions = async (username) => {
-    if (!username) return;
     setSuggestionsLoader(true);
+    if (!username) return;
     try {
       await dispatch(validateUsernames(username))
         .then((response) => {
@@ -54,9 +59,16 @@ const UsernameInput = ({
     []
   );
 
+  useEffect(() => {
+    if (firstName || lastName) {
+      const newUsername = `${firstName}${lastName}`.toLowerCase();
+      fetchSuggestions(newUsername);
+    }
+  }, [firstName, lastName]);
+
   return (
     <Form.Group className="mb-2">
-      <Form.Label>
+      <Form.Label className={formLabelClass}>
         Username <span className="text-danger">*</span>
       </Form.Label>
       <Form.Control
@@ -69,6 +81,8 @@ const UsernameInput = ({
         onChange={handleInputChange}
         onKeyUp={handleKeyUp} // Trigger API call on keyup
         isInvalid={touched && !!error}
+        className={inputFieldClass}
+        style={style}
       />
       <Form.Control.Feedback type="invalid">
         {touched && error}
