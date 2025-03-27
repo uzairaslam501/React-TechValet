@@ -2,10 +2,10 @@ import "./style.css";
 import React from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import Keywords from "./SearchBar/Keywords";
-import SearchBar from "./SearchBar/SearchBar";
+import Keywords from "../SearchBar/Keywords";
+import SearchBar from "../SearchBar/SearchBar";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
-import HandleImages from "../../../../components/Custom/Avatars/HandleImages";
+import HandleImages from "../../../../../components/Custom/Avatars/HandleImages";
 
 const SearchSection = () => {
   const { userAuth } = useSelector((state) => state.authentication);

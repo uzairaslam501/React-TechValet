@@ -10,8 +10,7 @@ import Dashboard from "../pages/Admin/Dashboard/Dashboard";
 import RootLayout from "../components/Admin/Layouts/rootLayout";
 import ProtectedClient from "../components/Client/Layouts/clientProtected";
 import ClientRoot from "../components/Client/Layouts/clientRoot";
-import Home from "../pages/Public/Home/home";
-import Welcome from "../pages/Public/Welcome/welcome";
+import HomeIndex from "../pages/Public/Home";
 import About from "../pages/Public/About/about";
 import Contact from "../pages/Public/Contact/contact";
 import Search from "../pages/Client/Search/filteredData";
@@ -118,8 +117,6 @@ const createRoute = createBrowserRouter(
       </Route>
 
       <Route element={<ClientRoot />}>
-        <Route path="/home" element={<Home />} />
-
         <Route element={<ProtectedClient />}>
           {/* Global */}
 
@@ -193,7 +190,7 @@ const createRoute = createBrowserRouter(
       </Route>
 
       <Route element={<PublicRoot />}>
-        <Route path="/" element={<Welcome />} />
+        <Route path="/" element={<HomeIndex />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/skills" element={<SkillArticle />} />

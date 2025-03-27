@@ -1,12 +1,12 @@
 import React from "react";
 import { Button, Col, Container, Row, Card, CardBody } from "react-bootstrap";
-import TestimonialSlider from "../../../components/Custom/Testimonials/Testimonial";
-import { homeCarousalData } from "../../../utils/client/data/carousalData";
-import CustomCarousel from "../../../components/Custom/CardCarousal/cardCarousal";
+import TestimonialSlider from "../../../../components/Custom/Testimonials/Testimonial";
 import {
+  homeCarousalData,
   CategoriesList,
   testimonials,
-} from "../../../utils/client/data/carousalData";
+} from "../../../../utils/client/data/carousalData";
+import CustomCarousel from "../../../../components/Custom/CardCarousal/cardCarousal";
 import SearchSection from "./Search/Search";
 import ValetSlider from "./ValetSlider/ValetSlider";
 import { useSelector } from "react-redux";

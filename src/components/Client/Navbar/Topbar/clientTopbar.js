@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import HandleImages from "../../../Custom/Avatars/HandleImages";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import NotificationCard from "../../../Custom/Notification/NotificationCard";
-import SearchBar from "../../../../pages/Public/Home/Search/SearchBar/SearchBar";
+import SearchBar from "../../../../pages/Public/Home/Home2/SearchBar/SearchBar";
 import { postLogout } from "../../../../redux/Actions/authActions";
 
 const ClientTopbar = () => {

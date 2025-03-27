@@ -1,0 +1,72 @@
+.rowsection {
+  margin-bottom: 50px;
+  margin-top: 60px;
+}
+
+.howitworks {
+  background: #9b9b9b;
+  padding: 25px;
+  color: #fff;
+  display: inline-block;
+  margin-bottom: 12px;
+  font-size: 35px;
+}
+
+.cstmtext {
+  padding: 50px;
+  font-size: 30px;
+  line-height: 1.4;
+}
+
+.steps-container {
+  font-family: Arial, sans-serif;
+  color: #333;
+  margin: 20px;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+}
+
+.note {
+  font-size: 36px;
+  font-style: italic;
+  position: relative;
+  padding-left: 50px;
+}
+
+.cstmheading {
+  font-size: 50px !important;
+  font-weight: bold;
+}
+.note::before {
+  content: "*";
+  position: absolute;
+  left: 14px;
+  top: 0px;
+  font-size: 60px;
+  line-height: 1;
+}
+.step-number {
+  font-size: 70px;
+  font-weight: bold;
+  color: #fcd609; /* Yellow color */
+  margin-right: 70px;
+}
+
+.step p {
+  margin-top: 25px;
+  font-size: 36px;
+  line-height: 1;
+}
+
+.step a {
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+}
+
+.step a:hover {
+  color: #f0c911; /* Yellow hover effect */
+}

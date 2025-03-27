@@ -67,7 +67,10 @@ function NavigationBar() {
       >
         <Container>
           <NavLink to="/" className="text-center">
-            <img src={logo} alt="Logo" style={{ width: "120px" }} />
+            {/* <img src={logo} alt="Logo" style={{ width: "120px" }} /> */}
+            <h3 className={`${navBackground ? "text-dark" : "text-white"}`}>
+              Home Screen
+            </h3>
           </NavLink>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">

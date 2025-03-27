@@ -1,17 +1,17 @@
 import "./style.css";
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Button, Spinner } from "react-bootstrap";
-import background from "../../../assets/images/header-image.png";
-import joinMeeting from "../../../assets/images/icons/join-meeting.svg";
-import whatWeDoImage from "../../../assets/images/what-we-do-image.svg";
-import createAccount from "../../../assets/images/icons/create-your-account.svg";
-import makeAppointment from "../../../assets/images/icons/make-an-appointment.svg";
+import background from "../../../../assets/images/header-image.png";
+import joinMeeting from "../../../../assets/images/icons/join-meeting.svg";
+import whatWeDoImage from "../../../../assets/images/what-we-do-image.svg";
+import createAccount from "../../../../assets/images/icons/create-your-account.svg";
+import makeAppointment from "../../../../assets/images/icons/make-an-appointment.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { getBlogsList } from "../../../redux/Actions/seoActions";
-import BlogSlider from "../../../components/Custom/BlogSlider/BlogSlider";
+import { getBlogsList } from "../../../../redux/Actions/seoActions";
+import BlogSlider from "../../../../components/Custom/BlogSlider/BlogSlider";
 import { NavLink } from "react-router-dom";
 
-const Welcome = () => {
+const Home1 = () => {
   const dispatch = useDispatch();
   const [isLoading, setLoader] = useState(false);
   const [recentPosts, setRecentPosts] = useState(null);
@@ -281,4 +281,4 @@ const Welcome = () => {
   );
 };
 
-export default Welcome;
+export default Home1;
