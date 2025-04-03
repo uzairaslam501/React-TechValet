@@ -2,7 +2,10 @@ import React from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import whatWeDoImage from "../../../../assets/images/welcome-bg.jpg";
 import logo from "../../../../assets/images/welcome-logo.png";
+import whoWeAreSVG from "../../../../assets/images/who-we-are-home-logo.svg";
+import whatWeDoSVG from "../../../../assets/images/what-we-do-home-logo.svg";
 import "./style.css";
+import { NavLink } from "react-router-dom";
 
 const Home3 = () => {
   return (
@@ -54,17 +57,14 @@ const Home3 = () => {
                 fontSize: "50px",
               }}
             >
-              Who We Are
+              WHO WE ARE
             </h2>
-            <img
-              src="/FrontAssets/images/Logo Web Black svg.svg"
-              className="w-25 mb-3"
-              alt="Logo"
-            />
+            <img src={whoWeAreSVG} className="w-25 mb-3" alt="Logo" />
             <p
               className="text-start  text-dark"
               style={{
                 fontSize: "36px",
+                padding: "0 25px",
               }}
             >
               We are a community of people who have IT know-how — with
@@ -78,13 +78,9 @@ const Home3 = () => {
                 fontSize: "50px",
               }}
             >
-              What We Do
+              WHAT WE DO
             </h1>
-            <img
-              src="/FrontAssets/images/Logo Web Black svg.svg"
-              className="w-25 mb-3"
-              alt="Logo"
-            />
+            <img src={whatWeDoSVG} className="w-25 mb-3" alt="Logo" />
             <p
               className="text-start  text-dark"
               style={{
@@ -106,14 +102,17 @@ const Home3 = () => {
           learning curve, so we formed a community of tech savvy people who can
           help solve a variety of problems the moment you need them. From
           getting your new printer to print to how to manage a group video call
-          with the family to how to set up a local network for your home once —
-          We have a Valet to walk you through it in 3-Easy-Steps.
+          with the family to how to set up a local network for your home office
+          — We have a Valet to walk you through it in 3-Easy-Steps.
           <div class="steps-container">
             <div class="step">
               <span class="step-number">1</span>
               <p>
                 <span className="text-bold">
-                  Click here to create your account{" "}
+                  <NavLink as={NavLink} to={"/register/customer"}>
+                    Click here{" "}
+                  </NavLink>
+                  to create your account{" "}
                 </span>
                 it’s also easy and you only have to do it once!
               </p>

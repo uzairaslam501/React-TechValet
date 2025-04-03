@@ -105,64 +105,37 @@ const UserLogin = () => {
   return (
     <>
       <ScrollToTop />
-      <Container fluid>
-        <Row className="vh-100">
-          {/* Image Column */}
-          <Col
-            xl={7}
-            lg={7}
-            md={6}
-            sm={12}
-            xs={12}
-            className="d-none d-md-flex justify-content-center align-items-center p-5"
-            style={{
-              backgroundImage: `url(${background})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          >
-            <div className="text-center">
-              <div className="position-relative mx-auto w-50">
-                <HandleImages
-                  imagePath={loginPage}
-                  imageAlt="login"
-                  imageStyle={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    objectPosition: "top",
-                  }}
-                />
-              </div>
 
-              {/* Heading and Paragraph */}
-              <div className="mt-4">
-                <h3 className="text-dark fw-bold">Welcome to TechValet</h3>
-                <p className="text-dark">
-                  Don't miss your next opportunity. Sign in to stay updated on
-                  your professional world.
-                </p>
-              </div>
-            </div>
-          </Col>
-
+      <Container
+        fluid
+        className="min-vh-100 d-flex justify-content-center align-items-center"
+        style={{
+          position: "relative",
+          minHeight: "100vh",
+          background: "#eee",
+        }}
+      >
+        <Row className="w-100 justify-content-center py-4">
           {/* Form Column */}
           <Col
-            xl={5}
-            lg={5}
-            md={6}
-            sm={12}
+            xl={6}
+            lg={6}
+            md={8}
+            sm={10}
             xs={12}
-            className="d-flex flex-column justify-content-center align-items-center  fs-5"
+            className="d-flex flex-column justify-content-center align-items-center shadow-lg 
+            rounded-4 p-2 align-self-center"
           >
             {/* Logo */}
-            <div className="d-flex mb-4">
+
+            <div className="m-4 text-center w-100">
               <HandleImages
                 imagePath={logo}
                 imageAlt="login"
-                className=""
+                className="img-fluid"
                 imageStyle={{
-                  width: "130px",
+                  maxWidth: "130px",
+                  height: "auto",
                 }}
               />
             </div>

@@ -31,7 +31,8 @@ const PackageComponent = ({ packageDetails, boughtBy }) => {
             <td className="fw-semibold ps-xl-5 ps-lg-5 ps-md-5 ps-sm-5 px-xs-2">
               Payment Method:
             </td>
-            <td>{`${packageDetails?.packagePaidBy}`}</td>
+            {/* <td>{`${packageDetails?.packagePaidBy}`}</td> */}
+            <td>{`${boughtBy}`}</td>
           </tr>
         </Table>
       </div>

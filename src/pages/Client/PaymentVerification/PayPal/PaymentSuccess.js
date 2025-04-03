@@ -62,7 +62,12 @@ const PaymentSuccess = () => {
         {orderDetails && (
           <OrderComponent orderDetails={orderDetails} boughtBy={"PAYPAL"} />
         )}
-        {packageDetails && <PackageComponent packageDetails={packageDetails} />}
+        {packageDetails && (
+          <PackageComponent
+            packageDetails={packageDetails}
+            boughtBy={"PAYPAL"}
+          />
+        )}
       </Card>
     </Container>
   );

@@ -22,6 +22,7 @@ import { getTimezones } from "../../../redux/Actions/globalActions";
 import UsernameInput from "../../../components/Custom/Username/HandleUsername";
 import ScrollToTop from "../../../theme/scrollToTop";
 import DynamicBackground from "../../../components/Custom/Background/DynamicBackground";
+import * as Icon from "react-bootstrap-icons";
 
 const UserRegisteration = () => {
   const { value } = useParams();
@@ -92,6 +93,7 @@ const UserRegisteration = () => {
       .oneOf([Yup.ref("password"), null], "Passwords must match")
       .required("Please confirm your Password"),
     timezone: Yup.string().required("Please enter Timezone"),
+    role: Yup.string().required("Required Field"),
   });
 
   const handleSubmit = useCallback(
@@ -410,35 +412,52 @@ const UserRegisteration = () => {
                       xs={12}
                       className="mb-3"
                     >
-                      <OverlayTrigger
-                        placement="top"
-                        overlay={
-                          <Tooltip id="switch-tooltip">
-                            {value === "valet"
-                              ? "You are registering as a valet."
-                              : "You are registering as a customer."}
-                          </Tooltip>
-                        }
-                      >
-                        <Form.Check
-                          type="switch"
-                          id="custom-switch"
-                          label={
-                            value === "valet"
-                              ? "Registering as Valet"
-                              : "Registering as Customer"
-                          }
-                          checked={value === "valet"}
+                      <Form.Group className="mb-2">
+                        <Form.Label className="fs-5">
+                          Register as a Valet or Customer{" "}
+                          {/* <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip id="switch-tooltip">
+                                {value === "valet"
+                                  ? "You are signing up as a valet."
+                                  : "You are signing up as a customer."}
+                              </Tooltip>
+                            }
+                          >
+                            <span>
+                              <Icon.InfoCircle />{" "}
+                            </span>
+                          </OverlayTrigger> */}
+                          <span className="text-danger">*</span>
+                        </Form.Label>
+                        <Form.Control
+                          as="select"
+                          value={values?.role}
                           onChange={(e) => {
-                            if (e.target.checked) {
+                            const selectedRole = e.target.value;
+                            console.log(selectedRole);
+                            if (selectedRole === "valet") {
                               navigate("/register/valet");
-                            } else {
+                            } else if (selectedRole === "customer") {
                               navigate("/register/customer");
                             }
+                            setFieldValue("role", selectedRole);
                           }}
+                          isInvalid={touched.role && !!errors.role}
                           className="fs-5"
-                        />
-                      </OverlayTrigger>
+                          style={{
+                            borderColor: "#000",
+                            transition: "0.3s",
+                          }}
+                        >
+                          <option value="valet">Valet</option>
+                          <option value="customer">Customer</option>
+                        </Form.Control>
+                        <Form.Control.Feedback type="invalid">
+                          {touched.role && errors.role}
+                        </Form.Control.Feedback>
+                      </Form.Group>
                     </Col>
                   </>
                 )}
